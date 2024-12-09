@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\User\UserController;
-use App\Http\Controllers\Admin\Product\ProductController;
+use App\Http\Controllers\Admin\Product\Listing\ProductListingController;
+use App\Http\Controllers\Admin\Product\Category\ProductCategoryController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['redirectAdminIfAuthenticated', 'guest:admin'])->group(function () {
@@ -35,8 +36,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // product
         Route::prefix('product')->name('product.')->controller(ProductController::class)->group(function() {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
+            
+            Route::prefix('listing')->name('listing.')->controller(ProductListingController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+            });
+
+            // category
+            Route::prefix('category')->name('category.')->controller(ProductCategoryController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+            });
         });
     });
 });

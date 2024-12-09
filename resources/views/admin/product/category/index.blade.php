@@ -1,9 +1,9 @@
 <x-admin-app-layout
     screen="lg"
-    title="{{ __('Products') }}"
+    title="{{ __('Product Category') }}"
     :breadcrumb="[
         // ['label' => 'Home', 'url' => route('admin.dashboard.index')],
-        ['label' => 'Products']
+        ['label' => 'Product category']
     ]"
 >
 
@@ -12,7 +12,7 @@
         <div class="flex space-x-2 justify-end">
             <x-admin.button
                 element="a"
-                :href="route('admin.product.create')">
+                :href="route('admin.product.category.create')">
                 @slot('icon')
                     <svg fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" /></svg>
                 @endslot

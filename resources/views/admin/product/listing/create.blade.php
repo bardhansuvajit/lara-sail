@@ -2,7 +2,7 @@
     screen="lg"
     title="{{ __('Create product') }}"
     :breadcrumb="[
-        ['label' => 'Products', 'url' => route('admin.product.index')],
+        ['label' => 'Products', 'url' => route('admin.product.listing.index')],
         ['label' => 'Create']
     ]"
 >
