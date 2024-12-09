@@ -33,3 +33,6 @@ force-up: ## Force start all containers
 
 n-dev: ## Compile assets locally
 	@./vendor/bin/sail npm run dev
+
+migrate: ## Force start all containers
+	@./vendor/bin/sail php artisan migrate

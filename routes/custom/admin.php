@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\User\UserController;
+use App\Http\Controllers\Admin\Product\ProductController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['redirectAdminIfAuthenticated', 'guest:admin'])->group(function () {
@@ -12,7 +13,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('login/check', [LoginController::class, 'loginCheck'])->name('login.check');
     });
 
-    // Route::middleware('auth:admin')->group(function () {
     Route::middleware(['redirectAdminIfNotAuthenticated'])->group(function () {
         Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 
@@ -29,8 +29,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // user
-        Route::prefix('user')->name('user.')->controller(Usercontroller::class)->group(function() {
+        Route::prefix('user')->name('user.')->controller(UserController::class)->group(function() {
             Route::get('/', 'index')->name('index');
+        });
+
+        // product
+        Route::prefix('product')->name('product.')->controller(ProductController::class)->group(function() {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
         });
     });
 });

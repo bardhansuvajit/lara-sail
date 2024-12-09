@@ -1,9 +1,9 @@
 <x-admin-app-layout
     screen="lg"
-    title="{{ __('Users') }}"
+    title="{{ __('Products') }}"
     :breadcrumb="[
         // ['label' => 'Home', 'url' => route('admin.dashboard.index')],
-        ['label' => 'Users']
+        ['label' => 'Products']
     ]"
 >
 
@@ -12,7 +12,7 @@
         <div class="flex space-x-2 justify-end">
             <x-admin.button
                 element="a"
-                :href="route('admin.dashboard.index')">
+                :href="route('admin.product.create')">
                 @slot('icon')
                     <svg fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" /></svg>
                 @endslot
@@ -139,17 +139,14 @@
                             </div>
                         </th>
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
-                        <th scope="col" class="px-2 py-1">Name</th>
-                        <th scope="col" class="px-2 py-1">Phone</th>
-                        <th scope="col" class="px-2 py-1">Zipcode</th>
-                        <th scope="col" class="px-2 py-1">Currency</th>
-                        <th scope="col" class="px-2 py-1">Continent</th>
-                        <th scope="col" class="px-2 py-1">language</th>
+                        <th scope="col" class="px-2 py-1">Title</th>
+                        <th scope="col" class="px-2 py-1">Category</th>
+                        <th scope="col" class="px-2 py-1">Variation</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($data as $item)
+                    {{-- @forelse ($data as $item)
                         <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <td class="p-4 w-4">
                                 <div class="flex items-center">
@@ -204,9 +201,6 @@
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">
-                                    {{-- @livewire('toggle-status', [
-                                        'model' => 'Country', 'modelId' => $item->id
-                                    ]) --}}
                                     <x-admin.input-checkbox-toggle-switch checked="{{ $item->status == 1 }}" />
 
                                     <x-admin.button-icon
@@ -248,12 +242,12 @@
                                 <em>No records found</em>
                             </td>
                         </tr>
-                    @endforelse
+                    @endforelse --}}
                 </tbody>
             </table>
         </div>
 
-        {{ $data->onEachSide(3)->links() }}
+        {{-- {{ $data->onEachSide(3)->links() }} --}}
     </section>
 
     {{-- <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"></div>

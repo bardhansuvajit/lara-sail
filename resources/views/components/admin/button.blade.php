@@ -9,7 +9,7 @@
 @php
     $classes = ($tag == 'primary')
             ? 'h-[2.3rem] flex items-center justify-center font-medium rounded-lg text-sm p-2 
-            text-white bg-primary-600 border border-primary-700 
+            text-white bg-primary-600 border border-primary-600 
             hover:bg-primary-800 
             focus:outline-none focus:ring-4 focus:ring-primary-300 
             dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800'
