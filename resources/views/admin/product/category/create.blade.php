@@ -8,7 +8,16 @@
 >
 
     <div class="w-full">
-        <form action="#">
+        <form action="{{ route('admin.product.category.store') }}" method="post" enctype="multipart/form-data">
+            @csrf
+            <div class="grid gap-4 mb-4 sm:grid-cols-3">
+                <div>
+                    <x-admin.input-label for="image" :value="__('Image')" />
+                    <x-admin.file-input id="image" name="image" :value="old('image')" />
+                    <x-admin.input-error :messages="$errors->get('image')" class="mt-2" />
+                </div>
+            </div>
+
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div> 
                     <x-admin.input-label for="title" :value="__('Title *')" />
@@ -19,59 +28,76 @@
                 <div>
                     <x-admin.input-label for="level" :value="__('Level *')" />
 
-                    <ul class="grid w-full gap-6 md:grid-cols-2">
+                    <ul class="grid w-full gap-3 grid-cols-6">
                         <li>
-                            <input type="radio" id="hosting-small" name="hosting" value="hosting-small" class="hidden peer" required />
-                            <label for="hosting-small" class="h-[2.3rem] inline-flex items-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-primary-500 peer-checked:border-primary-600 peer-checked:text-primary-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
-                                <div class="block">
+                            <input type="radio" id="level_1" name="level" value="1" class="hidden peer" required checked />
+                            <label for="level_1" class="h-[2.3rem] inline-flex items-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-gray-50 dark:peer-checked:bg-gray-700 peer-checked:bg-gray-400 dark:peer-checked:border-gray-700 peer-checked:border-gray-400 peer-checked:text-gray-50 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                <div class="block w-full text-center">
                                     <div class="w-full text-lg font-semibold">1</div>
                                 </div>
                             </label>
                         </li>
                         <li>
-                            <input type="radio" id="hosting-big" name="hosting" value="hosting-big" class="hidden peer">
-                            <label for="hosting-big" class="h-[2.3rem] inline-flex items-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-primary-500 peer-checked:border-primary-600 peer-checked:text-primary-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
-                                <div class="block">
+                            <input type="radio" id="level_2" name="level" value="2" class="hidden peer">
+                            <label for="level_2" class="h-[2.3rem] inline-flex items-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-gray-50 dark:peer-checked:bg-gray-700 peer-checked:bg-gray-400 dark:peer-checked:border-gray-700 peer-checked:border-gray-400 peer-checked:text-gray-50 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                <div class="block w-full text-center">
                                     <div class="w-full text-lg font-semibold">2</div>
                                 </div>
                             </label>
                         </li>
+                        <li>
+                            <input type="radio" id="level_3" name="level" value="3" class="hidden peer">
+                            <label for="level_3" class="h-[2.3rem] inline-flex items-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-gray-50 dark:peer-checked:bg-gray-700 peer-checked:bg-gray-400 dark:peer-checked:border-gray-700 peer-checked:border-gray-400 peer-checked:text-gray-50 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                <div class="block w-full text-center">
+                                    <div class="w-full text-lg font-semibold">3</div>
+                                </div>
+                            </label>
+                        </li>
+                        <li>
+                            <input type="radio" id="level_4" name="level" value="4" class="hidden peer">
+                            <label for="level_4" class="h-[2.3rem] inline-flex items-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-gray-50 dark:peer-checked:bg-gray-700 peer-checked:bg-gray-400 dark:peer-checked:border-gray-700 peer-checked:border-gray-400 peer-checked:text-gray-50 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                <div class="block w-full text-center">
+                                    <div class="w-full text-lg font-semibold">4</div>
+                                </div>
+                            </label>
+                        </li>
                     </ul>
+
+                    <x-admin.input-error :messages="$errors->get('level')" class="mt-2" />
                 </div>
 
                 <div>
-                    <x-admin.input-label for="parent_id" :value="__('Parent *')" />
-                    <x-admin.input-select id="parent_id" name="parent_id" title="Select Parent" class="w-40">
+                    <x-admin.input-label for="parent_id" :value="__('Parent')" />
+                    <x-admin.input-select id="parent_id" name="parent_id" title="Select Parent" class="w-full">
                         @slot('options')
                             <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('ID') }} </x-admin.input-select-option>
                         @endslot
                     </x-admin.input-select>
+                    <x-admin.input-error :messages="$errors->get('parent_id')" class="mt-2" />
                 </div>
             </div>
 
-            <div class="items-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
-                <button type="submit" class="w-full sm:w-auto justify-center text-white inline-flex bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Add product</button>
-                <button class="w-full sm:w-auto text-white justify-center inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                    <svg class="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
-                    </svg>
-                    Schedule
-                </button>
-                <button data-modal-toggle="createProductModal" type="button" class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                    <svg class="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-                    Discard
-                </button>
+            <div class="items-center space-x-4 flex my-6">
+                <x-admin.button
+                    type="submit"
+                    element="button">
+                    @slot('icon')
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+                    @endslot
+                    {{ __('Save data') }}
+                </x-admin.button>
+
+                <x-admin.button
+                    element="a"
+                    tag="secondary"
+                    :href="route('admin.product.category.index')">
+                    @slot('icon')
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m432-480 156 156q11 11 11 28t-11 28q-11 11-28 11t-28-11L348-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 28-11t28 11q11 11 11 28t-11 28L432-480Z"/></svg>
+                    @endslot
+                    {{ __('Go back') }}
+                </x-admin.button>
+
             </div>
         </form>
     </div>
-
-    {{-- <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"></div>
-    <div class="grid grid-cols-2 gap-4">
-        <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-        <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-        <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-        <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-    </div> --}}
 </x-admin-app-layout>

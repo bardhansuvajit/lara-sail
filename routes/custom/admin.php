@@ -36,7 +36,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // product
         Route::prefix('product')->name('product.')->controller(ProductController::class)->group(function() {
-            
             Route::prefix('listing')->name('listing.')->controller(ProductListingController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
@@ -46,6 +45,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::prefix('category')->name('category.')->controller(ProductCategoryController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
             });
         });
     });
