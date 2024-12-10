@@ -36,3 +36,5 @@ n-dev: ## Compile assets locally
 
 migrate: ## Force start all containers
 	@./vendor/bin/sail php artisan migrate
+
+start: up n-dev ## Start project

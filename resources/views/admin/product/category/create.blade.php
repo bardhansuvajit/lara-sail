@@ -10,42 +10,42 @@
     <div class="w-full">
         <form action="#">
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
-                <div>
+                <div> 
                     <x-admin.input-label for="title" :value="__('Title *')" />
-                    <x-admin.text-input id="title" class="block mt-1 w-full" type="text" name="title" :value="old('title')" placeholder="Enter title" required />
+                    <x-admin.text-input id="title" class="block w-full" type="text" name="title" :value="old('title')" placeholder="Enter title" required />
                     <x-admin.input-error :messages="$errors->get('title')" class="mt-2" />
                 </div>
 
                 <div>
                     <x-admin.input-label for="level" :value="__('Level *')" />
 
-                    <ul class="items-center w-full text-sm font-medium text-gray-900 bg-white border rounded-lg sm:flex dark:bg-gray-700 dark:text-white h-[2.3rem] mt-1 border-gray-300 dark:border-gray-700 focus:border-primary-500 dark:focus:border-primary-600">
-                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
-                            <div class="flex items-center ps-3">
-                                <input id="horizontal-list-radio-license" type="radio" value="" name="list-radio" class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                <label for="horizontal-list-radio-license" class="w-full py-2 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Driver License </label>
-                            </div>
+                    <ul class="grid w-full gap-6 md:grid-cols-2">
+                        <li>
+                            <input type="radio" id="hosting-small" name="hosting" value="hosting-small" class="hidden peer" required />
+                            <label for="hosting-small" class="h-[2.3rem] inline-flex items-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-primary-500 peer-checked:border-primary-600 peer-checked:text-primary-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                <div class="block">
+                                    <div class="w-full text-lg font-semibold">1</div>
+                                </div>
+                            </label>
                         </li>
-                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
-                            <div class="flex items-center ps-3">
-                                <input id="horizontal-list-radio-id" type="radio" value="" name="list-radio" class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                <label for="horizontal-list-radio-id" class="w-full py-2 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">State ID</label>
-                            </div>
-                        </li>
-                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
-                            <div class="flex items-center ps-3">
-                                <input id="horizontal-list-radio-military" type="radio" value="" name="list-radio" class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                <label for="horizontal-list-radio-military" class="w-full py-2 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">US Military</label>
-                            </div>
-                        </li>
-                        <li class="w-full dark:border-gray-600">
-                            <div class="flex items-center ps-3">
-                                <input id="horizontal-list-radio-passport" type="radio" value="" name="list-radio" class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                <label for="horizontal-list-radio-passport" class="w-full py-2 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">US Passport</label>
-                            </div>
+                        <li>
+                            <input type="radio" id="hosting-big" name="hosting" value="hosting-big" class="hidden peer">
+                            <label for="hosting-big" class="h-[2.3rem] inline-flex items-center justify-between w-full p-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-primary-500 peer-checked:border-primary-600 peer-checked:text-primary-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                <div class="block">
+                                    <div class="w-full text-lg font-semibold">2</div>
+                                </div>
+                            </label>
                         </li>
                     </ul>
+                </div>
 
+                <div>
+                    <x-admin.input-label for="parent_id" :value="__('Parent *')" />
+                    <x-admin.input-select id="parent_id" name="parent_id" title="Select Parent" class="w-40">
+                        @slot('options')
+                            <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('ID') }} </x-admin.input-select-option>
+                        @endslot
+                    </x-admin.input-select>
                 </div>
             </div>
 
