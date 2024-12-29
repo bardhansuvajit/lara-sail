@@ -6,15 +6,15 @@
         @csrf
 
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <x-admin.input-label for="email" :value="__('Email')" />
+            <x-admin.text-input id="email" class="block w-full" type="email" name="email" :value="old('email')" placeholder="admin@admin.com" required autofocus autocomplete="username" />
+            <x-admin.input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block w-full" type="password" name="password" required autocomplete="current-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            <x-admin.input-label for="password" :value="__('Password')" />
+            <x-admin.text-input id="password" class="block w-full" type="password" name="password" placeholder="xxxxxx" required autocomplete="current-password" />
+            <x-admin.input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <div class="block mt-4">

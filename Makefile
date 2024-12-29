@@ -17,7 +17,7 @@ first-build: ## Initial build after clone
 		composer install --ignore-platform-reqs
 	@./vendor/bin/sail build
 	@./vendor/bin/sail php artisan key:generate
-	@./vendor/bin/sail php artisan migrate
+	@./vendor/bin/sail php artisan migrate:fresh --seed
 	@./vendor/bin/sail up -d
 	@./vendor/bin/sail npm install
 	@./vendor/bin/sail npm run dev
@@ -28,13 +28,22 @@ build: ## Start all containers
 up: ## Start all containers
 	@./vendor/bin/sail up -d
 
+stop: ## Stop all containers
+	@./vendor/bin/sail stop
+
+down: ## Down all containers
+	@./vendor/bin/sail down -v
+
 force-up: ## Force start all containers
 	@./vendor/bin/sail up --force-recreate -d
 
-n-dev: ## Compile assets locally
+npm-dev: ## Compile assets locally
 	@./vendor/bin/sail npm run dev
 
-migrate: ## Force start all containers
-	@./vendor/bin/sail php artisan migrate
+migrate: ## Database migrate
+	@./vendor/bin/sail php artisan migrate --seed
 
-start: up n-dev ## Start project
+fresh-migrate: ## Database force migrate
+	@./vendor/bin/sail php artisan migrate:fresh --seed
+
+start: up npm-dev ## Start project
