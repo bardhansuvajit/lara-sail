@@ -8,5 +8,4 @@ Alpine.plugin(collapse)
 Alpine.plugin(focus)
 
 window.Alpine = Alpine;
-
 Alpine.start();

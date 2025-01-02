@@ -23,6 +23,7 @@
             'resources/js/app.js',
             'resources/js/custom.js'
         ])
+        @livewireStyles
     </head>
     <body class="dark:bg-gray-800 dark:text-slate-300">
         <div class="antialiased bg-gray-100 dark:bg-gray-900">
@@ -127,6 +128,18 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
+                window.addEventListener('notificationSend', event => {
+                    // console.log(event.detail[0]);
+
+                    window.dispatchEvent(new CustomEvent('notify', {
+                        detail: {
+                            variant: event.detail[0].variant,
+                            title: event.detail[0].title,
+                            message: event.detail[0].message
+                        }
+                    }));
+                });
+
                 @if(Session::has('success'))
                     window.dispatchEvent(new CustomEvent('notify', {
                         detail: {
@@ -160,6 +173,7 @@
         </script>
 
         @yield('script')
+        @livewireScripts
 
     </body>
 </html>

@@ -45,20 +45,6 @@
                 <div class="w-full col-span-2">
                     <div class="flex space-x-1 items-end">
                         <div class="w-max">
-                            <x-admin.input-label for="bulkAction" :value="__('Bulk action')" />
-                            <x-admin.input-select 
-                                id="bulkAction" 
-                                name="bulkAction"
-                                title="Select..."
-                                disabled
-                            >
-                                @slot('options')
-                                    <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('Delete') }} </x-admin.input-select-option>
-                                @endslot
-                            </x-admin.input-select>
-                        </div>
-
-                        <div class="w-max">
                             <x-admin.input-label for="sortBy" :value="__('Sort by')" />
                             <x-admin.input-select 
                                 id="sortBy" 
@@ -84,6 +70,34 @@
                                     <x-admin.input-select-option value="desc" :selected="request()->input('sortOrder') == 'desc'"> {{ __('DESC') }} </x-admin.input-select-option>
                                 @endslot
                             </x-admin.input-select>
+                        </div>
+
+                        <div class="w-max hidden" id="bulkAction">
+                            <div class="flex space-x-1">
+                                <x-admin.button-icon
+                                    element="a"
+                                    tag="secondary"
+                                    href="javascript: void(0)"
+                                    title="Archive"
+                                    class="border"
+                                >
+                                    @slot('icon')
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m480-240 160-160-56-56-64 64v-168h-80v168l-64-64-56 56 160 160ZM200-640v440h560v-440H200Zm0 520q-33 0-56.5-23.5T120-200v-499q0-14 4.5-27t13.5-24l50-61q11-14 27.5-21.5T250-840h460q18 0 34.5 7.5T772-811l50 61q9 11 13.5 24t4.5 27v499q0 33-23.5 56.5T760-120H200Zm16-600h528l-34-40H250l-34 40Zm264 300Z"/></svg>
+                                    @endslot
+                                </x-admin.button-icon>
+
+                                <x-admin.button-icon
+                                    element="a"
+                                    tag="secondary"
+                                    href="javascript: void(0)"
+                                    title="Delete"
+                                    class="border"
+                                >
+                                    @slot('icon')
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                                    @endslot
+                                </x-admin.button-icon>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -131,7 +145,7 @@
         </form>
 
         {{-- table --}}
-        <div class="overflow-x-auto my-4">
+        <div class="overflow-x-auto mb-3">
             <table class="w-full text-xs text-left text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -171,7 +185,10 @@
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">
-                                    <x-admin.input-checkbox-toggle-switch checked="{{ $item->status == 1 }}" />
+                                    @livewire('toggle-status', [
+                                        'model' => 'ProductCategory',
+                                        'modelId' => $item->id,
+                                    ])
 
                                     <x-admin.button-icon
                                         element="a"
@@ -179,6 +196,8 @@
                                         href="javascript: void(0)"
                                         title="View"
                                         class="border"
+                                        x-data=""
+                                        x-on:click.prevent="$dispatch('open-modal', 'quick-data-view')"
                                     >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>
@@ -226,4 +245,41 @@
             {{ $data->onEachSide(3)->links() }}
         @endif
     </section>
+
+    <x-modal name="quick-data-view">
+        <div class="p-6">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ __('Are you sure you want to delete your account?') }}
+            </h2>
+    
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+            </p>
+    
+            <div class="mt-6">
+                <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
+    
+                <x-text-input
+                    id="password"
+                    name="password"
+                    type="password"
+                    class="mt-1 block w-3/4"
+                    placeholder="{{ __('Password') }}"
+                />
+    
+                <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
+            </div>
+    
+            <div class="mt-6 flex justify-end">
+                <x-secondary-button x-on:click="$dispatch('close')">
+                    {{ __('Cancel') }}
+                </x-secondary-button>
+    
+                <x-danger-button class="ms-3">
+                    {{ __('Delete Account') }}
+                </x-danger-button>
+            </div>
+        </div>
+    </x-modal>
+
 </x-admin-app-layout>
