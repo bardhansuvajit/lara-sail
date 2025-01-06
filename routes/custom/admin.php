@@ -46,6 +46,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+                Route::post('/bulk', 'bulk')->name('bulk');
             });
         });
     });

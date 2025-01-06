@@ -42,7 +42,7 @@
             <!-- root div holds all of the notifications  -->    
             <div>
                 <!-- Info Notification  -->
-                <template x-if="notification.variant === 'info'">                
+                <template x-if="notification.variant === 'info'">
                     <div x-data="{ isVisible: false, timeout: null }" x-cloak x-show="isVisible" class="pointer-events-auto relative rounded-md border border-sky-500 bg-white text-neutral-600 dark:bg-neutral-950 dark:text-neutral-300" role="alert" x-on:pause-auto-dismiss.window="clearTimeout(timeout)" x-on:resume-auto-dismiss.window=" timeout = setTimeout(() => {(isVisible = false), removeNotification(notification.id) }, displayDuration)" x-init="$nextTick(() => { isVisible = true }), (timeout = setTimeout(() => { isVisible = false, removeNotification(notification.id)}, displayDuration))" x-transition:enter="transition duration-300 ease-out" x-transition:enter-end="translate-y-0" x-transition:enter-start="translate-y-8" x-transition:leave="transition duration-300 ease-in" x-transition:leave-end="-translate-x-24 opacity-0 md:translate-x-24" x-transition:leave-start="translate-x-0 opacity-100">
                         <div class="flex w-full items-center gap-2.5 bg-sky-500/10 rounded-md p-4 transition-all duration-300">
                             <!-- Icon -->
@@ -53,7 +53,7 @@
                             </div>
 
                             <!-- Title & Message -->
-                            <div class="flex flex-col gap-2">
+                            <div class="flex flex-col gap-1">
                                 <h3 x-cloak x-show="notification.title" class="text-sm font-semibold text-sky-500" x-text="notification.title"></h3>
                                 <p x-cloak x-show="notification.message" class="text-pretty text-sm" x-text="notification.message"></p>
                             </div>
@@ -69,7 +69,7 @@
                 </template>
 
                 <!-- Success Notification  -->
-                <template x-if="notification.variant === 'success'">                
+                <template x-if="notification.variant === 'success'">
                     <div x-data="{ isVisible: false, timeout: null }" x-cloak x-show="isVisible" class="pointer-events-auto relative rounded-md border border-green-500 bg-white text-neutral-600 dark:bg-neutral-950 dark:text-neutral-300" role="alert" x-on:pause-auto-dismiss.window="clearTimeout(timeout)" x-on:resume-auto-dismiss.window=" timeout = setTimeout(() => {(isVisible = false), removeNotification(notification.id) }, displayDuration)" x-init="$nextTick(() => { isVisible = true }), (timeout = setTimeout(() => { isVisible = false, removeNotification(notification.id)}, displayDuration))" x-transition:enter="transition duration-300 ease-out" x-transition:enter-end="translate-y-0" x-transition:enter-start="translate-y-8" x-transition:leave="transition duration-300 ease-in" x-transition:leave-end="-translate-x-24 opacity-0 md:translate-x-24" x-transition:leave-start="translate-x-0 opacity-100">
                         <div class="flex w-full items-center gap-2.5 bg-green-500/10 rounded-md p-4 transition-all duration-300">
 
@@ -81,7 +81,7 @@
                             </div>
 
                             <!-- Title & Message -->
-                            <div class="flex flex-col gap-2">
+                            <div class="flex flex-col gap-1">
                                 <h3 x-cloak x-show="notification.title" class="text-sm font-semibold text-green-500" x-text="notification.title"></h3>
                                 <p x-cloak x-show="notification.message" class="text-pretty text-sm" x-text="notification.message"></p>
                             </div>
@@ -97,7 +97,7 @@
                 </template>
 
                 <!-- Warning Notification  -->
-                <template x-if="notification.variant === 'warning'">                
+                <template x-if="notification.variant === 'warning'">
                     <div x-data="{ isVisible: false, timeout: null }" x-cloak x-show="isVisible" class="pointer-events-auto relative rounded-md border border-amber-500 bg-white text-neutral-600 dark:bg-neutral-950 dark:text-neutral-300" role="alert" x-on:pause-auto-dismiss.window="clearTimeout(timeout)" x-on:resume-auto-dismiss.window=" timeout = setTimeout(() => {(isVisible = false), removeNotification(notification.id) }, displayDuration)" x-init="$nextTick(() => { isVisible = true }), (timeout = setTimeout(() => { isVisible = false, removeNotification(notification.id)}, displayDuration))" x-transition:enter="transition duration-300 ease-out" x-transition:enter-end="translate-y-0" x-transition:enter-start="translate-y-8" x-transition:leave="transition duration-300 ease-in" x-transition:leave-end="-translate-x-24 opacity-0 md:translate-x-24" x-transition:leave-start="translate-x-0 opacity-100">
                         <div class="flex w-full items-center gap-2.5 bg-amber-500/10 rounded-md p-4 transition-all duration-300">
 
@@ -109,7 +109,7 @@
                             </div>
 
                             <!-- Title & Message -->
-                            <div class="flex flex-col gap-2">
+                            <div class="flex flex-col gap-1">
                                 <h3 x-cloak x-show="notification.title" class="text-sm font-semibold text-amber-500" x-text="notification.title"></h3>
                                 <p x-cloak x-show="notification.message" class="text-pretty text-sm" x-text="notification.message"></p>
                             </div>
@@ -125,7 +125,7 @@
                 </template>
 
                 <!-- Danger Notification  -->
-                <template x-if="notification.variant === 'danger'">                
+                <template x-if="notification.variant === 'danger'">
                     <div x-data="{ isVisible: false, timeout: null }" x-cloak x-show="isVisible" class="pointer-events-auto relative rounded-md border border-red-500 bg-white text-neutral-600 dark:bg-neutral-950 dark:text-neutral-300" role="alert" x-on:pause-auto-dismiss.window="clearTimeout(timeout)" x-on:resume-auto-dismiss.window=" timeout = setTimeout(() => {(isVisible = false), removeNotification(notification.id) }, displayDuration)" x-init="$nextTick(() => { isVisible = true }), (timeout = setTimeout(() => { isVisible = false, removeNotification(notification.id)}, displayDuration))" x-transition:enter="transition duration-300 ease-out" x-transition:enter-end="translate-y-0" x-transition:enter-start="translate-y-8" x-transition:leave="transition duration-300 ease-in" x-transition:leave-end="-translate-x-24 opacity-0 md:translate-x-24" x-transition:leave-start="translate-x-0 opacity-100">
                         <div class="flex w-full items-center gap-2.5 bg-red-500/10 rounded-md p-4 transition-all duration-300">
 
@@ -137,7 +137,7 @@
                             </div>
 
                             <!-- Title & Message -->
-                            <div class="flex flex-col gap-2">
+                            <div class="flex flex-col gap-1">
                                 <h3 x-cloak x-show="notification.title" class="text-sm font-semibold text-red-500" x-text="notification.title"></h3>
                                 <p x-cloak x-show="notification.message" class="text-pretty text-sm" x-text="notification.message"></p>
                             </div>
@@ -153,12 +153,12 @@
                 </template>
 
                 <!-- Message Notification  -->
-                <template x-if="notification.variant === 'message'">                
+                <template x-if="notification.variant === 'message'">
                     <div x-data="{ isVisible: false, timeout: null }" x-cloak x-show="isVisible" class="pointer-events-auto relative rounded-md border border-neutral-300 bg-white text-neutral-600 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-300" role="alert" x-on:pause-auto-dismiss.window="clearTimeout(timeout)" x-on:resume-auto-dismiss.window="timeout = setTimeout(() => { isVisible = false, removeNotification(notification.id) }, displayDuration)" x-init="$nextTick(() => { isVisible = true }), (timeout = setTimeout(() => { isVisible = false, removeNotification(notification.id) }, displayDuration))" x-transition:enter="transition duration-300 ease-out" x-transition:enter-end="translate-y-0" x-transition:enter-start="translate-y-8" x-transition:leave="transition duration-300 ease-in" x-transition:leave-end="-translate-x-24 opacity-0 md:translate-x-24" x-transition:leave-start="translate-x-0 opacity-100">
                         <div class="flex w-full rounded-md items-center gap-2.5 bg-neutral-50 p-4 transition-all duration-300 dark:bg-neutral-900">
                             <div class="flex w-full items-center gap-2.5">
                                     
-                                <!-- Avatar -->    
+                                <!-- Avatar -->
                                 <img x-cloak x-show="notification.sender.avatar" class="mr-2 size-12 rounded-full" alt="avatar" aria-hidden="true" x-bind:src="notification.sender.avatar"/>
                                 <div class="flex flex-col items-start gap-2">
                                     <!-- Title & Message -->     

@@ -19,6 +19,14 @@ class ProductCategoryController
     {
         // return view('admin.product.category.index');
 
+        $request->validate([
+            'keyword' => 'nullable|string|max:255',
+            'perPage' => 'nullable|integer|min:1',
+            'sortBy' => 'nullable|string|in:id,title,slug',
+            'sortOrder' => 'nullable|string|in:asc,desc',
+            'status' => 'nullable|string|in:0,1'
+        ]);
+
         $perPage = 15;
         $keyword = $request->input('keyword', '');
         $sortBy = $request->input('sortBy', 'id');
@@ -43,12 +51,6 @@ class ProductCategoryController
         // dd($request->all());
 
         $request->validate([
-            'keyword' => 'nullable|string|max:255',
-            'perPage' => 'nullable|integer|min:1',
-            'sortBy' => 'nullable|string|in:id,title,slug',
-            'sortOrder' => 'nullable|string|in:asc,desc',
-            'status' => 'nullable|string|in:0,1',
-
             'image' => 'nullable|image|max:1000',
             'title' => 'required|min:2|max:255',
             'level' => 'required|in:1,2,3,4',
@@ -57,5 +59,48 @@ class ProductCategoryController
 
         $resp = $this->productCategoryInterface->store($request->all());
         return redirect()->route('admin.product.category.index')->with($resp['status'], $resp['message']);
+    }
+
+    public function edit(Int $id): View
+    {
+        $resp = $this->productCategoryInterface->getById($id);
+        return view('admin.product.category.edit', [
+            'data' => $resp['data'],
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+        // dd($request->all());
+
+        $request->validate([
+            'id' => 'required|integer',
+            'image' => 'nullable|image|max:1000',
+            'title' => 'required|min:2|max:255',
+            'level' => 'required|in:1,2,3,4',
+            'parent_id' => 'nullable',
+        ]);
+
+        $resp = $this->productCategoryInterface->update($request->all());
+        return redirect()->route('admin.product.category.index')->with($resp['status'], $resp['message']);
+    }
+
+    public function delete(Int $id)
+    {
+        $resp = $this->productCategoryInterface->delete($id);
+        return redirect()->back()->with($resp['status'], $resp['message']);
+    }
+
+    public function bulk(Request $request)
+    {
+        // dd($request->all());
+
+        $request->validate([
+            'ids' => 'required|array',
+            'action' => 'required|in:delete,archive',
+        ]);
+
+        $resp = $this->productCategoryInterface->bulkAction($request->except('_token'));
+        return redirect()->back()->with($resp['status'], $resp['message']);
     }
 }

@@ -39,6 +39,11 @@
     </section>
 
     <section>
+        {{-- <form action="{{ route('admin.product.category.bulk') }}" method="post" id="bulActionForm">
+            @csrf
+            <input type="hidden" name="action" id="bulkActionInput" />
+        </form> --}}
+
         {{-- filters --}}
         <form action="" method="get">
             <div class="grid grid-cols-10 gap-4 py-4">
@@ -75,11 +80,21 @@
                         <div class="w-max hidden" id="bulkAction">
                             <div class="flex space-x-1">
                                 <x-admin.button-icon
-                                    element="a"
+                                    element="button"
+                                    type="submit"
                                     tag="secondary"
                                     href="javascript: void(0)"
                                     title="Archive"
                                     class="border"
+                                    form="bulActionForm"
+                                    x-data=""
+                                    x-on:click.prevent="
+                                        $dispatch('open-modal', 'confirm-bulk-action');
+                                        $dispatch('data-desc', 'Are you sure you want to Archive selected data?');
+                                        $dispatch('data-button-text', 'Yes, Archive');
+                                        $dispatch('data-button-type', 'warning');
+                                        document.getElementById('bulkActionInput').value = 'archive';
+                                    "
                                 >
                                     @slot('icon')
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m480-240 160-160-56-56-64 64v-168h-80v168l-64-64-56 56 160 160ZM200-640v440h560v-440H200Zm0 520q-33 0-56.5-23.5T120-200v-499q0-14 4.5-27t13.5-24l50-61q11-14 27.5-21.5T250-840h460q18 0 34.5 7.5T772-811l50 61q9 11 13.5 24t4.5 27v499q0 33-23.5 56.5T760-120H200Zm16-600h528l-34-40H250l-34 40Zm264 300Z"/></svg>
@@ -87,11 +102,21 @@
                                 </x-admin.button-icon>
 
                                 <x-admin.button-icon
-                                    element="a"
+                                    element="button"
+                                    type="submit"
                                     tag="secondary"
                                     href="javascript: void(0)"
                                     title="Delete"
                                     class="border"
+                                    form="bulActionForm"
+                                    x-data=""
+                                    x-on:click.prevent="
+                                        $dispatch('open-modal', 'confirm-bulk-action');
+                                        $dispatch('data-desc', 'Are you sure you want to Delete selected data?');
+                                        $dispatch('data-button-text', 'Yes, Delete');
+                                        $dispatch('data-button-type', 'danger');
+                                        document.getElementById('bulkActionInput').value = 'delete';
+                                    "
                                 >
                                     @slot('icon')
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
@@ -165,7 +190,7 @@
                         <tr class="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <td class="p-2 w-2">
                                 <div class="flex items-center">
-                                    <input id="checkbox-table-search-{{ $item->id }}" type="checkbox" onclick="event.stopPropagation()" class="w-4 h-4 text-primary-600 bg-gray-100 rounded border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <input id="checkbox-table-search-{{ $item->id }}" type="checkbox" onclick="event.stopPropagation()" class="w-4 h-4 text-primary-600 bg-gray-100 rounded border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" form="bulActionForm" name="ids[]" value="{{ $item->id }}">
                                     <label for="checkbox-table-search-{{ $item->id }}" class="sr-only">checkbox</label>
                                 </div>
                             </td>
@@ -177,7 +202,7 @@
                                     <div class="text-xs">
                                         <p class="font-bold">{{ $item->title }}</p>
                                         <p class="">
-                                            <span class="text-xs text-gray-400">Slug</span>
+                                            {{-- <span class="text-xs text-gray-400">Slug</span> --}}
                                             <span class="text-gray-500">{{ $item->slug }}</span>
                                         </p>
                                     </div>
@@ -196,8 +221,11 @@
                                         href="javascript: void(0)"
                                         title="View"
                                         class="border"
-                                        x-data=""
                                         x-on:click.prevent="$dispatch('open-modal', 'quick-data-view')"
+                                        {{-- wire:click="viewQuickData({{ $item }})" --}}
+                                        {{-- x-data="" --}}
+                                        {{-- x-on:click.prevent="$dispatch('open-modal', 'quick-data-view')" --}}
+                                        {{-- x-on:click.prevent="$dispatch('open-modal', { name: 'quick-data-view' }); window.Livewire.emit('loadData', {{ $item->id }})" --}}
                                     >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>
@@ -207,7 +235,7 @@
                                     <x-admin.button-icon
                                         element="a"
                                         tag="secondary"
-                                        href="javascript: void(0)"
+                                        :href="route('admin.product.category.edit', $item->id)"
                                         title="Edit"
                                         class="border"
                                     >
@@ -221,7 +249,11 @@
                                         tag="danger"
                                         href="javascript: void(0)"
                                         x-data=""
-                                        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')">
+                                        x-on:click.prevent="
+                                            $dispatch('open-modal', 'confirm-data-deletion'); 
+                                            $dispatch('data-title', '{{ $item->title }}');
+                                            $dispatch('set-delete-route', '{{ route('admin.product.category.delete', $item->id) }}')
+                                        ">
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                                         @endslot
@@ -246,19 +278,20 @@
         @endif
     </section>
 
+    @include('admin.includes.delete-confirm-modal')
+    @include('admin.includes.bulk-action-confirm-modal')
+
     <x-modal name="quick-data-view">
         <div class="p-6">
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ __('Are you sure you want to delete your account?') }}
             </h2>
-    
             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                 {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
             </p>
-    
             <div class="mt-6">
                 <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
-    
+
                 <x-text-input
                     id="password"
                     name="password"
@@ -266,15 +299,15 @@
                     class="mt-1 block w-3/4"
                     placeholder="{{ __('Password') }}"
                 />
-    
+
                 <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
             </div>
-    
+
             <div class="mt-6 flex justify-end">
                 <x-secondary-button x-on:click="$dispatch('close')">
                     {{ __('Cancel') }}
                 </x-secondary-button>
-    
+
                 <x-danger-button class="ms-3">
                     {{ __('Delete Account') }}
                 </x-danger-button>

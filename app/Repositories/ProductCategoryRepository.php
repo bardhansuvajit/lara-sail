@@ -115,4 +115,116 @@ class ProductCategoryRepository implements ProductCategoryInterface
             'data' => $data,
         ];
     }
+
+    public function getById(Int $id)
+    {
+        $data = ProductCategory::find($id);
+
+        if (!empty($data)) {
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Data found',
+                'data' => $data,
+            ];
+        } else {
+            return [
+                'code' => 404,
+                'status' => 'failure',
+                'message' => 'No data found',
+                'data' => [],
+            ];
+        }
+    }
+
+    public function update(Array $array)
+    {
+        try {
+            $data = $this->getById($array['id']);
+
+            if ($data['code'] == 200) {
+                $data['data']->title = $array['title'];
+                $data['data']->slug = \Str::slug($array['title']);
+                $data['data']->parent_id = $array['parent_id'];
+                $data['data']->level = $array['level'];
+                $data['data']->save();
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Changes have been saved',
+                    'data' => $data,
+                ];
+            } else {
+                return $data;
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function delete(Int $id)
+    {
+        try {
+            $data = $this->getById($id);
+
+            if ($data['code'] == 200) {
+                $data['data']->delete();
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data deleted',
+                    'data' => $data,
+                ];
+            } else {
+                return $data;
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while deleting data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function bulkAction(Array $array)
+    {
+        try {
+            $data = ProductCategory::whereIn('id', $array['ids'])->get();
+            if ($array['action'] == 'delete') {
+                $data->each(function ($item) {
+                    $item->delete();
+                });
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data deleted',
+                    'data' => [],
+                ];
+            } else {
+                return [
+                    'code' => 400,
+                    'status' => 'failure',
+                    'message' => 'Invalid action',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
 }
