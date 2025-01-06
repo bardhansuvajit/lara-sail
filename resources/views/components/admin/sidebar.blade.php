@@ -1,7 +1,9 @@
 @props([
     'name',
     'show' => false,
-    'maxWidth' => '2xl'
+    'maxWidth' => '2xl',
+    'direction' => 'right',
+    'header' => false
 ])
 
 @php
@@ -12,6 +14,8 @@ $maxWidth = [
     'xl' => 'sm:max-w-xl',
     '2xl' => 'sm:max-w-2xl',
 ][$maxWidth];
+
+$direction = $direction === 'left' ? 'left-0' : 'right-0';
 @endphp
 
 <div
@@ -39,8 +43,8 @@ $maxWidth = [
             document.body.classList.remove('overflow-y-hidden');
         }
     })"
-    x-on:open-modal.window="$event.detail == '{{ $name }}' ? show = true : null"
-    x-on:close-modal.window="$event.detail == '{{ $name }}' ? show = false : null"
+    x-on:open-sidebar.window="$event.detail == '{{ $name }}' ? show = true : null"
+    x-on:close-sidebar.window="$event.detail == '{{ $name }}' ? show = false : null"
     x-on:close.stop="show = false"
     x-on:keydown.escape.window="show = false"
     x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
@@ -65,7 +69,7 @@ $maxWidth = [
 
     <div
         x-show="show"
-        class="mb-6 bg-white dark:bg-gray-700 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto"
+        class="fixed top-0 {{ $direction }} h-full overflow-auto mb-6 bg-white dark:bg-gray-700 shadow-xl transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
@@ -73,6 +77,24 @@ $maxWidth = [
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
         x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
     >
+        @if($header)
+        <header class="flex items-center justify-between p-4 border-b dark:border-gray-800">
+            <h2 class="text-lg font-semibold">{{ $header }}</h2>
+
+            <x-admin.button-icon
+                element="button"
+                tag="secondary"
+                href="javascript:void(0)"
+                title="Close"
+                class="border" 
+                x-on:click="show = false" >
+                @slot('icon')
+                    <svg class="w-4 h-4 text-gray-700 dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>
+                @endslot
+            </x-admin.button-icon>
+        </header>
+        @endif
+
         {{ $slot }}
     </div>
 </div>

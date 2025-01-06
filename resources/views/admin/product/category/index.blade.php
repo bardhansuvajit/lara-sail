@@ -39,11 +39,6 @@
     </section>
 
     <section>
-        {{-- <form action="{{ route('admin.product.category.bulk') }}" method="post" id="bulActionForm">
-            @csrf
-            <input type="hidden" name="action" id="bulkActionInput" />
-        </form> --}}
-
         {{-- filters --}}
         <form action="" method="get">
             <div class="grid grid-cols-10 gap-4 py-4">
@@ -92,7 +87,6 @@
                                         $dispatch('open-modal', 'confirm-bulk-action');
                                         $dispatch('data-desc', 'Are you sure you want to Archive selected data?');
                                         $dispatch('data-button-text', 'Yes, Archive');
-                                        $dispatch('data-button-type', 'warning');
                                         document.getElementById('bulkActionInput').value = 'archive';
                                     ">
                                     @slot('icon')
@@ -113,7 +107,6 @@
                                         $dispatch('open-modal', 'confirm-bulk-action');
                                         $dispatch('data-desc', 'Are you sure you want to Delete selected data?');
                                         $dispatch('data-button-text', 'Yes, Delete');
-                                        $dispatch('data-button-type', 'danger');
                                         document.getElementById('bulkActionInput').value = 'delete';
                                     ">
                                     @slot('icon')
@@ -192,9 +185,9 @@
                                     <label for="checkbox-table-search-{{ $item->id }}" class="sr-only">checkbox</label>
                                 </div>
                             </td>
-                            <th scope="row" class="px-2 py-1 w-8 text-gray-900 dark:text-white">
+                            <td scope="row" class="px-2 py-1 w-8 text-gray-900 dark:text-white">
                                 <p class="text-xs">{{ $item->id }}</p>
-                            </th>
+                            </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 <div class="flex space-x-4 items-center">
                                     <div class="text-xs">
@@ -219,12 +212,8 @@
                                         href="javascript: void(0)"
                                         title="View"
                                         class="border"
-                                        x-on:click.prevent="$dispatch('open-modal', 'quick-data-view')"
-                                        {{-- wire:click="viewQuickData({{ $item }})" --}}
-                                        {{-- x-data="" --}}
-                                        {{-- x-on:click.prevent="$dispatch('open-modal', 'quick-data-view')" --}}
-                                        {{-- x-on:click.prevent="$dispatch('open-modal', { name: 'quick-data-view' }); window.Livewire.emit('loadData', {{ $item->id }})" --}}
-                                    >
+                                        x-data=""
+                                        x-on:click.prevent="$dispatch('open-sidebar', 'quick-data-view');" >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>
                                         @endslot
@@ -235,8 +224,7 @@
                                         tag="secondary"
                                         :href="route('admin.product.category.edit', $item->id)"
                                         title="Edit"
-                                        class="border"
-                                    >
+                                        class="border" >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
                                         @endslot
@@ -250,8 +238,7 @@
                                         x-on:click.prevent="
                                             $dispatch('open-modal', 'confirm-data-deletion'); 
                                             $dispatch('data-title', '{{ $item->title }}');
-                                            $dispatch('set-delete-route', '{{ route('admin.product.category.delete', $item->id) }}')
-                                        ">
+                                            $dispatch('set-delete-route', '{{ route('admin.product.category.delete', $item->id) }}')" >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                                         @endslot
@@ -279,38 +266,13 @@
     @include('admin.includes.delete-confirm-modal')
     @include('admin.includes.bulk-action-confirm-modal')
 
-    <x-modal name="quick-data-view">
-        <div class="p-6">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ __('Are you sure you want to delete your account?') }}
-            </h2>
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
-            </p>
-            <div class="mt-6">
-                <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
-
-                <x-text-input
-                    id="password"
-                    name="password"
-                    type="password"
-                    class="mt-1 block w-3/4"
-                    placeholder="{{ __('Password') }}"
-                />
-
-                <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
-            </div>
-
-            <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
-                    {{ __('Cancel') }}
-                </x-secondary-button>
-
-                <x-danger-button class="ms-3">
-                    {{ __('Delete Account') }}
-                </x-danger-button>
-            </div>
+    <x-admin.sidebar name="quick-data-view" maxWidth="sm" direction="right" show="true" header="Quick View" focusable>
+        <div class="p-4">
+            <h5 class="text-xs font-bold mb-1">Title</h5>
+            <p class="text-sm mb-3">Lorem ipsum dolor sit.</p>
+            <h5 class="text-xs font-bold mb-1">Description</h5>
+            <p class="text-sm mb-3">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem sunt rerum ab molestiae quia voluptates nihil corrupti fugiat beatae cupiditate!</p>
         </div>
-    </x-modal>
+    </x-admin.sidebar>    
 
 </x-admin-app-layout>

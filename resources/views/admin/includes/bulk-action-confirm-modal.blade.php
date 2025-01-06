@@ -1,20 +1,15 @@
 <x-modal name="confirm-bulk-action" maxWidth="sm" focusable>
     <div 
         class="p-6" 
-        x-data="{desc: '', buttonText: '', buttonType: ''}"
+        x-data="{desc: '', buttonText: ''}"
         x-on:data-desc.window="desc = $event.detail" 
-        x-on:data-button-text.window="buttonText = $event.detail" 
-        x-on:data-button-type.window="buttonType = $event.detail" 
-    >
+        x-on:data-button-text.window="buttonText = $event.detail" >
+
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
             {{ __('Are you sure?') }}
         </h2>
 
-        {{-- <h5 x-text="title" class="text-gray-500 mt-5"></h5> --}}
-
-        <p class="mt-1 text-xs text-gray-600 dark:text-gray-400" x-text="desc">
-            {{-- {{ __('Once this data is deleted, it cannot be recovered') }} --}}
-        </p>
+        <p class="mt-1 text-xs text-gray-600 dark:text-gray-400" x-text="desc"></p>
 
         <div class="mt-6 flex justify-end">
             <x-admin.button 
@@ -33,7 +28,7 @@
                 <input type="hidden" name="action" id="bulkActionInput" />
                 <x-admin.button 
                     element="button" 
-                    x-bind:tag="buttonType" 
+                    tag="danger" 
                     href="javascript: void(0)" 
                     title="Delete" 
                     x-text="buttonText"
