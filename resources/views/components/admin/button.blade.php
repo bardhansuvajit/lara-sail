@@ -22,13 +22,13 @@
                         text-primary-500 bg-primary-100 border border-primary-200 dark:border-gray-600 
                         hover:bg-primary-200 
                         focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-primary-300 
-                        dark:text-gray-300 dark:bg-gray-600 dark:focus:ring-offset-2 dark:hover:bg-gray-700 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-800',
+                        dark:text-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-800',
 
         'primary' =>    'h-[2rem] flex items-center justify-center font-medium rounded text-xs p-2 
                         text-white bg-primary-600 border border-primary-600 
                         hover:bg-primary-800 
                         focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-primary-300 
-                        dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 dark:focus:ring-offset-gray-800',
+                        dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 dark:focus:ring-primary-400 dark:focus:ring-offset-gray-800',
 
         default =>  'h-[2rem] flex items-center justify-center font-medium rounded text-xs p-2 
                         text-primary-500 bg-primary-100 border border-primary-200 dark:border-gray-600 

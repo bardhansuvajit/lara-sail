@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Admin\Product\Listing\ProductListingController;
 use App\Http\Controllers\Admin\Product\Category\ProductCategoryController;
+use App\Http\Controllers\Admin\CsvTemplate\CsvTemplateController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['redirectAdminIfAuthenticated', 'guest:admin'])->group(function () {
@@ -52,5 +53,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/bulk', 'bulk')->name('bulk');
             });
         });
+
+        // csv template
+        Route::get('/download-sample-csv/{model}', [CsvTemplateController::class, 'download'])->name('csv-template.download');
     });
 });
