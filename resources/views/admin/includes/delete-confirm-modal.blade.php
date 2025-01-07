@@ -20,7 +20,7 @@
                 element="button"
                 tag="secondary"
                 href="javascript: void(0)"
-                title="Delete"
+                title="Cancel"
                 class="border"
                 x-on:click="$dispatch('close')"
             >

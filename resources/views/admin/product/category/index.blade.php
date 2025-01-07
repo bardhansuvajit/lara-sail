@@ -20,7 +20,11 @@
 
             <x-admin.button
                 element="a"
-                tag="secondary">
+                tag="secondary"
+                href="javascript: void(0)"
+                title="Import"
+                x-data=""
+                x-on:click.prevent="$dispatch('open-modal', 'import');">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
                 @endslot
@@ -213,7 +217,12 @@
                                         title="View"
                                         class="border"
                                         x-data=""
-                                        x-on:click.prevent="$dispatch('open-sidebar', 'quick-data-view');" >
+                                        x-on:click.prevent="
+                                            $dispatch('open-sidebar', 'quick-data-view');
+                                            $dispatch('data-title', '{{ $item->title }}');
+                                            $dispatch('data-slug', '{{ $item->slug }}');
+                                            $dispatch('data-level', '{{ $item->level }}');
+                                        " >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>
                                         @endslot
@@ -231,7 +240,7 @@
                                     </x-admin.button-icon>
 
                                     <x-admin.button-icon
-                                        element="button"
+                                        element="a"
                                         tag="danger"
                                         href="javascript: void(0)"
                                         x-data=""
@@ -263,16 +272,96 @@
         @endif
     </section>
 
+    <x-modal name="import" maxWidth="sm" :show="$errors->userDeletion->isNotEmpty()" show="true">
+        <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
+            @csrf
+
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ __('Import data?') }}
+            </h2>
+
+            <p class="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                {!! __('Select &amp; Upload file to Import data. Download the <strong><em>Sample CSV file</em></strong> &amp; import') !!}
+            </p>
+
+            <div class="mt-6">
+                {{-- <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
+                <x-text-input
+                    id="password"
+                    name="password"
+                    type="password"
+                    class="mt-1 block w-3/4"
+                    placeholder="{{ __('Password') }}"
+                />
+                <x-input-error :messages="$errors->userDeletion->get('file')" class="mt-2" /> --}}
+
+                <x-admin.input-label for="file" :value="__('Select file')" />
+                <x-admin.file-input id="file" name="file" />
+                <x-admin.input-error :messages="$errors->get('file')" class="mt-2" />
+            </div>
+
+            <div class="mt-4">
+                <a href="" class="dark:text-primary-100 text-xs">{{ __('Download Sample CSV') }}</a>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <x-admin.button
+                    element="a"
+                    tag="secondary"
+                    href="javascript: void(0)"
+                    title="Cancel"
+                    class="border"
+                    x-on:click="$dispatch('close')"
+                >
+                    {{ __('Cancel') }}
+                </x-admin.button>
+
+                <x-admin.button
+                    element="button"
+                    tag="primary"
+                    type="submit"
+                    title="Import"
+                    class="ms-3">
+                    @slot('icon')
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+                    @endslot
+                    {{ __('Import') }}
+                </x-admin.button>
+
+                {{-- <x-admin.button
+                    element="button"
+                    tag="primary"
+                    href="javascript: void(0)"
+                    title="Upload"
+                    class="ms-3"
+                >
+                    {{ __('Upload') }}
+                </x-admin.button> --}}
+            </div>
+        </form>
+    </x-modal>
+
+    {{-- @include('admin.includes.import-modal') --}}
     @include('admin.includes.delete-confirm-modal')
     @include('admin.includes.bulk-action-confirm-modal')
 
-    <x-admin.sidebar name="quick-data-view" maxWidth="sm" direction="right" show="true" header="Quick View" focusable>
-        <div class="p-4">
+    <x-admin.sidebar name="quick-data-view" maxWidth="sm" direction="right" header="Quick View" focusable>
+        <div 
+            class="p-4"
+            x-data="{title: '', slug: '', level: ''}"
+            x-on:data-title.window="title = $event.detail"
+            x-on:data-slug.window="slug = $event.detail"
+            x-on:data-level.window="level = $event.detail"
+        >
             <h5 class="text-xs font-bold mb-1">Title</h5>
-            <p class="text-sm mb-3">Lorem ipsum dolor sit.</p>
-            <h5 class="text-xs font-bold mb-1">Description</h5>
-            <p class="text-sm mb-3">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem sunt rerum ab molestiae quia voluptates nihil corrupti fugiat beatae cupiditate!</p>
+            <p class="text-sm mb-3" x-text="title"></p>
+
+            <h5 class="text-xs font-bold mb-1">Slug</h5>
+            <p class="text-sm mb-3" x-text="slug"></p>
+
+            <h5 class="text-xs font-bold mb-1">Level</h5>
+            <p class="text-sm mb-3" x-text="level"></p>
         </div>
-    </x-admin.sidebar>    
+    </x-admin.sidebar>
 
 </x-admin-app-layout>
