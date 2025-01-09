@@ -1,5 +1,9 @@
-<x-modal name="import" maxWidth="sm" :show="$errors->userDeletion->isNotEmpty()" show="true">
-    <form method="post" action="{{ route('profile.destroy') }}" class="p-4">
+<x-modal name="import" maxWidth="sm" :show="$errors->importForm->isNotEmpty()" >
+    <form 
+        method="post" 
+        action="{{ route('admin.product.category.import') }}" 
+        class="p-4" 
+        enctype="multipart/form-data" > 
         @csrf
 
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
@@ -13,7 +17,8 @@
         <div class="mt-6">
             <x-admin.input-label for="file" :value="__('Select file')" />
             <x-admin.file-input id="file" name="file" accept=".csv, .xls" />
-            <x-admin.input-error :messages="$errors->get('file')" class="mt-2" />
+            <x-admin.input-error :messages="$errors->importForm->get('file')" class="mt-2" />
+            {{-- <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" /> --}}
         </div>
 
         <div class="mt-4">
@@ -24,7 +29,7 @@
             </a>
         </div>
 
-        <div class="mt-4 flex justify-end">
+        <div class="mt-4 flex space-x-2">
             <x-admin.button
                 element="a"
                 tag="secondary"
@@ -40,8 +45,7 @@
                 element="button"
                 tag="primary"
                 type="submit"
-                title="Import"
-                class="ms-3">
+                title="Import">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
                 @endslot

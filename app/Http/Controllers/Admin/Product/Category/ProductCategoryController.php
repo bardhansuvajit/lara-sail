@@ -103,4 +103,38 @@ class ProductCategoryController
         $resp = $this->productCategoryInterface->bulkAction($request->except('_token'));
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
+
+    public function import(Request $request)
+    {
+        $request->validateWithBag('importForm', [
+            'file' => 'required|file|max:5000|mimes:csv,xlsx,xls',
+        ]);
+
+        $resp = $this->productCategoryInterface->import($request->file('file'));
+        return redirect()->back()->with($resp['status'], $resp['message']);
+    }
+
+    public function export(Request $request)
+    {
+        $request->validate([
+            'keyword' => 'nullable|string|max:255',
+            'perPage' => 'nullable|integer|min:1',
+            'sortBy' => 'nullable|string|in:id,title,slug',
+            'sortOrder' => 'nullable|string|in:asc,desc',
+            'status' => 'nullable|string|in:0,1'
+        ]);
+
+        $perPage = 15;
+        $keyword = $request->input('keyword', '');
+        $sortBy = $request->input('sortBy', 'id');
+        $sortOrder = $request->input('sortOrder', 'desc');
+        $filters = [
+            'status' => $request->input('status', ''),
+        ];
+        $resp = $this->productCategoryInterface->export($keyword, $filters, $perPage, $sortBy, $sortOrder);
+
+        // return view('admin.product.category.index', [
+        //     'data' => $resp['data'],
+        // ]);
+    }
 }

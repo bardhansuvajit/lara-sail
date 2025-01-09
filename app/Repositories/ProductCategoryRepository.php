@@ -4,7 +4,8 @@ namespace App\Repositories;
 
 use App\Interfaces\ProductCategoryInterface;
 use App\Models\ProductCategory;
-use Illuminate\Support\Facades\Str;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
 class ProductCategoryRepository implements ProductCategoryInterface
@@ -103,7 +104,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
     {
         $data = new ProductCategory();
         $data->title = $array['title'];
-        $data->slug = \Str::slug($array['title']);
+        $data->slug = Str::slug($array['title']);
         $data->parent_id = $array['parent_id'];
         $data->level = $array['level'];
         $data->save();
@@ -224,6 +225,46 @@ class ProductCategoryRepository implements ProductCategoryInterface
                 'status' => 'error',
                 'message' => 'An error occurred while updating data.',
                 'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function import(UploadedFile $file)
+    {
+        try {
+            $filePath = fileStore($file);
+            $data = readCsvFile(public_path($filePath));
+            $processedCount = saveToDatabase($data, 'ProductCategory');
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => $processedCount.' Data uploaded',
+                'data' => [],
+            ];
+        } catch (\Exception $e) {
+            \Log::error('CSV Import Error: ' . $e->getMessage());
+
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while uploading data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function export(?string $keyword = '', array $filters = [], int $perPage = 15, string $sortBy = 'id', string $sortOrder = 'asc') : array
+    {
+        $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
+        if (count($data['data']) > 0) {
+            dd(count($data['data']));
+        } else {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => 'Data fetch error',
             ];
         }
     }
