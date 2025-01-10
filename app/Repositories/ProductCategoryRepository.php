@@ -227,21 +227,53 @@ class ProductCategoryRepository implements ProductCategoryInterface
 
     public function export(?String $keyword = '', Array $filters = [], Int $perPage = 15, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
-        $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
+        try {
+            $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
-        if (count($data['data']) > 0) {
-            $result = $data['data'];
+            if (count($data['data']) > 0) {
+                $fileName = "product_categories_export_" . date('Y-m-d') . '-' . time();
+
+                if ($type == 'excel') {
+                    $fileExtension = ".xlsx";
+                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension);
+                }
+                elseif ($type == 'csv') {
+                    $fileExtension = ".csv";
+                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
+                }
+                elseif ($type == 'html') {
+                    $fileExtension = ".html";
+                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
+                }
+                elseif ($type == 'pdf') {
+                    $fileExtension = ".pdf";
+                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
+                }
+                else {
+                    return [
+                        'code' => 400,
+                        'status' => 'error',
+                        'message' => 'Invalid export type.',
+                    ];
+                }
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'No data available for export.',
+                ];
+            }
+        } catch (\Exception $e) {
+            \Log::error('Export Repository Error: ' . $e->getMessage(), [
+                'filters' => $filters,
+                'exception' => $e
+            ]);
     
-            $filename = "export_" . date('Ymd') . ".xlsx";
-            // return Excel::download(new ProductCategoriesExport, 'invoices.html', \Maatwebsite\Excel\Excel::HTML);
-            return Excel::download(new ProductCategoriesExport, $filename);
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An unexpected error occurred while preparing the export.',
+            ];
         }
-    
-        // Handle empty dataset
-        return response()->json([
-            'code' => 500,
-            'status' => 'error',
-            'message' => 'No data available for export.',
-        ]);
     }
 }

@@ -29,18 +29,7 @@
             </a>
         </div>
 
-        <div class="mt-4 flex space-x-2">
-            <x-admin.button
-                element="a"
-                tag="secondary"
-                href="javascript: void(0)"
-                title="Cancel"
-                class="border"
-                x-on:click="$dispatch('close')"
-            >
-                {{ __('Cancel') }}
-            </x-admin.button>
-
+        <div class="mt-4 flex space-x-2 justify-between">
             <x-admin.button
                 element="button"
                 tag="primary"
@@ -50,6 +39,17 @@
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
                 @endslot
                 {{ __('Import') }}
+            </x-admin.button>
+
+            <x-admin.button
+                element="a"
+                tag="secondary"
+                href="javascript: void(0)"
+                title="Cancel"
+                class="border"
+                x-on:click="$dispatch('close')"
+            >
+                {{ __('Cancel') }}
             </x-admin.button>
         </div>
     </form>

@@ -132,12 +132,11 @@ class ProductCategoryController
             'status' => $request->input('status', ''),
         ];
 
-        return $this->productCategoryRepository->export($keyword, $filters, $perPage, $sortBy, $sortOrder, $type);
+        $resp = $this->productCategoryRepository->export($keyword, $filters, $perPage, $sortBy, $sortOrder, $type);
+        if ($resp instanceof \Symfony\Component\HttpFoundation\BinaryFileResponse) {
+            return $resp;
+        }
 
-        // $resp = $this->productCategoryRepository->export($keyword, $filters, $perPage, $sortBy, $sortOrder, $type);
-        // if ($exportData instanceof \Symfony\Component\HttpFoundation\Response) {
-        //     return $exportData;
-        // }
-        // return redirect()->back()->with('error', $exportData['message'] ?? 'Export failed.');
+        return redirect()->back()->with('error', $resp['message']);
     }
 }

@@ -1,4 +1,4 @@
-<x-modal name="export" maxWidth="sm" show=true>
+<x-modal name="export" maxWidth="md" >
     <div class="p-4">
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
             {{ __('Export data?') }}
@@ -9,17 +9,6 @@
         </p>
 
         <div class="mt-4 flex space-x-2">
-            <x-admin.button
-                element="a"
-                tag="secondary"
-                href="javascript: void(0)"
-                title="Cancel"
-                class="border"
-                x-on:click="$dispatch('close')"
-            >
-                {{ __('Cancel') }}
-            </x-admin.button>
-
             <x-admin.button
                 element="a"
                 tag="primary"
@@ -34,6 +23,34 @@
                     </svg>
                 @endslot
                 {{ __('Excel') }}
+            </x-admin.button>
+
+            <x-admin.button
+                element="a"
+                tag="primary"
+                href="{{ route('admin.product.category.export', 'csv') . '?' . http_build_query(request()->query()) }}"
+                title="Cancel"
+                class="border"
+                x-on:click="$dispatch('close')"
+            >
+                @slot('icon')
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M230-360h120v-60H250v-120h100v-60H230q-17 0-28.5 11.5T190-560v160q0 17 11.5 28.5T230-360Zm156 0h120q17 0 28.5-11.5T546-400v-60q0-17-11.5-31.5T506-506h-60v-34h100v-60H426q-17 0-28.5 11.5T386-560v60q0 17 11.5 30.5T426-456h60v36H386v60Zm264 0h60l70-240h-60l-40 138-40-138h-60l70 240ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z"/></svg>
+                @endslot
+                {{ __('CSV') }}
+            </x-admin.button>
+
+            <x-admin.button
+                element="a"
+                tag="primary"
+                href="{{ route('admin.product.category.export', 'html') . '?' . http_build_query(request()->query()) }}"
+                title="Cancel"
+                class="border"
+                x-on:click="$dispatch('close')"
+            >
+                @slot('icon')
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M0-390v-180q0-13 8.5-21.5T30-600q13 0 21.5 8.5T60-570v50h80v-50q0-13 8.5-21.5T170-600q13 0 21.5 8.5T200-570v180q0 13-8.5 21.5T170-360q-13 0-21.5-8.5T140-390v-70H60v70q0 13-8.5 21.5T30-360q-13 0-21.5-8.5T0-390Zm310 0v-150h-40q-13 0-21.5-8.5T240-570q0-13 8.5-21.5T270-600h140q13 0 21.5 8.5T440-570q0 13-8.5 21.5T410-540h-40v150q0 13-8.5 21.5T340-360q-13 0-21.5-8.5T310-390Zm170 0v-170q0-17 11.5-28.5T520-600h180q17 0 28.5 11.5T740-560v170q0 13-8.5 21.5T710-360q-13 0-21.5-8.5T680-390v-150h-40v110q0 13-8.5 21.5T610-400q-13 0-21.5-8.5T580-430v-110h-40v150q0 13-8.5 21.5T510-360q-13 0-21.5-8.5T480-390Zm350 30q-13 0-21.5-8.5T800-390v-180q0-13 8.5-21.5T830-600q13 0 21.5 8.5T860-570v150h70q13 0 21.5 8.5T960-390q0 13-8.5 21.5T930-360H830Z"/></svg>
+                @endslot
+                {{ __('HTML') }}
             </x-admin.button>
 
             <x-admin.button
@@ -59,6 +76,19 @@
                 {{ __('PDF') }}
             </x-admin.button>
 
+        </div>
+
+        <div class="mt-9 flex justify-end">
+            <x-admin.button
+                element="a"
+                tag="secondary"
+                href="javascript: void(0)"
+                title="Cancel"
+                class="border"
+                x-on:click="$dispatch('close')"
+            >
+                {{ __('Cancel') }}
+            </x-admin.button>
         </div>
     </div>
 </x-modal>

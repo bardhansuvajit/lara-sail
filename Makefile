@@ -46,3 +46,13 @@ fresh-migrate: ## Database force migrate
 	@./vendor/bin/sail php artisan migrate:fresh --seed
 
 start: up npm-dev ## Start project
+
+composer-install: ## Composer install
+	@./vendor/bin/sail composer install
+
+composer-dump: ## Composer dump autoload
+	@./vendor/bin/sail composer dump-autoload
+
+composer-update: ## Composer update
+	@./vendor/bin/sail composer update
+
