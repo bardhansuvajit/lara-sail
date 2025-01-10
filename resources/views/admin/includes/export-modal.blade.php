@@ -23,7 +23,7 @@
             <x-admin.button
                 element="a"
                 tag="primary"
-                href="{{ route('admin.product.category.export', 'excel') }}"
+                href="{{ route('admin.product.category.export', 'excel') . '?' . http_build_query(request()->query()) }}"
                 title="Cancel"
                 class="border"
                 x-on:click="$dispatch('close')"

@@ -13,7 +13,7 @@ if (!function_exists('fileStore')) {
     {
         try {
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = 'csv_uploads/' . $fileName;
+            $filePath = 'uploads/csv/' . $fileName;
             Storage::disk('public')->put($filePath, file_get_contents($file->getRealPath()));
 
             return 'storage/' . $filePath;

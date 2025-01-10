@@ -8,11 +8,11 @@ use App\Interfaces\ProductCategoryInterface;
 
 class ProductCategoryController
 {
-    private $productCategory;
+    private ProductCategoryInterface $productCategoryRepository;
 
-    public function __construct(ProductCategoryInterface $productCategoryInterface)
+    public function __construct(ProductCategoryInterface $productCategoryRepository)
     {
-        $this->productCategoryInterface = $productCategoryInterface;
+        $this->productCategoryRepository = $productCategoryRepository;
     }
 
     public function index(Request $request): View
@@ -27,14 +27,14 @@ class ProductCategoryController
             'status' => 'nullable|string|in:0,1'
         ]);
 
-        $perPage = 15;
+        $perPage = $request->input('perPage', 15);
         $keyword = $request->input('keyword', '');
         $sortBy = $request->input('sortBy', 'id');
         $sortOrder = $request->input('sortOrder', 'desc');
         $filters = [
             'status' => $request->input('status', ''),
         ];
-        $resp = $this->productCategoryInterface->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
+        $resp = $this->productCategoryRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
         return view('admin.product.category.index', [
             'data' => $resp['data'],
@@ -57,13 +57,13 @@ class ProductCategoryController
             'parent_id' => 'nullable',
         ]);
 
-        $resp = $this->productCategoryInterface->store($request->all());
+        $resp = $this->productCategoryRepository->store($request->all());
         return redirect()->route('admin.product.category.index')->with($resp['status'], $resp['message']);
     }
 
     public function edit(Int $id): View
     {
-        $resp = $this->productCategoryInterface->getById($id);
+        $resp = $this->productCategoryRepository->getById($id);
         return view('admin.product.category.edit', [
             'data' => $resp['data'],
         ]);
@@ -81,13 +81,13 @@ class ProductCategoryController
             'parent_id' => 'nullable',
         ]);
 
-        $resp = $this->productCategoryInterface->update($request->all());
+        $resp = $this->productCategoryRepository->update($request->all());
         return redirect()->route('admin.product.category.index')->with($resp['status'], $resp['message']);
     }
 
     public function delete(Int $id)
     {
-        $resp = $this->productCategoryInterface->delete($id);
+        $resp = $this->productCategoryRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
@@ -100,7 +100,7 @@ class ProductCategoryController
             'action' => 'required|in:delete,archive',
         ]);
 
-        $resp = $this->productCategoryInterface->bulkAction($request->except('_token'));
+        $resp = $this->productCategoryRepository->bulkAction($request->except('_token'));
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
@@ -110,11 +110,11 @@ class ProductCategoryController
             'file' => 'required|file|max:5000|mimes:csv,xlsx,xls',
         ]);
 
-        $resp = $this->productCategoryInterface->import($request->file('file'));
+        $resp = $this->productCategoryRepository->import($request->file('file'));
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
-    public function export(Request $request)
+    public function export(Request $request, String $type)
     {
         $request->validate([
             'keyword' => 'nullable|string|max:255',
@@ -124,17 +124,20 @@ class ProductCategoryController
             'status' => 'nullable|string|in:0,1'
         ]);
 
-        $perPage = 15;
+        $perPage = $request->input('perPage', 15);
         $keyword = $request->input('keyword', '');
         $sortBy = $request->input('sortBy', 'id');
         $sortOrder = $request->input('sortOrder', 'desc');
         $filters = [
             'status' => $request->input('status', ''),
         ];
-        $resp = $this->productCategoryInterface->export($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
-        // return view('admin.product.category.index', [
-        //     'data' => $resp['data'],
-        // ]);
+        return $this->productCategoryRepository->export($keyword, $filters, $perPage, $sortBy, $sortOrder, $type);
+
+        // $resp = $this->productCategoryRepository->export($keyword, $filters, $perPage, $sortBy, $sortOrder, $type);
+        // if ($exportData instanceof \Symfony\Component\HttpFoundation\Response) {
+        //     return $exportData;
+        // }
+        // return redirect()->back()->with('error', $exportData['message'] ?? 'Export failed.');
     }
 }

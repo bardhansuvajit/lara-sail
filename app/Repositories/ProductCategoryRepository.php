@@ -8,9 +8,12 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
+use App\Exports\ProductCategoriesExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class ProductCategoryRepository implements ProductCategoryInterface
 {
-    public function list(?string $keyword = '', array $filters = [], int $perPage = 15, string $sortBy = 'id', string $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', Array $filters = [], Int $perPage = 15, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -27,23 +30,6 @@ class ProductCategoryRepository implements ProductCategoryInterface
                 });
             }
 
-            /*
-            // keyword
-            if (!empty($filters)) {
-                foreach ($filters as $field => $value) {
-                    if (!is_null($value) && $value !== '') {
-                        if (is_array($value)) {
-                            // For multiple values
-                            $query->whereIn($field, $value);
-                        } else {
-                            // Basic where clause
-                            $query->where($field, '=', $value);
-                        }
-                    }
-                }
-            }
-            */
-
             // filters
             foreach ($filters as $field => $value) {
                 if (!is_null($value) && $value !== '') {
@@ -59,21 +45,6 @@ class ProductCategoryRepository implements ProductCategoryInterface
             $data = $perPage !== 'all'
             ? $query->orderBy($sortBy, $sortOrder)->paginate($perPage)->withQueryString()
             : $query->orderBy($sortBy, $sortOrder)->get();
-
-            /*
-            // page
-            if ($perPage !== 'all') {
-                $data = $query
-                ->orderBy($sortBy, $sortOrder)
-                ->paginate($perPage)
-                ->withQueryString();
-            } else {
-                $data = $query
-                ->orderBy($sortBy, $sortOrder)
-                ->get()
-                ->withQueryString();
-            }
-            */
 
             if ($data->isNotEmpty()) {
                 return [
@@ -254,18 +225,23 @@ class ProductCategoryRepository implements ProductCategoryInterface
         }
     }
 
-    public function export(?string $keyword = '', array $filters = [], int $perPage = 15, string $sortBy = 'id', string $sortOrder = 'asc') : array
+    public function export(?String $keyword = '', Array $filters = [], Int $perPage = 15, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
+
         if (count($data['data']) > 0) {
-            dd(count($data['data']));
-        } else {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while fetching data.',
-                'error' => 'Data fetch error',
-            ];
+            $result = $data['data'];
+    
+            $filename = "export_" . date('Ymd') . ".xlsx";
+            // return Excel::download(new ProductCategoriesExport, 'invoices.html', \Maatwebsite\Excel\Excel::HTML);
+            return Excel::download(new ProductCategoriesExport, $filename);
         }
+    
+        // Handle empty dataset
+        return response()->json([
+            'code' => 500,
+            'status' => 'error',
+            'message' => 'No data available for export.',
+        ]);
     }
 }

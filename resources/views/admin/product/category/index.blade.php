@@ -53,6 +53,23 @@
                 <div class="w-full col-span-2">
                     <div class="flex space-x-1 items-end">
                         <div class="w-max">
+                            <x-admin.input-label for="perPage" :value="__('Order by')" />
+                            <x-admin.input-select 
+                                id="perPage" 
+                                name="perPage" 
+                                :title="request()->input('perPage')"
+                            >
+                                @slot('options')
+                                    <x-admin.input-select-option value="15" :selected="request()->input('perPage') == 15"> 15 </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="25" :selected="request()->input('perPage') == 25"> 25 </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="50" :selected="request()->input('perPage') == 50"> 50 </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="100" :selected="request()->input('perPage') == 100"> 100 </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="all" :selected="request()->input('perPage') == 'all'"> All </x-admin.input-select-option>
+                                @endslot
+                            </x-admin.input-select>
+                        </div>
+
+                        <div class="w-max">
                             <x-admin.input-label for="sortBy" :value="__('Sort by')" />
                             <x-admin.input-select 
                                 id="sortBy" 
