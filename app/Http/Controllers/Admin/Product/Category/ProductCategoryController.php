@@ -17,11 +17,11 @@ class ProductCategoryController
 
     public function index(Request $request): View
     {
-        // return view('admin.product.category.index');
+        // dd($request->all());
 
         $request->validate([
             'keyword' => 'nullable|string|max:255',
-            'perPage' => 'nullable|integer|min:1',
+            'perPage' => 'nullable|string',
             'sortBy' => 'nullable|string|in:id,title,slug',
             'sortOrder' => 'nullable|string|in:asc,desc',
             'status' => 'nullable|string|in:0,1'

@@ -288,7 +288,7 @@
             </table>
         </div>
 
-        @if(count($data) > 0)
+        @if($data instanceof \Illuminate\Contracts\Pagination\Paginator && $data->hasPages())
             {{ $data->onEachSide(3)->links() }}
         @endif
     </section>

@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ProductCategoryRepository implements ProductCategoryInterface
 {
-    public function list(?String $keyword = '', Array $filters = [], Int $perPage = 15, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -225,7 +225,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], Int $perPage = 15, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
