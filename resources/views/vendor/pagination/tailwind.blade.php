@@ -27,14 +27,14 @@
                 <p class="text-xs text-gray-500 leading-5 dark:text-gray-400">
                     {!! __('Showing') !!}
                     @if ($paginator->firstItem())
-                        <span class="font-medium">{{ $paginator->firstItem() }}</span>
+                        <span class="font-medium">{{ number_format($paginator->firstItem()) }}</span>
                         {!! __('to') !!}
-                        <span class="font-medium">{{ $paginator->lastItem() }}</span>
+                        <span class="font-medium">{{ number_format($paginator->lastItem()) }}</span>
                     @else
                         {{ $paginator->count() }}
                     @endif
                     {!! __('of') !!}
-                    <span class="font-medium">{{ $paginator->total() }}</span>
+                    <span class="font-medium">{{ number_format($paginator->total()) }}</span>
                     {!! __('results') !!}
                 </p>
             </div>
@@ -65,7 +65,7 @@
                         {{-- "Three Dots" Separator --}}
                         @if (is_string($element))
                             <span aria-disabled="true">
-                                <span class="relative inline-flex items-center px-3 py-1 -ml-px text-xs font-medium text-gray-700 bg-white border border-gray-300 cursor-default leading-5 dark:bg-gray-800 dark:border-gray-600 h-[2rem]">{{ $element }}</span>
+                                <span class="relative inline-flex items-center px-3 py-1 -ml-px text-xs font-medium text-gray-700 bg-white border border-gray-300 cursor-default leading-5 dark:bg-gray-800 dark:border-gray-600 h-[2rem] dark:text-gray-300">{{ $element }}</span>
                             </span>
                         @endif
 

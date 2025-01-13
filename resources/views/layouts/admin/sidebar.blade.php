@@ -30,7 +30,7 @@
 
             <li x-data="{ expanded: @if(request()->is('admin/product*')) true @else false @endif }">
                 <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 group
-                    @if(request()->routeIs('admin.profile.index')) bg-primary-200 dark:bg-gray-600 @endif "
+                    @if(request()->is('admin/product*')) bg-primary-200 dark:bg-gray-600 @endif "
                     @click="expanded = ! expanded" 
                 >
                     <div class="flex-shrink-0 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
