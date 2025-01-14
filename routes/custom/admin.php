@@ -29,6 +29,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/edit', 'edit')->name('edit');
             Route::post('/update', 'update')->name('update');
+
+            // password
+            Route::prefix('password')->name('password.')->controller(PasswordController::class)->group(function() {
+                Route::get('/edit', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+            });
+
+            // activity log
+            Route::prefix('activity')->name('activity.')->controller(ActivityController::class)->group(function() {
+                Route::get('/', 'index')->name('log');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+            });
         });
 
         // user
@@ -37,7 +49,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // product
-        Route::prefix('product')->name('product.')->controller(ProductController::class)->group(function() {
+        Route::prefix('product')->name('product.')->group(function() {
             Route::prefix('listing')->name('listing.')->controller(ProductListingController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');

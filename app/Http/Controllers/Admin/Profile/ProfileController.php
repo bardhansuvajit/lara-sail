@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin\Profile;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class ProfileController extends Controller
 {
@@ -22,5 +24,13 @@ class ProfileController extends Controller
     public function edit(): View
     {
         return view('admin.profile.edit');
+    }
+
+    /**
+     * Update the user's profile information.
+     */
+    public function update(Request $request): RedirectResponse
+    {
+        dd($request->all());
     }
 }

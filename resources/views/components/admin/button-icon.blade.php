@@ -18,7 +18,7 @@
                        text-secondary-500 border-gray-200 dark:border-gray-600 
                        hover:bg-gray-200 
                        focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-gray-100 
-                       dark:text-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-600 dark:focus:ring-offset-gray-800',
+                       dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600 dark:focus:ring-offset-gray-800',
 
         'primary' => 'h-[2rem] w-[2rem] flex items-center justify-center font-medium rounded text-sm p-1
                      text-primary-500 bg-primary-100 border border-primary-200 dark:border-gray-600 
