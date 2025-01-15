@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\ProfileInterface;
 use App\Models\Admin;
-use Illuminate\Http\UploadedFile;
+use Intervention\Image\ImageManager;
 
 class ProfileRepository implements ProfileInterface
 {
@@ -56,6 +56,21 @@ class ProfileRepository implements ProfileInterface
                 }
                 $data['data']->phone_no = $array['phone_no'];
                 $data['data']->username = $array['username'];
+
+                if (!empty($array['profile_picture'])) {
+                    $file = $array['profile_picture'];
+                    $tmpPath = $file->getRealPath();
+                    $uploadPath = public_path('uploads/profile');
+                    $fileExtension = $file->getClientOriginalExtension();
+                    $fileName = 'original-'.time() . '.' . $fileExtension;
+                    $smallImagePath = $uploadPath.$fileName.'_small-thumb_'.'.'.$fileExtension;
+
+                    $this->createThumbnail($tmpPath, $smallImagePath, null, 100);
+                    $file->move($uploadPath, $fileName);
+
+                    $data['data']->profile_picture = $fileName;
+                }
+
                 $data['data']->save();
 
                 return [
@@ -75,6 +90,17 @@ class ProfileRepository implements ProfileInterface
                 'error' => $e->getMessage(),
             ];
         }
+    }
+
+    public function createThumbnail($tmpPath, $filePath, $width, $height)
+    {
+        // $img = Image::make($tmpPath);
+        // $img->resize($width, $height, function ($constraint) {
+        //     $constraint->aspectRatio();
+        // })->save($filePath);
+
+        $image = ImageManager::imagick()->read($filePath);
+        $image->resize(height: $height)->save($filePath);
     }
 
 }
