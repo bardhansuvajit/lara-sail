@@ -191,10 +191,7 @@
                 <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="p-2">
-                            <div class="flex items-center">
-                                <input id="checkbox-all" type="checkbox" class="w-4 h-4 text-primary-600 bg-gray-100 rounded border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                <label for="checkbox-all" class="sr-only">checkbox</label>
-                            </div>
+                            <x-admin.input-checkbox id="checkbox-all" />
                         </th>
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Title</th>
@@ -205,10 +202,12 @@
                     @forelse ($data as $item)
                         <tr class="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <td class="p-2 w-2">
-                                <div class="flex items-center">
-                                    <input id="checkbox-table-search-{{ $item->id }}" type="checkbox" onclick="event.stopPropagation()" class="w-4 h-4 text-primary-600 bg-gray-100 rounded border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" form="bulActionForm" name="ids[]" value="{{ $item->id }}">
-                                    <label for="checkbox-table-search-{{ $item->id }}" class="sr-only">checkbox</label>
-                                </div>
+                                <x-admin.input-checkbox 
+                                    id="checkbox-table-search-{{ $item->id }}"
+                                    onclick="event.stopPropagation()"
+                                    form="bulActionForm" 
+                                    name="ids[]" 
+                                    value="{{ $item->id }}" />
                             </td>
                             <td scope="row" class="px-2 py-1 w-8 text-gray-900 dark:text-white">
                                 <p class="text-xs">{{ $item->id }}</p>

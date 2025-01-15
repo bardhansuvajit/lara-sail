@@ -55,8 +55,8 @@
                         textRequired=true
                     >
                         @slot('options')
-                            <x-admin.input-select-option value="+91" :selected="request()->input('sortBy') == 'id'"> India (+91) </x-admin.input-select-option>
-                            <x-admin.input-select-option value="+1" :selected="request()->input('sortBy') == 'title'"> USA (+1) </x-admin.input-select-option>
+                            <x-admin.input-select-option value="+91" :selected="Auth::guard('admin')->user()->phone_country_code == '+91'"> India (+91) </x-admin.input-select-option>
+                            <x-admin.input-select-option value="+1" :selected="Auth::guard('admin')->user()->phone_country_code == '+1'"> USA (+1) </x-admin.input-select-option>
                         @endslot
                     </x-admin.text-input-with-dropdown>
                     <x-admin.input-error :messages="$errors->get('phone_no')" class="mt-2" />
@@ -66,7 +66,7 @@
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div> 
                     <x-admin.input-label for="username" :value="__('Username *')" />
-                    <x-admin.text-input id="username" class="block w-full" type="text" name="username" :value="old('username') ? old('username') : Auth::guard('admin')->user()->username" placeholder="Enter first name" autofocus required />
+                    <x-admin.text-input id="username" class="block w-full" type="text" name="username" :value="old('username') ? old('username') : Auth::guard('admin')->user()->username" placeholder="Enter first name" required />
                     <p class="text-xs mt-1">{{ __('Username & Password is used for login purposes. Be cautious while updating it to a new one.') }} </p>
                     <x-admin.input-error :messages="$errors->get('username')" class="mt-2" />
                 </div>
@@ -81,7 +81,6 @@
                     @endslot
                     {{ __('Save data') }}
                 </x-admin.button>
-
             </div>
         </form>
     </section>
