@@ -43,6 +43,7 @@ class ProfileController
         // dd($request->all());
 
         $request->validate([
+            'profile_picture' => 'nullable|image|max:1000|mimes:jpg,jpeg,png,webp',
             'first_name' => 'required|string|min:2|max:50',
             'last_name' => 'required|string|min:2|max:50',
             'email' => 'required|email|min:2|max:80',
