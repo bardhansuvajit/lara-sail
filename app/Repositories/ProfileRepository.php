@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\ProfileInterface;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 
 class ProfileRepository implements ProfileInterface
@@ -60,16 +61,31 @@ class ProfileRepository implements ProfileInterface
                 if (!empty($array['profile_picture'])) {
                     $file = $array['profile_picture'];
                     $tmpPath = $file->getRealPath();
-                    $uploadPath = public_path('uploads/profile');
                     $fileExtension = $file->getClientOriginalExtension();
-                    $fileName = 'original-'.time() . '.' . $fileExtension;
-                    $smallImagePath = $uploadPath.'/'.$fileName.'_small-thumb_'.'.'.$fileExtension;
+                    $fileName = uniqid().'-'.time().'.'.$fileExtension;
 
+                    // Paths
+                    $storagePath = 'uploads/profile';
+                    $originalFilePath = $storagePath . '/' . $fileName;
 
+                    // Store the original file
+                    Storage::disk('public')->put($originalFilePath, file_get_contents($tmpPath));
 
-                    $image = ImageManager::imagick()->read($tmpPath);
-                    $image->scale(height: 200);
-                    $image->save($smallImagePath);
+                    // Resize the image and store the thumbnail
+                    if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'webp'])) {
+                        $thumbnailFileName = 'original-' . time() . '_small-thumb.' . $fileExtension;
+                        $thumbnailFilePath = $storagePath . '/' . $thumbnailFileName;
+
+                        $image = ImageManager::imagick()->read($tmpPath);
+                        $image->scale(height: 200);
+                        $thumbnailContent = $image->encode(); // Convert the image into binary content
+                        Storage::disk('public')->put($thumbnailFilePath, $thumbnailContent);
+                    }
+
+                    // return [
+                    //     'original' => Storage::disk('public')->url($originalFilePath),
+                    //     'thumbnail' => Storage::disk('public')->url($thumbnailFilePath),
+                    // ];
                 }
 
                 $data['data']->save();
@@ -100,9 +116,6 @@ class ProfileRepository implements ProfileInterface
         // $img->resize($width, $height, function ($constraint) {
         //     $constraint->aspectRatio();
         // })->save($filePath);
-
-        $image = ImageManager::imagick()->read($filePath);
-        $image->resize(height: $height)->save($filePath);
     }
 
 }

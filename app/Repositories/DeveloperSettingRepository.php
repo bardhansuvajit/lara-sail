@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ApplicationSettingInterface;
-use App\Models\ApplicationSetting;
+use App\Interfaces\DeveloperSettingInterface;
+use App\Models\DeveloperSetting;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Exports\ProductCategoriesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ApplicationSettingRepository implements ApplicationSettingInterface
+class DeveloperSettingRepository implements DeveloperSettingInterface
 {
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {

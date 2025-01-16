@@ -40,9 +40,7 @@ class ProfileController
      */
     public function update(Request $request): RedirectResponse
     {
-        dd($request->all());
-
-        
+        // dd($request->all());
 
         $request->validate([
             'profile_picture' => 'nullable|image|max:2000|mimes:jpg,jpeg,png,webp',
@@ -64,6 +62,8 @@ class ProfileController
                 ]
             )
         );
+
+        // dd('controller', $resp);
 
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
