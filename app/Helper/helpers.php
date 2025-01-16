@@ -23,82 +23,80 @@ if (!function_exists('fileStore')) {
     }
 }
 
-/**
- * Read the CSV file and convert it into an array.
- *
- * @param string $filePath
- * @return array
- */
-function readCsvFile(string $filePath): array
-{
-    $rows = [];
-    try {
-        if (($handle = fopen($filePath, 'r')) !== false) {
-            $headers = fgetcsv($handle, 1000, ','); // Read the first row as headers
-            if ($headers === false) {
-                throw new Exception('CSV file headers are missing or malformed.');
-            }
+if (!function_exists('readCsvFile')) {
+    /**
+     * Read the CSV file and convert it into an array.
+     *
+     * @param string $filePath
+     * @return array
+     */
+    function readCsvFile(string $filePath): array
+    {
+        $rows = [];
+        try {
+            if (($handle = fopen($filePath, 'r')) !== false) {
+                $headers = fgetcsv($handle, 1000, ','); // Read the first row as headers
+                if ($headers === false) {
+                    throw new Exception('CSV file headers are missing or malformed.');
+                }
 
-            while (($data = fgetcsv($handle, 1000, ',')) !== false) {
-                $rows[] = array_combine($headers, $data); // Combine headers with data
+                while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+                    $rows[] = array_combine($headers, $data); // Combine headers with data
+                }
+                fclose($handle);
+            } else {
+                throw new Exception('CSV file could not be opened.');
             }
-            fclose($handle);
-        } else {
-            throw new Exception('CSV file could not be opened.');
+        } catch (Exception $e) {
+            throw new Exception('Error reading CSV file: ' . $e->getMessage());
         }
-    } catch (Exception $e) {
-        throw new Exception('Error reading CSV file: ' . $e->getMessage());
-    }
 
-    return $rows;
+        return $rows;
+    }
 }
 
-/**
- * Save the data to table.
- *
- * @param array $data
- * @return int Number of records processed
- */
-function saveToDatabase(array $data, string $model): int
-{
-    $processedCount = 0;
 
-    try {
-        $modelClass = '\\App\\Models\\' . $model;
+if (!function_exists('saveToDatabase')) {
+    /**
+     * Save the data to table.
+     *
+     * @param array $data
+     * @return int Number of records processed
+     */
+    function saveToDatabase(array $data, string $model): int
+    {
+        $processedCount = 0;
 
-        if (!class_exists($modelClass)) {
-            throw new Exception("Model {$modelClass} does not exist.");
-        }
+        try {
+            $modelClass = '\\App\\Models\\' . $model;
 
-        foreach ($data as $item) {
-            if (!isset($item['title'])) {
-                continue; // Skip rows without a title
+            if (!class_exists($modelClass)) {
+                throw new Exception("Model {$modelClass} does not exist.");
             }
 
-            $modelClass::create([
-                'title' => $item['title'] ?? null,
-                'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
-                'short_description' => $item['description'] ?? null,
-            ]);
+            foreach ($data as $item) {
+                if (!isset($item['title'])) {
+                    continue; // Skip rows without a title
+                }
 
-            $processedCount++;
+                $modelClass::create([
+                    'title' => $item['title'] ?? null,
+                    'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
+                    'short_description' => $item['description'] ?? null,
+                ]);
+
+                $processedCount++;
+            }
+        } catch (Exception $e) {
+            throw new Exception('Error saving data to database: ' . $e->getMessage());
         }
-    } catch (Exception $e) {
-        throw new Exception('Error saving data to database: ' . $e->getMessage());
+
+        return $processedCount;
     }
+}
 
-    // foreach ($data as $item) {
-    //     // Validate data before saving
-    //     if (isset($item['title'])) {
-    //         $modelClass = '\\App\\Models\\' . $model;
-    //         $modelClass::create([
-    //             'title' => $item['title'] ?? null,
-    //             'slug' => $item['title'] ? Str::slug($item['title']) : null,
-    //             'short_description' => $item['description'] ?? null,
-    //         ]);
-    //         $processedCount++;
-    //     }
-    // }
-
-    return $processedCount;
+if (!function_exists('fetchDeveloperSettings')) {
+    function fetchDeveloperSettings() {
+        $resp = $this->settingRepository->getByType('developer');
+    }
 }

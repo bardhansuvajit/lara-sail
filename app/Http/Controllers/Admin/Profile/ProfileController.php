@@ -40,16 +40,20 @@ class ProfileController
      */
     public function update(Request $request): RedirectResponse
     {
-        // dd($request->all());
+        dd($request->all());
+
+        
 
         $request->validate([
-            'profile_picture' => 'nullable|image|max:1000|mimes:jpg,jpeg,png,webp',
+            'profile_picture' => 'nullable|image|max:2000|mimes:jpg,jpeg,png,webp',
             'first_name' => 'required|string|min:2|max:50',
             'last_name' => 'required|string|min:2|max:50',
             'email' => 'required|email|min:2|max:80',
             'phone_country_code' => 'nullable|string|min:1|max:5',
             'phone_no' => 'required|integer',
             'username' => 'required|string|min:2|max:50',
+        ], [
+            'profile_picture.max' => 'The profile picture may not be greater than 2 MB.',
         ]);
 
         $resp = $this->profileRepository->update(

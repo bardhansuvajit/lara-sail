@@ -63,12 +63,13 @@ class ProfileRepository implements ProfileInterface
                     $uploadPath = public_path('uploads/profile');
                     $fileExtension = $file->getClientOriginalExtension();
                     $fileName = 'original-'.time() . '.' . $fileExtension;
-                    $smallImagePath = $uploadPath.$fileName.'_small-thumb_'.'.'.$fileExtension;
+                    $smallImagePath = $uploadPath.'/'.$fileName.'_small-thumb_'.'.'.$fileExtension;
 
-                    $this->createThumbnail($tmpPath, $smallImagePath, null, 100);
-                    $file->move($uploadPath, $fileName);
 
-                    $data['data']->profile_picture = $fileName;
+
+                    $image = ImageManager::imagick()->read($tmpPath);
+                    $image->scale(height: 200);
+                    $image->save($smallImagePath);
                 }
 
                 $data['data']->save();
@@ -86,7 +87,8 @@ class ProfileRepository implements ProfileInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => 'An error occurred while updating data.',
+                // 'message' => 'An error occurred while updating data.',
+                'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ];
         }
