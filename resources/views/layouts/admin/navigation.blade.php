@@ -268,7 +268,7 @@
                 <x-slot name="trigger">
                     <button type="button" data-dropdown-toggle="notification-dropdown" class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 relative">
                         <span class="sr-only">Quick apps</span>
-                        <div class="w-4 h-4" id="applicationTheme">
+                        <div class="w-4 h-4">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         </div>
                     </button>
@@ -404,8 +404,8 @@
                 <x-slot name="trigger">
                     <button type="button" data-dropdown-toggle="notification-dropdown" class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 relative">
                         <span class="sr-only">Open user menu</span>
-                        <div class="w-4 h-4" id="applicationTheme">
-                            <img class="rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png" alt="user photo" />
+                        <div class="w-4 h-4">
+                            <img class="rounded-full w-4 h-4" src="{{ Storage::url(Auth::guard('admin')->user()->profile_picture_s) }}" alt="user" onerror="this.onerror=null;this.src='{{ Storage::url('default/skeleton/default-male.png') }}';" />
                         </div>
                     </button>
                 </x-slot>

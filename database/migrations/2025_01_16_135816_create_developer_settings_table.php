@@ -23,17 +23,30 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });
 
+        $image_validation = json_encode([
+            'max_image_size' => '2000',
+            'max_image_size_in_kb' => '2000 KB',
+            'max_image_size_in_mb' => '2 MB',
+            'image_upload_mimes_array' => ['jpg', 'jpeg', 'png', 'webp']
+        ]);
+
+        $file_upload = json_encode([
+            'store_original_image' => true,
+            'resize_image' => true,
+            'image_thumbnail_height_array' => [100, 250, 500]
+        ]);
+
         $data = [
             [
-                'category' => 'image',
-                'key' => 'image_upload_max_size',
-                'value' => '2000',
-                'description' => '2000 KB',
+                'category' => 'file_upload',
+                'key' => 'image_validation',
+                'value' => $image_validation,
+                'description' => '',
             ],
             [
-                'category' => 'image',
-                'key' => 'image_upload_mimes_array',
-                'value' => '[jpg, jpeg, png, webp]',
+                'category' => 'file_upload',
+                'key' => 'file_upload',
+                'value' => $file_upload,
                 'description' => '',
             ],
         ];

@@ -64,28 +64,25 @@ class ProfileRepository implements ProfileInterface
                     $fileExtension = $file->getClientOriginalExtension();
                     $fileName = uniqid().'-'.time().'.'.$fileExtension;
 
-                    // Paths
                     $storagePath = 'uploads/profile';
                     $originalFilePath = $storagePath . '/' . $fileName;
-
-                    // Store the original file
                     Storage::disk('public')->put($originalFilePath, file_get_contents($tmpPath));
 
-                    // Resize the image and store the thumbnail
                     if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'webp'])) {
-                        $thumbnailFileName = 'original-' . time() . '_small-thumb.' . $fileExtension;
-                        $thumbnailFilePath = $storagePath . '/' . $thumbnailFileName;
+                        $uploadInFolder = 'profile';
 
-                        $image = ImageManager::imagick()->read($tmpPath);
-                        $image->scale(height: 200);
-                        $thumbnailContent = $image->encode(); // Convert the image into binary content
-                        Storage::disk('public')->put($thumbnailFilePath, $thumbnailContent);
+                        $smallThumbName = 'uploads/'.$uploadInFolder.'/' .uniqid().'-'.time().'-s.'.$fileExtension;
+                        $mediumThumbName = 'uploads/'.$uploadInFolder.'/' .uniqid().'-'.time().'-m.'.$fileExtension;
+                        $largeThumbName = 'uploads/'.$uploadInFolder.'/' .uniqid().'-'.time().'-l.'.$fileExtension;
+
+                        resizeImage($tmpPath, 100, $smallThumbName);
+                        resizeImage($tmpPath, 250, $mediumThumbName);
+                        resizeImage($tmpPath, 500, $largeThumbName);
                     }
 
-                    // return [
-                    //     'original' => Storage::disk('public')->url($originalFilePath),
-                    //     'thumbnail' => Storage::disk('public')->url($thumbnailFilePath),
-                    // ];
+                    $data['data']->profile_picture_s = $smallThumbName;
+                    $data['data']->profile_picture_m = $mediumThumbName;
+                    $data['data']->profile_picture_l = $largeThumbName;
                 }
 
                 $data['data']->save();

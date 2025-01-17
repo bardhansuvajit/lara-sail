@@ -22,10 +22,16 @@ return new class extends Migration
             $table->string('phone_no')->unique();
             $table->unsignedBigInteger('gender_id')->default(1);
             $table->timestamp('email_verified_at')->nullable();
+
             $table->string('username');
             $table->string('password');
 
-            $table->string('profile_picture')->nullable();
+            $table->string('profile_picture_s')->nullable();
+            $table->string('profile_picture_m')->nullable();
+            $table->string('profile_picture_l')->nullable();
+
+            $table->string('alt_phone_country_code', 20)->nullable();
+            $table->string('alt_phone_no')->unique()->nullable();
 
             $table->rememberToken();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -39,7 +45,10 @@ return new class extends Migration
             'phone_country_code'    => '+91',
             'phone_no'              => '9876543210',
             'username'              => 'admin@admin.com',
-            'password'              => Hash::make('secret')
+            'password'              => Hash::make('secret'),
+            'profile_picture_s'     => 'default/skeleton/default-male.png',
+            'profile_picture_m'     => 'default/skeleton/default-male.png',
+            'profile_picture_l'     => 'default/skeleton/default-male.png',
         ];
 
         DB::table('admins')->insert($data);

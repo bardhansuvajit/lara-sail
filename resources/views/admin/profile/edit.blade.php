@@ -18,6 +18,8 @@
                 </div>
             </div>
 
+            {{-- <img src="{{ Auth::guard('admin')->user()->profile_picture }}" alt="profile-picture" /> --}}
+
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div> 
                     <x-admin.input-label for="first_name" :value="__('First name *')" />

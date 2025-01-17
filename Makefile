@@ -42,7 +42,7 @@ npm-dev: ## Compile assets locally
 migrate: ## Database migrate
 	@./vendor/bin/sail php artisan migrate
 
-fresh-migrate: ## Database force migrate
+migrate-fresh: ## Fresh Database migrate
 	@./vendor/bin/sail php artisan migrate:fresh --seed
 
 start: up npm-dev ## Start project

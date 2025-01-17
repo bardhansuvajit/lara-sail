@@ -2,6 +2,7 @@
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
 use Illuminate\Support\Str;
 
 if (!function_exists('fileStore')) {
@@ -98,5 +99,16 @@ if (!function_exists('saveToDatabase')) {
 if (!function_exists('fetchDeveloperSettings')) {
     function fetchDeveloperSettings() {
         $resp = $this->settingRepository->getByType('developer');
+    }
+}
+
+if (!function_exists('resizeImage')) {
+    function resizeImage($tmpPath, $height, $fileName) {
+        $image = ImageManager::imagick()->read($tmpPath);
+        $image->scale(height: $height);
+
+        // Convert the image into binary content
+        $thumbnailContent = $image->encode();
+        Storage::disk('public')->put($fileName, $thumbnailContent);
     }
 }

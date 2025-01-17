@@ -8,10 +8,12 @@
 
     <section class="mt-2">
         <div class="flex space-x-4">
-            <img class="h-14 w-14 rounded-lg" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png" alt="Helene avatar" />
+            <img class="h-14 w-14 rounded-lg object-cover" src="{{ Storage::url(Auth::guard('admin')->user()->profile_picture_m) }}" alt="Helene avatar" />
         <div>
         <span class="mb-2 inline-block rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300"> PRO Account </span>
-        <h2 class="flex items-center text-sm font-bold leading-none text-gray-900 dark:text-white sm:text-base">Helene Engels</h2>
+        <h2 class="flex items-center text-sm font-bold leading-none text-gray-900 dark:text-white sm:text-base">
+            {{ Auth::guard('admin')->user()->first_name }} {{ Auth::guard('admin')->user()->last_name }}
+        </h2>
     </section>
 
     <section class="mt-6 mb-10">
