@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Interfaces\DeveloperSettingInterface;
 use App\Models\DeveloperSetting;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
@@ -17,7 +16,7 @@ class DeveloperSettingRepository implements DeveloperSettingInterface
     {
         try {
             DB::enableQueryLog();
-            $query = ProductCategory::query();
+            $query = DeveloperSetting::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -73,7 +72,7 @@ class DeveloperSettingRepository implements DeveloperSettingInterface
 
     public function store(Array $array)
     {
-        $data = new ProductCategory();
+        $data = new DeveloperSetting();
         $data->title = $array['title'];
         $data->slug = Str::slug($array['title']);
         $data->parent_id = $array['parent_id'];
@@ -90,21 +89,62 @@ class DeveloperSettingRepository implements DeveloperSettingInterface
 
     public function getById(Int $id)
     {
-        $data = ProductCategory::find($id);
+        try {
+            if ($guard == 'Admin') {
+                $data = DeveloperSetting::find($id);
+            }
 
-        if (!empty($data)) {
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
             return [
-                'code' => 200,
-                'status' => 'success',
-                'message' => 'Data found',
-                'data' => $data,
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
             ];
-        } else {
+        }
+    }
+
+    public function getByKey(String $key)
+    {
+        try {
+            $data = DeveloperSetting::where('key', $key)->first();
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
             return [
-                'code' => 404,
-                'status' => 'failure',
-                'message' => 'No data found',
-                'data' => [],
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
             ];
         }
     }
@@ -135,91 +175,6 @@ class DeveloperSettingRepository implements DeveloperSettingInterface
                 'code' => 500,
                 'status' => 'error',
                 'message' => 'An error occurred while updating data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function delete(Int $id)
-    {
-        try {
-            $data = $this->getById($id);
-
-            if ($data['code'] == 200) {
-                $data['data']->delete();
-
-                return [
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data deleted',
-                    'data' => $data,
-                ];
-            } else {
-                return $data;
-            }
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while deleting data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function bulkAction(Array $array)
-    {
-        try {
-            $data = ProductCategory::whereIn('id', $array['ids'])->get();
-            if ($array['action'] == 'delete') {
-                $data->each(function ($item) {
-                    $item->delete();
-                });
-
-                return [
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data deleted',
-                    'data' => [],
-                ];
-            } else {
-                return [
-                    'code' => 400,
-                    'status' => 'failure',
-                    'message' => 'Invalid action',
-                    'data' => [],
-                ];
-            }
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while updating data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function import(UploadedFile $file)
-    {
-        try {
-            $filePath = fileStore($file);
-            $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'ProductCategory');
-
-            return [
-                'code' => 200,
-                'status' => 'success',
-                'message' => $processedCount.' Data uploaded',
-                'data' => [],
-            ];
-        } catch (\Exception $e) {
-            \Log::error('CSV Import Error: ' . $e->getMessage());
-
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while uploading data.',
                 'error' => $e->getMessage(),
             ];
         }

@@ -90,21 +90,32 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
 
     public function getById(Int $id)
     {
-        $data = ProductCategory::find($id);
+        try {
+            if ($guard == 'Admin') {
+                $data = DeveloperSetting::find($id);
+            }
 
-        if (!empty($data)) {
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
             return [
-                'code' => 200,
-                'status' => 'success',
-                'message' => 'Data found',
-                'data' => $data,
-            ];
-        } else {
-            return [
-                'code' => 404,
-                'status' => 'failure',
-                'message' => 'No data found',
-                'data' => [],
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
             ];
         }
     }

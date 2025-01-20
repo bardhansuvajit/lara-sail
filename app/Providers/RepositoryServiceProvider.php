@@ -9,12 +9,14 @@ use App\Interfaces\PasswordInterface;
 use App\Interfaces\ProfileInterface;
 use App\Interfaces\DeveloperSettingInterface;
 use App\Interfaces\ApplicationSettingInterface;
+use App\Interfaces\CountryInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\PasswordRepository;
 use App\Repositories\ProfileRepository;
 use App\Repositories\DeveloperSettingRepository;
 use App\Repositories\ApplicationSettingRepository;
+use App\Repositories\CountryRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -28,6 +30,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ProfileInterface::class, ProfileRepository::class);
         $this->app->bind(DeveloperSettingInterface::class, DeveloperSettingRepository::class);
         $this->app->bind(ApplicationInterface::class, ApplicationRepository::class);
+        $this->app->bind(CountryInterface::class, CountryRepository::class);
     }
 
     /**

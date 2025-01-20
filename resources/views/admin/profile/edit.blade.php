@@ -11,14 +11,19 @@
         <form action="{{ route('admin.profile.update') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
-                <div>
-                    <x-admin.input-label for="profile_picture" :value="__('Profile picture')" />
-                    <x-admin.file-input id="profile_picture" name="profile_picture" />
-                    <x-admin.input-error :messages="$errors->get('profile_picture')" class="mt-2" />
+                <div class="flex space-x-4">
+                    @if (!empty(Storage::url(Auth::guard('admin')->user()->profile_picture_m)))
+                        <div class="content-center">
+                            <img class="h-14 w-14 rounded-lg object-contain" src="{{ Storage::url(Auth::guard('admin')->user()->profile_picture_m) }}" alt="Helene avatar" />
+                        </div>
+                    @endif
+                    <div>
+                        <x-admin.input-label for="profile_picture" :value="__('Profile picture')" />
+                        <x-admin.file-input id="profile_picture" name="profile_picture" />
+                        <x-admin.input-error :messages="$errors->get('profile_picture')" class="mt-2" />
+                    </div>
                 </div>
             </div>
-
-            {{-- <img src="{{ Auth::guard('admin')->user()->profile_picture }}" alt="profile-picture" /> --}}
 
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div> 
@@ -41,7 +46,7 @@
                     <x-admin.input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
 
-                <div> 
+                <div>
                     <x-admin.input-label for="phone_no" :value="__('Phone number *')" />
                     <x-admin.text-input-with-dropdown 
                         id="phone_no" 
@@ -57,11 +62,48 @@
                         textRequired=true
                     >
                         @slot('options')
-                            <x-admin.input-select-option value="+91" :selected="Auth::guard('admin')->user()->phone_country_code == '+91'"> India (+91) </x-admin.input-select-option>
-                            <x-admin.input-select-option value="+1" :selected="Auth::guard('admin')->user()->phone_country_code == '+1'"> USA (+1) </x-admin.input-select-option>
+                            @foreach ($activeCountries as $country)
+                                <x-admin.input-select-option 
+                                    value="{{$country->short_name}}" 
+                                    :selected="old('phone_country_code') ? old('phone_country_code') == $country->short_name : Auth::guard('admin')->user()->phone_country_code == $country->phone_code"
+                                >
+                                    {{ $country->name }} ({{ $country->phone_code }})
+                                </x-admin.input-select-option>
+                            @endforeach
                         @endslot
                     </x-admin.text-input-with-dropdown>
                     <x-admin.input-error :messages="$errors->get('phone_no')" class="mt-2" />
+                    <x-admin.input-error :messages="$errors->get('phone_country_code')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-admin.input-label for="alt_phone_no" :value="__('Alt. Phone number')" />
+                    <x-admin.text-input-with-dropdown 
+                        id="alt_phone_no" 
+                        class="block w-auto" 
+                        type="text" 
+                        name="alt_phone_no" 
+                        :value="old('alt_phone_no') ? old('alt_phone_no') : Auth::guard('admin')->user()->alt_phone_no" 
+                        placeholder="Enter phone number" 
+                        selectTitle="India (+91)"
+                        selectId="alt_phone_country_code"
+                        selectName="alt_phone_country_code"
+                        :selectRequired=false 
+                        :textRequired=false
+                    >
+                        @slot('options')
+                            @foreach ($activeCountries as $country)
+                                <x-admin.input-select-option 
+                                    value="{{$country->short_name}}" 
+                                    :selected="old('alt_phone_country_code') ? old('alt_phone_country_code') == $country->short_name : Auth::guard('admin')->user()->alt_phone_country_code == $country->phone_code"
+                                >
+                                    {{ $country->name }} ({{ $country->phone_code }})
+                                </x-admin.input-select-option>
+                            @endforeach
+                        @endslot
+                    </x-admin.text-input-with-dropdown>
+                    <x-admin.input-error :messages="$errors->get('alt_phone_no')" class="mt-2" />
+                    <x-admin.input-error :messages="$errors->get('alt_phone_country_code')" class="mt-2" />
                 </div>
             </div>
 

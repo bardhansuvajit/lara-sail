@@ -6,9 +6,17 @@ use App\Interfaces\ProfileInterface;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
+use App\Interfaces\CountryInterface;
 
 class ProfileRepository implements ProfileInterface
 {
+    private CountryInterface $countryRepository;
+
+    public function __construct(CountryInterface $countryRepository)
+    {
+        $this->countryRepository = $countryRepository;
+    }
+
     public function getById(String $guard, Int $id)
     {
         try {
@@ -52,11 +60,12 @@ class ProfileRepository implements ProfileInterface
                 $data['data']->first_name = $array['first_name'];
                 $data['data']->last_name = $array['last_name'];
                 $data['data']->email = $array['email'];
-                if (!empty($array['phone_country_code'])) {
-                    $data['data']->phone_country_code = $array['phone_country_code'];
-                }
                 $data['data']->phone_no = $array['phone_no'];
                 $data['data']->username = $array['username'];
+                if (!empty($array['phone_country_code'])) {
+                    $countryData = $this->countryRepository->getByShortName($array['phone_country_code']);
+                    if($countryData['code'] == 200) $data['data']->phone_country_code = $countryData['data']->phone_code;
+                }
 
                 if (!empty($array['profile_picture'])) {
                     $file = $array['profile_picture'];
@@ -85,6 +94,13 @@ class ProfileRepository implements ProfileInterface
                     $data['data']->profile_picture_l = $largeThumbName;
                 }
 
+                if (!empty($array['alt_phone_country_code'])) {
+                    $countryData = $this->countryRepository->getByShortName($array['alt_phone_country_code']);
+                    if($countryData['code'] == 200) $data['data']->alt_phone_country_code = $countryData['data']->phone_code;
+                }
+
+                $data['data']->alt_phone_no = $array['alt_phone_no'];
+
                 $data['data']->save();
 
                 return [
@@ -105,14 +121,6 @@ class ProfileRepository implements ProfileInterface
                 'error' => $e->getMessage(),
             ];
         }
-    }
-
-    public function createThumbnail($tmpPath, $filePath, $width, $height)
-    {
-        // $img = Image::make($tmpPath);
-        // $img->resize($width, $height, function ($constraint) {
-        //     $constraint->aspectRatio();
-        // })->save($filePath);
     }
 
 }

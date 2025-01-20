@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ProductCategoryInterface;
-use App\Models\ProductCategory;
+use App\Interfaces\CountryInterface;
+use App\Models\Country;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -11,22 +11,26 @@ use Illuminate\Support\Facades\DB;
 use App\Exports\ProductCategoriesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ProductCategoryRepository implements ProductCategoryInterface
+class CountryRepository implements CountryInterface
 {
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
-            $query = ProductCategory::query();
+            $query = Country::query();
 
             // keyword
             if (!empty($keyword)) {
                 $query->where(function ($query) use ($keyword) {
-                    $query->where('title', 'like', '%' . $keyword . '%')
-                        ->orWhere('slug', 'like', '%' . $keyword . '%')
-                        ->orWhere('short_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('long_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('tags', 'like', '%' . $keyword . '%');
+                    $query->where('short_name', 'like', '%' . $keyword . '%')
+                        ->orWhere('name', 'like', '%' . $keyword . '%')
+                        ->orWhere('phone_code', 'like', '%' . $keyword . '%')
+                        ->orWhere('phone_no_digits', 'like', '%' . $keyword . '%')
+                        ->orWhere('zip_code_format', 'like', '%' . $keyword . '%')
+                        ->orWhere('currency_code', 'like', '%' . $keyword . '%')
+                        ->orWhere('continent', 'like', '%' . $keyword . '%')
+                        ->orWhere('language', 'like', '%' . $keyword . '%')
+                        ->orWhere('time_zone', 'like', '%' . $keyword . '%');
                 });
             }
 
@@ -73,7 +77,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
 
     public function store(Array $array)
     {
-        $data = new ProductCategory();
+        $data = new Country();
         $data->title = $array['title'];
         $data->slug = Str::slug($array['title']);
         $data->parent_id = $array['parent_id'];
@@ -91,7 +95,37 @@ class ProductCategoryRepository implements ProductCategoryInterface
     public function getById(Int $id)
     {
         try {
-            $data = ProductCategory::find($id);
+            $data = Country::find($id);
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function getByShortName(String $shortName)
+    {
+        try {
+            $data = Country::where('short_name', $shortName)->first();
 
             if (!empty($data)) {
                 return [
@@ -179,7 +213,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
     public function bulkAction(Array $array)
     {
         try {
-            $data = ProductCategory::whereIn('id', $array['ids'])->get();
+            $data = Country::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
                     $item->delete();
@@ -214,7 +248,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'ProductCategory');
+            $processedCount = saveToDatabase($data, 'Country');
 
             return [
                 'code' => 200,

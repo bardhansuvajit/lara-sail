@@ -4,6 +4,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Str;
+use App\Repositories\DeveloperSettingRepository;
 
 if (!function_exists('fileStore')) {
     /**
@@ -96,9 +97,11 @@ if (!function_exists('saveToDatabase')) {
     }
 }
 
-if (!function_exists('fetchDeveloperSettings')) {
-    function fetchDeveloperSettings() {
-        $resp = $this->settingRepository->getByType('developer');
+if (!function_exists('developerSettings')) {
+    function developerSettings() {
+        $developerSettingRepository = app(DeveloperSettingRepository::class);
+        $resp = $developerSettingRepository->getByKey('image_validation');
+        return json_decode($resp['data']->value);
     }
 }
 
