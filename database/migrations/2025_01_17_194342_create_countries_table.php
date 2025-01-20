@@ -30,6 +30,7 @@ return new class extends Migration
             $table->boolean('cash_on_delivery_availability')->default(false);
 
             $table->tinyInteger('status')->default(1)->comment('1:active, 0: inactive');
+            $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });

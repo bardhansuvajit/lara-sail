@@ -44,6 +44,7 @@ migrate: ## Database migrate
 
 migrate-fresh: ## Fresh Database migrate
 	@./vendor/bin/sail php artisan migrate:fresh --seed
+	@./vendor/bin/sail php artisan db:seed --class=CountrySeeder
 
 start: up npm-dev ## Start project
 

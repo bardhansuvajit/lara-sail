@@ -2,31 +2,29 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ProductCategoryInterface;
-use App\Models\ProductCategory;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Str;
+use App\Interfaces\TrashInterface;
+use App\Models\Trash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\UploadedFile;
 
 use App\Exports\ProductCategoriesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ProductCategoryRepository implements ProductCategoryInterface
+class TrashRepository implements TrashInterface
 {
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
-            $query = ProductCategory::query();
+            $query = Trash::query();
 
             // keyword
             if (!empty($keyword)) {
                 $query->where(function ($query) use ($keyword) {
-                    $query->where('title', 'like', '%' . $keyword . '%')
-                        ->orWhere('slug', 'like', '%' . $keyword . '%')
-                        ->orWhere('short_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('long_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('tags', 'like', '%' . $keyword . '%');
+                    $query->where('model', 'like', '%' . $keyword . '%')
+                        ->orWhere('table_name', 'like', '%' . $keyword . '%')
+                        ->orWhere('title', 'like', '%' . $keyword . '%')
+                        ->orWhere('description', 'like', '%' . $keyword . '%');
                 });
             }
 
@@ -74,11 +72,13 @@ class ProductCategoryRepository implements ProductCategoryInterface
     public function store(Array $array)
     {
         try {
-            $data = new ProductCategory();
+            $data = new Trash();
+            $data->model = $array['model'];
+            $data->table_name = $array['table_name'];
+            $data->deleted_row_id = $array['deleted_row_id'];
             $data->title = $array['title'];
-            $data->slug = Str::slug($array['title']);
-            $data->parent_id = $array['parent_id'];
-            $data->level = $array['level'];
+            $data->description = $array['description'];
+            $data->status = $array['status'] ?? 'deleted';
             $data->save();
 
             return [
@@ -100,7 +100,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
     public function getById(Int $id)
     {
         try {
-            $data = ProductCategory::find($id);
+            $data = Trash::find($id);
 
             if (!empty($data)) {
                 return [
@@ -127,51 +127,48 @@ class ProductCategoryRepository implements ProductCategoryInterface
         }
     }
 
-    public function update(Array $array)
-    {
-        try {
-            $data = $this->getById($array['id']);
-
-            if ($data['code'] == 200) {
-                $data['data']->title = $array['title'];
-                $data['data']->slug = \Str::slug($array['title']);
-                $data['data']->parent_id = $array['parent_id'];
-                $data['data']->level = $array['level'];
-                $data['data']->save();
-
-                return [
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Changes have been saved',
-                    'data' => $data,
-                ];
-            } else {
-                return $data;
-            }
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while updating data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function delete(Int $id)
+    public function restore(Int $id)
     {
         try {
             $data = $this->getById($id);
 
             if ($data['code'] == 200) {
-                $data['data']->delete();
+                // $data['data']->delete();
 
-                return [
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data deleted',
-                    'data' => $data,
-                ];
+                $dataTable = $data['data']->table_name;
+                $dataModel = $data['data']->model;
+                $dataModelClass = "App\\Models\\$dataModel";
+                $dataId = $data['data']->id;
+                // restoring
+                // $dataModelClass::withTrashed()
+                // ->where('id', $dataId)
+                // ->restore();
+
+                // return [
+                //     'code' => 200,
+                //     'status' => 'success',
+                //     'message' => 'Data restored',
+                //     'data' => $data,
+                // ];
+
+                $restored = $dataModelClass::withTrashed()
+                    ->where('id', $dataId)
+                    ->restore();
+
+                if ($restored) {
+                    return [
+                        'code' => 200,
+                        'status' => 'success',
+                        'message' => 'Data restored successfully.',
+                        'data' => $data,
+                    ];
+                } else {
+                    return [
+                        'code' => 400,
+                        'status' => 'error',
+                        'message' => 'Failed to restore the record. It may not exist or is already active.',
+                    ];
+                }
             } else {
                 return $data;
             }
@@ -179,65 +176,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => 'An error occurred while deleting data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function bulkAction(Array $array)
-    {
-        try {
-            $data = ProductCategory::whereIn('id', $array['ids'])->get();
-            if ($array['action'] == 'delete') {
-                $data->each(function ($item) {
-                    $item->delete();
-                });
-
-                return [
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data deleted',
-                    'data' => [],
-                ];
-            } else {
-                return [
-                    'code' => 400,
-                    'status' => 'failure',
-                    'message' => 'Invalid action',
-                    'data' => [],
-                ];
-            }
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while updating data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function import(UploadedFile $file)
-    {
-        try {
-            $filePath = fileStore($file);
-            $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'ProductCategory');
-
-            return [
-                'code' => 200,
-                'status' => 'success',
-                'message' => $processedCount.' Data uploaded',
-                'data' => [],
-            ];
-        } catch (\Exception $e) {
-            \Log::error('CSV Import Error: ' . $e->getMessage());
-
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while uploading data.',
+                'message' => 'An error occurred while restoring data.',
                 'error' => $e->getMessage(),
             ];
         }

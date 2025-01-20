@@ -7,12 +7,20 @@ use App\Models\Country;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use App\Interfaces\TrashInterface;
 
 use App\Exports\ProductCategoriesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CountryRepository implements CountryInterface
 {
+    private TrashInterface $trashRepository;
+
+    public function __construct(TrashInterface $trashRepository)
+    {
+        $this->trashRepository = $trashRepository;
+    }
+
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
@@ -189,6 +197,16 @@ class CountryRepository implements CountryInterface
             $data = $this->getById($id);
 
             if ($data['code'] == 200) {
+                // Handling trash
+                $this->trashRepository->store([
+                    'model' => 'Country',
+                    'table_name' => 'countries',
+                    'deleted_row_id' => $data['data']->id,
+                    'title' => $data['data']->name,
+                    'description' => $data['data']->name.' data deleted from countries table',
+                    'status' => 'deleted',
+                ]);
+
                 $data['data']->delete();
 
                 return [

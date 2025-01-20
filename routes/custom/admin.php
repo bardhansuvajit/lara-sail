@@ -7,9 +7,11 @@ use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Admin\Profile\ProfileController;
 use App\Http\Controllers\Admin\Password\PasswordController;
+use App\Http\Controllers\Admin\Country\CountryController;
 use App\Http\Controllers\Admin\Product\Listing\ProductListingController;
 use App\Http\Controllers\Admin\Product\Category\ProductCategoryController;
 use App\Http\Controllers\Admin\CsvTemplate\CsvTemplateController;
+use App\Http\Controllers\Admin\Trash\TrashController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['redirectAdminIfAuthenticated', 'guest:admin'])->group(function () {
@@ -66,6 +68,34 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::delete('/delete/{id}', 'delete')->name('delete');
                 Route::post('/bulk', 'bulk')->name('bulk');
                 Route::post('/import', 'import')->name('import');
+                Route::get('/export/{type}', 'export')->name('export');
+            });
+        });
+
+        // master
+        Route::prefix('master')->name('master.')->group(function() {
+            Route::prefix('country')->name('country.')->controller(CountryController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+                Route::post('/bulk', 'bulk')->name('bulk');
+                Route::post('/import', 'import')->name('import');
+                Route::get('/export/{type}', 'export')->name('export');
+            });
+        });
+
+        // developer
+        Route::prefix('developer')->name('developer.')->group(function() {
+            Route::prefix('trash')->name('trash.')->controller(TrashController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                // Route::get('/create', 'create')->name('create');
+                // Route::post('/store', 'store')->name('store');
+                // Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::get('/restore/{id}', 'restore')->name('restore');
                 Route::get('/export/{type}', 'export')->name('export');
             });
         });

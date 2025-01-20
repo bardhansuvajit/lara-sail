@@ -51,7 +51,9 @@ class ProfileController
     {
         // dd($request->all());
 
+        // dynamic phone number digits based on country
         $phoneNumberDigits = $altPhoneNumberDigits = 10;
+        $altPhoneFields = 'nullable';
 
         // phone number country code fetch
         if (!empty($request->phone_country_code)) {
@@ -59,31 +61,30 @@ class ProfileController
         } elseif (!empty(Auth::guard('admin')->user()->phone_country_code)) {
             $countryData = $this->countryRepository->getByShortName(Auth::guard('admin')->user()->phone_country_code);
         }
-        // dd($countryData['data']);
         if($countryData['code'] == 200) $phoneNumberDigits = $countryData['data']->phone_no_digits;
-        // dd($phoneNumberDigits);
 
         // alternate phone number country code fetch
         if (!empty($request->alt_phone_country_code)) {
+            $altPhoneFields = 'required';
             $countryData = $this->countryRepository->getByShortName($request->alt_phone_country_code);
         } elseif (!empty(Auth::guard('admin')->user()->alt_phone_country_code)) {
             $countryData = $this->countryRepository->getByShortName(Auth::guard('admin')->user()->alt_phone_country_code);
         }
-        if($countryData['code'] == 200) $phoneNumberDigits = $countryData['data']->phone_no_digits;
+        if($countryData['code'] == 200) $altPhoneNumberDigits = $countryData['data']->phone_no_digits;
 
         $request->validate([
             'profile_picture' => 'nullable|image|max:'.developerSettings()->max_image_size.'|mimes:'.implode(',', developerSettings()->image_upload_mimes_array),
             'first_name' => 'required|string|min:2|max:50',
             'last_name' => 'required|string|min:2|max:50',
             'email' => 'required|email|min:2|max:80',
-            'phone_country_code' => 'nullable|string|min:1|max:5',
-            'phone_no' => 'required|integer|digits:10'.$phoneNumberDigits,
+            'phone_country_code' => 'required|string|min:1|max:5',
+            'phone_no' => 'required|integer|digits:'.$phoneNumberDigits,
             'username' => 'required|string|min:2|max:50',
 
-            'alt_phone_country_code' => 'nullable|string|min:1|max:5',
-            'alt_phone_no' => 'nullable|integer|digits:'.$altPhoneNumberDigits,
+            'alt_phone_country_code' => $altPhoneFields.'|string|min:1|max:5',
+            'alt_phone_no' => $altPhoneFields.'|integer|digits:'.$altPhoneNumberDigits,
         ], [
-            'profile_picture.max' => 'The profile picture may not be greater than '.developerSettings()->max_image_size_in_mb.'.',
+            'profile_picture.max' => 'The profile picture field must not be greater than '.developerSettings()->max_image_size_in_mb.'.',
         ]);
 
         $resp = $this->profileRepository->update(

@@ -77,7 +77,7 @@
 
             <li x-data="{ expanded: @if(request()->is('admin/master*')) true @else false @endif }">
                 <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 group
-                    @if(request()->routeIs('admin.profile.index')) bg-primary-200 dark:bg-gray-600 @endif "
+                    @if(request()->is('admin/master*')) bg-primary-200 dark:bg-gray-600 @endif "
                     @click="expanded = ! expanded" 
                 >
                     <div class="flex-shrink-0 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
@@ -95,27 +95,52 @@
                     <ul class="ml-6 my-3 space-y-2">
                         <li>
                             <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 group
-                                @if(request()->routeIs('admin.dashboard.index')) bg-primary-200 dark:bg-gray-600 @endif
-                            ">
+                                @if(request()->is('admin/master/country*')) bg-primary-200 dark:bg-gray-600 @endif"
+                                href="{{ route('admin.master.country.index') }}"
+                            >
                                 <div class="flex-shrink-0 w-4 h-4 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-120v-680h360l16 80h224v400H520l-16-80H280v280h-80Zm300-440Zm86 160h134v-240H510l-16-80H280v240h290l16 80Z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-120v-680h360l16 80h224v400H520l-16-80H280v280h-80Zm300-440Zm86 160h134v-240H510l-16-80H280v240h290l16 80Z"/></svg>
                                 </div>
 
                                 <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __('Country') }}</span>
                             </a>
                         </li>
 
+                    </ul>
+                </div>
+            </li>
+
+            <li x-data="{ expanded: @if(request()->is('admin/developer*')) true @else false @endif }">
+                <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 group
+                    @if(request()->is('admin/developer*')) bg-primary-200 dark:bg-gray-600 @endif "
+                    @click="expanded = ! expanded" 
+                >
+                    <div class="flex-shrink-0 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
+                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m193-479 155 155q11 11 11 28t-11 28q-11 11-28 11t-28-11L108-452q-6-6-8.5-13T97-480q0-8 2.5-15t8.5-13l184-184q12-12 28.5-12t28.5 12q12 12 12 28.5T349-635L193-479Zm574-2L612-636q-11-11-11-28t11-28q11-11 28-11t28 11l184 184q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L668-268q-12 12-28 11.5T612-269q-12-12-12-28.5t12-28.5l155-155Z"/></svg>
+                    </div>
+
+                    <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __('Developer options') }}</span>
+
+                    <svg x-show="!expanded" aria-hidden="true" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+
+                    <svg x-show="expanded" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-520.35 327.83-368.17Q315.15-355.5 296-355.5t-31.83-12.67Q251.5-380.85 251.5-400t12.67-31.83l183.76-183.76q13.68-13.67 32.07-13.67t32.07 13.67l183.76 183.76Q708.5-419.15 708.5-400t-12.67 31.83Q683.15-355.5 664-355.5t-31.83-12.67L480-520.35Z"/></svg>
+                </a>
+
+                <div x-show="expanded" x-collapse>
+                    <ul class="ml-6 my-3 space-y-2">
                         <li>
                             <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 group
-                                @if(request()->routeIs('admin.dashboard.index')) bg-primary-200 dark:bg-gray-600 @endif
-                            ">
+                                @if(request()->is('admin/developer/trash*')) bg-primary-200 dark:bg-gray-600 @endif"
+                                href="{{ route('admin.developer.trash.index') }}"
+                            >
                                 <div class="flex-shrink-0 w-4 h-4 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
-                                    <svg aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520q-17 0-28.5-11.5T160-760q0-17 11.5-28.5T200-800h160q0-17 11.5-28.5T400-840h160q17 0 28.5 11.5T600-800h160q17 0 28.5 11.5T800-760q0 17-11.5 28.5T760-720v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM400-280q17 0 28.5-11.5T440-320v-280q0-17-11.5-28.5T400-640q-17 0-28.5 11.5T360-600v280q0 17 11.5 28.5T400-280Zm160 0q17 0 28.5-11.5T600-320v-280q0-17-11.5-28.5T560-640q-17 0-28.5 11.5T520-600v280q0 17 11.5 28.5T560-280ZM280-720v520-520Z"/></svg>
                                 </div>
 
-                                <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __('State') }}</span>
+                                <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __('Trash') }}</span>
                             </a>
                         </li>
+
                     </ul>
                 </div>
             </li>

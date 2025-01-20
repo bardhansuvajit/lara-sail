@@ -58,8 +58,7 @@
                         selectTitle="India (+91)"
                         selectId="phone_country_code"
                         selectName="phone_country_code"
-                        selectRequired=false 
-                        textRequired=true
+                        required=true 
                     >
                         @slot('options')
                             @foreach ($activeCountries as $country)
@@ -88,8 +87,7 @@
                         selectTitle="India (+91)"
                         selectId="alt_phone_country_code"
                         selectName="alt_phone_country_code"
-                        :selectRequired=false 
-                        :textRequired=false
+                        :required=false 
                     >
                         @slot('options')
                             @foreach ($activeCountries as $country)

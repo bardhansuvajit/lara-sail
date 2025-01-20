@@ -26,6 +26,12 @@
                      focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-primary-100 
                      dark:text-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-600 dark:focus:ring-offset-gray-800',
 
+        'success' => 'h-[2rem] w-[2rem] flex items-center justify-center font-medium rounded text-sm p-1
+                    text-white bg-green-600 border border-green-700
+                    hover:bg-green-800 
+                    focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-green-400 
+                    dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-offset-gray-800',
+
         default => 'h-[2rem] w-[2rem] flex items-center justify-center font-medium rounded text-sm p-1
                     text-primary-500 bg-primary-100 border border-primary-200 dark:border-gray-600 
                     hover:bg-primary-200 
