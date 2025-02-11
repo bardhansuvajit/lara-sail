@@ -17,9 +17,9 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('SET NULL');
 
-            $table->string('img_small')->nullable();
-            $table->string('img_medium')->nullable();
-            $table->string('img_large')->nullable();
+            $table->string('image_s')->nullable();
+            $table->string('image_m')->nullable();
+            $table->string('image_l')->nullable();
 
             $table->integer('position')->default(1);
             $table->tinyInteger('status')->comment('1: active, 0: inactive')->default(1);

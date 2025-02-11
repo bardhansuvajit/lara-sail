@@ -1,9 +1,8 @@
 <x-admin-app-layout
-    screen="lg"
-    title="{{ __('Products') }}"
+    screen="md:w-full"
+    title="{{ __('Product Listing') }}"
     :breadcrumb="[
-        // ['label' => 'Home', 'url' => route('admin.dashboard.index')],
-        ['label' => 'Products']
+        ['label' => 'Product listing']
     ]"
 >
 
@@ -21,7 +20,11 @@
 
             <x-admin.button
                 element="a"
-                tag="secondary">
+                tag="secondary"
+                href="javascript: void(0)"
+                title="Import"
+                x-data=""
+                x-on:click.prevent="$dispatch('open-modal', 'import');">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
                 @endslot
@@ -30,7 +33,11 @@
 
             <x-admin.button
                 element="a"
-                tag="secondary">
+                tag="secondary"
+                href="javascript: void(0)"
+                title="Import"
+                x-data=""
+                x-on:click.prevent="$dispatch('open-modal', 'export');">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
                 @endslot
@@ -46,40 +53,103 @@
                 <div class="w-full col-span-2">
                     <div class="flex space-x-1 items-end">
                         <div class="w-max">
-                            <x-admin.input-label for="bulkAction" :value="__('Bulk action')" />
-                            <x-admin.input-select id="bulkAction" name="bulkAction">
+                            <x-admin.input-label for="perPage" :value="__('Order by')" />
+                            <x-admin.input-select 
+                                id="perPage" 
+                                name="perPage" 
+                                :title="request()->input('perPage')"
+                            >
                                 @slot('options')
-                                    <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('Delete') }} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="15" :selected="request()->input('perPage') == 15"> 15 </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="25" :selected="request()->input('perPage') == 25"> 25 </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="50" :selected="request()->input('perPage') == 50"> 50 </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="100" :selected="request()->input('perPage') == 100"> 100 </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="all" :selected="request()->input('perPage') == 'all'"> All </x-admin.input-select-option>
                                 @endslot
                             </x-admin.input-select>
                         </div>
 
                         <div class="w-max">
                             <x-admin.input-label for="sortBy" :value="__('Sort by')" />
-                            <x-admin.input-select id="sortBy" name="sortBy">
+                            <x-admin.input-select 
+                                id="sortBy" 
+                                name="sortBy"
+                                :title="request()->input('sortBy') == 'id' ? 'ID' : (request()->input('sortBy') == 'title' ? 'Title' : 'ID')"
+                            >
                                 @slot('options')
                                     <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('ID') }} </x-admin.input-select-option>
-                                    <x-admin.input-select-option value="name" :selected="request()->input('sortBy') == 'name'"> {{ __('Name') }} </x-admin.input-select-option>
-                                    <x-admin.input-select-option value="continent" :selected="request()->input('sortBy') == 'continent'"> {{ __('Continent') }} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="title" :selected="request()->input('sortBy') == 'title'"> {{ __('Title') }} </x-admin.input-select-option>
                                 @endslot
                             </x-admin.input-select>
                         </div>
 
                         <div class="w-max">
                             <x-admin.input-label for="sortOrder" :value="__('Order by')" />
-                            <x-admin.input-select id="sortOrder" name="sortOrder">
+                            <x-admin.input-select 
+                                id="sortOrder" 
+                                name="sortOrder"
+                                :title="request()->input('sortOrder') == 'asc' ? 'ASC' : (request()->input('sortOrder') == 'desc' ? 'DESC' : 'DESC')"
+                            >
                                 @slot('options')
-                                    <x-admin.input-select-option value="asc" :selected="request()->input('sortBy') == 'asc'"> {{ __('ASC') }} </x-admin.input-select-option>
-                                    <x-admin.input-select-option value="desc" :selected="request()->input('sortBy') == 'desc'"> {{ __('DESC') }} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="asc" :selected="request()->input('sortOrder') == 'asc'"> {{ __('ASC') }} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="desc" :selected="request()->input('sortOrder') == 'desc'"> {{ __('DESC') }} </x-admin.input-select-option>
                                 @endslot
                             </x-admin.input-select>
+                        </div>
+
+                        <div class="w-max hidden" id="bulkAction">
+                            <div class="flex space-x-1">
+                                <x-admin.button-icon
+                                    element="button"
+                                    type="submit"
+                                    tag="secondary"
+                                    href="javascript: void(0)"
+                                    title="Archive"
+                                    class="border"
+                                    form="bulActionForm"
+                                    x-data=""
+                                    x-on:click.prevent="
+                                        $dispatch('open-modal', 'confirm-bulk-action');
+                                        $dispatch('data-desc', 'Are you sure you want to Archive selected data?');
+                                        $dispatch('data-button-text', 'Yes, Archive');
+                                        document.getElementById('bulkActionInput').value = 'archive';
+                                    ">
+                                    @slot('icon')
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m480-240 160-160-56-56-64 64v-168h-80v168l-64-64-56 56 160 160ZM200-640v440h560v-440H200Zm0 520q-33 0-56.5-23.5T120-200v-499q0-14 4.5-27t13.5-24l50-61q11-14 27.5-21.5T250-840h460q18 0 34.5 7.5T772-811l50 61q9 11 13.5 24t4.5 27v499q0 33-23.5 56.5T760-120H200Zm16-600h528l-34-40H250l-34 40Zm264 300Z"/></svg>
+                                    @endslot
+                                </x-admin.button-icon>
+
+                                <x-admin.button-icon
+                                    element="button"
+                                    type="submit"
+                                    tag="secondary"
+                                    href="javascript: void(0)"
+                                    title="Delete"
+                                    class="border"
+                                    form="bulActionForm"
+                                    x-data=""
+                                    x-on:click.prevent="
+                                        $dispatch('open-modal', 'confirm-bulk-action');
+                                        $dispatch('data-desc', 'Are you sure you want to Delete selected data?');
+                                        $dispatch('data-button-text', 'Yes, Delete');
+                                        document.getElementById('bulkActionInput').value = 'delete';
+                                    ">
+                                    @slot('icon')
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                                    @endslot
+                                </x-admin.button-icon>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-span-8 flex flex-row space-x-1 justify-end items-end">
                     <div class="basis-1/12">
                         <x-admin.input-label for="status" :value="__('Status')" />
-                        <x-admin.input-select id="status" name="status">
+                        <x-admin.input-select 
+                            id="status" 
+                            name="status" 
+                            :title="request()->input('status') == '1' ? 'Active' : (request()->input('status') == '0' ? 'Disabled' : 'All')"
+                        >
                             @slot('options')
                                 <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
                                 <x-admin.input-select-option value="1" :selected="request()->input('status') == '1'"> {{ __('Active') }} </x-admin.input-select-option>
@@ -88,21 +158,9 @@
                         </x-admin.input-select>
                     </div>
 
-                    <div class="w-max">
-                        <x-admin.input-label for="continent" :value="__('Continent')" />
-                        <x-admin.input-select class="!w-36" id="continent" name="continent">
-                            @slot('options')
-                                <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
-                                {{-- @foreach ($continents as $continent)
-                                    <x-admin.input-select-option value="{{ $continent->continent }}" :selected="request()->input('continent') == $continent->continent"> {{ __($continent->continent) }} </x-admin.input-select-option>
-                                @endforeach --}}
-                            @endslot
-                        </x-admin.input-select>
-                    </div>
-
                     <div class="basis-1/5">
                         <x-admin.input-label for="keyword" :value="__('Search by')" />
-                        <x-admin.text-input id="keyword" class="h-[2.3rem]" type="text" name="keyword" :value="request()->input('keyword')" placeholder="Keywords..." />
+                        <x-admin.text-input id="keyword" class="" type="text" name="keyword" :value="request()->input('keyword')" placeholder="Keywords..." />
                     </div>
 
                     <x-admin.button
@@ -128,86 +186,64 @@
         </form>
 
         {{-- table --}}
-        <div class="overflow-x-auto my-4">
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <div class="overflow-x-auto mb-3">
+            <table class="w-full text-xs text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="p-4">
-                            <div class="flex items-center">
-                                <input id="checkbox-all" type="checkbox" class="w-4 h-4 text-primary-600 bg-gray-100 rounded border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                <label for="checkbox-all" class="sr-only">checkbox</label>
-                            </div>
+                        <th scope="col" class="p-2">
+                            <x-admin.input-checkbox id="checkbox-all" />
                         </th>
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Title</th>
-                        <th scope="col" class="px-2 py-1">Category</th>
-                        <th scope="col" class="px-2 py-1">Variation</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @forelse ($data as $item)
-                        <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <td class="p-4 w-4">
-                                <div class="flex items-center">
-                                    <input id="checkbox-table-search-{{ $item->id }}" type="checkbox" onclick="event.stopPropagation()" class="w-4 h-4 text-primary-600 bg-gray-100 rounded border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                    <label for="checkbox-table-search-{{ $item->id }}" class="sr-only">checkbox</label>
-                                </div>
+                    @forelse ($data as $item)
+                        <tr class="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <td class="p-2 w-2">
+                                <x-admin.input-checkbox 
+                                    id="checkbox-table-search-{{ $item->id }}"
+                                    onclick="event.stopPropagation()"
+                                    form="bulActionForm" 
+                                    name="ids[]" 
+                                    value="{{ $item->id }}" />
                             </td>
-                            <th scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <p class="text-base">{{ $item->id }}</p>
-                            </th>
+                            <td scope="row" class="px-2 py-1 w-8 text-gray-900 dark:text-white">
+                                <p class="text-xs">{{ $item->id }}</p>
+                            </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <div class="flex space-x-4 items-center">
-                                    @if($item->flag) <div class="w-8 h-8 overflow-hidden flex">{!! $item->flag !!}</div> @endif
+                                <div class="flex space-x-2 items-center">
+                                    @if($item->image_s) <div class="w-8 h-8 overflow-hidden flex"><img src="{{ Storage::url($item->image_s) }}" alt=""></div> @endif
                                     <div>
-                                        <p class="text-base font-bold">{{ $item->name }}</p>
-                                        <p class="text-sm">
-                                            <span class="text-xs text-gray-400">Short Name</span>
-                                            <span class="text-gray-500">{{ $item->short_name }}</span>
+                                        <p class="text-xs font-bold">{{ $item->title }}</p>
+                                        <p class="text-xs">
+                                            <span class="text-gray-500">{{ $item->slug }}</span>
                                         </p>
                                     </div>
                                 </div>
                             </td>
-                            <td scope="row" class="px-2 py-1 text-gray-900">
-                                <p class="text-sm">
-                                    <span class="text-xs text-gray-400">Code</span>
-                                    <span class="text-gray-500">{{ $item->phone_code }}</span>
-                                </p>
-                                <p class="text-sm">
-                                    <span class="text-xs text-gray-400">Digits</span>
-                                    <span class="text-gray-500">{{ $item->phone_no_digits }}</span>
-                                </p>
-                            </td>
-                            <td scope="row" class="px-2 py-1 text-gray-500">
-                                <p class="text-base">{{ $item->zip_code_format }}</p>
-                            </td>
-                            <td scope="row" class="px-2 py-1 text-gray-500">
-                                <p class="text-base font-bold">{{ $item->currency_symbol }}</p>
-                                <p class="text-sm">
-                                    <span class="text-xs text-gray-400">Code</span>
-                                    <span class="">{{ $item->currency_code }}</span>
-                                </p>
-                            </td>
-                            <td scope="row" class="px-2 py-1 text-gray-500">
-                                <p class="text-base">{{ $item->continent }}</p>
-                            </td>
-                            <td scope="row" class="px-2 py-1 text-gray-500">
-                                <p class="text-base">{{ $item->language }}</p>
-                                <p class="text-sm">
-                                    <span class="text-xs text-gray-400">Timezone</span>
-                                    <span class="">{{ $item->time_zone }}</span>
-                                </p>
-                            </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">
-                                    <x-admin.input-checkbox-toggle-switch checked="{{ $item->status == 1 }}" />
+                                    @livewire('toggle-status', [
+                                        'model' => 'ProductCategory',
+                                        'modelId' => $item->id,
+                                    ])
 
                                     <x-admin.button-icon
                                         element="a"
                                         tag="secondary"
                                         href="javascript: void(0)"
-                                    >
+                                        title="View"
+                                        class="border"
+                                        x-data=""
+                                        x-on:click.prevent="
+                                            $dispatch('open-sidebar', 'quick-data-view');
+                                            $dispatch('data-image', '{{ $item->image_m }}');
+                                            $dispatch('data-title', '{{ $item->title }}');
+                                            $dispatch('data-slug', '{{ $item->slug }}');
+                                            $dispatch('data-level', '{{ $item->level }}');
+                                        " >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>
                                         @endslot
@@ -216,18 +252,23 @@
                                     <x-admin.button-icon
                                         element="a"
                                         tag="secondary"
-                                        href="javascript: void(0)">
+                                        :href="route('admin.product.listing.edit', $item->id)"
+                                        title="Edit"
+                                        class="border" >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
                                         @endslot
                                     </x-admin.button-icon>
 
                                     <x-admin.button-icon
-                                        element="button"
+                                        element="a"
                                         tag="danger"
                                         href="javascript: void(0)"
                                         x-data=""
-                                        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')">
+                                        x-on:click.prevent="
+                                            $dispatch('open-modal', 'confirm-data-deletion'); 
+                                            $dispatch('data-title', '{{ $item->title }}');
+                                            $dispatch('set-delete-route', '{{ route('admin.product.listing.delete', $item->id) }}')" >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                                         @endslot
@@ -242,19 +283,51 @@
                                 <em>No records found</em>
                             </td>
                         </tr>
-                    @endforelse --}}
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
-        {{-- {{ $data->onEachSide(3)->links() }} --}}
+        @if($data instanceof \Illuminate\Contracts\Pagination\Paginator && $data->hasPages())
+            {{ $data->onEachSide(3)->links() }}
+        @endif
     </section>
 
-    {{-- <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"></div>
-    <div class="grid grid-cols-2 gap-4">
-        <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-        <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-        <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-        <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-    </div> --}}
+    @include('admin.includes.delete-confirm-modal')
+    @include('admin.includes.bulk-action-confirm-modal')
+    @include('admin.includes.import-modal')
+    @include('admin.includes.export-modal')
+
+    <x-admin.sidebar name="quick-data-view" maxWidth="sm" direction="right" header="Quick View" focusable>
+        <div 
+            class="p-4"
+            x-data="{image: '', title: '', slug: '', level: ''}"
+            x-on:data-image.window="image = $event.detail"
+            x-on:data-title.window="title = $event.detail"
+            x-on:data-slug.window="slug = $event.detail"
+            x-on:data-level.window="level = $event.detail"
+        >
+            <h5 class="text-xs font-bold mb-1">Image</h5>
+            <div>
+                <template x-if="image && image.trim() !== ''">
+                    <div class="h-50 mb-3">
+                        <img :src="'{{ Storage::url('') }}' + image" alt="Image" class="h-full w-auto" />
+                    </div>
+                </template>
+                <template x-if="!image || image.trim() === ''">
+                    <p class="text-sm mb-3 text-orange-500 font-bold">NA</p>
+                </template>
+            </div>
+
+            <h5 class="text-xs font-bold mb-1">Title</h5>
+            <p class="text-sm mb-3" x-text="title"></p>
+
+            <h5 class="text-xs font-bold mb-1">Slug</h5>
+            <p class="text-sm mb-3" x-text="slug"></p>
+
+            <h5 class="text-xs font-bold mb-1">Level</h5>
+            <p class="text-sm mb-3" x-text="level"></p>
+        </div>
+    </x-admin.sidebar>
+
 </x-admin-app-layout>

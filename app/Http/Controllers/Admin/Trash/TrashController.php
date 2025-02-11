@@ -22,7 +22,7 @@ class TrashController
         $request->validate([
             'keyword' => 'nullable|string|max:255',
             'perPage' => 'nullable|string',
-            'sortBy' => 'nullable|string|in:id,title,slug',
+            'sortBy' => 'nullable|string|in:id,title,model',
             'sortOrder' => 'nullable|string|in:asc,desc',
             'status' => 'nullable|string|in:0,1'
         ]);

@@ -202,6 +202,7 @@ class CountryRepository implements CountryInterface
                     'model' => 'Country',
                     'table_name' => 'countries',
                     'deleted_row_id' => $data['data']->id,
+                    'thumbnail' => null,
                     'title' => $data['data']->name,
                     'description' => $data['data']->name.' data deleted from countries table',
                     'status' => 'deleted',

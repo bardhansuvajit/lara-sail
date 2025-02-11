@@ -73,7 +73,7 @@ class ProfileController
         if($countryData['code'] == 200) $altPhoneNumberDigits = $countryData['data']->phone_no_digits;
 
         $request->validate([
-            'profile_picture' => 'nullable|image|max:'.developerSettings()->max_image_size.'|mimes:'.implode(',', developerSettings()->image_upload_mimes_array),
+            'profile_picture' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
             'first_name' => 'required|string|min:2|max:50',
             'last_name' => 'required|string|min:2|max:50',
             'email' => 'required|email|min:2|max:80',
@@ -84,7 +84,7 @@ class ProfileController
             'alt_phone_country_code' => $altPhoneFields.'|string|min:1|max:5',
             'alt_phone_no' => $altPhoneFields.'|integer|digits:'.$altPhoneNumberDigits,
         ], [
-            'profile_picture.max' => 'The profile picture field must not be greater than '.developerSettings()->max_image_size_in_mb.'.',
+            'profile_picture.max' => 'The profile picture field must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
         ]);
 
         $resp = $this->profileRepository->update(

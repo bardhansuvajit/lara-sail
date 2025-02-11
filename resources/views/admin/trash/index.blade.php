@@ -56,6 +56,7 @@
                                 @slot('options')
                                     <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('ID') }} </x-admin.input-select-option>
                                     <x-admin.input-select-option value="title" :selected="request()->input('sortBy') == 'title'"> {{ __('Title') }} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="model" :selected="request()->input('sortBy') == 'model'"> {{ __('Model') }} </x-admin.input-select-option>
                                 @endslot
                             </x-admin.input-select>
                         </div>
@@ -137,7 +138,9 @@
                                 <p class="text-xs">{{ $item->id }}</p>
                             </th>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <div class="flex space-x-4 items-center">
+                                <div class="flex space-x-2 items-center">
+                                    {{-- {{ dd($item->thumbnail) }} --}}
+                                    @if($item->thumbnail) <div class="w-8 h-8 overflow-hidden flex"><img src="{{ Storage::url($item->thumbnail) }}" alt=""></div> @endif
                                     <div>
                                         <p class="text-xs font-bold">{{ $item->title }}</p>
                                         <p class="text-xs">
@@ -153,21 +156,29 @@
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">
-                                    <x-admin.button
-                                        element="a"
-                                        tag="success"
-                                        href="javascript: void(0)"
-                                        x-data=""
-                                        x-on:click.prevent="
-                                            $dispatch('open-modal', 'confirm-restore'); 
-                                            $dispatch('data-title', '{{ $item->title }}');
-                                            $dispatch('set-restore-route', '{{ route('admin.developer.trash.restore', $item->id) }}')" >
-                                        @slot('icon')
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520q-17 0-28.5-11.5T160-760q0-17 11.5-28.5T200-800h160q0-17 11.5-28.5T400-840h160q17 0 28.5 11.5T600-800h160q17 0 28.5 11.5T800-760q0 17-11.5 28.5T760-720v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520Zm-400 0v520-520Zm160 234v126q0 17 11.5 28.5T480-320q17 0 28.5-11.5T520-360v-126l36 35q11 11 27.5 11t28.5-12q11-11 11-28t-11-28L508-612q-12-12-28-12t-28 12L348-508q-11 11-11.5 27.5T348-452q11 11 27.5 11.5T404-451l36-35Z"/></svg>
-                                        @endslot
-                                        {{ __('Restore') }}
-                                    </x-admin.button>
-
+                                    @if ($item->status == 'deleted')
+                                        <x-admin.button
+                                            element="a"
+                                            tag="success"
+                                            href="javascript: void(0)"
+                                            x-data=""
+                                            x-on:click.prevent="
+                                                $dispatch('open-modal', 'confirm-restore'); 
+                                                $dispatch('data-title', '{{ $item->title }}');
+                                                $dispatch('set-restore-route', '{{ route('admin.developer.trash.restore', $item->id) }}')" >
+                                            @slot('icon')
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520q-17 0-28.5-11.5T160-760q0-17 11.5-28.5T200-800h160q0-17 11.5-28.5T400-840h160q17 0 28.5 11.5T600-800h160q17 0 28.5 11.5T800-760q0 17-11.5 28.5T760-720v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520Zm-400 0v520-520Zm160 234v126q0 17 11.5 28.5T480-320q17 0 28.5-11.5T520-360v-126l36 35q11 11 27.5 11t28.5-12q11-11 11-28t-11-28L508-612q-12-12-28-12t-28 12L348-508q-11 11-11.5 27.5T348-452q11 11 27.5 11.5T404-451l36-35Z"/></svg>
+                                            @endslot
+                                            {{ __('Restore') }}
+                                        </x-admin.button>
+                                    @else
+                                        <p class="flex space-x-2 bg-gray-300 text-gray-800 dark:bg-gray-500 p-1 dark:text-white">
+                                            <span class="w-4 h-4">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m382-354 339-339q12-12 28-12t28 12q12 12 12 28.5T777-636L410-268q-12 12-28 12t-28-12L182-440q-12-12-11.5-28.5T183-497q12-12 28.5-12t28.5 12l142 143Z"/></svg>
+                                            </span>
+                                            <span class="">Restored</span>
+                                        </p>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

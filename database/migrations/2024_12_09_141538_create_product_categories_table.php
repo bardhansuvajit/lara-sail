@@ -20,9 +20,9 @@ return new class extends Migration
             $table->foreign('parent_id')->references('id')->on('product_categories')->onDelete('SET NULL');
             $table->tinyInteger('level')->default(1);
 
-            $table->string('img_s')->nullable();
-            $table->string('img_m')->nullable();
-            $table->string('img_l')->nullable();
+            $table->string('image_s')->nullable();
+            $table->string('image_m')->nullable();
+            $table->string('image_l')->nullable();
 
             $table->text('short_description')->nullable();
             $table->longText('long_description')->nullable();

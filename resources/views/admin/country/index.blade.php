@@ -219,13 +219,12 @@
                                 <p class="text-xs">{{ $item->id }}</p>
                             </th>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <div class="flex space-x-4 items-center">
+                                <div class="flex space-x-2 items-center">
                                     @if($item->flag) <div class="w-8 h-8 overflow-hidden flex">{!! $item->flag !!}</div> @endif
                                     <div>
                                         <p class="text-xs font-bold">{{ $item->name }}</p>
-                                        <p class="text-xs">
-                                            <span class="text-xs text-gray-400">Short Name</span>
-                                            <span class="text-gray-500">{{ $item->short_name }}</span>
+                                        <p class="text-xs text-gray-500">
+                                            {{ $item->short_name }}
                                         </p>
                                     </div>
                                 </div>
@@ -397,7 +396,7 @@
                     <div class="w-8 h-8 mb-3" x-html="flag"></div>
                 </template>
                 <template x-if="!flag">
-                    <p class="text-sm mb-3 text-red-500">NA</p>
+                    <p class="text-sm mb-3 text-orange-500 font-bold">NA</p>
                 </template>
             </div>
 

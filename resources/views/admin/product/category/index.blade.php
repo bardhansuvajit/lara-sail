@@ -213,11 +213,11 @@
                                 <p class="text-xs">{{ $item->id }}</p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <div class="flex space-x-4 items-center">
-                                    <div class="text-xs">
-                                        <p class="font-bold">{{ $item->title }}</p>
-                                        <p class="">
-                                            {{-- <span class="text-xs text-gray-400">Slug</span> --}}
+                                <div class="flex space-x-2 items-center">
+                                    @if($item->image_s) <div class="w-8 h-8 overflow-hidden flex"><img src="{{ Storage::url($item->image_s) }}" alt=""></div> @endif
+                                    <div>
+                                        <p class="text-xs font-bold">{{ $item->title }}</p>
+                                        <p class="text-xs">
                                             <span class="text-gray-500">{{ $item->slug }}</span>
                                         </p>
                                     </div>
@@ -239,6 +239,7 @@
                                         x-data=""
                                         x-on:click.prevent="
                                             $dispatch('open-sidebar', 'quick-data-view');
+                                            $dispatch('data-image', '{{ $item->image_m }}');
                                             $dispatch('data-title', '{{ $item->title }}');
                                             $dispatch('data-slug', '{{ $item->slug }}');
                                             $dispatch('data-level', '{{ $item->level }}');
@@ -300,11 +301,24 @@
     <x-admin.sidebar name="quick-data-view" maxWidth="sm" direction="right" header="Quick View" focusable>
         <div 
             class="p-4"
-            x-data="{title: '', slug: '', level: ''}"
+            x-data="{image: '', title: '', slug: '', level: ''}"
+            x-on:data-image.window="image = $event.detail"
             x-on:data-title.window="title = $event.detail"
             x-on:data-slug.window="slug = $event.detail"
             x-on:data-level.window="level = $event.detail"
         >
+            <h5 class="text-xs font-bold mb-1">Image</h5>
+            <div>
+                <template x-if="image && image.trim() !== ''">
+                    <div class="h-50 mb-3">
+                        <img :src="'{{ Storage::url('') }}' + image" alt="Image" class="h-full w-auto" />
+                    </div>
+                </template>
+                <template x-if="!image || image.trim() === ''">
+                    <p class="text-sm mb-3 text-orange-500 font-bold">NA</p>
+                </template>
+            </div>
+
             <h5 class="text-xs font-bold mb-1">Title</h5>
             <p class="text-sm mb-3" x-text="title"></p>
 

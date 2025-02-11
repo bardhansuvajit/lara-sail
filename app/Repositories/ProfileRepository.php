@@ -68,30 +68,11 @@ class ProfileRepository implements ProfileInterface
                 }
 
                 if (!empty($array['profile_picture'])) {
-                    $file = $array['profile_picture'];
-                    $tmpPath = $file->getRealPath();
-                    $fileExtension = $file->getClientOriginalExtension();
-                    $fileName = uniqid().'-'.time().'.'.$fileExtension;
+                    $uploadResp = fileUpload($array['profile_picture'], 'profile');
 
-                    $storagePath = 'uploads/profile';
-                    $originalFilePath = $storagePath . '/' . $fileName;
-                    Storage::disk('public')->put($originalFilePath, file_get_contents($tmpPath));
-
-                    if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'webp'])) {
-                        $uploadInFolder = 'profile';
-
-                        $smallThumbName = 'uploads/'.$uploadInFolder.'/' .uniqid().'-'.time().'-s.'.$fileExtension;
-                        $mediumThumbName = 'uploads/'.$uploadInFolder.'/' .uniqid().'-'.time().'-m.'.$fileExtension;
-                        $largeThumbName = 'uploads/'.$uploadInFolder.'/' .uniqid().'-'.time().'-l.'.$fileExtension;
-
-                        resizeImage($tmpPath, 100, $smallThumbName);
-                        resizeImage($tmpPath, 250, $mediumThumbName);
-                        resizeImage($tmpPath, 500, $largeThumbName);
-                    }
-
-                    $data['data']->profile_picture_s = $smallThumbName;
-                    $data['data']->profile_picture_m = $mediumThumbName;
-                    $data['data']->profile_picture_l = $largeThumbName;
+                    $data['data']->profile_picture_s = $uploadResp['smallThumbName'];
+                    $data['data']->profile_picture_m = $uploadResp['mediumThumbName'];
+                    $data['data']->profile_picture_l = $uploadResp['largeThumbName'];
                 }
 
                 if (!empty($array['alt_phone_country_code'])) {
@@ -116,8 +97,7 @@ class ProfileRepository implements ProfileInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                // 'message' => 'An error occurred while updating data.',
-                'message' => $e->getMessage(),
+                'message' => 'An error occurred while updating data.',
                 'error' => $e->getMessage(),
             ];
         }

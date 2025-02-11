@@ -51,10 +51,12 @@ class ProductCategoryController
         // dd($request->all());
 
         $request->validate([
-            'image' => 'nullable|image|max:1000',
+            'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
             'title' => 'required|min:2|max:255',
             'level' => 'required|in:1,2,3,4',
             'parent_id' => 'nullable',
+        ], [
+            'image.max' => 'The profile picture field must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
         ]);
 
         $resp = $this->productCategoryRepository->store($request->all());

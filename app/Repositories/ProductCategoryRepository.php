@@ -7,12 +7,20 @@ use App\Models\ProductCategory;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use App\Interfaces\TrashInterface;
 
 use App\Exports\ProductCategoriesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductCategoryRepository implements ProductCategoryInterface
 {
+    private TrashInterface $trashRepository;
+
+    public function __construct(TrashInterface $trashRepository)
+    {
+        $this->trashRepository = $trashRepository;
+    }
+
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
@@ -73,12 +81,22 @@ class ProductCategoryRepository implements ProductCategoryInterface
 
     public function store(Array $array)
     {
+        // dd($array['image']);
         try {
             $data = new ProductCategory();
             $data->title = $array['title'];
             $data->slug = Str::slug($array['title']);
             $data->parent_id = $array['parent_id'];
             $data->level = $array['level'];
+
+            if (!empty($array['image'])) {
+                $uploadResp = fileUpload($array['image'], 'p-cat');
+
+                $data->image_s = $uploadResp['smallThumbName'];
+                $data->image_m = $uploadResp['mediumThumbName'];
+                $data->image_l = $uploadResp['largeThumbName'];
+            }
+
             $data->save();
 
             return [
@@ -91,7 +109,8 @@ class ProductCategoryRepository implements ProductCategoryInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => 'An error occurred while storing data.',
+                // 'message' => 'An error occurred while storing data.',
+                'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ];
         }
@@ -137,6 +156,15 @@ class ProductCategoryRepository implements ProductCategoryInterface
                 $data['data']->slug = \Str::slug($array['title']);
                 $data['data']->parent_id = $array['parent_id'];
                 $data['data']->level = $array['level'];
+
+                if (!empty($array['image'])) {
+                    $uploadResp = fileUpload($array['image'], 'p-cat');
+
+                    $data['data']->image_s = $uploadResp['smallThumbName'];
+                    $data['data']->image_m = $uploadResp['mediumThumbName'];
+                    $data['data']->image_l = $uploadResp['largeThumbName'];
+                }
+
                 $data['data']->save();
 
                 return [
@@ -164,6 +192,17 @@ class ProductCategoryRepository implements ProductCategoryInterface
             $data = $this->getById($id);
 
             if ($data['code'] == 200) {
+                // Handling trash
+                $this->trashRepository->store([
+                    'model' => 'ProductCategory',
+                    'table_name' => 'product_categories',
+                    'deleted_row_id' => $data['data']->id,
+                    'thumbnail' => $data['data']->image_s,
+                    'title' => $data['data']->title,
+                    'description' => $data['data']->title.' data deleted from product categories table',
+                    'status' => 'deleted',
+                ]);
+
                 $data['data']->delete();
 
                 return [

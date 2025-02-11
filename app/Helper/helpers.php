@@ -98,10 +98,41 @@ if (!function_exists('saveToDatabase')) {
 }
 
 if (!function_exists('developerSettings')) {
-    function developerSettings() {
+    function developerSettings(String $key) {
         $developerSettingRepository = app(DeveloperSettingRepository::class);
-        $resp = $developerSettingRepository->getByKey('image_validation');
+        $resp = $developerSettingRepository->getByKey($key);
         return json_decode($resp['data']->value);
+    }
+}
+
+if (!function_exists('fileUpload')) {
+    function fileUpload($file, $uploadPath) {
+        $tmpPath = $file->getRealPath();
+        $fileExtension = $file->getClientOriginalExtension();
+        $fileName = uniqid().'-'.time().'.'.$fileExtension;
+
+        $originalFilePath = 'uploads/' . $uploadPath . '/' . $fileName;
+        Storage::disk('public')->put($originalFilePath, file_get_contents($tmpPath));
+
+        if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'webp'])) {
+            $smallThumbName = 'uploads/'.$uploadPath.'/' .uniqid().'-'.time().'-s.'.$fileExtension;
+            $mediumThumbName = 'uploads/'.$uploadPath.'/' .uniqid().'-'.time().'-m.'.$fileExtension;
+            $largeThumbName = 'uploads/'.$uploadPath.'/' .uniqid().'-'.time().'-l.'.$fileExtension;
+
+            resizeImage($tmpPath, 100, $smallThumbName);
+            resizeImage($tmpPath, 250, $mediumThumbName);
+            resizeImage($tmpPath, 500, $largeThumbName);
+
+            return [
+                'smallThumbName' => $smallThumbName,
+                'mediumThumbName' => $mediumThumbName,
+                'largeThumbName' => $largeThumbName
+            ];
+        } else {
+            return [
+                'originalFilePath' => $originalFilePath
+            ];
+        }
     }
 }
 
