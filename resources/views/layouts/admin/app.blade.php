@@ -120,6 +120,7 @@
         </script>
 
         @yield('script')
+
         @livewireScripts
 
     </body>

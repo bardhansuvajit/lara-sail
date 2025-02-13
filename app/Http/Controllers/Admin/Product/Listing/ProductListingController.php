@@ -48,7 +48,7 @@ class ProductListingController
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
 
         $request->validate([
             'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
