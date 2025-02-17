@@ -12,6 +12,7 @@
     name="{{ $name }}" 
     value="{{ $value }}" 
     class="hidden peer" 
+    {{ $attributes }}
     @if($required) required @endif 
     @if($checked) checked @endif 
 />

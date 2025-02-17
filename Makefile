@@ -57,3 +57,9 @@ composer-dump: ## Composer dump autoload
 composer-update: ## Composer update
 	@./vendor/bin/sail composer update
 
+optimize: ## Cache all
+	@./vendor/bin/sail php artisan optimize
+
+optimize-clear: ## Clear all cache
+	@./vendor/bin/sail php artisan optimize:clear
+
