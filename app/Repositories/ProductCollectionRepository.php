@@ -2,22 +2,30 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ApplicationSettingInterface;
-use App\Models\ApplicationSetting;
+use App\Interfaces\ProductCollectionInterface;
+use App\Models\ProductCollection;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use App\Interfaces\TrashInterface;
 
 use App\Exports\ProductCategoriesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ApplicationSettingRepository implements ApplicationSettingInterface
+class ProductCollectionRepository implements ProductCollectionInterface
 {
+    private TrashInterface $trashRepository;
+
+    public function __construct(TrashInterface $trashRepository)
+    {
+        $this->trashRepository = $trashRepository;
+    }
+
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
-            $query = ProductCategory::query();
+            $query = ProductCollection::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -73,27 +81,43 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
 
     public function store(Array $array)
     {
-        $data = new ProductCategory();
-        $data->title = $array['title'];
-        $data->slug = Str::slug($array['title']);
-        $data->parent_id = $array['parent_id'];
-        $data->level = $array['level'];
-        $data->save();
+        // dd($array['image']);
+        try {
+            $data = new ProductCollection();
+            $data->title = $array['title'];
+            $data->slug = Str::slug($array['title']);
 
-        return [
-            'code' => 200,
-            'status' => 'success',
-            'message' => 'Changes have been saved',
-            'data' => $data,
-        ];
+            if (!empty($array['image'])) {
+                $uploadResp = fileUpload($array['image'], 'p-clt');
+
+                $data->image_s = $uploadResp['smallThumbName'];
+                $data->image_m = $uploadResp['mediumThumbName'];
+                $data->image_l = $uploadResp['largeThumbName'];
+            }
+
+            $data->save();
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Changes have been saved',
+                'data' => $data,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                // 'message' => 'An error occurred while storing data.',
+                'message' => $e->getMessage(),
+                'error' => $e->getMessage(),
+            ];
+        }
     }
 
     public function getById(Int $id)
     {
         try {
-            if ($guard == 'Admin') {
-                $data = DeveloperSetting::find($id);
-            }
+            $data = ProductCollection::find($id);
 
             if (!empty($data)) {
                 return [
@@ -128,8 +152,15 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
             if ($data['code'] == 200) {
                 $data['data']->title = $array['title'];
                 $data['data']->slug = \Str::slug($array['title']);
-                $data['data']->parent_id = $array['parent_id'];
-                $data['data']->level = $array['level'];
+
+                if (!empty($array['image'])) {
+                    $uploadResp = fileUpload($array['image'], 'p-clt');
+
+                    $data['data']->image_s = $uploadResp['smallThumbName'];
+                    $data['data']->image_m = $uploadResp['mediumThumbName'];
+                    $data['data']->image_l = $uploadResp['largeThumbName'];
+                }
+
                 $data['data']->save();
 
                 return [
@@ -157,6 +188,17 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
             $data = $this->getById($id);
 
             if ($data['code'] == 200) {
+                // Handling trash
+                $this->trashRepository->store([
+                    'model' => 'ProductCollection',
+                    'table_name' => 'product_collections',
+                    'deleted_row_id' => $data['data']->id,
+                    'thumbnail' => $data['data']->image_s,
+                    'title' => $data['data']->title,
+                    'description' => $data['data']->title.' data deleted from product collections table',
+                    'status' => 'deleted',
+                ]);
+
                 $data['data']->delete();
 
                 return [
@@ -181,9 +223,10 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
     public function bulkAction(Array $array)
     {
         try {
-            $data = ProductCategory::whereIn('id', $array['ids'])->get();
+            $data = ProductCollection::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
+
                     // Handling trash
                     $this->trashRepository->store([
                         'model' => 'ProductCollection',
@@ -227,7 +270,7 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'ProductCategory');
+            $processedCount = saveToDatabase($data, 'ProductCollection');
 
             return [
                 'code' => 200,
@@ -253,7 +296,7 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
             if (count($data['data']) > 0) {
-                $fileName = "product_categories_export_" . date('Y-m-d') . '-' . time();
+                $fileName = "product_collections_export_" . date('Y-m-d') . '-' . time();
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";

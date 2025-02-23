@@ -84,7 +84,9 @@ if (!function_exists('saveToDatabase')) {
                 $modelClass::create([
                     'title' => $item['title'] ?? null,
                     'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
+                    'level' => $item['level'] ?? null,
                     'short_description' => $item['description'] ?? null,
+                    'tags' => $item['tags'] ?? null
                 ]);
 
                 $processedCount++;

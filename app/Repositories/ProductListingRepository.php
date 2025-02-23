@@ -230,6 +230,17 @@ class ProductListingRepository implements ProductListingInterface
             $data = ProductCategory::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
+                    // Handling trash
+                    $this->trashRepository->store([
+                        'model' => 'ProductCategory',
+                        'table_name' => 'product_categories',
+                        'deleted_row_id' => $item->id,
+                        'thumbnail' => $item->image_s,
+                        'title' => $item->title,
+                        'description' => $item->title.' data deleted from product categories table',
+                        'status' => 'deleted',
+                    ]);
+
                     $item->delete();
                 });
 

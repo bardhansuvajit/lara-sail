@@ -1,8 +1,8 @@
 <x-admin-app-layout
     screen="md:w-full"
-    title="{{ __('Product Category') }}"
+    title="{{ __('Product Collection') }}"
     :breadcrumb="[
-        ['label' => 'Product category']
+        ['label' => 'Product collection']
     ]"
 >
 
@@ -15,7 +15,7 @@
         <div class="flex space-x-2 justify-end">
             <x-admin.button
                 element="a"
-                :href="route('admin.product.category.create')">
+                :href="route('admin.product.collection.create')">
                 @slot('icon')
                     <svg fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" /></svg>
                 @endslot
@@ -30,8 +30,8 @@
                 x-data=""
                 x-on:click.prevent="
                     $dispatch('open-modal', 'import');
-                    $dispatch('set-model', 'ProductCategory');
-                    $dispatch('set-route', '{{ route('admin.product.category.import') }}');
+                    $dispatch('set-model', 'ProductCollection');
+                    $dispatch('set-route', '{{ route('admin.product.collection.import') }}');
                 ">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
@@ -140,7 +140,7 @@
                                         $dispatch('open-modal', 'confirm-bulk-action');
                                         $dispatch('data-desc', 'Are you sure you want to Delete selected data?');
                                         $dispatch('data-button-text', 'Yes, Delete');
-                                        $dispatch('set-route', '{{ route('admin.product.category.bulk') }}');
+                                        $dispatch('set-route', '{{ route('admin.product.collection.bulk') }}');
                                         document.getElementById('bulkActionInput').value = 'delete';
                                     ">
                                     @slot('icon')
@@ -204,7 +204,6 @@
                         </th>
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Title</th>
-                        <th scope="col" class="px-2 py-1">Level</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
@@ -231,19 +230,10 @@
                                     </div>
                                 </div>
                             </td>
-                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <p class="text-xs">{{ $item->level }}</p>
-                                @if ($item->parentDetails)
-                                    <p class="text-xs text-gray-500">Parent {{ $item->parentDetails->title }}</p>
-                                @endif
-                                @if (count($item->childDetails) > 0)
-                                    <p class="text-xs text-gray-500">No. of Sub-categories {{ count($item->childDetails) }}</p>
-                                @endif
-                            </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">
                                     @livewire('toggle-status', [
-                                        'model' => 'ProductCategory',
+                                        'model' => 'ProductCollection',
                                         'modelId' => $item->id,
                                     ])
 
@@ -259,9 +249,6 @@
                                             $dispatch('data-image', '{{ $item->image_m }}');
                                             $dispatch('data-title', '{{ $item->title }}');
                                             $dispatch('data-slug', '{{ $item->slug }}');
-                                            $dispatch('data-level', '{{ $item->level }}');
-                                            $dispatch('data-parent', '{{ $item->parent_id ? $item->parentDetails->title : '' }}');
-                                            $dispatch('data-child', '{{ (count($item->childDetails) > 0) ? $item->childDetails : '' }}');
                                         " >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>
@@ -271,7 +258,7 @@
                                     <x-admin.button-icon
                                         element="a"
                                         tag="secondary"
-                                        :href="route('admin.product.category.edit', $item->id)"
+                                        :href="route('admin.product.collection.edit', $item->id)"
                                         title="Edit"
                                         class="border" >
                                         @slot('icon')
@@ -287,7 +274,7 @@
                                         x-on:click.prevent="
                                             $dispatch('open-modal', 'confirm-data-deletion'); 
                                             $dispatch('data-title', '{{ $item->title }}');
-                                            $dispatch('set-delete-route', '{{ route('admin.product.category.delete', $item->id) }}')
+                                            $dispatch('set-delete-route', '{{ route('admin.product.collection.delete', $item->id) }}')
                                         " >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
@@ -321,13 +308,10 @@
     <x-admin.sidebar name="quick-data-view" maxWidth="sm" direction="right" header="Quick View" focusable>
         <div 
             class="p-4"
-            x-data="{image: '', title: '', slug: '', level: '', parent: '', child: []}"
+            x-data="{image: '', title: '', slug: ''}"
             x-on:data-image.window="image = $event.detail"
             x-on:data-title.window="title = $event.detail"
             x-on:data-slug.window="slug = $event.detail"
-            x-on:data-level.window="level = $event.detail"
-            x-on:data-parent.window="parent = $event.detail"
-            x-on:data-child.window="child = $event.detail"
         >
             <h5 class="text-xs font-bold mb-1">Image</h5>
             <div>
@@ -346,35 +330,6 @@
 
             <h5 class="text-xs font-bold mb-1">Slug</h5>
             <p class="text-sm mb-3" x-text="slug"></p>
-
-            <h5 class="text-xs font-bold mb-1">Level</h5>
-            <p class="text-sm mb-3" x-text="level"></p>
-
-            <div>
-                <h5 class="text-xs font-bold mb-1">Parent</h5>
-                <template x-if="parent">
-                    <p class="text-sm mb-3" x-text="parent"></p>
-                </template>
-                <template x-if="!parent">
-                    <p class="text-sm mb-3 text-orange-500 font-bold">NA</p>
-                </template>
-            </div>
-
-            <div>
-                <h5 class="text-xs font-bold mb-1">Sub-categories</h5>
-                <p class="text-sm mb-3" x-text="child"></p>
-
-                <template x-if="child.length">
-                    <div>
-                        <template x-for="item in child" :key="item.id">
-                            <p class="text-sm mb-3" x-text="item.title"></p>
-                        </template>
-                    </div>
-                </template>
-                <template x-if="child.length === 0">
-                    <p class="text-sm mb-3 text-orange-500 font-bold">NA</p>
-                </template>
-            </div>
 
         </div>
     </x-admin.sidebar>

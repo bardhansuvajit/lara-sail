@@ -1,14 +1,14 @@
 <x-admin-app-layout
     screen="md:max-w-screen-lg"
-    title="{{ __('Edit Product Category') }}"
+    title="{{ __('Edit Product Collection') }}"
     :breadcrumb="[
-        ['label' => 'Product category', 'url' => route('admin.product.category.index')],
+        ['label' => 'Product collection', 'url' => route('admin.product.collection.index')],
         ['label' => 'Edit']
     ]"
 >
 
     <div class="w-full mt-2">
-        <form action="{{ route('admin.product.category.update') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('admin.product.collection.update') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div class="grid grid-cols-4 gap-1">
@@ -35,43 +35,6 @@
                     <x-admin.text-input id="title" class="block w-full" type="text" name="title" :value="old('title') ? old('title') : $data->title" placeholder="Enter title" autofocus required />
                     <x-admin.input-error :messages="$errors->get('title')" class="mt-2" />
                 </div>
-
-                <div class="col-span-2">
-                    @livewire('product-category-selector', [
-                        'level' => $data->level,
-                        'parentId' => $data->parent_id
-                    ])
-                </div>
-
-                {{-- <div>
-                    <x-admin.input-label for="level" :value="__('Level *')" />
-                    <ul class="grid w-full gap-2 grid-cols-8">
-                        <li>
-                            <x-admin.radio-input-button id="level_1" name="level" value="1" required :checked="$data->level == 1" />
-                        </li>
-                        <li>
-                            <x-admin.radio-input-button id="level_2" name="level" value="2" :checked="$data->level == 2" />
-                        </li>
-                        <li>
-                            <x-admin.radio-input-button id="level_3" name="level" value="3" :checked="$data->level == 3" />
-                        </li>
-                        <li>
-                            <x-admin.radio-input-button id="level_4" name="level" value="4" :checked="$data->level == 4" />
-                        </li>
-                    </ul>
-
-                    <x-admin.input-error :messages="$errors->get('level')" class="mt-2" />
-                </div>
-
-                <div>
-                    <x-admin.input-label for="parent_id" :value="__('Parent')" />
-                    <x-admin.input-select id="parent_id" name="parent_id" title="Select Parent" class="w-full">
-                        @slot('options')
-                            <x-admin.input-select-option value="" selected="selected"> None </x-admin.input-select-option>
-                        @endslot
-                    </x-admin.input-select>
-                    <x-admin.input-error :messages="$errors->get('parent_id')" class="mt-2" />
-                </div> --}}
             </div>
 
             <div class="items-center space-x-4 flex my-6">

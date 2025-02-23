@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Product\Category;
+namespace App\Http\Controllers\Admin\Product\Collection;
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
-use App\Interfaces\ProductCategoryInterface;
+use App\Interfaces\ProductCollectionInterface;
 
-class ProductCategoryController
+class ProductCollectionController
 {
-    private ProductCategoryInterface $productCategoryRepository;
+    private ProductCollectionInterface $productCollectionRepository;
 
-    public function __construct(ProductCategoryInterface $productCategoryRepository)
+    public function __construct(ProductCollectionInterface $productCollectionRepository)
     {
-        $this->productCategoryRepository = $productCategoryRepository;
+        $this->productCollectionRepository = $productCollectionRepository;
     }
 
     public function index(Request $request): View
@@ -35,16 +35,16 @@ class ProductCategoryController
         $filters = [
             'status' => $request->input('status', ''),
         ];
-        $resp = $this->productCategoryRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
+        $resp = $this->productCollectionRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
-        return view('admin.product.category.index', [
+        return view('admin.product.collection.index', [
             'data' => $resp['data'],
         ]);
     }
 
     public function create(): View
     {
-        return view('admin.product.category.create');
+        return view('admin.product.collection.create');
     }
 
     public function store(Request $request)
@@ -53,23 +53,21 @@ class ProductCategoryController
 
         $request->validate([
             'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
-            'title' => 'required|min:2|max:255',
-            'level' => 'required|in:1,2,3,4',
-            'parent_id' => 'required_if:level,2,3,4'
+            'title' => 'required|min:2|max:255'
         ], [
             'image.max' => 'The image field must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
         ]);
 
-        $resp = $this->productCategoryRepository->store($request->all());
-        return redirect()->route('admin.product.category.index')->with($resp['status'], $resp['message']);
+        $resp = $this->productCollectionRepository->store($request->all());
+        return redirect()->route('admin.product.collection.index')->with($resp['status'], $resp['message']);
     }
 
     public function edit(Int $id): View|RedirectResponse
     {
-        $resp = $this->productCategoryRepository->getById($id);
+        $resp = $this->productCollectionRepository->getById($id);
         // dd($resp);
         if ($resp['code'] == 200) {
-            return view('admin.product.category.edit', [
+            return view('admin.product.collection.edit', [
                 'data' => $resp['data'],
             ]);
         } else {
@@ -84,19 +82,17 @@ class ProductCategoryController
         $request->validate([
             'id' => 'required|integer',
             'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
-            'title' => 'required|min:2|max:255',
-            'level' => 'required|in:1,2,3,4',
-            'parent_id' => 'required_if:level,2,3,4'
+            'title' => 'required|min:2|max:255'
         ]);
 
-        $resp = $this->productCategoryRepository->update($request->all());
+        $resp = $this->productCollectionRepository->update($request->all());
         // dd($resp);
-        return redirect()->route('admin.product.category.index')->with($resp['status'], $resp['message']);
+        return redirect()->route('admin.product.collection.index')->with($resp['status'], $resp['message']);
     }
 
     public function delete(Int $id)
     {
-        $resp = $this->productCategoryRepository->delete($id);
+        $resp = $this->productCollectionRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
@@ -109,7 +105,7 @@ class ProductCategoryController
             'action' => 'required|in:delete,archive',
         ]);
 
-        $resp = $this->productCategoryRepository->bulkAction($request->except('_token'));
+        $resp = $this->productCollectionRepository->bulkAction($request->except('_token'));
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
@@ -119,7 +115,7 @@ class ProductCategoryController
             'file' => 'required|file|max:5000|mimes:csv,xlsx,xls',
         ]);
 
-        $resp = $this->productCategoryRepository->import($request->file('file'));
+        $resp = $this->productCollectionRepository->import($request->file('file'));
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
@@ -141,7 +137,7 @@ class ProductCategoryController
             'status' => $request->input('status', ''),
         ];
 
-        $resp = $this->productCategoryRepository->export($keyword, $filters, $perPage, $sortBy, $sortOrder, $type);
+        $resp = $this->productCollectionRepository->export($keyword, $filters, $perPage, $sortBy, $sortOrder, $type);
         if ($resp instanceof \Symfony\Component\HttpFoundation\BinaryFileResponse) {
             return $resp;
         }

@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 use App\Interfaces\ProductCategoryInterface;
+use App\Interfaces\ProductCollectionInterface;
 use App\Interfaces\PasswordInterface;
 use App\Interfaces\ProfileInterface;
 use App\Interfaces\DeveloperSettingInterface;
@@ -13,6 +14,7 @@ use App\Interfaces\CountryInterface;
 use App\Interfaces\TrashInterface;
 
 use App\Repositories\ProductCategoryRepository;
+use App\Repositories\ProductCollectionRepository;
 use App\Repositories\PasswordRepository;
 use App\Repositories\ProfileRepository;
 use App\Repositories\DeveloperSettingRepository;
@@ -28,6 +30,7 @@ class RepositoryServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ProductCategoryInterface::class, ProductCategoryRepository::class);
+        $this->app->bind(ProductCollectionInterface::class, ProductCollectionRepository::class);
         $this->app->bind(PasswordInterface::class, PasswordRepository::class);
         $this->app->bind(ProfileInterface::class, ProfileRepository::class);
         $this->app->bind(DeveloperSettingInterface::class, DeveloperSettingRepository::class);

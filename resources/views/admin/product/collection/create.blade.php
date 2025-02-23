@@ -1,14 +1,14 @@
 <x-admin-app-layout
     screen="md:max-w-screen-lg"
-    title="{{ __('Create Product Category') }}"
+    title="{{ __('Create Product Collection') }}"
     :breadcrumb="[
-        ['label' => 'Product category', 'url' => route('admin.product.category.index')],
+        ['label' => 'Product collection', 'url' => route('admin.product.collection.index')],
         ['label' => 'Create']
     ]"
 >
 
     <div class="w-full mt-2">
-        <form action="{{ route('admin.product.category.store') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('admin.product.collection.store') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div>
@@ -23,10 +23,6 @@
                     <x-admin.input-label for="title" :value="__('Title *')" />
                     <x-admin.text-input id="title" class="block w-full" type="text" name="title" :value="old('title')" placeholder="Enter title" autofocus required />
                     <x-admin.input-error :messages="$errors->get('title')" class="mt-2" />
-                </div>
-
-                <div class="col-span-2">
-                    @livewire('product-category-selector', ['level' => 1])
                 </div>
             </div>
 

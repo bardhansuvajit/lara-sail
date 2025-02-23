@@ -76,6 +76,14 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
+                function showNotification(variant, title, message) {
+                    setTimeout(() => {
+                        window.dispatchEvent(new CustomEvent('notify', {
+                            detail: { variant: variant, title: title, message: message }
+                        }));
+                    }, 100);
+                }
+
                 window.addEventListener('notificationSend', event => {
                     // console.log(event.detail[0]);
 
@@ -89,33 +97,15 @@
                 });
 
                 @if(Session::has('success'))
-                    window.dispatchEvent(new CustomEvent('notify', {
-                        detail: {
-                            variant: 'success',
-                            title: 'Success!',
-                            message: '{{ Session::get("success") }}'
-                        }
-                    }));
+                    showNotification('success', 'Success!', '{{ Session::get("success") }}');
                 @endif
 
                 @if(Session::has('failure'))
-                    window.dispatchEvent(new CustomEvent('notify', {
-                        detail: {
-                            variant: 'warning',
-                            title: 'Action Needed!',
-                            message: '{{ Session::get("failure") }}'
-                        }
-                    }));
+                    showNotification('warning', 'Action Needed!', '{{ Session::get("failure") }}');
                 @endif
 
                 @if(Session::has('error'))
-                    window.dispatchEvent(new CustomEvent('notify', {
-                        detail: {
-                            variant: 'danger',
-                            title: 'Oops!',
-                            message: '{{ Session::get("error") }}'
-                        }
-                    }));
+                    showNotification('danger', 'Oops!', '{{ Session::get("error") }}');
                 @endif
             });
         </script>

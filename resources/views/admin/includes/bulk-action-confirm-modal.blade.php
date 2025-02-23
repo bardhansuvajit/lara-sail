@@ -1,7 +1,8 @@
 <x-modal name="confirm-bulk-action" maxWidth="sm" focusable>
     <div 
         class="p-6" 
-        x-data="{desc: '', buttonText: ''}"
+        x-data="{route: '', desc: '', buttonText: ''}"
+        x-on:set-route.window="route = $event.detail" 
         x-on:data-desc.window="desc = $event.detail" 
         x-on:data-button-text.window="buttonText = $event.detail" >
 
@@ -23,7 +24,7 @@
                 {{ __('Cancel') }}
             </x-admin.button>
 
-            <form action="{{ route('admin.product.category.bulk') }}" method="post" id="bulActionForm" class="ms-3">
+            <form :action="route" method="post" id="bulActionForm" class="ms-3">
                 @csrf
                 <input type="hidden" name="action" id="bulkActionInput" />
                 <x-admin.button 

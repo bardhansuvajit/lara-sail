@@ -5,15 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProductCategory extends Model
+class ProductCollection extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
         'title',
         'slug',
-        'parent_id',
-        'level',
         'image_s',
         'image_m',
         'image_l',
@@ -26,14 +24,4 @@ class ProductCategory extends Model
         'position',
         'status',
     ];
-
-    public function parentDetails()
-    {
-        return $this->belongsTo('App\Models\ProductCategory', 'parent_id', 'id');
-    } 
-
-    public function childDetails()
-    {
-        return $this->hasMany('App\Models\ProductCategory', 'parent_id', 'id');
-    } 
 }

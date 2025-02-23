@@ -128,6 +128,7 @@
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Data</th>
                         <th scope="col" class="px-2 py-1">Model</th>
+                        <th scope="col" class="px-2 py-1">Time</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
@@ -152,6 +153,11 @@
                             <td scope="row" class="px-2 py-1 text-gray-900">
                                 <p class="text-xs">
                                     <span class="text-gray-500">{{ $item->model }}</span>
+                                </p>
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-900">
+                                <p class="text-xs">
+                                    <span class="text-gray-500">{{ $item->created_at }}</span>
                                 </p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">

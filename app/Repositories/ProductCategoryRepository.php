@@ -86,7 +86,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
             $data = new ProductCategory();
             $data->title = $array['title'];
             $data->slug = Str::slug($array['title']);
-            $data->parent_id = $array['parent_id'];
+            $data->parent_id = $array['parent_id'] ?? null;
             $data->level = $array['level'];
 
             if (!empty($array['image'])) {
@@ -154,8 +154,8 @@ class ProductCategoryRepository implements ProductCategoryInterface
             if ($data['code'] == 200) {
                 $data['data']->title = $array['title'];
                 $data['data']->slug = \Str::slug($array['title']);
-                $data['data']->parent_id = $array['parent_id'];
                 $data['data']->level = $array['level'];
+                $data['data']->parent_id = $array['parent_id'] ?? null;
 
                 if (!empty($array['image'])) {
                     $uploadResp = fileUpload($array['image'], 'p-cat');
@@ -230,6 +230,17 @@ class ProductCategoryRepository implements ProductCategoryInterface
             $data = ProductCategory::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
+                    // Handling trash
+                    $this->trashRepository->store([
+                        'model' => 'ProductCategory',
+                        'table_name' => 'product_categories',
+                        'deleted_row_id' => $item->id,
+                        'thumbnail' => $item->image_s,
+                        'title' => $item->title,
+                        'description' => $item->title.' data deleted from product categories table',
+                        'status' => 'deleted',
+                    ]);
+
                     $item->delete();
                 });
 
