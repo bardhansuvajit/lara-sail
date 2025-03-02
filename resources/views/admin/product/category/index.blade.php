@@ -28,6 +28,7 @@
                 href="javascript: void(0)"
                 title="Import"
                 x-data=""
+                id="importButton"
                 x-on:click.prevent="
                     $dispatch('open-modal', 'import');
                     $dispatch('set-model', 'ProductCategory');
@@ -43,8 +44,9 @@
                 element="a"
                 tag="secondary"
                 href="javascript: void(0)"
-                title="Import"
+                title="Export"
                 x-data=""
+                id="exportButton"
                 x-on:click.prevent="$dispatch('open-modal', 'export');">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
@@ -77,16 +79,28 @@
                             </x-admin.input-select>
                         </div>
 
+                        @php
+                            $sortBy = request()->input('sortBy');
+                            $select_title = 'ID';
+
+                            if ($sortBy === 'title') {
+                                $select_title = 'Title';
+                            } elseif ($sortBy === 'level') {
+                                $select_title = 'Level';
+                            }
+                        @endphp
+
                         <div class="w-max">
                             <x-admin.input-label for="sortBy" :value="__('Sort by')" />
                             <x-admin.input-select 
                                 id="sortBy" 
-                                name="sortBy"
-                                :title="request()->input('sortBy') == 'id' ? 'ID' : (request()->input('sortBy') == 'title' ? 'Title' : 'ID')"
+                                name="sortBy" 
+                                :title="$select_title" 
                             >
                                 @slot('options')
                                     <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('ID') }} </x-admin.input-select-option>
                                     <x-admin.input-select-option value="title" :selected="request()->input('sortBy') == 'title'"> {{ __('Title') }} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="level" :selected="request()->input('sortBy') == 'level'"> {{ __('Level') }} </x-admin.input-select-option>
                                 @endslot
                             </x-admin.input-select>
                         </div>
@@ -380,14 +394,8 @@
     </x-admin.sidebar>
 
     <script>
-        @if(Session::has('success'))
-            window.dispatchEvent(new CustomEvent('notify', {
-                detail: {
-                    variant: 'success',
-                    title: 'Success!',
-                    message: '{{ Session::get("success") }}'
-                }
-            }));
+        @if ($errors->importForm->isNotEmpty())
+            setTimeout(() => document.getElementById('importButton').click(), 100);
         @endif
     </script>
 

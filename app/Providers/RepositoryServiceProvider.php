@@ -12,6 +12,7 @@ use App\Interfaces\DeveloperSettingInterface;
 use App\Interfaces\ApplicationSettingInterface;
 use App\Interfaces\CountryInterface;
 use App\Interfaces\TrashInterface;
+use App\Interfaces\ProductListingInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -21,6 +22,7 @@ use App\Repositories\DeveloperSettingRepository;
 use App\Repositories\ApplicationSettingRepository;
 use App\Repositories\CountryRepository;
 use App\Repositories\TrashRepository;
+use App\Repositories\ProductListingRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -37,6 +39,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ApplicationInterface::class, ApplicationRepository::class);
         $this->app->bind(CountryInterface::class, CountryRepository::class);
         $this->app->bind(TrashInterface::class, TrashRepository::class);
+        $this->app->bind(ProductListingInterface::class, ProductListingRepository::class);
     }
 
     /**

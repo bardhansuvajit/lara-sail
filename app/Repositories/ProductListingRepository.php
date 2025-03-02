@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Interfaces\ProductListingInterface;
-use App\Models\ProductCategory;
+use App\Models\Product;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +25,7 @@ class ProductListingRepository implements ProductListingInterface
     {
         try {
             DB::enableQueryLog();
-            $query = ProductCategory::query();
+            $query = Product::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -83,10 +83,10 @@ class ProductListingRepository implements ProductListingInterface
     {
         // dd($array['image']);
         try {
-            $data = new ProductCategory();
+            $data = new Product();
             $data->title = $array['title'];
             $data->slug = Str::slug($array['title']);
-            $data->parent_id = $array['parent_id'];
+            $data->parent_id = $array['parent_id'] ?? null;
             $data->level = $array['level'];
 
             if (!empty($array['image'])) {
@@ -119,7 +119,7 @@ class ProductListingRepository implements ProductListingInterface
     public function getById(Int $id)
     {
         try {
-            $data = ProductCategory::find($id);
+            $data = Product::find($id);
 
             if (!empty($data)) {
                 return [
@@ -154,8 +154,8 @@ class ProductListingRepository implements ProductListingInterface
             if ($data['code'] == 200) {
                 $data['data']->title = $array['title'];
                 $data['data']->slug = \Str::slug($array['title']);
-                $data['data']->parent_id = $array['parent_id'];
                 $data['data']->level = $array['level'];
+                $data['data']->parent_id = $array['parent_id'] ?? null;
 
                 if (!empty($array['image'])) {
                     $uploadResp = fileUpload($array['image'], 'p-cat');
@@ -194,7 +194,7 @@ class ProductListingRepository implements ProductListingInterface
             if ($data['code'] == 200) {
                 // Handling trash
                 $this->trashRepository->store([
-                    'model' => 'ProductCategory',
+                    'model' => 'Product',
                     'table_name' => 'product_categories',
                     'deleted_row_id' => $data['data']->id,
                     'thumbnail' => $data['data']->image_s,
@@ -227,12 +227,12 @@ class ProductListingRepository implements ProductListingInterface
     public function bulkAction(Array $array)
     {
         try {
-            $data = ProductCategory::whereIn('id', $array['ids'])->get();
+            $data = Product::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
                     // Handling trash
                     $this->trashRepository->store([
-                        'model' => 'ProductCategory',
+                        'model' => 'Product',
                         'table_name' => 'product_categories',
                         'deleted_row_id' => $item->id,
                         'thumbnail' => $item->image_s,
@@ -273,7 +273,7 @@ class ProductListingRepository implements ProductListingInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'ProductCategory');
+            $processedCount = saveToDatabase($data, 'Product');
 
             return [
                 'code' => 200,

@@ -25,9 +25,19 @@ return new class extends Migration
 
         $data = [
             [
+                'model' => 'Country',
+                'file_path' => 'countries.csv',
+                'description' => 'Countries',
+            ],
+            [
                 'model' => 'ProductCategory',
                 'file_path' => 'product_categories.csv',
                 'description' => 'Product Categories',
+            ],
+            [
+                'model' => 'ProductCollection',
+                'file_path' => 'product_collections.csv',
+                'description' => 'Product Collections',
             ],
             [
                 'model' => 'Product',

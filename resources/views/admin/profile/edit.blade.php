@@ -109,7 +109,7 @@
                 <div> 
                     <x-admin.input-label for="username" :value="__('Username *')" />
                     <x-admin.text-input id="username" class="block w-full" type="text" name="username" :value="old('username') ? old('username') : Auth::guard('admin')->user()->username" placeholder="Enter first name" required />
-                    <p class="text-xs mt-1">{{ __('Username & Password is used for login purposes. Be cautious while updating it to a new one.') }} </p>
+                    <p class="text-xs mt-1 text-gray-500 dark:text-gray-400">{{ __('Username & Password is used for login purposes. Be cautious while updating it to a new one.') }} </p>
                     <x-admin.input-error :messages="$errors->get('username')" class="mt-2" />
                 </div>
             </div>

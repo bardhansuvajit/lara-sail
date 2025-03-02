@@ -5,7 +5,7 @@
 ])
 
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="light">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,7 +37,6 @@
 
             <main class="p-o md:p-4 md:ml-64 justify-center h-auto pt-10 md:pt-[4.3rem]">
                 <div class="flex flex-col justify-center items-center">
-                    {{-- <section class="bg-white max-w-screen-{{ $screen }} py-8 md:px-4 rounded-lg antialiased dark:bg-gray-800 md:py-4"> --}}
                     <section class="bg-white w-full {!! $screen !!} py-8 md:px-4 rounded-lg antialiased dark:bg-gray-800 md:py-4">
                         <div class="mx-auto px-4 2xl:px-0">
 

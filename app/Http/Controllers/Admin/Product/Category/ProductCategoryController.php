@@ -23,7 +23,7 @@ class ProductCategoryController
         $request->validate([
             'keyword' => 'nullable|string|max:255',
             'perPage' => 'nullable|string',
-            'sortBy' => 'nullable|string|in:id,title,slug',
+            'sortBy' => 'nullable|string|in:id,title,level',
             'sortOrder' => 'nullable|string|in:asc,desc',
             'status' => 'nullable|string|in:0,1'
         ]);
