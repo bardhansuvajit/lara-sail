@@ -1,7 +1,11 @@
 <div 
     x-data="{ 
-        selectedCategoryId: '', 
-        selectedCategoryTitle: '', 
+        {{-- selectedCategoryId: '', 
+        selectedCategoryTitle: '',  --}}
+        {{-- selectedCategoryId: @json(old('category_id', '')),
+        selectedCategoryTitle: @json(old('category_name', '')), --}}
+        selectedCategoryId: {{ json_encode(old('category_id', '')) }}, 
+        selectedCategoryTitle: {{ json_encode(old('category_name', '')) }},
         setCategory(id, title) { 
             this.selectedCategoryId = id;
             this.selectedCategoryTitle = title; 
@@ -17,7 +21,7 @@
                 iconPosition="end" 
                 type="text" 
                 name="category_name" 
-                :value="old('title')" 
+                :value="old('category_name')" 
                 placeholder="Search category" 
                 aria-autocomplete="off" 
                 autocomplete="off" 

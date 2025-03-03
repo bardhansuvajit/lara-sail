@@ -45,19 +45,11 @@
             </div>
 
             <div class="grid gap-4 mb-4 grid-cols-2">
+
                 @livewire('product-page-category-generate')
 
                 @livewire('product-page-collection-generate')
 
-                {{-- <div>
-                    <x-admin.input-label for="category_id" :value="__('Collection *')" />
-                    <x-admin.input-select id="category_id" name="category_id" title="Select Category" class="w-full">
-                        @slot('options')
-                            <x-admin.input-select-option value="" selected="selected"> None </x-admin.input-select-option>
-                        @endslot
-                    </x-admin.input-select>
-                    <x-admin.input-error :messages="$errors->get('category_id')" class="mt-2" />
-                </div> --}}
             </div>
 
             <div class="items-center space-x-4 flex my-6">

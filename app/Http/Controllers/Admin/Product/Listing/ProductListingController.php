@@ -61,6 +61,8 @@ class ProductListingController
             'image.max' => 'The image field must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
         ]);
 
+        dd('final');
+
         // $resp = $this->productListingRepository->store($request->all());
         // return redirect()->route('admin.product.listing.index')->with($resp['status'], $resp['message']);
     }

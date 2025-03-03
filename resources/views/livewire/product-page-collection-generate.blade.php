@@ -1,8 +1,9 @@
 <div 
     x-data="{ 
-        selectedCollectionIds: [], 
-        selectedCollectionTitles: [], 
+        selectedCollectionIds: {{ json_encode(Arr::wrap(old('collection_id', []))) }},
+        selectedCollectionTitles: ({{ json_encode(old('collection_name', '')) }}).split(',').map(item => item.trim()).filter(item => item),
         setCollection(id, title) { 
+            id = String(id);
             let index = this.selectedCollectionIds.indexOf(id);
             if (index === -1) { 
                 this.selectedCollectionIds.push(id); 
@@ -22,7 +23,7 @@
                 icon='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-120 300-300l58-58 122 122 122-122 58 58-180 180ZM358-598l-58-58 180-180 180 180-58 58-122-122-122 122Z"/></svg>' 
                 iconPosition="end" 
                 type="text" 
-                {{-- name="collection_name"  --}}
+                name="collection_name" 
                 :value="old('title')" 
                 placeholder="Search collection" 
                 aria-autocomplete="off" 
@@ -60,7 +61,7 @@
                                 <div class="w-full flex items-center justify-between">
                                     <div class="flex items-center justify-between w-full">
                                         <span class="text-sm">{{ $collection['title'] }}</span>
-                                        <span x-show="selectedCollectionIds.includes('{{ $collection['id'] }}')" class="w-4 h-4 text-green-500 dark:text-green-500">
+                                        <span x-show="selectedCollectionIds.includes(String('{{ $collection['id'] }}'))" class="w-4 h-4 text-green-500 dark:text-green-500">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>
                                         </span>
                                     </div>
@@ -75,6 +76,9 @@
         </x-slot>
     </x-dropdown>
 
-    <input type="hidden" name="collection_id" :value="selectedCollectionIds.join(',')" required>
+    <input type="hidden" name="collection_name" :value="selectedCollectionTitles.join(',')" required>
+    {{-- <input type="hidden" name="collection_id" :value="selectedCollectionIds.join(',')" required> --}}
+    {{-- <input type="hidden" name="collection_id" :value="selectedCollectionIds.length > 0 ? selectedCollectionIds.join(',') : ''" required> --}}
+    <input type="hidden" name="collection_id" :value="selectedCollectionIds.length ? selectedCollectionIds.join(',') : null" required>
     <x-admin.input-error :messages="$errors->get('collection_id')" class="mt-2" />
 </div>
