@@ -238,7 +238,7 @@
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 <div class="flex space-x-2 items-center">
-                                    @if($item->image_s) <div class="w-8 h-8 overflow-hidden flex"><img src="{{ Storage::url($item->image_s) }}" alt=""></div> @endif
+                                    @if($item->image_s) <div class="h-10 overflow-hidden flex"><img src="{{ Storage::url($item->image_s) }}" alt=""></div> @endif
                                     <div>
                                         <p class="text-xs font-bold">{{ $item->title }}</p>
                                         <p class="text-xs text-gray-500">{{ $item->slug }}</p>

@@ -60,7 +60,10 @@
                                 href="javascript: void(0)">
                                 <div class="w-full flex items-center justify-between">
                                     <div class="flex items-center justify-between w-full">
-                                        <span class="text-sm">{{ $collection['title'] }}</span>
+                                        <div class="flex space-x-2 items-center">
+                                            @if($collection['image_s']) <div class="h-8 overflow-hidden flex"><img src="{{ Storage::url($collection['image_s']) }}" alt=""></div> @endif
+                                            <p class="text-xs">{{ $collection['title'] }}</p>
+                                        </div>
                                         <span x-show="selectedCollectionIds.includes(String('{{ $collection['id'] }}'))" class="w-4 h-4 text-green-500 dark:text-green-500">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>
                                         </span>
@@ -77,8 +80,6 @@
     </x-dropdown>
 
     <input type="hidden" name="collection_name" :value="selectedCollectionTitles.join(',')" required>
-    {{-- <input type="hidden" name="collection_id" :value="selectedCollectionIds.join(',')" required> --}}
-    {{-- <input type="hidden" name="collection_id" :value="selectedCollectionIds.length > 0 ? selectedCollectionIds.join(',') : ''" required> --}}
     <input type="hidden" name="collection_id" :value="selectedCollectionIds.length ? selectedCollectionIds.join(',') : null" required>
     <x-admin.input-error :messages="$errors->get('collection_id')" class="mt-2" />
 </div>

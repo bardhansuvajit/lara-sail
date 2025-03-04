@@ -3,7 +3,7 @@
 
         <ul class="space-y-2">
             <li>
-                <a class="flex items-center p-2 font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
+                <a class="flex items-center p-2 font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
                     @if(request()->routeIs('admin.dashboard.index')) bg-primary-200 dark:bg-gray-600 @endif"
                     href="{{ route('admin.dashboard.index') }}"
                 >
@@ -16,7 +16,7 @@
             </li>
 
             <li>
-                <a class="flex items-center p-2 font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
+                <a class="flex items-center p-2 font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
                     @if(request()->routeIs('admin.user.index')) bg-primary-200 dark:bg-gray-600 @endif"
                     href="{{ route('admin.user.index') }}"
                 >
@@ -29,7 +29,7 @@
             </li>
 
             <li x-data="{ expanded: @if(request()->is('admin/product*')) true @else false @endif }">
-                <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 cursor-pointer 
+                <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 cursor-pointer 
                     @if(request()->is('admin/product*')) bg-primary-200 dark:bg-gray-600 @endif "
                     @click="expanded = ! expanded" 
                 >
@@ -47,7 +47,7 @@
                 <div x-show="expanded" x-collapse>
                     <ul class="ml-6 my-3 space-y-2">
                         <li>
-                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
+                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
                                 @if(request()->is('admin/product/listing*')) bg-primary-200 dark:bg-gray-600 @endif"
                                 href="{{ route('admin.product.listing.index') }}"
                             >
@@ -60,7 +60,7 @@
                         </li>
 
                         <li>
-                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
+                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
                                 @if(request()->is('admin/product/category*')) bg-primary-200 dark:bg-gray-600 @endif"
                                 href="{{ route('admin.product.category.index') }}"
                             >
@@ -73,7 +73,7 @@
                         </li>
 
                         <li>
-                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
+                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
                                 @if(request()->is('admin/product/collection*')) bg-primary-200 dark:bg-gray-600 @endif"
                                 href="{{ route('admin.product.collection.index') }}"
                             >
@@ -89,7 +89,7 @@
             </li>
 
             <li x-data="{ expanded: @if(request()->is('admin/master*')) true @else false @endif }">
-                <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 cursor-pointer 
+                <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 cursor-pointer 
                     @if(request()->is('admin/master*')) bg-primary-200 dark:bg-gray-600 @endif "
                     @click="expanded = ! expanded" 
                 >
@@ -107,7 +107,7 @@
                 <div x-show="expanded" x-collapse>
                     <ul class="ml-6 my-3 space-y-2">
                         <li>
-                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
+                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
                                 @if(request()->is('admin/master/country*')) bg-primary-200 dark:bg-gray-600 @endif"
                                 href="{{ route('admin.master.country.index') }}"
                             >
@@ -124,7 +124,7 @@
             </li>
 
             <li x-data="{ expanded: @if(request()->is('admin/developer*')) true @else false @endif }">
-                <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 cursor-pointer 
+                <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 cursor-pointer 
                     @if(request()->is('admin/developer*')) bg-primary-200 dark:bg-gray-600 @endif "
                     @click="expanded = ! expanded" 
                 >
@@ -142,7 +142,7 @@
                 <div x-show="expanded" x-collapse>
                     <ul class="ml-6 my-3 space-y-2">
                         <li>
-                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
+                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
                                 @if(request()->is('admin/developer/trash*')) bg-primary-200 dark:bg-gray-600 @endif"
                                 href="{{ route('admin.developer.trash.index') }}"
                             >

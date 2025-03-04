@@ -14,7 +14,7 @@
                 <div class="grid grid-cols-4 gap-1">
                     @if (!empty($data->image_m))
                         <div class="m-auto">
-                            <img src="{{ Storage::url($data->image_m) }}" alt="" class="h-16">
+                            <img src="{{ Storage::url($data->image_m) }}" alt="" class="w-full">
                         </div>
                     @else
                         <div class="w-16 h-16 m-auto">
