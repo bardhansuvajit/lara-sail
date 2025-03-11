@@ -55,7 +55,7 @@
                 <div class="w-full col-span-2">
                     <div class="flex space-x-1 items-end">
                         <div class="w-max">
-                            <x-admin.input-label for="perPage" :value="__('Order by')" />
+                            <x-admin.input-label for="perPage" :value="__('Show')" />
                             <x-admin.input-select 
                                 id="perPage" 
                                 name="perPage" 

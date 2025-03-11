@@ -6,14 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Interfaces\ProductListingInterface;
+use App\Interfaces\CountryInterface;
 
 class ProductListingController
 {
     private ProductListingInterface $productListingRepository;
+    private CountryInterface $countryRepository;
 
-    public function __construct(ProductListingInterface $productListingRepository)
+    public function __construct(ProductListingInterface $productListingRepository, CountryInterface $countryRepository)
     {
         $this->productListingRepository = $productListingRepository;
+        $this->countryRepository = $countryRepository;
     }
 
     public function index(Request $request): View
@@ -44,21 +47,43 @@ class ProductListingController
 
     public function create(): View
     {
-        return view('admin.product.listing.create');
+        $countries_filters = [
+            'status' => 1,
+        ];
+        $activeCountries = $this->countryRepository->list('', $countries_filters, 'all', 'name', 'asc');
+        return view('admin.product.listing.create', [
+            'activeCountries' => $activeCountries['data']
+        ]);
     }
 
     public function store(Request $request)
     {
         // dd($request->all());
 
+        // dd(implode(',', developerSettings('product_options')->type));
+
         $request->validate([
-            'level' => 'required|string|in:Product,Service',
+            'type' => 'required|string|in:'.implode(',', developerSettings('product_options')->type),
             'title' => 'required|string|min:2|max:1000',
             'description' => 'required|string|min:2',
-            'category_id' => 'required|integer',
-            'collection_id' => 'required'
+
+            'category_id' => 'required|integer|min:1',
+            'category_name' => 'required|string|min:2',
+            'collection_id' => 'required|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
+            'collection_name' => 'required|string|min:2',
+
+            'currency' => 'required|integer|min:1|exists:countries,id',
+            'selling_price' => 'required|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
+            'mrp' => 'nullable|numeric|min:1|max:1000000|gt:selling_price|regex:'.PRICE_REGEX,
+            'discount' => 'nullable|numeric|min:1|max:100|gt:selling_price|regex:'.PRICE_REGEX,
+            'cost' => 'nullable|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
+            'profit' => 'nullable|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
+            'margin' => 'nullable|integer|min:1|max:99',
         ], [
-            'image.max' => 'The image field must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
+            'selling_price.regex' => 'The selling price accepts value upto 2 decimals.',
+            'mrp.regex' => 'The selling price accepts value upto 2 decimals.',
+            'cost.regex' => 'The selling price accepts value upto 2 decimals.',
+            'profit.regex' => 'The selling price accepts value upto 2 decimals.',
         ]);
 
         dd('final');

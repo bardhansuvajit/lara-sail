@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Str;
 use App\Repositories\DeveloperSettingRepository;
+use App\Repositories\ApplicationSettingRepository;
+
+define("PRICE_REGEX", "/^\d+(\.\d{1,2})?$/"); // regex for up to 2 decimal places
 
 if (!function_exists('fileStore')) {
     /**
@@ -103,6 +106,14 @@ if (!function_exists('developerSettings')) {
     function developerSettings(String $key) {
         $developerSettingRepository = app(DeveloperSettingRepository::class);
         $resp = $developerSettingRepository->getByKey($key);
+        return json_decode($resp['data']->value);
+    }
+}
+
+if (!function_exists('applicationSettings')) {
+    function applicationSettings(String $key) {
+        $applicationSettingRepository = app(ApplicationSettingRepository::class);
+        $resp = $applicationSettingRepository->getByKey($key);
         return json_decode($resp['data']->value);
     }
 }

@@ -35,10 +35,10 @@ class ProfileController
      */
     public function edit(): View
     {
-        $filters = [
+        $countries_filters = [
             'status' => 1,
         ];
-        $activeCountries = $this->countryRepository->list('', $filters, 'all', 'name', 'asc');
+        $activeCountries = $this->countryRepository->list('', $countries_filters, 'all', 'name', 'asc');
         return view('admin.profile.edit', [
             'activeCountries' => $activeCountries['data']
         ]);

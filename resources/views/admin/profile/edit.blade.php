@@ -55,9 +55,9 @@
                         name="phone_no" 
                         :value="old('phone_no') ? old('phone_no') : Auth::guard('admin')->user()->phone_no" 
                         placeholder="Enter phone number" 
-                        selectTitle="India (+91)"
-                        selectId="phone_country_code"
-                        selectName="phone_country_code"
+                        selectTitle="India (+91)" 
+                        selectId="phone_country_code" 
+                        selectName="phone_country_code" 
                         required=true 
                     >
                         @slot('options')

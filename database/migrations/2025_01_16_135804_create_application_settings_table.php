@@ -36,6 +36,12 @@ return new class extends Migration
                 'value' => 'Example company LLP',
                 'description' => '',
             ],
+            [
+                'category' => 'stage2',
+                'key' => 'country_id',
+                'value' => 82,
+                'description' => 'application country id from countries table',
+            ],
         ];
 
         DB::table('application_settings')->insert($data);

@@ -36,6 +36,10 @@ return new class extends Migration
             'image_thumbnail_height_array' => [100, 250, 500]
         ]);
 
+        $product_options = json_encode([
+            'type' => ['physical product', 'service']
+        ]);
+
         $data = [
             [
                 'category' => 'file_upload',
@@ -47,6 +51,12 @@ return new class extends Migration
                 'category' => 'file_upload',
                 'key' => 'file_upload',
                 'value' => $file_upload,
+                'description' => '',
+            ],
+            [
+                'category' => 'product',
+                'key' => 'product_options',
+                'value' => $product_options,
                 'description' => '',
             ],
         ];

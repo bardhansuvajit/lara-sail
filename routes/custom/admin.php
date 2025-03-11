@@ -54,6 +54,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // product
         Route::prefix('product')->name('product.')->group(function() {
+            // listing
             Route::prefix('listing')->name('listing.')->controller(ProductListingController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');

@@ -55,7 +55,7 @@
                 <div class="w-full col-span-2">
                     <div class="flex space-x-1 items-end">
                         <div class="w-max">
-                            <x-admin.input-label for="perPage" :value="__('Order by')" />
+                            <x-admin.input-label for="perPage" :value="__('Show')" />
                             <x-admin.input-select 
                                 id="perPage" 
                                 name="perPage" 
@@ -200,7 +200,7 @@
                         <th scope="col" class="px-2 py-1">Name</th>
                         <th scope="col" class="px-2 py-1">Phone</th>
                         <th scope="col" class="px-2 py-1">ZIP</th>
-                        <th scope="col" class="px-2 py-1">Courrency</th>
+                        <th scope="col" class="px-2 py-1">Currency</th>
                         <th scope="col" class="px-2 py-1">Continent</th>
                         <th scope="col" class="px-2 py-1">Language</th>
                         <th scope="col" class="px-2 py-1">Shipping/ COD</th>

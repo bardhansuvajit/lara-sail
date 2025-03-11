@@ -120,6 +120,36 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
         }
     }
 
+    public function getByKey(String $key)
+    {
+        try {
+            $data = ApplicationSetting::where('key', $key)->first();
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
     public function update(Array $array)
     {
         try {
@@ -146,102 +176,6 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
                 'code' => 500,
                 'status' => 'error',
                 'message' => 'An error occurred while updating data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function delete(Int $id)
-    {
-        try {
-            $data = $this->getById($id);
-
-            if ($data['code'] == 200) {
-                $data['data']->delete();
-
-                return [
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data deleted',
-                    'data' => $data,
-                ];
-            } else {
-                return $data;
-            }
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while deleting data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function bulkAction(Array $array)
-    {
-        try {
-            $data = ProductCategory::whereIn('id', $array['ids'])->get();
-            if ($array['action'] == 'delete') {
-                $data->each(function ($item) {
-                    // Handling trash
-                    $this->trashRepository->store([
-                        'model' => 'ProductCollection',
-                        'table_name' => 'product_collections',
-                        'deleted_row_id' => $item->id,
-                        'thumbnail' => $item->image_s,
-                        'title' => $item->title,
-                        'description' => $item->title.' data deleted from product collections table',
-                        'status' => 'deleted',
-                    ]);
-
-                    $item->delete();
-                });
-
-                return [
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data deleted',
-                    'data' => [],
-                ];
-            } else {
-                return [
-                    'code' => 400,
-                    'status' => 'failure',
-                    'message' => 'Invalid action',
-                    'data' => [],
-                ];
-            }
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while updating data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function import(UploadedFile $file)
-    {
-        try {
-            $filePath = fileStore($file);
-            $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'ProductCategory');
-
-            return [
-                'code' => 200,
-                'status' => 'success',
-                'message' => $processedCount.' Data uploaded',
-                'data' => [],
-            ];
-        } catch (\Exception $e) {
-            \Log::error('CSV Import Error: ' . $e->getMessage());
-
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while uploading data.',
                 'error' => $e->getMessage(),
             ];
         }
