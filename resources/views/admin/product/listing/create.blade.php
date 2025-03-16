@@ -1,5 +1,4 @@
 <x-admin-app-layout
-    {{-- screen="md:max-w-screen-lg" --}}
     screen="md:w-full"
     title="{{ __('Create Product Listing') }}"
     :breadcrumb="[
@@ -8,19 +7,17 @@
     ]"
 >
 
-    <section class="grid grid-cols-6 md:grid-cols-10 gap-4">
-        <div class="col-span-2">
-            {{-- @include('admin.includes.product-listing-sidebar') --}}
-        </div>
+    <section class="grid grid-cols-6 lg:grid-cols-10 gap-4">
+        {{-- <div class="col-span-2"></div> --}}
 
-        <div class="col-span-6">
+        <div class="col-span-6 lg:col-start-3">
             <div class="w-full mt-2">
                 <form action="{{ route('admin.product.listing.store') }}" method="post" enctype="multipart/form-data" onsubmit="syncEditorContent()">
                     @csrf
 
                     <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Basics</h4>
 
-                    <div class="grid gap-4 mb-4 sm:grid-cols-3">
+                    <div class="grid gap-4 mb-4 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
                         <div>
                             <x-admin.input-label for="type" :value="__('Type *')" />
                             <ul class="flex space-x-2">
@@ -56,6 +53,23 @@
                     </div>
 
                     <div class="grid gap-4 mb-4 grid-cols-1">
+                        <div x-data="{ open: {{ old('short_description') ? 'true' : 'false' }} }">
+                            <a href="javascript: void(0)" class="text-xs flex space-x-2 items-center text-gray-600 dark:text-gray-400" @click="open = !open">
+                                <div class="w-3 h-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                                </div>
+                                Add Short description
+                            </a>
+    
+                            <div x-show="open" class="mt-4">
+                                <x-admin.input-label for="short_description" :value="__('Short Description')" />
+                                <x-admin.textarea id="short_description" class="block" type="text" name="short_description" :value="old('short_description')" placeholder="Enter Short Description" />
+                                <x-admin.input-error :messages="$errors->get('short_description')" class="mt-2" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid gap-4 mb-4 grid-cols-1">
                         <div>
                             <x-admin.input-label for="description" :value="__('Image *')" />
                             <x-admin.file-input-drag-drop class="h-12" name="image" multiple />
@@ -63,11 +77,17 @@
                         </div>
                     </div>
 
-                    <div class="grid gap-4 mb-4 grid-cols-3">
+                    <div class="grid gap-4 mb-4 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
 
-                        @livewire('product-page-category-generate')
+                        @livewire('product-page-category-generate', [
+                            'category_id' => old('category_id', 0),
+                            'category_name' => old('category_name', ''),
+                        ])
 
-                        @livewire('product-page-collection-generate')
+                        @livewire('product-page-collection-generate', [
+                            'collection_id' => old('collection_id', ''),
+                            'collection_name' => old('collection_name', ''),
+                        ])
 
                     </div>
 
@@ -75,7 +95,7 @@
 
                     <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Pricing</h4>
 
-                    <div class="grid gap-4 mb-4 grid-cols-3">
+                    <div class="grid gap-4 mb-4 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
                         <div>
                             <x-admin.input-label for="selling_price" :value="__('Selling price *')" />
                             <x-admin.text-input-with-dropdown 
@@ -116,7 +136,7 @@
                         </div>
                     </div>
 
-                    <div class="grid gap-4 mb-4 grid-cols-3">
+                    <div class="grid gap-4 mb-4 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
                         <div>
                             <x-admin.input-label for="cost" :value="__('Cost per item')" />
                             <x-admin.text-input id="cost" class="block" type="tel" name="cost" :value="old('cost')" placeholder="Enter Cost" />
@@ -124,18 +144,18 @@
                         </div>
                         <div>
                             <x-admin.input-label for="profit" :value="__('Profit')" />
-                            <x-admin.text-input id="profit" class="block" type="tel" name="profit" :value="old('profit')" placeholder="Profit" />
+                            <x-admin.text-input id="profit" class="block" type="tel" name="profit" :value="old('profit') ?? 0" placeholder="Profit will be calculated automatically" />
                             <x-admin.input-error :messages="$errors->get('profit')" class="mt-2" />
                         </div>
                         <div>
                             <x-admin.input-label for="margin" :value="__('Margin')" />
-                            <x-admin.text-input id="margin" class="block" type="number" name="margin" :value="old('margin')" placeholder="Margin" />
+                            <x-admin.text-input id="margin" class="block" type="tel" name="margin" :value="old('margin') ?? 0" placeholder="Margin will be calculated automatically" />
                             <x-admin.input-error :messages="$errors->get('margin')" class="mt-2" />
                         </div>
                     </div>
 
                     @if (count($activeCountries) > 0)
-                        <div class="grid gap-4 mb-4 grid-cols-3">
+                        <div class="grid gap-4 mb-4 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
                             <div>
                                 <a href="" class="text-xs flex space-x-2 items-center text-gray-600 dark:text-gray-400">
                                     <div class="w-3 h-3">
@@ -151,31 +171,32 @@
 
                     <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Inventory</h4>
 
-                    <div class="grid gap-4 mb-4 grid-cols-3">
+                    <div class="grid gap-4 mb-4 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
                         <div>
                             <x-admin.input-label for="sku" :value="__('SKU')" />
-                            <x-admin.text-input id="sku" class="block" type="number" name="sku" :value="old('sku')" placeholder="Enter SKU" />
+                            <x-admin.text-input id="sku" class="block" type="text" name="sku" :value="old('sku')" placeholder="Enter SKU" maxlength="50" />
                             <x-admin.input-error :messages="$errors->get('sku')" class="mt-2" />
                         </div>
                     </div>
 
-                    <div class="grid gap-4 grid-cols-3 items-center">
+                    <div class="grid gap-4 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 items-center">
                         <div>
                             <x-admin.input-checkbox 
                                 id="quantity-track-checkbox" 
                                 name="quantity_track" 
                                 value="yes" 
-                                class="mb-3"
-                                label="Track quantity" />
+                                class="mb-3" 
+                                label="Track quantity" 
+                                :checked="old('quantity_track') === 'yes'" />
 
-                            <div id="qtyValueField" class="mb-4 hidden">
+                            <div id="qtyValueField" class="mb-4 {{ old('quantity_track') !== 'yes' ? 'hidden' : '' }}">
                                 <x-admin.input-label for="quantity" :value="__('Quantity')" />
-                                <x-admin.text-input id="quantity" class="block" type="number" name="quantity" :value="old('quantity')" placeholder="Enter Quantity" />
+                                <x-admin.text-input id="quantity" class="block" type="tel" name="quantity" :value="old('quantity')" placeholder="Enter Quantity" />
                                 <x-admin.input-error :messages="$errors->get('quantity')" class="mt-2" />
                             </div>
                         </div>
                     </div>
-                    <div class="grid gap-4 mb-4 grid-cols-3">
+                    <div class="grid gap-4 mb-4 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
                         <div>
                             <x-admin.input-checkbox 
                                 id="out-of-stock-sell-checkbox"
@@ -189,7 +210,7 @@
 
                     <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Variants</h4>
 
-                    <div class="grid gap-4 mb-4 grid-cols-3">
+                    <div class="grid gap-4 mb-4 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
                         <div>
                             <a href="" class="text-xs flex space-x-2 items-center text-gray-600 dark:text-gray-400">
                                 <div class="w-3 h-3">
@@ -204,7 +225,7 @@
 
                     <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Search Engine Content</h4>
 
-                    <div class="grid gap-4 mb-4 grid-cols-1">
+                    <div class="grid gap-4 mb-4 grid-cols-1 items-center">
                         <div>
                             <x-admin.input-label for="meta_title" :value="__('Meta Title')" />
                             <x-admin.text-input id="meta_title" class="block" type="text" name="meta_title" :value="old('meta_title')" placeholder="Enter Meta Title" />
@@ -212,7 +233,7 @@
                         </div>
                     </div>
 
-                    <div class="grid gap-4 mb-4 grid-cols-1">
+                    <div class="grid gap-4 mb-4 grid-cols-1 items-center">
                         <div>
                             <x-admin.input-label for="meta_description" :value="__('Meta Description')" />
                             <x-admin.textarea id="meta_description" class="block" type="text" name="meta_description" :value="old('meta_description')" placeholder="Enter Meta Description" />
@@ -220,7 +241,7 @@
                         </div>
                     </div>
 
-                    <div class="items-center space-x-4 flex my-6">
+                    <div class="items-center space-x-4 flex mt-4 mb-5 p-4 sticky bottom-5 rounded shadow border bg-white dark:border-gray-700 dark:bg-gray-800">
                         <x-admin.button
                             type="submit"
                             element="button">
@@ -234,34 +255,10 @@
             </div>
         </div>
 
-        <div class="col-span-2">
-        </div>
+        {{-- <div class="col-span-2"></div> --}}
     </section>
 </x-admin-app-layout>
 
 @vite([
     'resources/js/rte-script.js'
 ])
-
-<script>
-    function syncEditorContent() {
-        document.getElementById('hiddenDescription').value = document.getElementById('editor').innerHTML;
-    }
-
-    
-
-    if (document.getElementById('mrp')) {
-        const mrp = document.getElementById('mrp');
-        mrp.addEventListener('keyup', function() {
-            const mrp = this.value;
-            
-        });
-    }
-
-    if (document.getElementById('editor')) {
-        const editor = document.getElementById('editor');
-        editor.addEventListener('focus', function() {
-            console.log('focus');
-        });
-    }
-</script>

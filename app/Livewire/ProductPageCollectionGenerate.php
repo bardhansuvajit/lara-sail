@@ -12,12 +12,16 @@ class ProductPageCollectionGenerate extends Component
     public array $selectedCollections = [];
     public array $collectionsArrSend = [];
     public ?int $parentId = null;
+    public ?string $collection_id;
+    public ?string $collection_name;
 
     // default livewire constructor
-    public function mount(string $collection = null)
+    public function mount(string $collection = null, $collection_id = '', $collection_name = '')
     {
         $this->collection = '';
         $this->selectedCollections = $collection ? explode(',', $collection) : [];
+        $this->collection_id = $collection_id;
+        $this->collection_name = $collection_name;
         $this->getCollectionOptions();
     }
 
@@ -28,10 +32,11 @@ class ProductPageCollectionGenerate extends Component
 
     public function getCollectionOptions()
     {
-        $this->collectionsArrSend = ProductCollection::where('title', 'like', '%'.$this->collection.'%')
-                        ->orderBy('position')
-                        ->get()
-                        ->toArray();
+        $query = ProductCollection::query();
+        if ($this->collection) {
+            $query->where('title', 'like', "%{$this->collection}%");
+        }
+        $this->collectionsArrSend = $query->orderBy('position')->get()->toArray();
     }
 
     public function render()

@@ -10,12 +10,22 @@ class ProductPageCategoryGenerate extends Component
     public ?string $category;
     public array $categories = [];
     public ?int $parentId = null;
+    public int $category_id;
+    public ?string $category_name;
 
     // default livewire constructor
-    public function mount($category = null)
+    public function mount($category = null, $category_id = '', $category_name = '')
     {
         $this->category = $category ?? '';
+        $this->category_id = $category_id;
+        $this->category_name = $category_name;
         $this->getCategoryOptions();
+    }
+
+    public function setCategory($id, $title)
+    {
+        $this->category_id = $id;
+        $this->category_name = $title;
     }
 
     public function updatedCategory()
@@ -34,7 +44,12 @@ class ProductPageCategoryGenerate extends Component
 
     public function getCategoryOptionsByParentId($parentId)
     {
-        $this->categories = ProductCategory::where('parent_id', $parentId)->with('childDetails')->orderBy('position')->get()->toArray();
+        $this->categories = ProductCategory::where('parent_id', $parentId)
+            ->with(['childDetails' => fn($q) => $q->select('id', 'parent_id', 'title')])
+            ->select(['id', 'parent_id', 'title', 'image_s', 'level'])
+            ->orderBy('position')
+            ->get()
+            ->toArray();
     }
 
     public function render()

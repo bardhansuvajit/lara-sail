@@ -1,9 +1,10 @@
 <div 
     x-data="{ 
         selectedCollectionIds: {{ json_encode(Arr::wrap(old('collection_id', []))) }} || [],
+        {{-- selectedCollectionTitles: ({{ json_encode(old('collection_name', '')) }}).split(',').map(item => item.trim()).filter(item => item), --}}
         selectedCollectionTitles: ({{ json_encode(old('collection_name', '')) }} || '').split(',').map(item => item.trim()).filter(item => item),
         setCollection(id, title) { 
-            id = String(id); 
+            id = String(id);
             let index = this.selectedCollectionIds.indexOf(id);
             if (index === -1) { 
                 this.selectedCollectionIds.push(id); 
@@ -12,13 +13,8 @@
                 this.selectedCollectionIds.splice(index, 1); 
                 this.selectedCollectionTitles.splice(index, 1);
             }
-        },
-        removeCollection(index) {
-            this.selectedCollectionIds.splice(index, 1);
-            this.selectedCollectionTitles.splice(index, 1);
         }
-    }"
->
+    }">
     <x-admin.input-label for="collection_id" :value="__('Collection *')" />
     <x-dropdown align="top" width="full">
         <x-slot name="trigger">
@@ -44,7 +40,7 @@
                         <button 
                             type="button" 
                             class="h-5 w-5 hover:bg-gray-500 dark:hover:bg-gray-500 focus:outline-none rounded" 
-                            @click="removeCollection(index)"
+                            @click="selectedCollectionIds.splice(index, 1); selectedCollectionTitles.splice(index, 1);"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
                         </button>

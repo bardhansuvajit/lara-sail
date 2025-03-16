@@ -159,3 +159,49 @@ if (!function_exists('resizeImage')) {
         Storage::disk('public')->put($fileName, $thumbnailContent);
     }
 }
+
+if (!function_exists('discountPercentageCalc')) {
+    function discountPercentageCalc($sellingPrice, $mrp) {
+        if (!is_numeric($mrp) || !is_numeric($sellingPrice) || $mrp <= 0) {
+            return 0;
+        }
+
+        if ($sellingPrice < $mrp) {
+            $discount = (($mrp - $sellingPrice) / $mrp) * 100;
+            return round($discount);
+        } else {
+            return 0;
+        }
+    }
+}
+
+if (!function_exists('profitCalc')) {
+    function profitCalc($sellingPrice, $cost) {
+        if (!is_numeric($cost) || !is_numeric($sellingPrice) || $cost <= 0) {
+            return 0;
+        }
+
+        if ($cost < $sellingPrice) {
+            $profit = $sellingPrice - $cost;
+            return round($profit, 2);
+        } else {
+            return 0;
+        }
+    }
+}
+
+if (!function_exists('marginCalc')) {
+    function marginCalc($sellingPrice, $cost) {
+        if (!is_numeric($cost) || !is_numeric($sellingPrice) || $cost <= 0) {
+            return 0;
+        }
+
+        if ($cost < $sellingPrice) {
+            // $margin = (($mrp - $sellingPrice) / $mrp) * 100;
+            $margin = (profitCalc($sellingPrice, $cost) / $sellingPrice) * 100;
+            return round($margin, 2);
+        } else {
+            return 0;
+        }
+    }
+}

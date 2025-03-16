@@ -17,16 +17,21 @@ return new class extends Migration
             $table->text('title');
             $table->text('slug');
 
+            $table->bigInteger('category_id');
+            $table->json('collection_ids');
+
             $table->text('short_description')->nullable();
             $table->longText('long_description')->nullable();
             $table->text('tags')->nullable();
 
+            $table->text('sku')->nullable();
+            $table->bigInteger('quantity')->nullable();
+
             $table->text('meta_title')->nullable();
             $table->text('meta_desc')->nullable();
-            $table->text('meta_keyword')->nullable();
 
             // $table->bigInteger('listing_by')->nullable();
-            $table->tinyInteger('type')->default(1)->comment('1: product | 2: service');
+            $table->string('type', 100);
             $table->tinyInteger('status')->default(1);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

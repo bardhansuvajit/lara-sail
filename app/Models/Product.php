@@ -9,6 +9,11 @@ class Product extends Model
 {
     use SoftDeletes;
 
+    public function category()
+    {
+        return $this->belongsTo('App\Models\ProductCategory', 'category_id', 'id');
+    }
+
     public function imageDetails()
     {
         return $this->hasMany('App\Models\ProductImage', 'product_id', 'id')->orderBy('position')->orderBy('created_at');

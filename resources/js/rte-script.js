@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (textarea) {
             const wrapper = document.createElement('div');
-            wrapper.className = 'w-full border border-gray-200 rounded bg-gray-50 dark:bg-gray-700 dark:border-gray-600';
+            wrapper.className = 'w-full border border-gray-200 rounded bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus-within:ring-1 focus-within:ring-primary-500 focus-within:dark:ring-primary-600 focus-within:border-primary-500 focus-within:dark:border-primary-600 rounded-md shadow-sm';
 
             // Toolbar div
             const toolbar = document.createElement('div');

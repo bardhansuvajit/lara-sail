@@ -127,7 +127,7 @@ class CountryController
         $perPage = $request->input('perPage', 15);
         $keyword = $request->input('keyword', '');
         $sortBy = $request->input('sortBy', 'id');
-        $sortOrder = $request->input('sortOrder', 'desc');
+        $sortOrder = $request->input('sortOrder', 'asc');
         $filters = [
             'status' => $request->input('status', ''),
         ];

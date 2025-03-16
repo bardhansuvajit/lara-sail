@@ -81,21 +81,30 @@ class ProductListingRepository implements ProductListingInterface
 
     public function store(Array $array)
     {
-        // dd($array['image']);
+        // dd($array);
+
         try {
             $data = new Product();
+            $data->type = $array['type'];
             $data->title = $array['title'];
             $data->slug = Str::slug($array['title']);
-            $data->parent_id = $array['parent_id'] ?? null;
-            $data->level = $array['level'];
+            $data->short_description = $array['short_description'];
+            $data->long_description = $array['long_description'];
+            $data->category_id = $array['category_id'];
+            $data->collection_ids = $array['collection_ids'];
 
-            if (!empty($array['image'])) {
-                $uploadResp = fileUpload($array['image'], 'p-cat');
+            $data->sku = $array['sku'];
+            $data->quantity = $array['quantity'];
+            $data->meta_title = $array['meta_title'];
+            $data->meta_desc = $array['meta_description'];
 
-                $data->image_s = $uploadResp['smallThumbName'];
-                $data->image_m = $uploadResp['mediumThumbName'];
-                $data->image_l = $uploadResp['largeThumbName'];
-            }
+            // if (!empty($array['image'])) {
+            //     $uploadResp = fileUpload($array['image'], 'p-cat');
+
+            //     $data->image_s = $uploadResp['smallThumbName'];
+            //     $data->image_m = $uploadResp['mediumThumbName'];
+            //     $data->image_l = $uploadResp['largeThumbName'];
+            // }
 
             $data->save();
 
@@ -152,18 +161,31 @@ class ProductListingRepository implements ProductListingInterface
             $data = $this->getById($array['id']);
 
             if ($data['code'] == 200) {
+                $data['data']->type = $array['type'];
                 $data['data']->title = $array['title'];
-                $data['data']->slug = \Str::slug($array['title']);
-                $data['data']->level = $array['level'];
-                $data['data']->parent_id = $array['parent_id'] ?? null;
+                $data['data']->slug = Str::slug($array['title']);
+                $data['data']->short_description = $array['short_description'];
+                $data['data']->long_description = $array['long_description'];
+                $data['data']->category_id = $array['category_id'];
+                $data['data']->collection_ids = $array['collection_ids'];
 
-                if (!empty($array['image'])) {
-                    $uploadResp = fileUpload($array['image'], 'p-cat');
+                $data['data']->sku = $array['sku'];
+                $data['data']->quantity = $array['quantity'];
+                $data['data']->meta_title = $array['meta_title'];
+                $data['data']->meta_desc = $array['meta_description'];
 
-                    $data['data']->image_s = $uploadResp['smallThumbName'];
-                    $data['data']->image_m = $uploadResp['mediumThumbName'];
-                    $data['data']->image_l = $uploadResp['largeThumbName'];
-                }
+                // $data['data']->title = $array['title'];
+                // $data['data']->slug = \Str::slug($array['title']);
+                // $data['data']->level = $array['level'];
+                // $data['data']->parent_id = $array['parent_id'] ?? null;
+
+                // if (!empty($array['image'])) {
+                //     $uploadResp = fileUpload($array['image'], 'p-cat');
+
+                //     $data['data']->image_s = $uploadResp['smallThumbName'];
+                //     $data['data']->image_m = $uploadResp['mediumThumbName'];
+                //     $data['data']->image_l = $uploadResp['largeThumbName'];
+                // }
 
                 $data['data']->save();
 

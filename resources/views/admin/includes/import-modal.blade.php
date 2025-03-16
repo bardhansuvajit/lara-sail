@@ -2,7 +2,7 @@
     name="import" 
     maxWidth="sm" 
     {{-- :show="$errors->importForm->isNotEmpty()"  --}}
-    >
+>
     <div
         x-data="{ route: '', model: '' }" 
         x-on:set-route.window="route = $event.detail" 

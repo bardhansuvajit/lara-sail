@@ -1,23 +1,21 @@
 <div 
-    x-data="{ 
-        {{-- selectedCategoryId: '', 
-        selectedCategoryTitle: '',  --}}
-        {{-- selectedCategoryId: @json(old('category_id', '')),
-        selectedCategoryTitle: @json(old('category_name', '')), --}}
-        selectedCategoryId: {{ json_encode(old('category_id', '')) }}, 
-        selectedCategoryTitle: {{ json_encode(old('category_name', '')) }},
-        setCategory(id, title) { 
+    x-data='{
+        "selectedCategoryId": @json($category_id ?? 0),
+        "selectedCategoryTitle": @json($category_name ?? ""),
+        "setCategory": function(id, title) { 
             this.selectedCategoryId = id;
-            this.selectedCategoryTitle = title; 
-        } 
-    }">
+            this.selectedCategoryTitle = title;
+            $wire.set("category_id", id);
+            $wire.set("category_name", title);
+        }
+    }' >
     <x-admin.input-label for="category_id" :value="__('Category *')" />
     <x-dropdown align="top" width="full">
         <x-slot name="trigger">
             <x-admin.text-input-with-icon 
                 id="category_id" 
                 class="block" 
-                icon='<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-120 300-300l58-58 122 122 122-122 58 58-180 180ZM358-598l-58-58 180-180 180 180-58 58-122-122-122 122Z"/></svg>' 
+                icon='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-120 300-300l58-58 122 122 122-122 58 58-180 180ZM358-598l-58-58 180-180 180 180-58 58-122-122-122 122Z"/></svg>' 
                 iconPosition="end" 
                 type="text" 
                 name="category_name" 
@@ -25,8 +23,9 @@
                 placeholder="Search category" 
                 aria-autocomplete="off" 
                 autocomplete="off" 
-                wire:model.live="category" 
-                x-model="selectedCategoryTitle"
+                wire:model.live.debounce.300ms="category" 
+                {{-- x-model="selectedCategoryTitle" --}}
+                wire:model.live="category_name"
             />
         </x-slot>
         <x-slot name="content">
@@ -57,7 +56,8 @@
                             @else
                                 <a 
                                     class="block w-full px-2 py-1 text-start text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out" 
-                                    @click="setCategory('{{ $category['id'] }}', @js($category['title']))" 
+                                    {{-- @click="setCategory({{ json_encode($category['id']) }}, {{ json_encode($category['title']) }})" --}}
+                                    @click="setCategory(@js($category['id']), @js($category['title']))"
                                     href="javascript: void(0)">
                                     <div class="w-full flex items-center justify-between">
                                         <div class="flex space-x-2 items-center">
