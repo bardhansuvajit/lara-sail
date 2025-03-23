@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin\Product\Listing;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Validator;
 use App\Interfaces\ProductListingInterface;
 use App\Interfaces\CountryInterface;
+use Illuminate\Validation\Rule;
 
 class ProductListingController
 {
@@ -60,8 +62,18 @@ class ProductListingController
     {
         // dd($request->all());
 
-        $request->validate([
-            'type' => 'required|string|in:'.implode(',', developerSettings('product_options')->type),
+        // Get uploaded files
+        $uploadedFiles = $request->file('images');
+        $fileNames = [];
+        if ($uploadedFiles) {
+            foreach ($uploadedFiles as $index => $file) {
+                $fileNames["images.$index"] = $file->getClientOriginalName();
+            }
+        }
+
+        // $request->validate([
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|string|in:'.collect(PRODUCT_TYPE)->pluck('key')->implode(','),
             'title' => 'required|string|min:2|max:1000',
             'description' => 'required|string|min:2',
             'short_description' => 'nullable|string|min:2',
@@ -78,20 +90,45 @@ class ProductListingController
             'cost' => 'nullable|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
             'profit' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
             'margin' => 'nullable|numeric|min:0|max:99',
+
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array)
         ], [
             'selling_price.regex' => 'The selling price accepts value upto 2 decimals.',
             'mrp.regex' => 'The selling price accepts value upto 2 decimals.',
             'cost.regex' => 'The selling price accepts value upto 2 decimals.',
             'profit.regex' => 'The selling price accepts value upto 2 decimals.',
+            'images.*.max' => '":filename" must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
+            'images.*.mimes' => '":filename" must be a file of type: '.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
         ]);
 
+        $validator->after(function ($validator) use ($fileNames) {
+            $messages = $validator->errors(); // Get validation errors
+
+            foreach ($fileNames as $key => $fileName) {
+                if ($messages->has($key)) {
+                    $updatedErrors = [];
+
+                    foreach ($messages->get($key) as $error) {
+                        $updatedErrors[] = str_replace(':filename', $fileName, $error);
+                    }
+
+                    // Overwrite the errors for this key
+                    $messages->forget($key);
+                    $messages->add($key, $updatedErrors);
+                }
+            }
+        });
+
+        $validator->validate();
+
         $productData = [
-            'type' => str_replace(' ', '-', $request->type),
+            'type' => strtolower(str_replace(' ', '-', $request->type)),
             'title' => $request->title,
             'short_description' => $request->short_description ? $request->short_description : null,
             'long_description' => ($request->description != "<p>&nbsp;</p>") ? $request->description : null,
             'category_id' => (int) $request->category_id,
-            'collection_ids' => json_encode(explode(',', $request->collection_id)),
+            'collection_ids' => json_encode(array_map('intval', explode(',', $request->collection_id))),
             'currency_country_id' => (int) $request->currency,
             'selling_price' => (float) filter_var($request->selling_price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
             'mrp' => $request->mrp ? (float) filter_var($request->mrp, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
@@ -103,8 +140,12 @@ class ProductListingController
             'sku' => $request->sku ? $request->sku : null,
             'quantity' => $request->quantity ? (int) $request->quantity : null,
             'meta_title' => $request->meta_title ? $request->meta_title : null,
-            'meta_description' => $request->meta_description ? $request->meta_title : null
+            'meta_description' => $request->meta_description ? $request->meta_title : null,
+
+            'images' => $request->images ? $request->images : null
         ];
+
+        // dd($productData);
 
         $resp = $this->productListingRepository->store($productData);
         return redirect()->route('admin.product.listing.index')->with($resp['status'], $resp['message']);
@@ -131,9 +172,19 @@ class ProductListingController
     {
         // dd($request->all());
 
-        $request->validate([
+        // Get uploaded files
+        $uploadedFiles = $request->file('images');
+        $fileNames = [];
+        if ($uploadedFiles) {
+            foreach ($uploadedFiles as $index => $file) {
+                $fileNames["images.$index"] = $file->getClientOriginalName();
+            }
+        }
+
+        // $request->validate([
+        $validator = Validator::make($request->all(), [
             'id' => 'required|integer|min:1',
-            'type' => 'required|string|in:'.implode(',', developerSettings('product_options')->type),
+            'type' => 'required|string|in:'.collect(PRODUCT_TYPE)->pluck('key')->implode(','),
             'title' => 'required|string|min:2|max:1000',
             'description' => 'required|string|min:2',
             'short_description' => 'nullable|string|min:2',
@@ -145,26 +196,58 @@ class ProductListingController
 
             'currency' => 'required|integer|min:1|exists:countries,id',
             'selling_price' => 'required|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
-            'mrp' => 'nullable|numeric|min:1|max:1000000|gt:selling_price|regex:'.PRICE_REGEX,
+            'mrp' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                'max:1000000',
+                Rule::when(fn ($input) => $input['mrp'] > 0, 'gte:selling_price'),
+                'regex:'.PRICE_REGEX
+            ],
             'discount' => 'nullable|numeric|min:0|max:100',
-            'cost' => 'nullable|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
+            'cost' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
             'profit' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
             'margin' => 'nullable|numeric|min:0|max:99',
+
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array)
         ], [
             'selling_price.regex' => 'The selling price accepts value upto 2 decimals.',
             'mrp.regex' => 'The selling price accepts value upto 2 decimals.',
             'cost.regex' => 'The selling price accepts value upto 2 decimals.',
             'profit.regex' => 'The selling price accepts value upto 2 decimals.',
+            'images.*.max' => '":filename" must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
+            'images.*.mimes' => '":filename" must be a file of type: '.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
         ]);
+
+        $validator->after(function ($validator) use ($fileNames) {
+            $messages = $validator->errors(); // Get validation errors
+
+            foreach ($fileNames as $key => $fileName) {
+                if ($messages->has($key)) {
+                    $updatedErrors = [];
+
+                    foreach ($messages->get($key) as $error) {
+                        $updatedErrors[] = str_replace(':filename', $fileName, $error);
+                    }
+
+                    // Overwrite the errors for this key
+                    $messages->forget($key);
+                    $messages->add($key, $updatedErrors);
+                }
+            }
+        });
+
+        $validator->validate();
 
         $productData = [
             'id' => $request->id,
-            'type' => str_replace(' ', '-', $request->type),
+            'type' => strtolower(str_replace(' ', '-', $request->type)),
             'title' => $request->title,
             'short_description' => $request->short_description ? $request->short_description : null,
             'long_description' => ($request->description != "<p>&nbsp;</p>") ? $request->description : null,
             'category_id' => (int) $request->category_id,
-            'collection_ids' => json_encode(explode(',', $request->collection_id)),
+            'collection_ids' => json_encode(array_map('intval', explode(',', $request->collection_id))),
             'currency_country_id' => (int) $request->currency,
             'selling_price' => (float) filter_var($request->selling_price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
             'mrp' => $request->mrp ? (float) filter_var($request->mrp, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
@@ -176,8 +259,12 @@ class ProductListingController
             'sku' => $request->sku ? $request->sku : null,
             'quantity' => $request->quantity ? (int) $request->quantity : null,
             'meta_title' => $request->meta_title ? $request->meta_title : null,
-            'meta_description' => $request->meta_description ? $request->meta_title : null
+            'meta_description' => $request->meta_description ? $request->meta_title : null,
+
+            'images' => $request->images ? $request->images : null
         ];
+
+        // dd($productData);
 
         $resp = $this->productListingRepository->update($productData);
         return redirect()->back()->with($resp['status'], $resp['message']);

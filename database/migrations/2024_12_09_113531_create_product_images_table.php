@@ -23,6 +23,7 @@ return new class extends Migration
 
             $table->integer('position')->default(1);
             $table->tinyInteger('status')->comment('1: active, 0: inactive')->default(1);
+            $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });

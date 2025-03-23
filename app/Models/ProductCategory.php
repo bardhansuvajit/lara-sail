@@ -22,7 +22,6 @@ class ProductCategory extends Model
         'tags',
         'meta_title',
         'meta_desc',
-        'meta_keyword',
         'position',
         'status',
     ];

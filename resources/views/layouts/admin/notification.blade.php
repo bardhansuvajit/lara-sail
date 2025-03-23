@@ -55,7 +55,7 @@
                             <!-- Title & Message -->
                             <div class="flex flex-col gap-1">
                                 <h3 x-cloak x-show="notification.title" class="text-sm font-semibold text-sky-500" x-text="notification.title"></h3>
-                                <p x-cloak x-show="notification.message" class="text-pretty text-sm" x-text="notification.message"></p>
+                                <p x-cloak x-show="notification.message" class="text-pretty text-xs" x-text="notification.message"></p>
                             </div>
 
                             <!--Dismiss Button -->
@@ -83,7 +83,7 @@
                             <!-- Title & Message -->
                             <div class="flex flex-col gap-1">
                                 <h3 x-cloak x-show="notification.title" class="text-sm font-semibold text-green-500" x-text="notification.title"></h3>
-                                <p x-cloak x-show="notification.message" class="text-pretty text-sm" x-text="notification.message"></p>
+                                <p x-cloak x-show="notification.message" class="text-pretty text-xs" x-text="notification.message"></p>
                             </div>
 
                             <!--Dismiss Button -->
@@ -111,7 +111,7 @@
                             <!-- Title & Message -->
                             <div class="flex flex-col gap-1">
                                 <h3 x-cloak x-show="notification.title" class="text-sm font-semibold text-amber-500" x-text="notification.title"></h3>
-                                <p x-cloak x-show="notification.message" class="text-pretty text-sm" x-text="notification.message"></p>
+                                <p x-cloak x-show="notification.message" class="text-pretty text-xs" x-text="notification.message"></p>
                             </div>
 
                             <!--Dismiss Button -->
@@ -139,7 +139,7 @@
                             <!-- Title & Message -->
                             <div class="flex flex-col gap-1">
                                 <h3 x-cloak x-show="notification.title" class="text-sm font-semibold text-red-500" x-text="notification.title"></h3>
-                                <p x-cloak x-show="notification.message" class="text-pretty text-sm" x-text="notification.message"></p>
+                                <p x-cloak x-show="notification.message" class="text-pretty text-xs" x-text="notification.message"></p>
                             </div>
 
                             <!--Dismiss Button -->
@@ -163,7 +163,7 @@
                                 <div class="flex flex-col items-start gap-2">
                                     <!-- Title & Message -->     
                                     <h3 x-cloak x-show="notification.sender.name" class="text-sm font-semibold text-neutral-900 dark:text-white" x-text="notification.sender.name"></h3>
-                                    <p x-cloak x-show="notification.message" class="text-pretty text-sm" x-text="notification.message"></p>
+                                    <p x-cloak x-show="notification.message" class="text-pretty text-xs" x-text="notification.message"></p>
 
                                     <!-- Action Buttons -->
                                     <div class="flex items-center gap-4">

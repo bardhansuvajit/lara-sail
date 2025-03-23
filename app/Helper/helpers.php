@@ -7,7 +7,16 @@ use Illuminate\Support\Str;
 use App\Repositories\DeveloperSettingRepository;
 use App\Repositories\ApplicationSettingRepository;
 
+// frontend design classes array
+define("fd", [
+    'rounded' => '', // rounded-sm/ rounded/ rounded-lg
+]);
+
 define("PRICE_REGEX", "/^\d+(\.\d{1,2})?$/"); // regex for up to 2 decimal places
+define("PRODUCT_TYPE", [
+    ['key' => 'physical-product', 'title' => 'Physical Product'],
+    ['key' => 'service', 'title' => 'Service']
+]);
 
 if (!function_exists('fileStore')) {
     /**
@@ -106,7 +115,11 @@ if (!function_exists('developerSettings')) {
     function developerSettings(String $key) {
         $developerSettingRepository = app(DeveloperSettingRepository::class);
         $resp = $developerSettingRepository->getByKey($key);
-        return json_decode($resp['data']->value);
+        if ($resp['code'] == 200) {
+            return json_decode($resp['data']->value);
+        } else {
+            return false;
+        }
     }
 }
 
@@ -197,11 +210,22 @@ if (!function_exists('marginCalc')) {
         }
 
         if ($cost < $sellingPrice) {
-            // $margin = (($mrp - $sellingPrice) / $mrp) * 100;
             $margin = (profitCalc($sellingPrice, $cost) / $sellingPrice) * 100;
             return round($margin, 2);
         } else {
             return 0;
         }
+    }
+}
+
+if (!function_exists('collectionTitles')) {
+    function collectionTitles($collection_ids) {
+        $collectionIds = json_decode($collection_ids); 
+
+        $collection_titles = \App\Models\ProductCollection::whereIn('id', $collectionIds)
+            ->pluck('title')
+            ->implode(',');
+
+        return $collection_titles;
     }
 }

@@ -1,6 +1,33 @@
 <div 
     x-data="{ 
-        selectedCollectionIds: {{ json_encode(Arr::wrap(old('collection_id', []))) }} || [],
+        selectedCollectionIds: {{ json_encode(
+            old('collection_id') !== null 
+                ? (old('collection_id') !== '' ? explode(',', old('collection_id')) : [])
+                : (isset($collection_id) && $collection_id !== '' ? explode(',', $collection_id) : [])
+        ) }},
+        selectedCollectionTitles: ({{ json_encode(
+            old('collection_name') !== null 
+                ? old('collection_name') 
+                : (isset($collection_name) ? $collection_name : '')
+        ) }} || '').split(',').map(item => item.trim()).filter(item => item),
+        setCollection(id, title) { 
+            id = String(id); 
+            let index = this.selectedCollectionIds.indexOf(id);
+            if (index === -1) { 
+                this.selectedCollectionIds.push(id); 
+                this.selectedCollectionTitles.push(title);
+            } else {
+                this.selectedCollectionIds.splice(index, 1); 
+                this.selectedCollectionTitles.splice(index, 1);
+            }
+        },
+        removeCollection(index) {
+            this.selectedCollectionIds.splice(index, 1);
+            this.selectedCollectionTitles.splice(index, 1);
+        }
+    }" 
+    {{-- x-data="{ 
+        selectedCollectionIds: {{ json_encode(old('collection_id') ? explode(',', old('collection_id')) : []) }}.filter(id => id !== ''),
         selectedCollectionTitles: ({{ json_encode(old('collection_name', '')) }} || '').split(',').map(item => item.trim()).filter(item => item),
         setCollection(id, title) { 
             id = String(id); 
@@ -17,7 +44,7 @@
             this.selectedCollectionIds.splice(index, 1);
             this.selectedCollectionTitles.splice(index, 1);
         }
-    }"
+    }" --}}
 >
     <x-admin.input-label for="collection_id" :value="__('Collection *')" />
     <x-dropdown align="top" width="full">

@@ -169,6 +169,23 @@
                     </div>
                 </div>
                 <div class="col-span-8 flex flex-row space-x-1 justify-end items-end">
+                    <div class="basis-1/15">
+                        <x-admin.input-label for="level" :value="__('Level')" />
+                        <x-admin.input-select 
+                            id="level" 
+                            name="level" 
+                            :title="request()->input('level')"
+                        >
+                            @slot('options')
+                                <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
+                                <x-admin.input-select-option value="1" :selected="request()->input('status') == '1'"> {{ __('1') }} </x-admin.input-select-option>
+                                <x-admin.input-select-option value="2" :selected="request()->input('status') == '2'"> {{ __('2') }} </x-admin.input-select-option>
+                                <x-admin.input-select-option value="3" :selected="request()->input('status') == '3'"> {{ __('3') }} </x-admin.input-select-option>
+                                <x-admin.input-select-option value="4" :selected="request()->input('status') == '4'"> {{ __('4') }} </x-admin.input-select-option>
+                            @endslot
+                        </x-admin.input-select>
+                    </div>
+
                     <div class="basis-1/12">
                         <x-admin.input-label for="status" :value="__('Status')" />
                         <x-admin.input-select 
@@ -251,10 +268,16 @@
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 <p class="text-xs">{{ $item->level }}</p>
                                 @if ($item->parentDetails)
-                                    <p class="text-xs text-gray-500">Parent {{ $item->parentDetails->title }}</p>
+                                    <p class="text-xs text-gray-500">
+                                        Parent 
+                                        <span class="font-medium text-gray-800 dark:text-gray-300">{{ $item->parentDetails->title }}</span>
+                                    </p>
                                 @endif
                                 @if (count($item->childDetails) > 0)
-                                    <p class="text-xs text-gray-500">No. of Sub-categories {{ count($item->childDetails) }}</p>
+                                    <p class="text-xs text-gray-500">
+                                        No. of Sub-categories 
+                                        <span class="font-medium text-gray-800 dark:text-gray-300">{{ count($item->childDetails) }}</span>
+                                    </p>
                                 @endif
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">

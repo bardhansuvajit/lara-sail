@@ -27,7 +27,6 @@ return new class extends Migration
 
             $table->text('meta_title')->nullable();
             $table->text('meta_desc')->nullable();
-            $table->text('meta_keyword')->nullable();
 
             $table->integer('position')->default(1);
 

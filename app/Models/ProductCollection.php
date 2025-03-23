@@ -20,7 +20,6 @@ class ProductCollection extends Model
         'tags',
         'meta_title',
         'meta_desc',
-        'meta_keyword',
         'position',
         'status',
     ];

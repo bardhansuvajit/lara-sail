@@ -8,17 +8,31 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
+use App\Interfaces\CountryInterface;
+use App\Interfaces\ProductPricingInterface;
+use App\Interfaces\ProductImageInterface;
 
-use App\Exports\ProductCategoriesExport;
+use App\Exports\ProductListingsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductListingRepository implements ProductListingInterface
 {
     private TrashInterface $trashRepository;
+    private CountryInterface $countryRepository;
+    private ProductPricingInterface $productPricingRepository;
+    private ProductImageInterface $productImageRepository;
 
-    public function __construct(TrashInterface $trashRepository)
+    public function __construct(
+        TrashInterface $trashRepository, 
+        ProductPricingInterface $productPricingRepository, 
+        ProductImageInterface $productImageRepository, 
+        CountryInterface $countryRepository
+    )
     {
         $this->trashRepository = $trashRepository;
+        $this->productPricingRepository = $productPricingRepository;
+        $this->productImageRepository = $productImageRepository;
+        $this->countryRepository = $countryRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
@@ -83,7 +97,10 @@ class ProductListingRepository implements ProductListingInterface
     {
         // dd($array);
 
+        DB::beginTransaction();
+
         try {
+            // product listing
             $data = new Product();
             $data->type = $array['type'];
             $data->title = $array['title'];
@@ -97,16 +114,45 @@ class ProductListingRepository implements ProductListingInterface
             $data->quantity = $array['quantity'];
             $data->meta_title = $array['meta_title'];
             $data->meta_desc = $array['meta_description'];
-
-            // if (!empty($array['image'])) {
-            //     $uploadResp = fileUpload($array['image'], 'p-cat');
-
-            //     $data->image_s = $uploadResp['smallThumbName'];
-            //     $data->image_m = $uploadResp['mediumThumbName'];
-            //     $data->image_l = $uploadResp['largeThumbName'];
-            // }
-
+            $data->status = 0;
             $data->save();
+
+            // PRICING
+            $countryData = $this->countryRepository->getById($array['currency_country_id']);
+            if ($countryData['code'] == 200) {
+                $currencyCode = $countryData['data']->currency_code;
+                $currencySymbol = $countryData['data']->currency_symbol;
+            }
+            $pricingData = [
+                'product_id' => $data->id,
+                'country_id' => $array['currency_country_id'],
+                'currency_code' => $currencyCode,
+                'currency_symbol' => $currencySymbol,
+                'selling_price' => $array['selling_price'],
+                'mrp' => $array['mrp'],
+                'discount' => $array['discount_percentage'],
+                'cost' => $array['cost'],
+                'profit' => $array['profit'],
+                'margin' => $array['margin_percentage'],
+            ];
+            $pricingResp = $this->productPricingRepository->store($pricingData);
+
+            // IMAGES
+            if ($array['images'] && count($array['images']) > 0) {
+                foreach($array['images'] as $imageKey => $singleImage) {
+                    $uploadResp = fileUpload($singleImage, 'p-img');
+
+                    $imageData = [
+                        'product_id' => $data->id,
+                        'image_s' => $uploadResp['smallThumbName'],
+                        'image_m' => $uploadResp['mediumThumbName'],
+                        'image_l' => $uploadResp['largeThumbName'],
+                    ];
+                    $imageResp = $this->productImageRepository->store($imageData);
+                }
+            }
+
+            DB::commit();
 
             return [
                 'code' => 200,
@@ -115,6 +161,8 @@ class ProductListingRepository implements ProductListingInterface
                 'data' => $data,
             ];
         } catch (\Exception $e) {
+            DB::rollback();
+
             return [
                 'code' => 500,
                 'status' => 'error',
@@ -157,6 +205,10 @@ class ProductListingRepository implements ProductListingInterface
 
     public function update(Array $array)
     {
+        // dd($array);
+
+        DB::beginTransaction();
+
         try {
             $data = $this->getById($array['id']);
 
@@ -173,21 +225,57 @@ class ProductListingRepository implements ProductListingInterface
                 $data['data']->quantity = $array['quantity'];
                 $data['data']->meta_title = $array['meta_title'];
                 $data['data']->meta_desc = $array['meta_description'];
-
-                // $data['data']->title = $array['title'];
-                // $data['data']->slug = \Str::slug($array['title']);
-                // $data['data']->level = $array['level'];
-                // $data['data']->parent_id = $array['parent_id'] ?? null;
-
-                // if (!empty($array['image'])) {
-                //     $uploadResp = fileUpload($array['image'], 'p-cat');
-
-                //     $data['data']->image_s = $uploadResp['smallThumbName'];
-                //     $data['data']->image_m = $uploadResp['mediumThumbName'];
-                //     $data['data']->image_l = $uploadResp['largeThumbName'];
-                // }
-
+                $data['data']->status = 0;
                 $data['data']->save();
+
+                // PRICING
+                // **** pricing 1 - setting up data
+                $countryData = $this->countryRepository->getById($array['currency_country_id']);
+                if ($countryData['code'] == 200) {
+                    $currencyCode = $countryData['data']->currency_code;
+                    $currencySymbol = $countryData['data']->currency_symbol;
+                }
+                $pricingData = [
+                    'product_id' => $array['id'],
+                    'country_id' => $array['currency_country_id'],
+                    'currency_code' => $currencyCode,
+                    'currency_symbol' => $currencySymbol,
+                    'selling_price' => $array['selling_price'],
+                    'mrp' => $array['mrp'],
+                    'discount' => $array['discount_percentage'],
+                    'cost' => $array['cost'],
+                    'profit' => $array['profit'],
+                    'margin' => $array['margin_percentage'],
+                ];
+
+                // **** pricing 2 - check if pricing exists for this product id & country id
+                $existingPricingData = $this->productPricingRepository->getByProductIdCountryId($array['id'], $array['currency_country_id']);
+
+                // **** pricing 2 - if pricing exists update it, else add new
+                if ($existingPricingData['code'] == 200) {
+                    $existingPricingDataId = $existingPricingData['data']->id;
+                    // dd($existingPricingDataId);
+                    $pricingResp = $this->productPricingRepository->update($existingPricingDataId, $pricingData);
+                } else {
+                    $pricingResp = $this->productPricingRepository->store($pricingData);
+                }
+
+                // IMAGES
+                if ($array['images'] && count($array['images']) > 0) {
+                    foreach($array['images'] as $imageKey => $singleImage) {
+                        $uploadResp = fileUpload($singleImage, 'p-img');
+
+                        $imageData = [
+                            'product_id' => $array['id'],
+                            'image_s' => $uploadResp['smallThumbName'],
+                            'image_m' => $uploadResp['mediumThumbName'],
+                            'image_l' => $uploadResp['largeThumbName'],
+                        ];
+                        $imageResp = $this->productImageRepository->store($imageData);
+                    }
+                }
+
+                DB::commit();
 
                 return [
                     'code' => 200,
@@ -217,11 +305,11 @@ class ProductListingRepository implements ProductListingInterface
                 // Handling trash
                 $this->trashRepository->store([
                     'model' => 'Product',
-                    'table_name' => 'product_categories',
+                    'table_name' => 'products',
                     'deleted_row_id' => $data['data']->id,
                     'thumbnail' => $data['data']->image_s,
                     'title' => $data['data']->title,
-                    'description' => $data['data']->title.' data deleted from product categories table',
+                    'description' => $data['data']->title.' data deleted from products table',
                     'status' => 'deleted',
                 ]);
 
@@ -255,11 +343,11 @@ class ProductListingRepository implements ProductListingInterface
                     // Handling trash
                     $this->trashRepository->store([
                         'model' => 'Product',
-                        'table_name' => 'product_categories',
+                        'table_name' => 'products',
                         'deleted_row_id' => $item->id,
                         'thumbnail' => $item->image_s,
                         'title' => $item->title,
-                        'description' => $item->title.' data deleted from product categories table',
+                        'description' => $item->title.' data deleted from products table',
                         'status' => 'deleted',
                     ]);
 
@@ -321,23 +409,23 @@ class ProductListingRepository implements ProductListingInterface
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
             if (count($data['data']) > 0) {
-                $fileName = "product_categories_export_" . date('Y-m-d') . '-' . time();
+                $fileName = "products_export_" . date('Y-m-d') . '-' . time();
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";
-                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension);
+                    return Excel::download(new ProductListingsExport($data['data']), $fileName.$fileExtension);
                 }
                 elseif ($type == 'csv') {
                     $fileExtension = ".csv";
-                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
+                    return Excel::download(new ProductListingsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
                 }
                 elseif ($type == 'html') {
                     $fileExtension = ".html";
-                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
+                    return Excel::download(new ProductListingsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
                 }
                 elseif ($type == 'pdf') {
                     $fileExtension = ".pdf";
-                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
+                    return Excel::download(new ProductListingsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
                 }
                 else {
                     return [

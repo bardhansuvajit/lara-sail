@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\Country\CountryController;
 use App\Http\Controllers\Admin\Product\Listing\ProductListingController;
 use App\Http\Controllers\Admin\Product\Category\ProductCategoryController;
 use App\Http\Controllers\Admin\Product\Collection\ProductCollectionController;
+use App\Http\Controllers\Admin\Product\Image\ProductImageController;
+use App\Http\Controllers\Admin\Product\Pricing\ProductPricingController;
 use App\Http\Controllers\Admin\CsvTemplate\CsvTemplateController;
 use App\Http\Controllers\Admin\Trash\TrashController;
 
@@ -82,6 +84,24 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
             // collection
             Route::prefix('collection')->name('collection.')->controller(ProductCollectionController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+                Route::post('/bulk', 'bulk')->name('bulk');
+                Route::post('/import', 'import')->name('import');
+                Route::get('/export/{type}', 'export')->name('export');
+            });
+
+            // image
+            Route::prefix('image')->name('image.')->controller(ProductImageController::class)->group(function() {
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+            });
+
+            // pricing
+            Route::prefix('pricing')->name('pricing.')->controller(ProductPricingController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');

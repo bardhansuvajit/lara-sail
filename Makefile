@@ -42,6 +42,9 @@ npm-dev: ## Compile assets locally
 migrate: ## Database migrate
 	@./vendor/bin/sail php artisan migrate
 
+migrate-rollback: ## Database migrate rollback
+	@./vendor/bin/sail php artisan migrate:rollback
+
 migrate-fresh: ## Fresh Database migrate
 	@./vendor/bin/sail php artisan migrate:fresh --seed
 	@./vendor/bin/sail php artisan db:seed --class=CountrySeeder

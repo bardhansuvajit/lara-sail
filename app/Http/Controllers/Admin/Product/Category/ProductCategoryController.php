@@ -25,7 +25,8 @@ class ProductCategoryController
             'perPage' => 'nullable|string',
             'sortBy' => 'nullable|string|in:id,title,level',
             'sortOrder' => 'nullable|string|in:asc,desc',
-            'status' => 'nullable|string|in:0,1'
+            'status' => 'nullable|string|in:0,1',
+            'level' => 'nullable|integer|in:1,2,3,4'
         ]);
 
         $perPage = $request->input('perPage', 15);
@@ -34,6 +35,7 @@ class ProductCategoryController
         $sortOrder = $request->input('sortOrder', 'desc');
         $filters = [
             'status' => $request->input('status', ''),
+            'level' => $request->input('level', ''),
         ];
         $resp = $this->productCategoryRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 

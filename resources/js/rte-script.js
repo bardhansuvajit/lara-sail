@@ -18,9 +18,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // console.log('here from rte toolbar');
 
     function richTextEditor() {
-        const textarea = document.getElementById('editor');
+        // const textarea = document.getElementById("editor");
 
-        if (textarea) {
+        if (editor) {
             const wrapper = document.createElement('div');
             wrapper.className = 'w-full border border-gray-200 rounded bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus-within:ring-1 focus-within:ring-primary-500 focus-within:dark:ring-primary-600 focus-within:border-primary-500 focus-within:dark:border-primary-600 rounded-md shadow-sm';
 
@@ -43,25 +43,37 @@ document.addEventListener('DOMContentLoaded', function () {
             // Hidden input
             const hiddenInput = document.createElement('input');
             hiddenInput.type = 'hidden';
-            hiddenInput.name = textarea.getAttribute('name');
+            hiddenInput.name = editor.getAttribute('name');
             hiddenInput.id = 'hiddenDescription';
 
-            textarea.parentNode.insertBefore(wrapper, textarea);
-            textarea.parentNode.insertBefore(hiddenInput, textarea);
-            textarea.style.display = 'none'; // Hide the original textarea
+            editor.parentNode.insertBefore(wrapper, editor);
+            editor.parentNode.insertBefore(hiddenInput, editor);
+            // check for old/ existing value
+            if (document.querySelector('input[name="existingDescription"]')) {
+                const existingValue = document.querySelector('input[name="existingDescription"]').value;
+                if (existingValue.length > 0) {
+                    editorDiv.innerHTML = existingValue;
+                    hiddenInput.value = existingValue;
+                }
+            }
+            // removing ORIGINAL editor
+            editor.remove()
+            // editor.style.display = 'none'; // Hide the original textarea
 
             // Sync contenteditable div with hidden input
             // editorDiv.addEventListener('input', () => {
             //     hiddenInput.value = editorDiv.innerHTML;
             // });
-        } else {
-            console.error('Editor element not found');
         }
     }
 
     richTextEditor();
 
-    // const editor = document.getElementById("editor");
+    // whatever written in editor, auto saved into hidden input
+    document.getElementById('editor').addEventListener('input', function() {
+        document.getElementById('hiddenDescription').value = document.getElementById('editor').innerHTML;
+    });
+
     const toolbar = document.getElementById("toolbar");
 
     const svgClasses = 'w-4 h-4';
@@ -382,16 +394,6 @@ window.execCmd = function (command) {
 
 // function insertHR() {
 window.insertHR = function () {
-    /*
-    document.execCommand('insertHorizontalRule', false, null);
-    let hrs = editor.getElementsByTagName("hr");
-
-    if (hrs.length > 0) {
-        let hr = hrs[hrs.length - 1];
-        hr.classList.add("border-gray-300", "my-4", "dark:border-gray-600");
-    }
-    */
-
     let hr = document.createElement("hr");
     hr.classList.add("border-gray-300", "my-4", "dark:border-gray-600");
 
@@ -417,10 +419,6 @@ window.insertHR = function () {
 
 // function changeFont(font) {
 window.changeFont = function (font) {
-    /*
-    document.execCommand("fontName", false, font);
-    */
-
     let selection = window.getSelection();
     if (!selection.rangeCount) return;
 
@@ -823,8 +821,6 @@ editor.addEventListener('mouseover', (event) => {
  */
 // function toggleSource() {
 window.toggleSource = function () {
-    // const editor = document.getElementById('editor');
-
     if (!isSourceMode) {
         // --- SWITCH TO SOURCE (HTML) MODE ---
         // Get the current HTML content of the editor

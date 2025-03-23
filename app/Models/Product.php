@@ -14,13 +14,18 @@ class Product extends Model
         return $this->belongsTo('App\Models\ProductCategory', 'category_id', 'id');
     }
 
-    public function imageDetails()
+    public function images()
     {
-        return $this->hasMany('App\Models\ProductImage', 'product_id', 'id')->orderBy('position')->orderBy('created_at');
+        return $this->hasMany('App\Models\ProductImage', 'product_id', 'id')->orderBy('position')->orderBy('id', 'desc');
     }
 
-    public function activeImageDetails()
+    public function activeImages()
     {
         return $this->hasMany('App\Models\ProductImage', 'product_id', 'id')->where('status', 1)->orderBy('position');
+    }
+
+    public function pricings()
+    {
+        return $this->hasMany('App\Models\ProductPricing', 'product_id', 'id')->orderBy('id', 'asc');
     }
 }

@@ -21,7 +21,7 @@
         @vite([
             'resources/css/app.css',
             'resources/js/app.js',
-            'resources/js/custom.js'
+            'resources/js/admin/custom.js'
         ])
 
         @livewireStyles

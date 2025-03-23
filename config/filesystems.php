@@ -57,6 +57,13 @@ return [
             'throw' => false,
         ],
 
+        // 'private' => [
+        //     'driver' => 'local',
+        //     'root' => storage_path('app/private'), // Points to /var/www/html/storage/app/private
+        //     'visibility' => 'private',
+        //     'throw' => false,
+        // ],
+
     ],
 
     /*

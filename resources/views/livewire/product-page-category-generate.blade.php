@@ -2,12 +2,12 @@
     x-data='{
         "selectedCategoryId": @json($category_id ?? 0),
         "selectedCategoryTitle": @json($category_name ?? ""),
-        "setCategory": function(id, title) { 
+        {{-- "setCategory": function(id, title) { 
             this.selectedCategoryId = id;
             this.selectedCategoryTitle = title;
             $wire.set("category_id", id);
             $wire.set("category_name", title);
-        }
+        } --}}
     }' >
     <x-admin.input-label for="category_id" :value="__('Category *')" />
     <x-dropdown align="top" width="full">
@@ -19,12 +19,12 @@
                 iconPosition="end" 
                 type="text" 
                 name="category_name" 
-                :value="old('category_name')" 
+                x-model="selectedCategoryTitle"
+                {{-- :value="old('category_name')"  --}}
                 placeholder="Search category" 
                 aria-autocomplete="off" 
                 autocomplete="off" 
                 wire:model.live.debounce.300ms="category" 
-                {{-- x-model="selectedCategoryTitle" --}}
                 wire:model.live="category_name"
             />
         </x-slot>
@@ -56,8 +56,7 @@
                             @else
                                 <a 
                                     class="block w-full px-2 py-1 text-start text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out" 
-                                    {{-- @click="setCategory({{ json_encode($category['id']) }}, {{ json_encode($category['title']) }})" --}}
-                                    @click="setCategory(@js($category['id']), @js($category['title']))"
+                                    onclick="setCategory({{ $category['id'] }}, '{{ $category['title'] }}')"
                                     href="javascript: void(0)">
                                     <div class="w-full flex items-center justify-between">
                                         <div class="flex space-x-2 items-center">
@@ -73,13 +72,38 @@
                             @endif
                         </li>
                     @empty
-                        <li class="px-2 py-1 text-sm">No category found.</li>
+                        <li class="px-2 py-1 text-xs">No category found.</li>
                     @endforelse
                 </ul>
             </div>
         </x-slot>
     </x-dropdown>
 
-    <input type="hidden" name="category_id" x-model="selectedCategoryId" value="{{ old('category_id') }}" required>
+    <input type="hidden" name="category_id" x-model="selectedCategoryId" value="" required>
     <x-admin.input-error :messages="$errors->get('category_id')" class="mt-2" />
 </div>
+
+@section('script')
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.Livewire) {
+            window.setCategory = function (id, title) {
+                let categoryIdInput = document.querySelector('input[name="category_id"]');
+                let categoryNameInput = document.querySelector('input[name="category_name"]');
+
+                if (categoryIdInput) {
+                    categoryIdInput.value = id;
+                }
+                if (categoryNameInput) {
+                    categoryNameInput.value = title;
+                }
+
+                // Ensure Livewire is ready before emitting
+                window.Livewire.hook('message.sent', () => {
+                    Livewire.emit('setCategory', id, title);
+                });
+            };
+        }
+    });
+</script>
+@endsection

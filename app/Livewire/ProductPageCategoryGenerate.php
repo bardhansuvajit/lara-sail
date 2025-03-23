@@ -12,6 +12,7 @@ class ProductPageCategoryGenerate extends Component
     public ?int $parentId = null;
     public int $category_id;
     public ?string $category_name;
+    protected $listeners = ['setCategory'];
 
     // default livewire constructor
     public function mount($category = null, $category_id = '', $category_name = '')
@@ -38,14 +39,14 @@ class ProductPageCategoryGenerate extends Component
         if ($this->category == null) {
             $this->categories = ProductCategory::where('level', 1)->with('childDetails')->orderBy('position')->get()->toArray();
         } else {
-            $this->categories = ProductCategory::where('title', 'like', '%'.$this->category.'%')->orderBy('position')->get()->toArray();
+            $this->categories = ProductCategory::where('title', 'like', '%'.$this->category.'%')->with('childDetails', 'parentDetails')->orderBy('position')->get()->toArray();
         }
     }
 
     public function getCategoryOptionsByParentId($parentId)
     {
         $this->categories = ProductCategory::where('parent_id', $parentId)
-            ->with(['childDetails' => fn($q) => $q->select('id', 'parent_id', 'title')])
+            ->with(['childDetails' => fn($q) => $q->select('id', 'parent_id', 'title'), 'parentDetails'])
             ->select(['id', 'parent_id', 'title', 'image_s', 'level'])
             ->orderBy('position')
             ->get()

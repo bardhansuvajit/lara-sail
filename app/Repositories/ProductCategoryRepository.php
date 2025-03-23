@@ -273,7 +273,29 @@ class ProductCategoryRepository implements ProductCategoryInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'ProductCategory');
+
+            // save into Database
+            $processedCount = 0;
+
+            foreach ($data as $item) {
+                if (!isset($item['title'])) {
+                    continue; // Skip rows without a title
+                }
+
+                ProductCategory::create([
+                    'title' => $item['title'] ? $item['title'] : null,
+                    'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
+                    'parent_id' => $item['parent_id'] ? $item['parent_id'] : null,
+                    'level' => $item['level'] ? $item['level'] : null,
+                    'short_description' => $item['short_description'] ? $item['short_description'] : null,
+                    'long_description' => $item['long_description'] ? $item['long_description'] : null,
+                    'tags' => $item['tags'] ? $item['tags'] : null,
+                    'meta_title' => $item['meta_title'] ? $item['meta_title'] : null,
+                    'meta_desc' => $item['meta_desc'] ? $item['meta_desc'] : null
+                ]);
+
+                $processedCount++;
+            }
 
             return [
                 'code' => 200,
@@ -287,7 +309,8 @@ class ProductCategoryRepository implements ProductCategoryInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => 'An error occurred while uploading data.',
+                // 'message' => 'An error occurred while uploading data.',
+                'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ];
         }
