@@ -1,15 +1,13 @@
-<x-dropdown width="48">
+<x-dropdown width="60">
     <x-slot name="trigger">
-        <button type="button" class="inline-flex items-center rounded-lg justify-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700/100 text-sm font-medium leading-tight dark:text-white">
-            <svg class="w-5 h-5 lg:me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M7 17v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3Zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path></svg>
-            <span class="hidden lg:block">
-                Account
-            </span>
-            <svg class="w-3 h-3 sm:w-4 sm:h-4 dark:text-white ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"></path></svg>
+        <button type="button" class="inline-flex items-center {{FD['rounded']}} justify-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700/100 text-sm font-medium leading-tight dark:text-white">
+            <svg class="w-4 h-4 lg:me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M7 17v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3Zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path></svg>
+            <span class="hidden lg:block">Account</span>
+            {!! FD['dropdownCaret'] !!}
         </button>
     </x-slot>
     <x-slot name="content">
-        <div id="accountDropdown5" class="z-50 w-60 divide-y-2 overflow-hidden overflow-y-auto rounded-lg bg-white antialiased shadow dark:divide-gray-600 dark:bg-gray-700" >
+        <div class="z-50 w-60 divide-y-2 overflow-hidden overflow-y-auto {{FD['rounded']}} bg-white antialiased shadow dark:divide-gray-600 dark:bg-gray-700" >
         <ul class="p-2 text-start text-sm font-medium dark:text-white dark:border-gray-600">
             <li>
                 <a href="#" title="" class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600 dark:hover:text-white">

@@ -8,8 +8,11 @@ use App\Repositories\DeveloperSettingRepository;
 use App\Repositories\ApplicationSettingRepository;
 
 // frontend design classes array
-define("fd", [
-    'rounded' => '', // rounded-sm/ rounded/ rounded-lg
+define("FD", [
+    'rounded'       => '',          // rounded-sm/ rounded/ rounded-lg
+    'text'          => 'text-xs',    // text-xs/ text-sm
+    'text-1'          => 'text-sm',    // text-xs/ text-sm
+    'dropdownCaret' => '<svg class="w-3 h-3 ms-1 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"></path></svg>'
 ]);
 
 define("PRICE_REGEX", "/^\d+(\.\d{1,2})?$/"); // regex for up to 2 decimal places
