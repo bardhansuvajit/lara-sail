@@ -7,36 +7,32 @@
             <div class="overflow-hidden hover:shadow-sm">
                 <a href="#">
                     <div class="m-2 h-auto text-center mx-auto">
-                        <img class="mb-4 h-8 sm:h-20 inline-block dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="imac">
-                        <img class="mb-4 hidden h-8 sm:h-20 dark:inline-block dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg" alt="imac">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-0 dark:text-gray-400 break-all">Laptop/Computers</p>
+                        <img class="mb-4 h-8 sm:h-20 inline-block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="imac">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-0 break-all">Laptop/Computers</p>
                     </div>
                 </a>
             </div>
             <div class="overflow-hidden hover:shadow-sm">
                 <a href="#">
                     <div class="m-2 h-auto text-center mx-auto">
-                        <img class="mb-4 h-8 sm:h-20 inline-block dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ps5-controller.svg" alt="controller">
-                        <img class="mb-4 hidden h-8 sm:h-20 dark:inline-block dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ps5-controller-dark.svg" alt="controller-dark">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-0 dark:text-gray-400 break-all">Gaming</p>
+                        <img class="mb-4 h-8 sm:h-20 inline-block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ps5-controller.svg" alt="controller">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-0 break-all">Gaming</p>
                     </div>
                 </a>
             </div>
             <div class="overflow-hidden hover:shadow-sm">
                 <a href="#">
                     <div class="m-2 h-auto text-center mx-auto">
-                        <img class="mb-4 h-8 sm:h-20 inline-block dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/bag.svg" alt="shopping-bag">
-                        <img class="mb-4 hidden h-8 sm:h-20 dark:inline-block dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/bag-dark.svg" alt="shopping-bag">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-0 dark:text-gray-400 break-all">Fashion/Clothes</p>
+                        <img class="mb-4 h-8 sm:h-20 inline-block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/bag.svg" alt="shopping-bag">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-0 break-all">Fashion/Clothes</p>
                     </div>
                 </a>
             </div>
             <div class="overflow-hidden hover:shadow-sm">
                 <a href="#">
                     <div class="m-2 h-auto text-center mx-auto">
-                        <img class="mb-4 h-8 sm:h-20 inline-block dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/football.svg" alt="ball">
-                        <img class="mb-4 hidden h-8 sm:h-20 dark:inline-block dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/football-dark.svg" alt="ball">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-0 dark:text-gray-400 break-all">Sports/Outdoors</p>
+                        <img class="mb-4 h-8 sm:h-20 inline-block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/football.svg" alt="ball">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-0 break-all">Sports/Outdoors</p>
                     </div>
                 </a>
             </div>
@@ -88,7 +84,7 @@
                     </div>
 
                     <a href="#"
-                    class="font-semibold text-gray-900 hover:underline dark:text-white text-xs sm:text-base sm:text-lg block leading-4 sm:leading-5">Apple
+                    class="font-semibold text-gray-900 hover:underline dark:text-white text-xs sm:text-base block leading-4 sm:leading-5">Apple
                     iMac 27", 1TB HDD, Retina 5K Display, M3 Max</a>
 
                     <div class="mt-2 flex items-center gap-1 sm:gap-2">
@@ -202,7 +198,7 @@
                     </div>
 
                     <a href="#"
-                    class="font-semibold text-gray-900 hover:underline dark:text-white text-xs sm:text-base sm:text-lg block leading-4 sm:leading-5">Apple
+                    class="font-semibold text-gray-900 hover:underline dark:text-white text-xs sm:text-base block leading-4 sm:leading-5">Apple
                     iPhone 15 Pro Max, 256GB, Blue Titanium</a>
 
                     <div class="mt-2 flex items-center gap-1 sm:gap-2">
