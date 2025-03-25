@@ -6,4 +6,6 @@
     @include('layouts.front.navigation.menu')
 
     @include('layouts.front.navigation.collections')
+
+    @include('layouts.front.navigation.mobile-menu')
 </nav>

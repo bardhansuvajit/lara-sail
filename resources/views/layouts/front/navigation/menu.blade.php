@@ -3,9 +3,14 @@
         <div class="flex flex-wrap items-center justify-between gap-x-4 sm:gap-x-16 gap-y-4 md:gap-x-8 lg:flex-nowrap">
 
             {{-- mobile hamburger menu --}}
-            <div class="relative md:hidden">
-                <button type="button" class="inline-flex items-center justify-center p-1 text-sm rounded-lg font-medium leading-tight dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700/100">
-                    <svg class="w-5 h-5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"></path></svg>
+            <div 
+                class="relative md:hidden" 
+                x-data=""
+                x-on:click.prevent="
+                    $dispatch('open-sidebar', 'mob-sidebar');
+                ">
+                <button type="button" class="inline-flex items-center justify-center p-1 text-sm {{FD['rounded']}} font-medium leading-tight dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700/100">
+                    <svg class="{{FD['iconClass']}} dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"></path></svg>
                 </button>
             </div>
 

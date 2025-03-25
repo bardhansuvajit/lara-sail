@@ -42,8 +42,7 @@
                     <x-slot name="content">
                         <div class="bg-white dark:bg-gray-700">
                             <ul class="p-2 text-start {{FD['text']}} font-medium dark:text-white">
-                                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis quia rem, atque dolorum obcaecati nesciunt eaque, sunt natus modi quibusdam, dolorem impedit iste unde maxime ipsam hic placeat. Natus, est.
-                                {{-- <li>
+                                <li>
                                     <a href="#" title="" class="inline-flex w-full items-center gap-2 rounded px-3 py-2 {{FD['text']}} hover:bg-gray-100 dark:hover:bg-gray-600">
                                         <img class="h-auto w-4 flex-shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/flags/us.svg" alt="">
                                         English (U.S.)
@@ -104,7 +103,7 @@
                                         <img class="h-auto w-4 flex-shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/flags/es.svg" alt="">
                                         Español
                                     </a>
-                                </li> --}}
+                                </li>
                             </ul>
                         </div>
                     </x-slot>

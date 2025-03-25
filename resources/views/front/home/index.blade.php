@@ -74,7 +74,7 @@
                         </svg>
                         </button>
 
-                        <div id="tooltip-add-to-favorites" role="tooltip"
+                        <div id="tooltip-add-to-favorites" 
                         class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
                         data-popper-placement="top">
                         Add to favorites
@@ -188,7 +188,7 @@
                         </svg>
                         </button>
 
-                        <div id="tooltip-add-to-favorites" role="tooltip"
+                        <div id="tooltip-add-to-favorites"
                         class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
                         data-popper-placement="top">
                         Add to favorites
@@ -297,21 +297,21 @@
                 <div class="px-4 md:px-5">
                     <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
                     <ul class="-mb-px flex flex-wrap text-center text-sm font-medium" id="myTab"
-                        data-tabs-toggle="#myTabContent" role="tablist">
-                        <li class="mr-1" role="presentation">
+                        data-tabs-toggle="#myTabContent"
+                        <li class="mr-1"
                         <button class="inline-block pb-2 pr-1" id="brand-tab" data-tabs-target="#brand" type="button"
-                            role="tab" aria-controls="profile" aria-selected="false">Brand</button>
+                            aria-controls="profile" aria-selected="false">Brand</button>
                         </li>
-                        <li class="mr-1" role="presentation">
+                        <li class="mr-1"
                         <button
                             class="inline-block px-2 pb-2 hover:border-gray-300 hover:text-gray-600 dark:hover:text-gray-300"
-                            id="advanced-filers-tab" data-tabs-target="#advanced-filters" type="button" role="tab"
+                            id="advanced-filers-tab" data-tabs-target="#advanced-filters" type="button"
                             aria-controls="advanced-filters" aria-selected="false">Advanced Filters</button>
                         </li>
                     </ul>
                     </div>
                     <div id="myTabContent">
-                    <div class="grid grid-cols-2 gap-4 md:grid-cols-3" id="brand" role="tabpanel" aria-labelledby="brand-tab">
+                    <div class="grid grid-cols-2 gap-4 md:grid-cols-3" id="brand" aria-labelledby="brand-tab">
                         <div class="space-y-2">
                         <h5 class="text-lg font-medium uppercase text-black dark:text-white">A</h5>
 
@@ -634,7 +634,7 @@
                     </div>
                     </div>
 
-                    <div class="space-y-4" id="advanced-filters" role="tabpanel" aria-labelledby="advanced-filters-tab">
+                    <div class="space-y-4" id="advanced-filters" aria-labelledby="advanced-filters-tab">
                     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
                         <div class="grid grid-cols-2 gap-3">
                         <div>
