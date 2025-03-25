@@ -8,7 +8,6 @@ use App\Http\Controllers\Front\Category\CategoryController;
 use App\Http\Controllers\Front\Cart\CartController;
 use App\Http\Controllers\Front\Profile\LoginController;
 
-
 Route::name('front.')->group(function () {
     // home
     Route::name('home.')->group(function() {
@@ -27,7 +26,7 @@ Route::name('front.')->group(function () {
 
     // profile
     Route::name('login.')->group(function() {
-        Route::get('/login', [LoginController::class, 'index'])->name('index');
+        Route::get('/profile/login', [LoginController::class, 'index'])->name('index');
     });
 });
 
