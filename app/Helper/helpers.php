@@ -9,12 +9,13 @@ use App\Repositories\ApplicationSettingRepository;
 
 // frontend design classes array
 define("FD", [
-    'rounded'       => '',                  // rounded-sm/ rounded/ rounded-lg
-    'text-0'          => 'text-[10px]',
-    'text'          => 'text-xs',
-    'text-1'          => 'text-sm',
-    'iconClass'          => 'w-4 h-4',
-    'dropdownCaret' => '<svg class="w-3 h-3 ms-1 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"></path></svg>'
+    'rounded'           => '',                  // rounded-sm/ rounded/ rounded-lg
+    'text-0'            => 'text-[10px]',
+    'text'              => 'text-xs',
+    'text-1'            => 'text-sm',
+    'iconClass'         => 'w-4 h-4',
+    'dropdownCaret'     => '<svg class="w-3 h-3 ms-1 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"></path></svg>',
+    'activeClass'       => 'text-green-500 dark:text-green-600',
 ]);
 
 define("PRICE_REGEX", "/^\d+(\.\d{1,2})?$/"); // regex for up to 2 decimal places
