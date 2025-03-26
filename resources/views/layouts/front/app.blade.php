@@ -17,6 +17,8 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet" />
+
         <!-- Scripts -->
         @vite([
             'resources/css/app.css',
@@ -32,7 +34,9 @@
             <!-- navigation -->
             @include('layouts.front.navigation')
 
-            {{ $slot }}
+            <div class="mx-auto {{$screen}}">
+                {{ $slot }}
+            </div>
 
             {{-- <main class="p-o md:p-4 md:ml-64 justify-center h-auto pt-10 md:pt-[4.3rem]">
                 <div class="flex flex-col justify-center items-center">
@@ -94,6 +98,8 @@
                 @endif
             });
         </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
         @yield('script')
 
