@@ -3,7 +3,7 @@
     title="{{ __('Dashboard') }}">
 
     <section class="bg-gray-100 dark:bg-gray-900 antialiased mt-36 sm:mt-44">
-        <div class="pt-4 px-2 sm:pt-6 sm:px-0">
+        <div class="pt-4 sm:pt-6 px-2 sm:px-2 md:px-3 lg:px-4 xl:px-4 2xl:px-0">
             <h2 class="text-base font-semibold text-gray-900 dark:text-white sm:text-lg">Shopping Cart</h2>
 
             {{-- <ol class="items-center flex w-full max-w-2xl text-center text-sm font-medium text-gray-500 dark:text-gray-400 sm:text-base">
@@ -59,7 +59,7 @@
 
             <div class="mt-4 sm:mt-6 md:gap-6 lg:flex lg:items-start xl:gap-8">
                 <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
-                    <div class="space-y-6" id="cart-products">
+                    <div id="cart-products" class="space-y-6">
 
                         {{-- single product --}}
                         <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4">
@@ -386,13 +386,13 @@
 
                     </div>
 
-                    <div class="bg-gray-50 mb-4 py-4 antialiased dark:bg-gray-900 mt-6 shadow">
+                    <div id="featured-product-container" class="bg-gray-50 mb-4 py-4 antialiased dark:bg-gray-800 mt-6 shadow-sm border border-gray-200 dark:border-gray-700">
                         <div class="mx-auto max-w-screen-xl px-2 sm:px-4">
                             <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0">
                                 <p class="{{FD['text-1']}} font-semibold text-gray-600 dark:text-gray-500">FEATURED</h2>
                             </div>
                 
-                            <div class="mb-4 grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4" id="featured-products">
+                            <div class="mb-4 grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-4 lg:grid-cols-4" id="featured-products">
                 
                                 <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
                                     <a href="#">
@@ -441,7 +441,7 @@
                 </div>
 
                 <div class="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
-                    <div class="fixed z-10 lg:static bottom-16 lg:bottom-0 w-full -m-2 lg:m-0 space-y-2 lg:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-6 shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
+                    <div class="fixed z-10 sm:static bottom-16 sm:bottom-0 w-full -m-2 sm:m-0 space-y-2 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-6 shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
                         <div class="hidden lg:block">
                             <p class="{{FD['text-1']}} font-semibold text-gray-900 dark:text-white mb-2">Order summary</p>
 
