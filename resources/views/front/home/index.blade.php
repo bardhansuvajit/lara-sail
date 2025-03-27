@@ -23,7 +23,6 @@
 
     <section class="bg-gray-50 mb-4 py-4 antialiased dark:bg-gray-900">
         <div class="mx-auto max-w-screen-xl px-2 sm:px-4">
-            <!-- Heading & Filters -->
             <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0">
                 <p class="{{FD['text-1']}} font-semibold text-gray-600 dark:text-gray-500">FEATURED</h2>
             </div>
@@ -64,7 +63,7 @@
                             <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
                                 <span class="currency-icon">$</span>17,699
                             </p>
-                            <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} dark:text-gray-400 mb-4 sm:mb-0">
+                            <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
                                 40% off
                             </p>
                         </div>

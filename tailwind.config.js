@@ -32,7 +32,7 @@ export default {
 
     safelist: [
         {
-            pattern: /bg-(red|yellow|lime|teal|blue|violet|fuchsia|pink|stone|white|gray)-(200|300|400|500|600|700|800|900)/,
+            pattern: /bg-(red|yellow|lime|teal|blue|violet|fuchsia|pink|stone|white|gray|green)-(200|300|400|500|600|700|800|900)/,
         }
     ],
 };
