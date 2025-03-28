@@ -1,8 +1,10 @@
 const navbar = document.getElementById('navbar');
 const darkModeToggleEl = document.getElementById('dark-mode');
+const orderSummaryBtn = document.getElementById('order-summary-toggle');
+const orderSummaryEl = document.getElementById('order-summary');
 let lastScrollPosition = 0;
 
-// Function to check if device is mobile
+// check if device is mobile
 function isMobileDevice() {
     return window.innerWidth <= 768; // Common breakpoint for mobile devices
 }
@@ -135,3 +137,14 @@ var swiper = new Swiper(".mySwiper", {
       prevEl: ".swiper-button-prev",
     },
 });
+
+// CART PAGE
+if (orderSummaryBtn && orderSummaryEl) {
+    orderSummaryBtn.addEventListener('click', function () {
+        if (orderSummaryEl.classList.contains('hidden')) {
+            orderSummaryEl.classList.remove('hidden');
+        } else {
+            orderSummaryEl.classList.add('hidden');
+        }
+    });
+}

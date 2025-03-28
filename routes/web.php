@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\Home\IndexController;
 use App\Http\Controllers\Front\Category\CategoryController;
 use App\Http\Controllers\Front\Cart\CartController;
+use App\Http\Controllers\Front\Checkout\CheckoutController;
 use App\Http\Controllers\Front\Profile\LoginController;
 
 Route::name('front.')->group(function () {
@@ -22,6 +23,11 @@ Route::name('front.')->group(function () {
     // cart
     Route::name('cart.')->group(function() {
         Route::get('/cart', [CartController::class, 'index'])->name('index');
+    });
+
+    // checkout
+    Route::name('checkout.')->group(function() {
+        Route::get('/checkout', [CheckoutController::class, 'index'])->name('index');
     });
 
     // profile

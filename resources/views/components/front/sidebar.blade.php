@@ -69,7 +69,7 @@ $direction = $direction === 'left' ? 'left-0' : 'right-0';
 
     <div
         x-show="show"
-        class="fixed top-0 {{ $direction }} h-full overflow-auto mb-6 bg-white dark:bg-gray-700 shadow-xl transform transition-all {{ $maxWidth }} sm:mx-auto"
+        class="fixed top-0 z-20 {{ $direction }} h-full overflow-auto mb-6 bg-white dark:bg-gray-700 shadow-xl transform transition-all {{ $maxWidth }} sm:mx-auto"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="{{ $direction === 'left-0' ? '-translate-x-full' : 'translate-x-full' }}"
         x-transition:enter-end="translate-x-0"
