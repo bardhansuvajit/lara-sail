@@ -35,7 +35,9 @@
             @include('layouts.front.navigation')
 
             <div class="mx-auto {{$screen}}">
-                {{ $slot }}
+                <div class="mt-36 sm:mt-44">
+                    {{ $slot }}
+                </div>
             </div>
 
             {{-- <main class="p-o md:p-4 md:ml-64 justify-center h-auto pt-10 md:pt-[4.3rem]">

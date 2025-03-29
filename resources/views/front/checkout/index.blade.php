@@ -2,406 +2,185 @@
     screen="max-w-screen-xl"
     title="{{ __('Checkout') }}">
 
-    <section class="bg-gray-100 dark:bg-gray-900 antialiased mt-36 sm:mt-44">
+    <section class="bg-gray-100 dark:bg-gray-900 antialiased">
         <div class="pt-4 sm:pt-6 px-2 sm:px-2 md:px-3 lg:px-4 xl:px-4 2xl:px-0">
             <h2 class="text-base font-semibold text-gray-900 dark:text-white sm:text-lg">Checkout</h2>
 
-            {{-- <ol class="items-center flex w-full max-w-2xl text-center text-sm font-medium text-gray-500 dark:text-gray-400 sm:text-base">
-                <li
-                    class="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
-                    <span
-                        class="flex items-center after:mx-2 after:text-gray-200 after:content-['/'] dark:after:text-gray-500 sm:after:hidden">
-                        <svg class="me-2 h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                        Cart
-                    </span>
-                </li>
-
-                <li
-                    class="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
-                    <span
-                        class="flex items-center after:mx-2 after:text-gray-200 after:content-['/'] dark:after:text-gray-500 sm:after:hidden">
-                        <svg class="me-2 h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                        Checkout
-                    </span>
-                </li>
-
-                <li class="flex shrink-0 items-center">
-                    <svg class="me-2 h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                        width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                    </svg>
-                    Order summary
-                </li>
-            </ol> --}}
-
             <div class="flex w-full items-center gap-3 sm:gap-4 {{FD['activeBgClass']}} px-2 sm:px-4 py-1 mt-2 sm:mt-4 font-light">
                 <div class="{{FD['iconClass']}} lg:w-6 lg:h-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-160q-50 0-85-35t-35-85H60l18-80h113q17-19 40-29.5t49-10.5q26 0 49 10.5t40 29.5h167l84-360H262l17-80h441l-37 160h117l120 160-40 200h-80q0 50-35 85t-85 35q-50 0-85-35t-35-85H400q0 50-35 85t-85 35Zm357-280h193l4-21-74-99h-95l-28 120Zm-17-280-84 360 2-7 82-353ZM140-440v-120H40l140-200v120h100L140-440Zm140 200q17 0 28.5-11.5T320-280q0-17-11.5-28.5T280-320q-17 0-28.5 11.5T240-280q0 17 11.5 28.5T280-240Zm400 0q17 0 28.5-11.5T720-280q0-17-11.5-28.5T680-320q-17 0-28.5 11.5T640-280q0 17 11.5 28.5T680-240Z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M608-522 422-708q14-6 28.5-9t29.5-3q59 0 99.5 40.5T620-580q0 15-3 29.5t-9 28.5ZM234-276q51-39 114-61.5T480-360q18 0 34.5 1.5T549-354l-88-88q-47-6-80.5-39.5T341-562L227-676q-32 41-49.5 90.5T160-480q0 59 19.5 111t54.5 93Zm498-8q32-41 50-90.5T800-480q0-133-93.5-226.5T480-800q-56 0-105.5 18T284-732l448 448ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Z"/></svg>
                 </div>
 
                 <p class="{{FD['text']}}">
-                    You are only 
-                    <span class="font-medium"><span class="currency-icon">$</span><span id="free-shipping-amount">99.99</span></span> 
-                    away from 
-                    <span class="font-medium">Free Shipping</span> 
-                    <a href="#" class="font-medium underline hover:no-underline block">How do i get this ?</a>
+                    You are not logged in right now.
+                    <a href="#" class="font-medium underline hover:no-underline block">Log in to continue further...</a>
                 </p>
             </div>
 
             <div class="mt-4 sm:mt-6 md:gap-6 lg:flex lg:items-start xl:gap-8">
-                {{-- left part - cart products --}}
+                {{-- left part --}}
                 <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl mb-8">
-                    {{-- cart products --}}
-                    <div id="cart-products" class="space-y-6">
+                    <div class="space-y-6">
 
-                        {{-- single product --}}
+                        {{-- single option --}}
                         <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4">
-                            {{-- product details --}}
-                            <div class="space-y-4 flex items-center justify-between gap-2 sm:gap-6 sm:mb-2">
-                                <a href="#" class="w-24 shrink-1 md:order-1">
-                                    <img class="h-20 w-20" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="imac image" />
-                                </a>
+                            <form action="" method="POST">
+                                {{-- heading --}}
+                                <div class="space-y-4 flex items-center justify-between gap-2 sm:gap-6 sm:mb-2">
+                                    <div class="w-full min-w-0 flex-1 md:order-2">
+                                        <h2 class="flex space-x-2 items-center mb-1">
+                                            {{-- <div class="{{FD['iconClass']}}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"/></svg>
+                                            </div> --}}
 
-                                <div class="w-full min-w-0 flex-1 md:order-2">
-                                    <a href="#" class="block {{FD['text']}} leading-tight font-medium text-gray-900 hover:underline dark:text-gray-300 mb-1 sm:mb-2">
-                                        PC system All in One APPLE iMac (2023) mqrq3ro/a, Apple M3, 24" Retina 4.5K, 8GB, SSD 256GB, 10-core GPU, Keyboard layout INT
-                                    </a>
+                                            <p class="text-lg leading-tight font-medium text-gray-900 hover:underline dark:text-gray-300">Account details</p>
+                                        </h2>
 
-                                    <p class="{{FD['text-0']}} text-gray-500 dark:text-gray-400">here lies the product description. Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro laudantium aut officia ipsa reiciendis provident quibusdam soluta possimus. Quos, numquam excepturi nulla alias ab officiis! Illo, pariatur unde. Consequuntur, obcaecati?</p>
+                                        <p class="{{FD['text-0']}} text-gray-500 dark:text-gray-400">here lies the product description. Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro laudantium aut officia ipsa reiciendis provident</p>
+                                    </div>
+                                </div>
 
-                                    <div class="flex space-x-4 items-center mt-3">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center">
-                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" /></svg>
-                                                </button>
+                                <div class="border-t dark:border-gray-700 my-5"></div>
 
-                                                <input type="text" class="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="2" />
-
-                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" /></svg>
-                                                </button>
-                                            </div>
+                                {{-- if not logged in/ account exists --}}
+                                {{-- <div class="w-full">
+                                    <div class="grid gap-4 mb-4 sm:grid-cols-2">
+                                        <div>
+                                            <x-front.input-label for="phone_no" :value="__('Phone number *')" />
+                                            <x-front.text-input-with-dropdown 
+                                                id="phone_no" 
+                                                class="block w-auto" 
+                                                type="tel" 
+                                                name="phone_no" 
+                                                :value="old('phone_no') ? old('phone_no') : ''" 
+                                                placeholder="Enter Phone Number" 
+                                                selectTitle="India (+91)" 
+                                                selectId="phone_country_code" 
+                                                selectName="phone_country_code" 
+                                                required=true 
+                                                focus
+                                            >
+                                                @slot('options')
+                                                    @foreach ($activeCountries as $country)
+                                                        <x-front.input-select-option 
+                                                            value="{{$country->short_name}}" 
+                                                            :selected="old('phone_country_code')"
+                                                        >
+                                                            {{ $country->name }} ({{ $country->phone_code }})
+                                                        </x-front.input-select-option>
+                                                    @endforeach
+                                                @endslot
+                                            </x-front.text-input-with-dropdown>
+                                            <x-front.input-error :messages="$errors->get('phone_no')" class="mt-2" />
+                                            <x-front.input-error :messages="$errors->get('phone_country_code')" class="mt-2" />
                                         </div>
 
-                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-icon">$</span>1,09,699</p>
+                                        <div> 
+                                            <x-front.input-label for="password" :value="__('Password *')" />
+                                            <x-front.text-input id="password" class="block w-full" type="text" name="password" placeholder="Enter Password" autofocus required />
+                                            <x-front.input-error :messages="$errors->get('password')" class="mt-2" />
+                                        </div>
+                                    </div>
+                                </div> --}}
+
+                                {{-- if not logged in/ no account exists --}}
+                                <div class="w-full">
+                                    <div class="grid gap-4 mb-4 sm:grid-cols-2">
+                                        <div>
+                                            <x-front.input-label for="first_name" :value="__('First name *')" />
+                                            <x-front.text-input id="first_name" class="block w-full" type="text" name="first_name" placeholder="Enter First Name" maxlength="50" autofocus required />
+                                            <x-front.input-error :messages="$errors->get('first_name')" class="mt-2" />
+                                        </div>
+
+                                        <div>
+                                            <x-front.input-label for="last_name" :value="__('Last name *')" />
+                                            <x-front.text-input id="last_name" class="block w-full" type="text" name="last_name" placeholder="Enter Last Name" maxlength="50" required />
+                                            <x-front.input-error :messages="$errors->get('last_name')" class="mt-2" />
+                                        </div>
                                     </div>
 
-                                </div>
-                            </div>
-
-                            {{-- upsell --}}
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 border-t dark:border-gray-700 mt-2 py-2">
-                                <div class="col-span-2 md:col-span-4">
-                                    <h5 class="{{FD['text']}} flex space-x-2 items-center">
-                                        {{ __('Bought together') }}
-                                        <div class="{{FD['iconClass']}}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>
+                                    <div class="grid gap-4 mb-4 sm:grid-cols-2">
+                                        <div>
+                                            <x-front.input-label for="phone_no" :value="__('Phone number *')" />
+                                            <x-front.text-input-with-dropdown 
+                                                id="phone_no" 
+                                                class="block w-auto" 
+                                                type="tel" 
+                                                name="phone_no" 
+                                                :value="old('phone_no') ? old('phone_no') : ''" 
+                                                placeholder="Enter Phone Number" 
+                                                selectTitle="India (+91)" 
+                                                selectId="phone_country_code" 
+                                                selectName="phone_country_code" 
+                                                required=true 
+                                                focus
+                                            >
+                                                @slot('options')
+                                                    @foreach ($activeCountries as $country)
+                                                        <x-front.input-select-option 
+                                                            value="{{$country->short_name}}" 
+                                                            :selected="old('phone_country_code')"
+                                                        >
+                                                            {{ $country->name }} ({{ $country->phone_code }})
+                                                        </x-front.input-select-option>
+                                                    @endforeach
+                                                @endslot
+                                            </x-front.text-input-with-dropdown>
+                                            <x-front.input-error :messages="$errors->get('phone_no')" class="mt-2" />
+                                            <x-front.input-error :messages="$errors->get('phone_country_code')" class="mt-2" />
                                         </div>
-                                    </h5>
+
+                                        <div>
+                                            <x-front.input-label for="password" :value="__('Set password *')" />
+                                            <x-front.text-input id="password" class="block w-full" type="password" name="password" placeholder="Enter Password" required />
+                                            <x-front.input-error :messages="$errors->get('password')" class="mt-2" />
+                                        </div>
+                                    </div>
+
+                                    <div class="grid gap-4 mb-4 sm:grid-cols-2">
+                                        <div>
+                                            <x-front.input-label for="email" :value="__('Email')" />
+                                            <x-front.text-input id="email" class="block w-full" type="email" name="email" placeholder="Enter Email Address" />
+                                            <x-front.input-error :messages="$errors->get('email')" class="mt-2" />
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
-                                    <a href="#">
-                                        <div class="h-20 w-full mb-2">
-                                            <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
-                                        </div>
-
-                                        <div class="absolute top-0 right-0 w-full h-8 p-1 overflow-hidden">
-                                            <div class="flex justify-between items-center">
-                                                <div class="w-10 h-5 flex space-x-1 items-center bg-gray-50 px-1 border">
-                                                    <p class="{{FD['text-0']}} text-gray-900 font-bold">3.9</p>
-                                                    <div class="{{FD['iconClass']}} text-yellow-400 flex items-center">
-                                                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z"></path></svg>
-                                                    </div>
-                                                </div>
+                                {{-- form buttons --}}
+                                <div class="fixed z-[1] sm:static bottom-16 sm:bottom-0 w-full -ml-[17px] -mb-[8px] sm:m-0 space-y-0 sm:space-y-4 {{FD['rounded']}} border sm:border-0 border-gray-200 bg-white px-2 py-3 sm:p-0 dark:border-0 dark:bg-gray-800">
+                                    <div class="w-full sm:w-max flex space-x-2 sm:space-x-4 mt-2 sm:mt-8">
+                                        <a href="{{ route('front.cart.index') }}" class="w-full sm:w-max flex space-x-4 items-center justify-center {{FD['rounded']}} bg-gray-300 focus:bg-gray-400 px-5 py-2.5 {{FD['text']}} font-medium text-gray=800 hover:bg-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                                            <div class="w-3 h-3 me-2 text-gray-600 dark:text-white">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-200 80-480l280-280 56 56-183 184h647v80H233l184 184-57 56Z"/></svg>
                                             </div>
-                                        </div>
 
-                                        <p class="font-semibold text-gray-900 hover:underline dark:text-gray-400 {{FD['text-0']}} block mb-2">
-                                            Apple iMac 27", 1TB HDD, Retina 5K Display, M3 Max some more texts to add here so that i can check it
-                                        </p>
+                                            Back to Cart
+                                        </a>
 
-                                        <p class="{{FD['text-0']}} dark:text-gray-500">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, nihil vel veritatis, laborum dolore</p>
-
-                                        <div class="my-2 flex items-center gap-2">
-                                            <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
-                                                <span class="currency-icon">$</span>1,09,699
-                                            </p>
-                                            <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
-                                                <span class="currency-icon">$</span>17,699
-                                            </p>
-                                            <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
-                                                40% off
-                                            </p>
-                                        </div>
-
-                                        <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
-                                            Add item
+                                        <button type="submit" class="w-full sm:w-max flex items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                            {{-- Login --}}
+                                            Create account
                                         </button>
-                                    </a>
+                                    </div>
                                 </div>
-                            </div>
-
-                            {{-- save for later & remove --}}
-                            <div class="flex items-center gap-4 mt-2 pt-2 sm:pt-4 border-t dark:border-gray-700">
-                                <button type="button" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-600 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white">
-                                    <div class="{{FD['iconClass']}}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-120v-640q0-33 23.5-56.5T280-840h240v80H280v518l200-86 200 86v-278h80v400L480-240 200-120Zm80-640h240-240Zm400 160v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg>
-                                    </div>
-                                    Save for later
-                                </button>
-
-                                <button type="button" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-red-500 hover:text-red-700 hover:underline dark:text-red-600 dark:hover:text-red-700">
-                                    <div class="{{FD['iconClass']}}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                                    </div>
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-
-                        {{-- single product --}}
-                        <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4">
-                            {{-- product details --}}
-                            <div class="space-y-4 flex items-center justify-between gap-2 sm:gap-6 sm:mb-2">
-                                <a href="#" class="w-24 shrink-1 md:order-1">
-                                    <img class="h-20 w-20" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/iphone-dark.svg" alt="imac image" />
-                                </a>
-
-                                <div class="w-full min-w-0 flex-1 md:order-2">
-                                    <a href="#" class="block {{FD['text']}} leading-tight font-medium text-gray-900 hover:underline dark:text-gray-300 mb-1 sm:mb-2">
-                                        PC system All in One APPLE iMac (2023) mqrq3ro/a, Apple M3, 24" Retina 4.5K, 8GB, SSD 256GB, 10-core GPU, Keyboard layout INT
-                                    </a>
-
-                                    <p class="{{FD['text-0']}} text-gray-500 dark:text-gray-400">here lies the product description. Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro laudantium aut officia ipsa reiciendis provident quibusdam soluta possimus. Quos, numquam excepturi nulla alias ab officiis! Illo, pariatur unde. Consequuntur, obcaecati?</p>
-
-                                    <div class="flex space-x-4 items-center mt-3">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center">
-                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" /></svg>
-                                                </button>
-
-                                                <input type="text" class="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="2" />
-
-                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" /></svg>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-icon">$</span>1,09,699</p>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            {{-- save for later & remove --}}
-                            <div class="flex items-center gap-4 mt-2 pt-2 sm:pt-4 border-t dark:border-gray-700">
-                                <button type="button" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-600 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white">
-                                    <div class="{{FD['iconClass']}}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-120v-640q0-33 23.5-56.5T280-840h240v80H280v518l200-86 200 86v-278h80v400L480-240 200-120Zm80-640h240-240Zm400 160v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg>
-                                    </div>
-                                    Save for later
-                                </button>
-
-                                <button type="button" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-red-500 hover:text-red-700 hover:underline dark:text-red-600 dark:hover:text-red-700">
-                                    <div class="{{FD['iconClass']}}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                                    </div>
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-
-                        {{-- single product --}}
-                        <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4">
-                            {{-- product details --}}
-                            <div class="space-y-4 flex items-center justify-between gap-2 sm:gap-6 sm:mb-2">
-                                <a href="#" class="w-24 shrink-1 md:order-1">
-                                    <img class="h-20 w-20" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-light.svg" alt="imac image" />
-                                </a>
-
-                                <div class="w-full min-w-0 flex-1 md:order-2">
-                                    <a href="#" class="block {{FD['text']}} leading-tight font-medium text-gray-900 hover:underline dark:text-gray-300 mb-1 sm:mb-2">
-                                        PC system All in One APPLE iMac (2023) mqrq3ro/a, Apple M3, 24" Retina 4.5K, 8GB, SSD 256GB, 10-core GPU, Keyboard layout INT
-                                    </a>
-
-                                    <p class="{{FD['text-0']}} text-gray-500 dark:text-gray-400">here lies the product description. Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro laudantium aut officia ipsa reiciendis provident quibusdam soluta possimus. Quos, numquam excepturi nulla alias ab officiis! Illo, pariatur unde. Consequuntur, obcaecati?</p>
-
-                                    <div class="flex space-x-4 items-center mt-3">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center">
-                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" /></svg>
-                                                </button>
-
-                                                <input type="text" class="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="2" />
-
-                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" /></svg>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-icon">$</span>1,09,699</p>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            {{-- save for later & remove --}}
-                            <div class="flex items-center gap-4 mt-2 pt-2 sm:pt-4 border-t dark:border-gray-700">
-                                <button type="button" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-600 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white">
-                                    <div class="{{FD['iconClass']}}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-120v-640q0-33 23.5-56.5T280-840h240v80H280v518l200-86 200 86v-278h80v400L480-240 200-120Zm80-640h240-240Zm400 160v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg>
-                                    </div>
-                                    Save for later
-                                </button>
-
-                                <button type="button" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-red-500 hover:text-red-700 hover:underline dark:text-red-600 dark:hover:text-red-700">
-                                    <div class="{{FD['iconClass']}}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                                    </div>
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-
-                        {{-- single product --}}
-                        <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4">
-                            {{-- product details --}}
-                            <div class="space-y-4 flex items-center justify-between gap-2 sm:gap-6 sm:mb-2">
-                                <a href="#" class="w-24 shrink-1 md:order-1">
-                                    <img class="h-20 w-20" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/macbook-pro-light.svg" alt="imac image" />
-                                </a>
-
-                                <div class="w-full min-w-0 flex-1 md:order-2">
-                                    <a href="#" class="block {{FD['text']}} leading-tight font-medium text-gray-900 hover:underline dark:text-gray-300 mb-1 sm:mb-2">
-                                        PC system All in One APPLE iMac (2023) mqrq3ro/a, Apple M3, 24" Retina 4.5K, 8GB, SSD 256GB, 10-core GPU, Keyboard layout INT
-                                    </a>
-
-                                    <p class="{{FD['text-0']}} text-gray-500 dark:text-gray-400">here lies the product description. Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro laudantium aut officia ipsa reiciendis provident quibusdam soluta possimus. Quos, numquam excepturi nulla alias ab officiis! Illo, pariatur unde. Consequuntur, obcaecati?</p>
-
-                                    <div class="flex space-x-4 items-center mt-3">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center">
-                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" /></svg>
-                                                </button>
-
-                                                <input type="text" class="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="2" />
-
-                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" /></svg>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-icon">$</span>1,09,699</p>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            {{-- save for later & remove --}}
-                            <div class="flex items-center gap-4 mt-2 pt-2 sm:pt-4 border-t dark:border-gray-700">
-                                <button type="button" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-600 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white">
-                                    <div class="{{FD['iconClass']}}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-120v-640q0-33 23.5-56.5T280-840h240v80H280v518l200-86 200 86v-278h80v400L480-240 200-120Zm80-640h240-240Zm400 160v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg>
-                                    </div>
-                                    Save for later
-                                </button>
-
-                                <button type="button" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-red-500 hover:text-red-700 hover:underline dark:text-red-600 dark:hover:text-red-700">
-                                    <div class="{{FD['iconClass']}}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                                    </div>
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-
-                        {{-- single product --}}
-                        <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4">
-                            {{-- product details --}}
-                            <div class="space-y-4 flex items-center justify-between gap-2 sm:gap-6 sm:mb-2">
-                                <a href="#" class="w-24 shrink-1 md:order-1">
-                                    <img class="h-20 w-20" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/apple-watch-dark.svg" alt="imac image" />
-                                </a>
-
-                                <div class="w-full min-w-0 flex-1 md:order-2">
-                                    <a href="#" class="block {{FD['text']}} leading-tight font-medium text-gray-900 hover:underline dark:text-gray-300 mb-1 sm:mb-2">
-                                        PC system All in One APPLE iMac (2023) mqrq3ro/a, Apple M3, 24" Retina 4.5K, 8GB, SSD 256GB, 10-core GPU, Keyboard layout INT
-                                    </a>
-
-                                    <p class="{{FD['text-0']}} text-gray-500 dark:text-gray-400">here lies the product description. Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro laudantium aut officia ipsa reiciendis provident quibusdam soluta possimus. Quos, numquam excepturi nulla alias ab officiis! Illo, pariatur unde. Consequuntur, obcaecati?</p>
-
-                                    <div class="flex space-x-4 items-center mt-3">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center">
-                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" /></svg>
-                                                </button>
-
-                                                <input type="text" class="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="2" />
-
-                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" /></svg>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-icon">$</span>1,09,699</p>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            {{-- save for later & remove --}}
-                            <div class="flex items-center gap-4 mt-2 pt-2 sm:pt-4 border-t dark:border-gray-700">
-                                <button type="button" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-600 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white">
-                                    <div class="{{FD['iconClass']}}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-120v-640q0-33 23.5-56.5T280-840h240v80H280v518l200-86 200 86v-278h80v400L480-240 200-120Zm80-640h240-240Zm400 160v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg>
-                                    </div>
-                                    Save for later
-                                </button>
-
-                                <button type="button" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-red-500 hover:text-red-700 hover:underline dark:text-red-600 dark:hover:text-red-700">
-                                    <div class="{{FD['iconClass']}}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                                    </div>
-                                    Remove
-                                </button>
-                            </div>
+                            </form>
                         </div>
 
                     </div>
-
                 </div>
 
                 {{-- right part - cart items & order summary --}}
-                <div class="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
+                <div class="mx-auto mt-6 mb-8 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
 
                     {{-- cart items --}}
-                    <div class="z-50 mx-auto divide-y-2 overflow-hidden {{FD['rounded']}} bg-white antialiased dark:divide-gray-600 dark:bg-gray-800 border border-gray-200 dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 shadow-sm">
-                        <div class="px-3 py-3">
+                    <div class="mx-auto divide-y-2 overflow-hidden {{FD['rounded']}} bg-white antialiased dark:divide-gray-600 dark:bg-gray-800 border border-gray-200 dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 shadow-sm">
+                        <div class="p-4">
                             <dl class="flex items-center gap-2">
                                 <dt class="font-medium {{FD['text-1']}} leading-tight dark:text-white">Your shopping cart</dt>
                                 <dd class="leading-tight {{FD['text-1']}} text-gray-500 dark:text-gray-400">(5 items)</dd>
                             </dl>
                         </div>
-            
+
                         <div class="grid grid-cols-2 items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                             <div class="flex items-center gap-2">
                                 <a href="#" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
@@ -412,29 +191,29 @@
                                     <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-icon">$</span>1,299</p>
                                 </div>
                             </div>
-            
+
                             <div class="flex items-center justify-end gap-3">
                                 <div class="relative flex items-center">
                                     <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
                                         <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"></path></svg>
                                     </button>
-            
+
                                     <input type="text" class="w-8 flex-shrink-0 border-0 bg-transparent text-center {{FD['text']}} font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="2" required="">
-            
+
                                     <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
                                         <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"></path></svg>
                                     </button>
                                 </div>
-            
+
                                 <button type="button" class="text-red-600 hover:text-red-700 dark:text-red-600 dark:hover:text-red-700">
                                     <div class="h-4 w-4">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-168-88-88 224-224-224-224 88-88 224 224 224-224 88 88-224 224 224 224-88 88-224-224-224 224Z"/></svg>
                                     </div>
                                 </button>
-            
+
                             </div>
                         </div>
-            
+
                         <div class="grid grid-cols-2 items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                             <div class="flex items-center gap-2">
                                 <a href="#" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
@@ -446,29 +225,29 @@
                                     <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-icon">$</span>1,299</p>
                                 </div>
                             </div>
-            
+
                             <div class="flex items-center justify-end gap-3">
                                 <div class="relative flex items-center">
                                     <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
                                         <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"></path></svg>
                                     </button>
-            
+
                                     <input type="text" class="w-8 flex-shrink-0 border-0 bg-transparent text-center {{FD['text']}} font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="2" required="">
-            
+
                                     <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
                                         <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"></path></svg>
                                     </button>
                                 </div>
-            
+
                                 <button type="button" class="text-red-600 hover:text-red-700 dark:text-red-600 dark:hover:text-red-700">
                                     <div class="h-4 w-4">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-168-88-88 224-224-224-224 88-88 224 224 224-224 88 88-224 224 224 224-88 88-224-224-224 224Z"/></svg>
                                     </div>
                                 </button>
-            
+
                             </div>
                         </div>
-            
+
                         <div class="grid grid-cols-2 items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                             <div class="flex items-center gap-2">
                                 <a href="#" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
@@ -480,15 +259,15 @@
                                     <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-icon">$</span>1,299</p>
                                 </div>
                             </div>
-            
+
                             <div class="flex items-center justify-end gap-3">
                                 <div class="relative flex items-center">
                                     <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
                                         <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"></path></svg>
                                     </button>
-            
+
                                     <input type="text" class="w-8 flex-shrink-0 border-0 bg-transparent text-center {{FD['text']}} font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="2" required="">
-            
+
                                     <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
                                         <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"></path></svg>
                                     </button>
@@ -573,7 +352,8 @@
                     </div>
 
                     {{-- order summary --}}
-                    <div class="fixed z-1 sm:static bottom-16 sm:bottom-0 w-full -m-2 sm:m-0 space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-6 shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
+                    <div class="w-full space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
+                    {{-- <div class="fixed z-1 sm:static bottom-16 sm:bottom-0 w-full -m-2 sm:m-0 space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-6 shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800"> --}}
                         <div id="order-summary" class="hidden lg:block">
                             <p class="{{FD['text-1']}} font-semibold text-gray-900 dark:text-white mb-2">Order summary</p>
 
@@ -610,19 +390,19 @@
                             <dd class="{{FD['text']}} font-bold text-gray-900 dark:text-white">$8,191.00</dd>
                         </dl>
 
-                        <div class="flex space-x-2 lg:space-x-0">
+                        {{-- <div class="flex space-x-2 lg:space-x-0">
                             <button id="order-summary-toggle" class="flex lg:hidden w-full items-center justify-center {{FD['rounded']}} bg-gray-300 focus:bg-gray-400 px-5 py-2.5 {{FD['text']}} font-medium text-gray=800 hover:bg-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                                 Order summary
 
                                 <div class="w-3 h-3 ms-1 text-gray-600 dark:text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-80 240-320l57-57 183 183 183-183 57 57L480-80ZM298-584l-58-56 240-240 240 240-58 56-182-182-182 182Z"/></svg>
                                 </div>
-                            </button>
+                            </button> --}}
 
                             {{-- <a href="{{route('front.checkout.index')}}" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                 Proceed to Checkout
                             </a> --}}
-                        </div>
+                        {{-- </div> --}}
 
                         <div class="items-center justify-center gap-2 hidden lg:flex">
                             <a href="{{ route('front.cart.index') }}" class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">

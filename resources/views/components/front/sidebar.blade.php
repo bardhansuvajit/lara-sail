@@ -81,17 +81,13 @@ $direction = $direction === 'left' ? 'left-0' : 'right-0';
             <header class="flex items-center justify-between p-2 border-b dark:border-gray-800">
                 <h2 class="text-lg font-semibold">{{ $header }}</h2>
 
-                <x-admin.button-icon
-                    element="button"
-                    tag="secondary"
-                    href="javascript:void(0)"
-                    title="Close"
-                    class="border" 
-                    x-on:click="show = false" >
-                    @slot('icon')
-                        <svg class="{{FD['iconClass']}} text-gray-700 dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>
-                    @endslot
-                </x-admin.button-icon>
+                <button title="Close" class="h-6 w-6 flex items-center justify-center font-medium {{FD['rounded']}} text-sm p-1
+                       text-secondary-500 border-gray-200
+                       hover:bg-gray-200 
+                       focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-gray-100 
+                       dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-600 dark:focus:ring-offset-gray-800" x-on:click="show = false" >
+                    <svg class="{{FD['iconClass']}} text-gray-700 dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>
+                </button>
             </header>
         @else
             <header class="flex items-center justify-between p-2 border-b dark:border-gray-800">

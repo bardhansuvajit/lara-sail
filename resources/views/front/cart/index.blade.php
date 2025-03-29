@@ -2,7 +2,7 @@
     screen="max-w-screen-xl"
     title="{{ __('Cart') }}">
 
-    <section class="bg-gray-100 dark:bg-gray-900 antialiased mt-36 sm:mt-44">
+    <section class="bg-gray-100 dark:bg-gray-900 antialiased">
         <div class="pt-4 sm:pt-6 px-2 sm:px-2 md:px-3 lg:px-4 xl:px-4 2xl:px-0">
             <h2 class="text-base font-semibold text-gray-900 dark:text-white sm:text-lg">Shopping Cart</h2>
 
@@ -518,8 +518,8 @@
                 </div>
 
                 {{-- right part - order summary --}}
-                <div class="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
-                    <div class="fixed z-1 sm:static bottom-16 sm:bottom-0 w-full -m-2 sm:m-0 space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-6 shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
+                <div id="order-summary-container" class="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full sticky top-36">
+                    <div class="fixed z-1 sm:static bottom-16 sm:bottom-0 w-full -m-2 sm:m-0 space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
                         <div id="order-summary" class="hidden lg:block">
                             <p class="{{FD['text-1']}} font-semibold text-gray-900 dark:text-white mb-2">Order summary</p>
 

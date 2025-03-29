@@ -11,7 +11,7 @@
     </x-slot>
     <x-slot name="content">
         <div class="z-50 mx-auto divide-y-2 overflow-hidden {{FD['rounded']}} bg-white antialiased dark:divide-gray-600 dark:bg-gray-700">
-            <div class="px-3 py-3">
+            <div class="p-4">
                 <dl class="flex items-center gap-2">
                     <dt class="font-medium {{FD['text-1']}} leading-tight dark:text-white">Your shopping cart</dt>
                     <dd class="leading-tight {{FD['text-1']}} text-gray-500 dark:text-gray-400">(5 items)</dd>
@@ -187,7 +187,6 @@
                 </div>
             </div>
 
-
             <div class="space-y-4 px-3 py-2 dark:border-gray-600">
                 <dl class="flex items-center justify-between">
                     <dt class="font-medium {{FD['text-1']}} leading-tight dark:text-white">Total</dt>
@@ -197,7 +196,7 @@
                 <div class="flex space-x-2">
                     <a href="{{route('front.cart.index')}}" title="" class="inline-flex w-full items-center justify-center {{FD['rounded']}} bg-primary-600 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"> See your cart </a>
 
-                    <a href="#" title="" class="inline-flex w-full items-center justify-center {{FD['rounded']}} bg-primary-600 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"> Checkout </a>
+                    <a href="{{route('front.checkout.index')}}" title="" class="inline-flex w-full items-center justify-center {{FD['rounded']}} bg-primary-600 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"> Checkout </a>
                 </div>
             </div>
         </div>

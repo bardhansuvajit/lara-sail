@@ -8,6 +8,7 @@ use App\Http\Controllers\Front\Category\CategoryController;
 use App\Http\Controllers\Front\Cart\CartController;
 use App\Http\Controllers\Front\Checkout\CheckoutController;
 use App\Http\Controllers\Front\Profile\LoginController;
+use App\Http\Controllers\Front\Product\ProductController;
 
 Route::name('front.')->group(function () {
     // home
@@ -33,6 +34,11 @@ Route::name('front.')->group(function () {
     // profile
     Route::name('login.')->group(function() {
         Route::get('/profile/login', [LoginController::class, 'index'])->name('index');
+    });
+
+    // product
+    Route::name('product.')->group(function() {
+        Route::get('{slug}', [ProductController::class, 'detail'])->name('detail');
     });
 });
 

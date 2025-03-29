@@ -1,5 +1,6 @@
 const navbar = document.getElementById('navbar');
 const darkModeToggleEl = document.getElementById('dark-mode');
+const orderSummaryCont = document.getElementById('order-summary-container');
 const orderSummaryBtn = document.getElementById('order-summary-toggle');
 const orderSummaryEl = document.getElementById('order-summary');
 let lastScrollPosition = 0;
@@ -18,10 +19,20 @@ function handleNavbarScroll() {
     // Scrolling down
     if (currentScrollPosition > lastScrollPosition && currentScrollPosition > scrollThreshold) {
         navbar.style.top = `-${navbarHeight}px`;
+
+        // cart page order summary container
+        if (orderSummaryCont) {
+            orderSummaryCont.style.top = '9rem';
+        }
     } 
     // Scrolling up or at top of page
     else {
         navbar.style.top = '0px';
+
+        // cart page order summary container
+        if (orderSummaryCont) {
+            orderSummaryCont.style.top = '13rem';
+        }
     }
 
     lastScrollPosition = currentScrollPosition;

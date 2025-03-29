@@ -1,8 +1,8 @@
 <x-app-layout
     screen="max-w-screen-xl"
-    title="{{ __('Dashboard') }}">
+    title="{{ __('Home') }}">
 
-    <section class="bg-white dark:bg-gray-900 antialiased mt-36 sm:mt-44">
+    <section class="bg-gray-100 dark:bg-gray-900 antialiased">
         <div class="swiper mySwiper">
             <div class="swiper-wrapper">
               <div class="swiper-slide w-full h-56 sm:h-96 bg-gray-500">Slide 1</div>
