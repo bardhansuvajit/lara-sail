@@ -72,25 +72,42 @@
                     <h3 class="{{FD['text-1']}} font-semibold mb-2 dark:text-gray-500">Color</h3>
 
                     <div class="w-full grid grid-cols-6 gap-4">
-                        <div class="text-center">
-                            <div class="flex flex-col items-center gap-2">
-                                <img src="https://placehold.co/40x40" class="rounded-full">
-                                <div>
-                                    <div class="font-semibold">Lime</div>
-                                    <div class="text-sm text-gray-600">4.8 ★ (2.5k Ratings)</div>
+                        <x-front.radio-input-button id="someId1" name="variationColor" value="Lime" required checked>
+                            <x-slot name="content">
+                                <div class="text-center">
+                                    <div class="flex flex-col items-center gap-2">
+                                        <img src="https://placehold.co/40x40" class="rounded-full">
+                                        <div>
+                                            <div class="{{FD['text']}} font-semibold">Lime</div>
+                                            <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                            </x-slot>
+                        </x-front.radio-input-button>
 
-                        <div class="text-center">
+                        <x-front.radio-input-button id="someId2" name="variationColor" value="Red">
+                            <x-slot name="content">
+                                <div class="text-center">
+                                    <div class="flex flex-col items-center gap-2">
+                                        <img src="https://placehold.co/40x40" class="rounded-full">
+                                        <div>
+                                            <div class="{{FD['text']}} font-semibold">Red</div>
+                                            {{-- <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div> --}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </x-slot>
+                        </x-front.radio-input-button>
+
+                        {{-- <div class="text-center">
                             <div class="flex flex-col items-center gap-2">
                                 <img src="https://placehold.co/40x40" class="rounded-full">
                                 <div>
                                     <div class="font-semibold">Lime</div>
-                                    <div class="text-sm text-gray-600">4.8 ★ (2.5k Ratings)</div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     {{-- <div class="flex gap-2">
                         <button class="w-8 h-8 rounded-full bg-blue-600 border-2 border-gray-300"></button>
