@@ -2,171 +2,230 @@
     screen="max-w-screen-xl"
     title="{{ __('Product') }}">
 
-    <div class="container mx-auto px-4 py-6">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <div class="mx-auto px-2 sm:px-4 py-6">
+        <div class="grid grid-cols-1 sm:grid-cols-5 gap-0 sm:gap-10">
             <!-- Product Images -->
-            {{-- <div class="swiper main-swiper aspect-square rounded-lg shadow-lg"> --}}
-            <div class="swiper main-swiper rounded-lg shadow-lg">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img src="https://placehold.co/800x800" class="w-full h-full object-cover"></div>
-                    <div class="swiper-slide"><img src="https://placehold.co/800x800" class="w-full h-full object-cover"></div>
+            <div class="col-span-2 mb-0 sm:mb-5">
+                <div class="w-full h-80 overflow-hidden mx-auto">
+                    <div class="swiper main-swiper {{FD['rounded']}} h-full">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide h-full">
+                                <div class="h-full w-full flex items-center justify-center"> <!-- Container for centering -->
+                                    <img src="https://placehold.co/300x400" class="h-full w-full object-down">
+                                </div>
+                            </div>
+                            <div class="swiper-slide h-full">
+                                <div class="h-full w-full flex items-center justify-center">
+                                    <img src="https://placehold.co/800x700" class="h-full w-full object-down">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination !flex justify-center gap-2"></div>
+                        {{-- <button class="swiper-button-next"></button>
+                        <button class="swiper-button-prev"></button> --}}
+                    </div>
                 </div>
-                <div class="swiper-pagination"></div>
-                <button class="swiper-button-next"></button>
-                <button class="swiper-button-prev"></button>
+
+                <div class="w-full mt-5">
+                    <div class="fixed z-[1] bottom-16 w-full -m-2 pt-3 px-2 pb-3 sm:static sm:bottom-0 sm:m-0 sm:p-0 {{FD['rounded']}} border sm:border-0 dark:sm:border-0 border-gray-200 bg-white sm:bg-transparent dark:sm:bg-transparent shadow-sm sm:shadow-none dark:sm:shadow-none dark:border-0 lg:dark:border-0 dark:bg-gray-800">
+                        <div class="flex space-x-2">
+                            <button id="buy-now" class="flex w-full items-center justify-center {{FD['rounded']}} bg-gray-300 focus:bg-gray-400 px-5 py-2.5 {{FD['text']}} font-medium text-gray=800 hover:bg-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                                Buy Now
+                            </button>
+
+                            <button id="add-to-cart" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Product Info -->
-            <div class="space-y-4">
-                {{-- primary info --}}
-                <div class="">
-                    {{-- title --}}
-                    <h4 class="{{FD['text']}} sm:text-base text-gray-500 dark:text-gray-300 font-medium">Blue Floral Bodycon Mini Dress</h4>
+            <div class="col-span-3">
+                <div class="space-y-2 sm:space-y-4">
+                    {{-- primary info --}}
+                    <div class="">
+                        <div class="w-full flex justify-between items-center">
+                            <div>
+                                {{-- title --}}
+                                <h4 class="{{FD['text']}} sm:text-base text-gray-500 dark:text-gray-300 font-medium">Blue Floral Bodycon Mini Dress</h4>
 
-                    {{-- short rating --}}
-                    <div class="flex items-center space-x-2 mt-2">
-                        <div class="flex items-center text-yellow-400 text-sm">
-                            <div class="w-10 h-5 flex space-x-1 items-center bg-gray-50 px-1 border">
-                                <p class="{{FD['text-0']}} text-gray-900 font-bold">3.9</p>
-                                <div class="{{FD['iconClass']}} text-yellow-400 flex items-center">
-                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z"></path></svg>
+                                {{-- short rating --}}
+                                <div class="flex items-center space-x-2 mt-2">
+                                    <div class="flex items-center text-yellow-400 text-sm">
+                                        <div class="w-10 h-5 flex space-x-1 items-center bg-gray-50 px-1 border">
+                                            <p class="{{FD['text-0']}} text-gray-900 font-bold">3.9</p>
+                                            <div class="{{FD['iconClass']}} text-yellow-400 flex items-center">
+                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z"></path></svg>
+                                            </div>
+                                        </div>
+                                        <span class="text-gray-600 dark:text-gray-400 ml-2 {{FD['text']}}">(128 reviews)</span>
+                                    </div>
+
+                                    <span class="text-green-600 {{FD['text']}}">In Stock</span>
                                 </div>
                             </div>
-                            <span class="text-gray-600 dark:text-gray-400 ml-2 {{FD['text']}}">(128 reviews)</span>
-                        </div>
 
-                        <span class="text-green-600 {{FD['text']}}">In Stock</span>
-                    </div>
-
-                    <div class="border-t dark:border-gray-700 my-4"></div>
-
-                    {{-- pricing --}}
-                    <div class="mt-2 flex items-center gap-4">
-                        <p class="{{FD['text-2']}} font-bold leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
-                            <span class="currency-icon">$</span>1,09,699
-                        </p>
-                        <p class="{{FD['text-2']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
-                            <span class="currency-icon">$</span>17,699
-                        </p>
-                        <p class="{{FD['text-1']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
-                            40% off
-                        </p>
-                    </div>
-
-                    <p class="{{FD['text-0']}} text-gray-500">Inclusive of all taxes</p>
-
-                    <div class="flex space-x-2 items-center bg-green-200 dark:bg-green-900 text-gray-900 dark:text-gray-300 mt-3 p-2">
-                        <div class="{{FD['iconClass']}}">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M640-240v-80h104L536-526 376-366 80-664l56-56 240 240 160-160 264 264v-104h80v240H640Z"/></svg>
-                        </div>
-
-                        <p class="{{FD['text']}} font-bold">Lowest price in last 30 days</p>
-                    </div>
-
-                    <div class="border-t dark:border-gray-700 my-4"></div>
-                </div>
-
-
-                {{-- variation --}}
-                <div>
-                    <h3 class="{{FD['text-1']}} font-semibold mb-2 dark:text-gray-500">Color</h3>
-
-                    <div class="w-full grid grid-cols-6 gap-4">
-                        <x-front.radio-input-button id="someId1" name="variationColor" value="Lime" required checked>
-                            <x-slot name="content">
-                                <div class="text-center">
-                                    <div class="flex flex-col items-center gap-2">
-                                        <img src="https://placehold.co/40x40" class="rounded-full">
-                                        <div>
-                                            <div class="{{FD['text']}} font-semibold">Lime</div>
-                                            <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
-                                        </div>
+                            <div>
+                                <button id="wishlist-btn" type="button" class="rounded-full w-6 h-6 p-1 hover:bg-gray-200 dark:hover:bg-gray-800">
+                                    <div class="{{FD['iconClass']}} text-gray-500 text-red-500">
+                                        {{-- <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z" /></svg> --}}
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Z"/></svg>
                                     </div>
-                                </div>
-                            </x-slot>
-                        </x-front.radio-input-button>
-
-                        <x-front.radio-input-button id="someId2" name="variationColor" value="Red">
-                            <x-slot name="content">
-                                <div class="text-center">
-                                    <div class="flex flex-col items-center gap-2">
-                                        <img src="https://placehold.co/40x40" class="rounded-full">
-                                        <div>
-                                            <div class="{{FD['text']}} font-semibold">Red</div>
-                                            {{-- <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div> --}}
-                                        </div>
-                                    </div>
-                                </div>
-                            </x-slot>
-                        </x-front.radio-input-button>
-
-                        {{-- <div class="text-center">
-                            <div class="flex flex-col items-center gap-2">
-                                <img src="https://placehold.co/40x40" class="rounded-full">
-                                <div>
-                                    <div class="font-semibold">Lime</div>
-                                </div>
+                                </button>
                             </div>
-                        </div> --}}
+                        </div>
+
+                        <div class="border-t dark:border-gray-700 my-4 sm:my-4"></div>
+
+                        {{-- pricing --}}
+                        <div class="mt-2 flex items-center gap-4 mb-1 sm:mb-4">
+                            <p class="{{FD['text-1']}} sm:text-lg font-bold leading-tight text-gray-900 dark:text-white">
+                                <span class="currency-icon">$</span>1,09,699
+                            </p>
+                            <p class="{{FD['text-1']}} sm:text-lg font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400">
+                                <span class="currency-icon">$</span>17,699
+                            </p>
+                            <p class="{{FD['text-1']}} font-black leading-tight {{FD['activeClass']}}">
+                                40% off
+                            </p>
+                        </div>
+
+                        <p class="{{FD['text-0']}} text-gray-500">Inclusive of all taxes</p>
+
+                        <div class="flex space-x-2 items-center bg-green-200 dark:bg-green-900 text-gray-900 dark:text-gray-300 mt-3 p-2">
+                            <div class="{{FD['iconClass']}}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M640-240v-80h104L536-526 376-366 80-664l56-56 240 240 160-160 264 264v-104h80v240H640Z"/></svg>
+                            </div>
+
+                            <p class="{{FD['text']}} font-bold">Lowest price in last 30 days</p>
+                        </div>
                     </div>
-                    {{-- <div class="flex gap-2">
-                        <button class="w-8 h-8 rounded-full bg-blue-600 border-2 border-gray-300"></button>
-                        <button class="w-8 h-8 rounded-full bg-red-600 border-2"></button>
-                    </div> --}}
-                </div>
-                {{-- <div>
-                    <h3 class="{{FD['text']}} font-semibold mb-2">Size</h3>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button class="py-1 border text-sm hover:border-black">S</button>
-                        <button class="py-1 border text-sm hover:border-black bg-black text-white">M</button>
-                        <button class="py-1 border text-sm hover:border-black">L</button>
-                    </div>
-                </div> --}}
-
-                <div class="border-t dark:border-gray-700 my-4"></div>
 
 
-                {{-- short description --}}
-                <p class="{{FD['text']}} text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam beatae, consequuntur, eius illo pariatur odit et eveniet corrupti, omnis accusamus suscipit sunt! Optio, repellat laboriosam aliquid labore impedit quos sunt! Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi incidunt blanditiis excepturi et minus sint officiis quibusdam a neque, velit asperiores iure repellat? Ipsam laudantium explicabo dolorem reiciendis doloribus eos?</p>
+                    <div class="border-t dark:border-gray-700 my-4 sm:my-4"></div>
 
 
-                <!-- Action Buttons -->
-                {{-- <div class="space-y-2">
-                    <div class="flex gap-2">
-                        <button class="flex-1 bg-yellow-400 py-3 text-sm font-bold hover:bg-yellow-500">BUY NOW</button>
-                        <button class="flex-1 bg-gray-900 text-white py-3 text-sm font-bold hover:bg-gray-800">ADD TO CART</button>
-                        <button class="w-12 border hover:bg-gray-100" id="wishlistBtn">
-                            <i class="far fa-heart"></i>
-                        </button>
-                    </div>
-                    <div class="text-sm text-gray-600">Delivery by Tomorrow, Free Shipping</div>
-                </div> --}}
-
-                <!-- Highlights -->
-                {{-- <div class="bg-gray-100 p-4 rounded">
-                    <h3 class="font-semibold mb-2">Product Highlights</h3>
-                    <ul class="text-sm space-y-1 list-disc pl-4">
-                        <li>100% Cotton</li>
-                        <li>Machine Wash</li>
-                        <li>Imported Fabric</li>
-                        <li>30 Days Return Policy</li>
-                    </ul>
-                </div> --}}
-
-                <!-- Seller Info -->
-                <div class="pt-4">
-                    <div class="flex items-center gap-2">
-                        <img src="https://placehold.co/40x40" class="rounded-full">
+                    {{-- variation --}}
+                    <div class="space-y-2">
                         <div>
-                            <div class="font-semibold">FashionHub Store</div>
-                            <div class="text-sm text-gray-600">4.8 ★ (2.5k Ratings)</div>
+                            <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">Color</h3>
+    
+                            <div class="w-full grid grid-cols-4 lg:grid-cols-6 gap-4">
+                                <x-front.radio-input-button id="someId1" name="variation-color" value="Lime" onclick="sendUrlParam('color', 'Lime')">
+                                    <div class="text-center">
+                                        <div class="flex flex-col items-center gap-2">
+                                            <img src="https://placehold.co/40x40" class="rounded-full">
+                                            <div>
+                                                <div class="{{FD['text']}} font-semibold">Lime</div>
+                                                <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </x-front.radio-input-button>
+    
+                                <x-front.radio-input-button id="someId2" name="variation-color" value="Red" onclick="sendUrlParam('color', 'Red')">
+                                    <div class="text-center">
+                                        <div class="flex flex-col items-center gap-2">
+                                            <img src="https://placehold.co/40x40" class="rounded-full">
+                                            <div>
+                                                <div class="{{FD['text']}} font-semibold">Red</div>
+                                                <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </x-front.radio-input-button>
+    
+                                <x-front.radio-input-button id="someId3" name="variation-color" value="Blue" onclick="sendUrlParam('color', 'Blue')">
+                                    <div class="text-center">
+                                        <div class="flex flex-col items-center gap-2">
+                                            <img src="https://placehold.co/40x40" class="rounded-full">
+                                            <div>
+                                                <div class="{{FD['text']}} font-semibold">Blue</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </x-front.radio-input-button>
+                            </div>
+                        </div>
+    
+                        <div>
+                            <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">Size</h3>
+    
+                            <div class="w-full grid grid-cols-4 lg:grid-cols-6 gap-4">
+                                <x-front.radio-input-button id="someId11" name="variation-size" value="M" onclick="sendUrlParam('size', 'M')">
+                                    <div class="text-center">
+                                        <div class="flex flex-col items-center gap-2">
+                                            {{-- <img src="https://placehold.co/40x40" class="rounded-full"> --}}
+                                            <div>
+                                                <div class="{{FD['text']}} font-semibold">M</div>
+                                                <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </x-front.radio-input-button>
+    
+                                <x-front.radio-input-button id="someId22" name="variation-size" value="L" onclick="sendUrlParam('size', 'L')">
+                                    <div class="text-center">
+                                        <div class="flex flex-col items-center gap-2">
+                                            {{-- <img src="https://placehold.co/40x40" class="rounded-full"> --}}
+                                            <div>
+                                                <div class="{{FD['text']}} font-semibold">L</div>
+                                                <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </x-front.radio-input-button>
+    
+                                <x-front.radio-input-button id="someId33" name="variation-size" value="XL" onclick="sendUrlParam('size', 'XL')">
+                                    <div class="text-center">
+                                        <div class="flex flex-col items-center gap-2">
+                                            {{-- <img src="https://placehold.co/40x40" class="rounded-full"> --}}
+                                            <div>
+                                                <div class="{{FD['text']}} font-semibold">XL</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </x-front.radio-input-button>
+    
+                                <x-front.radio-input-button id="someId44" name="variation-size" value="2XL" onclick="sendUrlParam('size', '2XL')">
+                                    <div class="text-center">
+                                        <div class="flex flex-col items-center gap-2">
+                                            {{-- <img src="https://placehold.co/40x40" class="rounded-full"> --}}
+                                            <div>
+                                                <div class="{{FD['text']}} font-semibold">2XL</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </x-front.radio-input-button>
+                            </div>
                         </div>
                     </div>
+
+
+                    <div class="border-t dark:border-gray-700 my-4 sm:my-4"></div>
+
+
+                    {{-- short description --}}
+                    <p class="{{FD['text']}} text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam beatae, consequuntur, eius illo pariatur odit et eveniet corrupti, omnis accusamus suscipit sunt! Optio, repellat laboriosam aliquid labore impedit quos sunt! Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi incidunt blanditiis excepturi et minus sint officiis quibusdam a neque, velit asperiores iure repellat? Ipsam laudantium explicabo dolorem reiciendis doloribus eos?</p>
+
+
+                    <!-- Seller Info -->
+                    {{-- <div class="pt-4">
+                        <div class="flex items-center gap-2">
+                            <img src="https://placehold.co/40x40" class="rounded-full">
+                            <div>
+                                <div class="font-semibold">FashionHub Store</div>
+                                <div class="text-sm text-gray-600">4.8 ★ (2.5k Ratings)</div>
+                            </div>
+                        </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
 
-        <div class="mt-8">
+        {{-- <div class="mt-8">
             <div class="flex border-b" id="tabs">
                 <button class="px-4 py-2 font-medium border-b-2 border-transparent hover:border-black" data-tab="description">Description</button>
                 <button class="px-4 py-2 font-medium border-b-2 border-transparent hover:border-black" data-tab="reviews">Reviews (128)</button>
@@ -220,16 +279,23 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     @push('scripts')
         <script>
-            // Swiper Init
-            // new Swiper('.main-swiper', {
-            //     pagination: { el: '.swiper-pagination', clickable: true },
-            //     navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-            // });
+            // on select variation data, send into url parameter
+            function sendUrlParam(variationType, value) {
+                // Check if the URL already has a query string
+                const url = new URL(window.location.href);
+                const params = new URLSearchParams(url.search);
+
+                // Set the parameter
+                params.set('variation-'+variationType, value.toLowerCase());
+
+                // Update the URL without reloading the page
+                window.history.replaceState({}, '', `${url.pathname}?${params}`);
+            }
 
             // Tab Switching
             document.querySelectorAll('[data-tab]').forEach(btn => {
@@ -240,16 +306,6 @@
                     document.getElementById(btn.dataset.tab).classList.remove('hidden');
                 });
             });
-
-            // Wishlist Toggle
-            const wishlistBtn = document.getElementById('wishlistBtn');
-            if (wishlistBtn) {
-                wishlistBtn.addEventListener('click', () => {
-                    wishlistBtn.querySelector('i').classList.toggle('far');
-                    wishlistBtn.querySelector('i').classList.toggle('fas');
-                    wishlistBtn.querySelector('i').classList.toggle('text-red-500');
-                });
-            }
         </script>
     @endpush
 </x-app-layout>

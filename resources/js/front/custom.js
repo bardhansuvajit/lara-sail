@@ -1,3 +1,4 @@
+const urlParams = new URLSearchParams(window.location.search);
 const navbar = document.getElementById('navbar');
 const darkModeToggleEl = document.getElementById('dark-mode');
 const orderSummaryCont = document.getElementById('order-summary-container');
@@ -5,6 +6,7 @@ const orderSummaryBtn = document.getElementById('order-summary-toggle');
 const orderSummaryEl = document.getElementById('order-summary');
 let lastScrollPosition = 0;
 
+// GLOBAL
 // check if device is mobile
 function isMobileDevice() {
     return window.innerWidth <= 768; // Common breakpoint for mobile devices
@@ -132,24 +134,27 @@ if (darkModeToggleEl) {
     });
 }
 
-var swiper = new Swiper(".mySwiper", {
-    spaceBetween: 30,
-    centeredSlides: true,
-    autoplay: {
-      delay: 2500,
-      disableOnInteraction: false,
-    },
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-    },
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
-});
+// HOME
+if (document.querySelector('.mySwiper')) {
+    var swiper = new Swiper(".mySwiper", {
+        spaceBetween: 30,
+        centeredSlides: true,
+        autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+    });
+}
 
-// CART PAGE
+// CART
 if (orderSummaryBtn && orderSummaryEl) {
     orderSummaryBtn.addEventListener('click', function () {
         if (orderSummaryEl.classList.contains('hidden')) {
@@ -157,5 +162,59 @@ if (orderSummaryBtn && orderSummaryEl) {
         } else {
             orderSummaryEl.classList.add('hidden');
         }
+    });
+}
+
+// PRODUCT DETAIL - variation from url
+urlParams.forEach((value, paramName) => {
+    // Check if parameter starts with 'variation-'
+    if (paramName.startsWith('variation-')) {
+        // Extract the attribute name (what comes after 'variation-')
+        const attributeName = paramName.replace('variation-', '');
+
+        // Find all radio inputs with name="variation[attributeName]" or similar pattern
+        // This depends on how your form is structured - adjust selector as needed
+        const selector = `input[name="variation${attributeName}"], 
+                        input[name="variation[${attributeName}]"], 
+                        input[name="variation-${attributeName}"], 
+                        input[name="${attributeName}"]`;
+
+        document.querySelectorAll(selector).forEach(input => {
+            if (input.value.toLowerCase() === value.toLowerCase()) {
+                input.checked = true;
+                
+                // Trigger change event in case any listeners depend on it
+                const event = new Event('change');
+                input.dispatchEvent(event);
+            }
+        });
+    }
+});
+
+if (document.querySelector('.main-swiper')) {
+    var swiper = new Swiper(".main-swiper", {
+        spaceBetween: 30,
+        centeredSlides: true,
+        // autoplay: {
+        //     delay: 5000,
+        //     disableOnInteraction: false,
+        // },
+        // pagination: {
+        //     el: ".swiper-pagination",
+        //     clickable: true,
+        // },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            bulletClass: 'w-3 h-3 rounded-full bg-gray-500 border-2 border-gray-200 transition-all',
+            bulletActiveClass: 'w-6 bg-black',
+            renderBullet: function (index, className) {
+              return `<span class="${className}"></span>`;
+            },
+          },
+        // navigation: {
+        //     nextEl: ".swiper-button-next",
+        //     prevEl: ".swiper-button-prev",
+        // },
     });
 }
