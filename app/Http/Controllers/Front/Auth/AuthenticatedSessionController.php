@@ -8,15 +8,29 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Interfaces\CountryInterface;
 
 class AuthenticatedSessionController extends Controller
 {
+    private CountryInterface $countryRepository;
+
+    public function __construct(CountryInterface $countryRepository)
+    {
+        $this->countryRepository = $countryRepository;
+    }
+
     /**
      * Display the login view.
      */
     public function create(): View
     {
-        return view('front.auth.login');
+        $countries_filters = [
+            'status' => 1,
+        ];
+        $activeCountries = $this->countryRepository->list('', $countries_filters, 'all', 'name', 'asc');
+        return view('front.auth.login', [
+            'activeCountries' => $activeCountries['data']
+        ]);
     }
 
     /**

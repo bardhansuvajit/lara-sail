@@ -1,4 +1,4 @@
-<x-app-layout
+<x-guest-layout
     screen="max-w-screen-xl"
     title="{{ __('Home') }}">
 

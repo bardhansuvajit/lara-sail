@@ -4,6 +4,7 @@ const darkModeToggleEl = document.getElementById('dark-mode');
 const orderSummaryCont = document.getElementById('order-summary-container');
 const orderSummaryBtn = document.getElementById('order-summary-toggle');
 const orderSummaryEl = document.getElementById('order-summary');
+const phoneNoEl = document.getElementById('phone_no');
 let lastScrollPosition = 0;
 
 // GLOBAL
@@ -218,3 +219,20 @@ if (document.querySelector('.main-swiper')) {
         // },
     });
 }
+
+// LOGIN
+const formatWholeNumberInput = (e) => {
+    let value = e.target.value;
+    // Remove non-numeric characters
+    value = value.replace(/[^0-9]/g, '');
+    // Remove leading zeros (e.g., "0123" -> "123")
+    value = value.replace(/^0+(\d)/, '$1');
+    // Limit to 10 digits
+    if (value.length > 10) {
+        value = value.slice(0, 10); // Truncate to 10 digits
+    }
+    // Update the input value
+    e.target.value = value;
+};
+
+phoneNoEl.addEventListener("input", formatWholeNumberInput);
