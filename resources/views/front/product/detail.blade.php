@@ -69,7 +69,8 @@
 
                             <div>
                                 <button id="wishlist-btn" type="button" class="rounded-full w-6 h-6 p-1 hover:bg-gray-200 dark:hover:bg-gray-800">
-                                    <div class="{{FD['iconClass']}} text-gray-500 text-red-500">
+                                    {{-- <div class="{{FD['iconClass']}} text-gray-500"> --}}
+                                    <div class="{{FD['iconClass']}} text-red-500">
                                         {{-- <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z" /></svg> --}}
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Z"/></svg>
                                     </div>

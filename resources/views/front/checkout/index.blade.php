@@ -43,7 +43,7 @@
                                 <div class="border-t dark:border-gray-700 my-5"></div>
 
                                 {{-- if not logged in/ account exists --}}
-                                {{-- <div class="w-full">
+                                <div class="w-full">
                                     <div class="grid gap-4 mb-4 sm:grid-cols-2">
                                         <div>
                                             <x-front.input-label for="phone_no" :value="__('Phone number *')" />
@@ -64,7 +64,7 @@
                                                     @foreach ($activeCountries as $country)
                                                         <x-front.input-select-option 
                                                             value="{{$country->short_name}}" 
-                                                            :selected="old('phone_country_code')"
+                                                            :selected="old('phone_country_code') ? old('phone_country_code') : $country->short_name == COUNTRY"
                                                         >
                                                             {{ $country->name }} ({{ $country->phone_code }})
                                                         </x-front.input-select-option>
@@ -75,16 +75,16 @@
                                             <x-front.input-error :messages="$errors->get('phone_country_code')" class="mt-2" />
                                         </div>
 
-                                        <div> 
+                                        <div>
                                             <x-front.input-label for="password" :value="__('Password *')" />
                                             <x-front.text-input id="password" class="block w-full" type="text" name="password" placeholder="Enter Password" autofocus required />
                                             <x-front.input-error :messages="$errors->get('password')" class="mt-2" />
                                         </div>
                                     </div>
-                                </div> --}}
+                                </div>
 
                                 {{-- if not logged in/ no account exists --}}
-                                <div class="w-full">
+                                {{-- <div class="w-full">
                                     <div class="grid gap-4 mb-4 sm:grid-cols-2">
                                         <div>
                                             <x-front.input-label for="first_name" :value="__('First name *')" />
@@ -119,7 +119,7 @@
                                                     @foreach ($activeCountries as $country)
                                                         <x-front.input-select-option 
                                                             value="{{$country->short_name}}" 
-                                                            :selected="old('phone_country_code')"
+                                                            :selected="old('phone_country_code') ? old('phone_country_code') : $country->short_name == COUNTRY"
                                                         >
                                                             {{ $country->name }} ({{ $country->phone_code }})
                                                         </x-front.input-select-option>
@@ -144,7 +144,7 @@
                                             <x-front.input-error :messages="$errors->get('email')" class="mt-2" />
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 {{-- form buttons --}}
                                 <div class="fixed z-[1] sm:static bottom-16 sm:bottom-0 w-full -ml-[17px] -mb-[8px] sm:m-0 space-y-0 sm:space-y-4 {{FD['rounded']}} border sm:border-0 border-gray-200 bg-white px-2 py-3 sm:p-0 dark:border-0 dark:bg-gray-800">

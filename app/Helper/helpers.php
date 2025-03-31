@@ -8,6 +8,7 @@ use App\Repositories\DeveloperSettingRepository;
 use App\Repositories\ApplicationSettingRepository;
 
 // frontend design classes array
+define("COUNTRY", "IN");
 define("FD", [
     'rounded'           => '',                  // rounded-sm/ rounded/ rounded-lg
     'text-0'            => 'text-[10px]',
