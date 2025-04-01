@@ -30,10 +30,10 @@ Route::name('front.')->group(function () {
         Route::get('/checkout', [CheckoutController::class, 'index'])->name('index');
     });
 
-    // profile
-    Route::name('login.')->group(function() {
-        Route::get('/profile/login', [LoginController::class, 'index'])->name('index');
-    });
+    // // profile
+    // Route::name('login.')->group(function() {
+    //     Route::get('/login', [LoginController::class, 'index'])->name('index');
+    // });
 
     // product
     Route::name('product.')->group(function() {

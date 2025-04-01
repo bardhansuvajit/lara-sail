@@ -31,5 +31,6 @@
         ']) !!}
         {{ ($required) ? 'required' : '' }}
         {{ ($focus) ? 'autofocus' : '' }}
+        {{ $attributes }}
     />
 </div>

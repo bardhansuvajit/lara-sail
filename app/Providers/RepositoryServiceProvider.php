@@ -15,6 +15,7 @@ use App\Interfaces\TrashInterface;
 use App\Interfaces\ProductListingInterface;
 use App\Interfaces\ProductPricingInterface;
 use App\Interfaces\ProductImageInterface;
+use App\Interfaces\UserInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -27,6 +28,7 @@ use App\Repositories\TrashRepository;
 use App\Repositories\ProductListingRepository;
 use App\Repositories\ProductPricingRepository;
 use App\Repositories\ProductImageRepository;
+use App\Repositories\UserRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -46,6 +48,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ProductListingInterface::class, ProductListingRepository::class);
         $this->app->bind(ProductPricingInterface::class, ProductPricingRepository::class);
         $this->app->bind(ProductImageInterface::class, ProductImageRepository::class);
+        $this->app->bind(UserInterface::class, UserRepository::class);
     }
 
     /**

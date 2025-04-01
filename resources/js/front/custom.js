@@ -235,4 +235,6 @@ const formatWholeNumberInput = (e) => {
     e.target.value = value;
 };
 
-phoneNoEl.addEventListener("input", formatWholeNumberInput);
+if (phoneNoEl) {
+    phoneNoEl.addEventListener("input", formatWholeNumberInput);
+}

@@ -51,7 +51,7 @@
             </li>
 
             <li>
-                <a href="{{route('front.login.index')}}" class="group flex flex-col items-center justify-center {{FD['rounded']}} p-2.5 {{ Route::is('front.login.index') ? FD['activeClass'].' font-bold' : 'text-gray-700 dark:text-primary-300 font-light' }} ">
+                <a href="{{route('front.login')}}" class="group flex flex-col items-center justify-center {{FD['rounded']}} p-2.5 {{ Route::is('front.login.index') ? FD['activeClass'].' font-bold' : 'text-gray-700 dark:text-primary-300 font-light' }} ">
                     <span class="mb-1 flex h-5 w-5 items-center justify-center {{FD['rounded']}}">
                         <div class="h-4 w-4">
                             @if (Route::is('front.login.index'))

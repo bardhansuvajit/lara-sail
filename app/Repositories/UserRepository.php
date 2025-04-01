@@ -2,17 +2,17 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ProductCategoryInterface;
-use App\Models\ProductCategory;
+use App\Interfaces\UserInterface;
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
 
-use App\Exports\ProductCategoriesExport;
+use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ProductCategoryRepository implements ProductCategoryInterface
+class UserRepository implements UserInterface
 {
     private TrashInterface $trashRepository;
 
@@ -25,7 +25,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
     {
         try {
             DB::enableQueryLog();
-            $query = ProductCategory::query();
+            $query = User::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -83,7 +83,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
     {
         // dd($array['image']);
         try {
-            $data = new ProductCategory();
+            $data = new User();
             $data->title = $array['title'];
             $data->slug = Str::slug($array['title']);
             $data->parent_id = $array['parent_id'] ?? null;
@@ -119,7 +119,37 @@ class ProductCategoryRepository implements ProductCategoryInterface
     public function getById(Int $id)
     {
         try {
-            $data = ProductCategory::find($id);
+            $data = User::find($id);
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function getByCountryPrimaryPhone(Int $countryId, String $phoneNo)
+    {
+        try {
+            $data = User::where('country_id', $countryId)->where('primary_phone_no', $phoneNo)->first();
 
             if (!empty($data)) {
                 return [
@@ -194,7 +224,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
             if ($data['code'] == 200) {
                 // Handling trash
                 $this->trashRepository->store([
-                    'model' => 'ProductCategory',
+                    'model' => 'User',
                     'table_name' => 'product_categories',
                     'deleted_row_id' => $data['data']->id,
                     'thumbnail' => $data['data']->image_s,
@@ -227,12 +257,12 @@ class ProductCategoryRepository implements ProductCategoryInterface
     public function bulkAction(Array $array)
     {
         try {
-            $data = ProductCategory::whereIn('id', $array['ids'])->get();
+            $data = User::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
                     // Handling trash
                     $this->trashRepository->store([
-                        'model' => 'ProductCategory',
+                        'model' => 'User',
                         'table_name' => 'product_categories',
                         'deleted_row_id' => $item->id,
                         'thumbnail' => $item->image_s,
@@ -273,7 +303,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            // $processedCount = saveToDatabase($data, 'ProductCategory');
+            // $processedCount = saveToDatabase($data, 'User');
 
             // save into Database
             $processedCount = 0;
@@ -283,7 +313,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
                     continue; // Skip rows without a title
                 }
 
-                ProductCategory::create([
+                User::create([
                     'title' => $item['title'] ? $item['title'] : null,
                     'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
                     'parent_id' => $item['parent_id'] ? $item['parent_id'] : null,
@@ -327,19 +357,19 @@ class ProductCategoryRepository implements ProductCategoryInterface
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";
-                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension);
+                    return Excel::download(new UsersExport($data['data']), $fileName.$fileExtension);
                 }
                 elseif ($type == 'csv') {
                     $fileExtension = ".csv";
-                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
+                    return Excel::download(new UsersExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
                 }
                 elseif ($type == 'html') {
                     $fileExtension = ".html";
-                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
+                    return Excel::download(new UsersExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
                 }
                 elseif ($type == 'pdf') {
                     $fileExtension = ".pdf";
-                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
+                    return Excel::download(new UsersExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
                 }
                 else {
                     return [

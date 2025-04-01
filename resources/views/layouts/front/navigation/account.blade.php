@@ -201,11 +201,13 @@
 
             <ul class="p-2 text-start {{FD['text']}} font-medium dark:text-white dark:border-gray-600">
                 <li>
-                    <a href="#" title=""
-                        class="flex items-center gap-2 rounded px-3 py-2 {{FD['text']}} text-red-600 VhtI3z1ny8F7lVdACbUQ dark:text-red-400 dark:hover:bg-gray-600">
-                        <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"></path></svg>
-                        Sign Out
-                    </a>
+                    <form method="POST" action="{{ route('front.logout') }}">@csrf
+                        <button type="submit" title=""
+                            class="flex items-center gap-2 rounded px-3 py-2 {{FD['text']}} text-red-600 VhtI3z1ny8F7lVdACbUQ dark:text-red-400 dark:hover:bg-gray-600">
+                            <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"></path></svg>
+                            Sign Out
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>

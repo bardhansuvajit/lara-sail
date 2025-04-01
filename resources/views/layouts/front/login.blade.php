@@ -1,4 +1,32 @@
-<form class="space-y-4 md:space-y-6" action="#">
+<form 
+    class="space-y-4 md:space-y-4" 
+    @if (isset($type) && $type == 'register')
+        action="{{route('front.register')}}" method="post"
+    @elseif (isset($type) && $type == 'login')
+        action="{{route('front.login.store')}}" method="post"
+    @else
+        action=""
+    @endif
+>@csrf
+
+    {{-- REGISTER STARTS --}}
+    @if (isset($type) && $type == 'register')
+    <div class="grid gap-4 mb-4 sm:grid-cols-2">
+        <div>
+            <x-front.input-label for="first_name" :value="__('First name *')" />
+            <x-front.text-input id="first_name" class="block w-full" type="text" name="first_name" placeholder="Enter First Name" maxlength="50" :autofocus="$focus === 'first_name'" required />
+            <x-front.input-error :messages="$errors->get('first_name')" class="mt-2" />
+        </div>
+
+        <div>
+            <x-front.input-label for="last_name" :value="__('Last name *')" />
+            <x-front.text-input id="last_name" class="block w-full" type="text" name="last_name" placeholder="Enter Last Name" maxlength="50" required />
+            <x-front.input-error :messages="$errors->get('last_name')" class="mt-2" />
+        </div>
+    </div>
+    @endif
+    {{-- REGISTER ENDS --}}
+
     <div>
         @php
             $selectedCountry = $_GET['phone_country_code'] ?? old('phone_country_code') ?? COUNTRY;
@@ -16,7 +44,11 @@
             selectId="phone_country_code" 
             selectName="phone_country_code" 
             required=true 
-            focus
+            :focus="$focus === 'phone_no'"
+            {{-- focus --}}
+            {{-- @if (!isset($type))
+                focus
+            @endif --}}
         >
             @slot('options')
                 @foreach ($activeCountries as $countryIndex => $country)
@@ -32,6 +64,35 @@
         <x-front.input-error :messages="$errors->get('phone_no')" class="mt-2" />
         <x-front.input-error :messages="$errors->get('phone_country_code')" class="mt-2" />
     </div>
+
+    {{-- LOGIN & REGISTER STARTS --}}
+    @if (isset($type) && ($type == 'login' || $type == 'register'))
+
+    {{-- REGISTER EMAIL STARTS --}}
+    @if ($type == 'register')
+    <div>
+        <x-front.input-label for="email" :value="__('Email')" />
+        <x-front.text-input id="email" class="block w-full" type="email" name="email" placeholder="Enter Email Address" />
+        <x-front.input-error :messages="$errors->get('email')" class="mt-2" />
+    </div>
+    @endif
+    {{-- REGISTER EMAIL ENDS --}}
+
+    <div>
+        <x-front.input-label for="password" :value="__('Password *')" />
+        <x-front.text-input id="password" class="block w-full" type="password" name="password" placeholder="Enter Password" :autofocus="$focus === 'password'" required />
+        <x-front.input-error :messages="$errors->get('password')" class="mt-2" />
+    </div>
+
+    <div>
+        <x-front.input-checkbox 
+            id="remember_me"
+            name="remember" 
+            :label="__('Remember me')"
+            checked />
+    </div>
+    @endif
+    {{-- LOGIN & REGISTER ENDS --}}
 
     <div>
         <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p>
