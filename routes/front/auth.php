@@ -3,7 +3,6 @@
 // use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Front\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Front\Auth\AuthenticatedSessionCheckController;
 use App\Http\Controllers\Front\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Front\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Front\Auth\EmailVerificationPromptController;
@@ -20,7 +19,7 @@ Route::name('front.')->group(function () {
         Route::post('register', [RegisteredUserController::class, 'store']);
 
         Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
-        Route::post('login/check', [AuthenticatedSessionCheckController::class, 'check'])->name('login.check');
+        Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
         Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
         Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');

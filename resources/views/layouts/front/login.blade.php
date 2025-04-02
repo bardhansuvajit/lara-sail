@@ -3,7 +3,7 @@
     @if (isset($type) && $type == 'register')
         action="{{route('front.register')}}" method="post"
     @elseif (isset($type) && $type == 'login')
-        action="{{route('front.login.check')}}" method="post"
+        action="" method="post"
     @else
         action=""
     @endif

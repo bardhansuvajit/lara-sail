@@ -52,4 +52,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function country()
+    {
+        return $this->belongsTo('App\Models\Country', 'country_id', 'id');
+    }
 }

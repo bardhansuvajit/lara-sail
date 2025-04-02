@@ -238,3 +238,25 @@ if (!function_exists('collectionTitles')) {
         return $collection_titles;
     }
 }
+
+if (!function_exists('genderString')) {
+    function genderString($genderId) {
+        switch ($genderId) {
+            case 1:
+                return 'Male';
+                break;
+            case 2:
+                return 'Female';
+                break;
+            case 3:
+                return 'Other';
+                break;
+            case 4:
+                return 'Not specified';
+                break;
+            default:
+                return 'Not specified';
+                break;
+        }
+    }
+}
