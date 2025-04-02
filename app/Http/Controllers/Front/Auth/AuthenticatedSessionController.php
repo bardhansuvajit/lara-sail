@@ -36,6 +36,7 @@ class AuthenticatedSessionController extends Controller
 
         // trying for login
         if (!empty($request->phone_country_code) && !empty($request->phone_no)) {
+            // dd($request->all());
             // dynamic phone number digits based on country
             $phoneNumberDigits = 10;
 

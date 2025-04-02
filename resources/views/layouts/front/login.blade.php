@@ -3,24 +3,27 @@
     @if (isset($type) && $type == 'register')
         action="{{route('front.register')}}" method="post"
     @elseif (isset($type) && $type == 'login')
-        action="{{route('front.login.store')}}" method="post"
+        action="{{route('front.login.check')}}" method="post"
     @else
         action=""
     @endif
->@csrf
+>
+    @if (isset($type) && ($type == 'register' || $type == 'login'))
+        @csrf
+    @endif
 
     {{-- REGISTER STARTS --}}
     @if (isset($type) && $type == 'register')
     <div class="grid gap-4 mb-4 sm:grid-cols-2">
         <div>
             <x-front.input-label for="first_name" :value="__('First name *')" />
-            <x-front.text-input id="first_name" class="block w-full" type="text" name="first_name" placeholder="Enter First Name" maxlength="50" :autofocus="$focus === 'first_name'" required />
+            <x-front.text-input id="first_name" class="block w-full" type="text" name="first_name" placeholder="Enter First Name" maxlength="50" value="{{old('first_name')}}" :autofocus="$focus === 'first_name'" required />
             <x-front.input-error :messages="$errors->get('first_name')" class="mt-2" />
         </div>
 
         <div>
             <x-front.input-label for="last_name" :value="__('Last name *')" />
-            <x-front.text-input id="last_name" class="block w-full" type="text" name="last_name" placeholder="Enter Last Name" maxlength="50" required />
+            <x-front.text-input id="last_name" class="block w-full" type="text" name="last_name" placeholder="Enter Last Name" maxlength="50" value="{{old('last_name')}}" required />
             <x-front.input-error :messages="$errors->get('last_name')" class="mt-2" />
         </div>
     </div>
@@ -72,7 +75,7 @@
     @if ($type == 'register')
     <div>
         <x-front.input-label for="email" :value="__('Email')" />
-        <x-front.text-input id="email" class="block w-full" type="email" name="email" placeholder="Enter Email Address" />
+        <x-front.text-input id="email" class="block w-full" type="email" name="email" placeholder="Enter Email Address" value="{{old('email')}}" />
         <x-front.input-error :messages="$errors->get('email')" class="mt-2" />
     </div>
     @endif

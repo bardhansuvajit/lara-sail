@@ -7,10 +7,19 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
+use App\Models\User;
 use Illuminate\Validation\ValidationException;
+use App\Interfaces\CountryInterface;
 
 class LoginRequest extends FormRequest
 {
+    private CountryInterface $countryRepository;
+
+    public function __construct(CountryInterface $countryRepository)
+    {
+        $this->countryRepository = $countryRepository;
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,9 +35,19 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
+        // dynamic phone number digits based on country
+        $phoneNumberDigits = 10;
+
+        // phone number country code fetch
+        if (!empty($this->input('phone_country_code'))) {
+            $countryData = $this->countryRepository->getByShortName($this->input('phone_country_code'));
+        }
+        if($countryData['code'] == 200) $phoneNumberDigits = $countryData['data']->phone_no_digits;
+
         return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'phone_country_code' => ['required', 'string', 'min:1', 'max:5'],
+            'phone_no' => ['required', 'integer', 'digits:'.$phoneNumberDigits],
+            'password' => ['required', 'string', 'min:2', 'max:50'],
         ];
     }
 
@@ -39,13 +58,19 @@ class LoginRequest extends FormRequest
      */
     public function authenticate(): void
     {
+        // dd($this->input());
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $credentials = [
+            'primary_phone_no' => $this->input('phone_no'),
+            'password' => $this->input('password')
+        ];
+
+        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'phone_no' => trans('auth.failed'),
             ]);
         }
 

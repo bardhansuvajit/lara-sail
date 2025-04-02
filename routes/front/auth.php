@@ -3,6 +3,7 @@
 // use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Front\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Front\Auth\AuthenticatedSessionCheckController;
 use App\Http\Controllers\Front\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Front\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Front\Auth\EmailVerificationPromptController;
@@ -11,7 +12,7 @@ use App\Http\Controllers\Front\Auth\PasswordController;
 use App\Http\Controllers\Front\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Front\Auth\RegisteredUserController;
 use App\Http\Controllers\Front\Auth\VerifyEmailController;
-use App\Http\Controllers\Front\Profile\ProfileController;
+use App\Http\Controllers\Front\Account\AccountController;
 
 Route::name('front.')->group(function () {
     Route::middleware('guest')->group(function () {
@@ -19,7 +20,7 @@ Route::name('front.')->group(function () {
         Route::post('register', [RegisteredUserController::class, 'store']);
 
         Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
-        Route::post('login/store', [AuthenticatedSessionController::class, 'store'])->name('login.store');
+        Route::post('login/check', [AuthenticatedSessionCheckController::class, 'check'])->name('login.check');
 
         Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
         Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
@@ -42,9 +43,9 @@ Route::name('front.')->group(function () {
 
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-        // profile
-        Route::name('profile.')->group(function() {
-            Route::get('/profile', [ProfileController::class, 'index'])->name('index');
+        // account
+        Route::name('account.')->group(function() {
+            Route::get('/account', [AccountController::class, 'index'])->name('index');
         });
     });
 });
