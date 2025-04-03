@@ -84,6 +84,19 @@
                                 <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __('Collection') }}</span>
                             </a>
                         </li>
+
+                        <li>
+                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
+                                @if(request()->is('admin/product/feature*')) bg-primary-200 dark:bg-gray-600 @endif"
+                                href="{{ route('admin.product.feature.index') }}"
+                            >
+                                <div class="flex-shrink-0 w-4 h-4 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M240-440h360v-80H240v80Zm0-120h360v-80H240v80Zm-80 400q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z"/></svg>
+                                </div>
+
+                                <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __('Feature') }}</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
