@@ -43,7 +43,7 @@
             
                 {{-- @include('layouts.front.navigation.collections') --}}
             
-                {{-- @include('layouts.front.navigation.mobile-menu') --}}
+                @include('layouts.front.navigation.mobile-menu')
             </nav>
 
             <div class="mx-auto {{$screen}}">
@@ -56,7 +56,7 @@
         {{-- @include('layouts.front.footer') --}}
         
 
-        <footer class="bg-white shadow-sm m-0 dark:bg-gray-800">
+        <footer class="bg-white shadow-sm m-0 dark:bg-gray-800 mb-16">
             <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
                 <span class="{{FD['text']}} text-gray-500 sm:text-center dark:text-gray-400">© {{date('Y')}} <a href="https://flowbite.com/" class="hover:underline">Flowbite™</a>. All Rights Reserved.
                 </span>

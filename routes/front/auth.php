@@ -43,8 +43,10 @@ Route::name('front.')->group(function () {
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
         // account
-        Route::name('account.')->group(function() {
-            Route::get('/account', [AccountController::class, 'index'])->name('index');
+        Route::prefix('account')->name('account.')->group(function() {
+            Route::get('/', [AccountController::class, 'index'])->name('index');
+            Route::get('/edit', [AccountController::class, 'edit'])->name('edit');
+            Route::post('/update', [AccountController::class, 'update'])->name('update');
         });
     });
 });

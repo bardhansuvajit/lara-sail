@@ -77,7 +77,7 @@ class ProfileController
             'first_name' => 'required|string|min:2|max:50',
             'last_name' => 'required|string|min:2|max:50',
             'email' => 'required|email|min:2|max:80',
-            'phone_country_code' => 'required|string|min:1|max:5|in:countries,short_name',
+            'phone_country_code' => 'required|string|min:1|max:5',
             'phone_no' => 'required|integer|digits:'.$phoneNumberDigits,
             'username' => 'required|string|min:2|max:50',
 
@@ -90,7 +90,7 @@ class ProfileController
         $resp = $this->profileRepository->update(
             array_merge(
                 $request->all(), [
-                    'guard' => 'Admin',
+                    'guard' => 'admin',
                     'user_id' => Auth::guard('admin')->user()->id
                 ]
             )

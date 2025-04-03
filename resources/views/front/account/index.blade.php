@@ -6,41 +6,19 @@
         <div class="pt-4 sm:pt-6 px-2 sm:px-2 md:px-3 lg:px-4 xl:px-4 2xl:px-0">
             <h2 class="text-base font-semibold text-gray-900 dark:text-white sm:text-lg">My account</h2>
 
-            <div class="flex w-full items-center gap-3 sm:gap-4 {{FD['activeBgClass']}} px-2 sm:px-4 py-1 mt-2 sm:mt-4 font-light">
-                {{-- <div class="{{FD['iconClass']}} lg:w-6 lg:h-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-160q-50 0-85-35t-35-85H60l18-80h113q17-19 40-29.5t49-10.5q26 0 49 10.5t40 29.5h167l84-360H262l17-80h441l-37 160h117l120 160-40 200h-80q0 50-35 85t-85 35q-50 0-85-35t-35-85H400q0 50-35 85t-85 35Zm357-280h193l4-21-74-99h-95l-28 120Zm-17-280-84 360 2-7 82-353ZM140-440v-120H40l140-200v120h100L140-440Zm140 200q17 0 28.5-11.5T320-280q0-17-11.5-28.5T280-320q-17 0-28.5 11.5T240-280q0 17 11.5 28.5T280-240Zm400 0q17 0 28.5-11.5T720-280q0-17-11.5-28.5T680-320q-17 0-28.5 11.5T640-280q0 17 11.5 28.5T680-240Z"/></svg>
-                </div>
-
-                <div class="{{FD['text']}}">
-                    <p>
-                        You are only 
-                        <span class="font-medium"><span class="currency-icon">$</span><span id="free-shipping-amount">99.99</span></span> 
-                        away from 
-                        <span class="font-medium">Free Shipping</span> 
-                    </p>
-                    <p>
-                        <a href="#" class="font-medium underline hover:no-underline block">How do i get this ?</a>
-                    </p>
-                </div> --}}
-
-                <p class="{{FD['text']}}">
-                    You are only 
-                    <span class="font-medium"><span class="currency-icon">$</span><span id="free-shipping-amount">99.99</span></span> 
-                    away from 
-                    <span class="font-medium">Free Shipping</span> 
-                    <a href="#" class="font-medium underline hover:no-underline block">How do i get this ?</a>
-                </p>
-            </div>
+            @include('layouts.front.global-alert')
 
             <div class="mt-4 sm:mt-6 md:gap-6 lg:flex lg:items-start xl:gap-8">
-                {{-- left part - cart products --}}
-                <div class="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
-                    <div class="space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
+                {{-- left part --}}
+                <div class="mx-auto mt-6 flex-1 space-y-6 lg:mt-0 lg:w-full mb-4">
+                    <div class="space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                         <div class="block">
                             
                             <div class="flex justify-center sm:justify-start mb-5">
                                 <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                                    <span class="font-medium text-gray-600 dark:text-gray-300">JL</span>
+                                    <span class="font-medium text-gray-600 dark:text-gray-300">
+                                        {{ substr(Auth::guard('web')->user()->first_name, 0, 1) }}{{ substr(Auth::guard('web')->user()->last_name, 0, 1) }}
+                                    </span>
                                 </div>
                             </div>
 
@@ -93,7 +71,7 @@
                         </div>
 
                         <div class="flex space-x-2 lg:space-x-0">
-                            <a href="{{route('front.checkout.index')}}" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                            <a href="{{route('front.account.edit')}}" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                 Edit Profile
                             </a>
                         </div>
@@ -106,14 +84,6 @@
                                 <button type="submit" class="inline-flex items-center underline hover:no-underline {{FD['text']}} font-medium text-primary-700 dark:text-primary-500">Logout</button>
                             </form>
                         </div>
-
-                        {{-- <div class="items-center justify-center gap-2 hidden lg:flex">
-                            <span class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400"> or </span>
-                            <a href="#" class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
-                                Continue Shopping
-                                <svg class="{{FD['iconClass']}}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" /></svg>
-                            </a>
-                        </div> --}}
                     </div>
                 </div>
 
