@@ -98,6 +98,50 @@ class ProfileRepository implements ProfileInterface
                         if($countryData['code'] == 200) $data['data']->country_id = $countryData['data']->id;
                     }
                     $data['data']->alt_phone_no = $array['alt_phone_no'];
+                    if (!empty($array['gender_id'])) {
+                        $data['data']->gender_id = $array['gender_id'];
+                    }
+                    $data['data']->save();
+                }
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Changes have been saved',
+                    'data' => $data['data'],
+                ];
+            } else {
+                return $data;
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                // 'message' => 'An error occurred while updating data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function updateOptional(Array $array)
+    {
+        try {
+            // dd($array);
+
+            $data = $this->getById($array['guard'], $array['user_id']);
+
+            if ($data['code'] == 200) {
+                if ($array['guard'] == 'admin') {
+
+                } elseif ($array['guard'] == 'web') {
+
+                    if (!empty($array['gender_id'])) {
+                        $data['data']->gender_id = $array['gender_id'];
+                    }
+                    if (!empty($array['date_of_birth'])) {
+                        $data['data']->date_of_birth = $array['date_of_birth'];
+                    }
                     $data['data']->save();
                 }
 

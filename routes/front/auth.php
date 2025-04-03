@@ -47,6 +47,7 @@ Route::name('front.')->group(function () {
             Route::get('/', [AccountController::class, 'index'])->name('index');
             Route::get('/edit', [AccountController::class, 'edit'])->name('edit');
             Route::post('/update', [AccountController::class, 'update'])->name('update');
+            Route::post('/update/optional', [AccountController::class, 'updateOptional'])->name('update.optional');
         });
     });
 });

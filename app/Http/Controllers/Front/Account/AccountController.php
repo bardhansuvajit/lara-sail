@@ -9,6 +9,7 @@ use Illuminate\View\View;
 use App\Interfaces\CountryInterface;
 use App\Interfaces\ProfileInterface;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class AccountController extends Controller
 {
@@ -69,13 +70,41 @@ class AccountController extends Controller
             'email' => 'required|email|min:2|max:80',
             'phone_country_code' => 'required|string|min:1|max:5',
             'phone_no' => 'required|integer|digits:'.$phoneNumberDigits,
-            'alt_phone_no' => $altPhoneFields.'|integer|digits:'.$phoneNumberDigits,
+            'alt_phone_no' => 'nullable|integer|digits:'.$phoneNumberDigits,
+            'gender_id' => 'nullable|integer|in:1,2,3,4',
         ], [
-            'phone_country_code.*' => 'The selected country is invalid.'
+            'phone_country_code.*' => 'The selected Country is invalid.',
+            'alt_phone_no.*' => 'The Alternate Phone number field must be 10 digits.'
             // 'profile_picture.max' => 'The profile picture field must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
         ]);
 
         $resp = $this->profileRepository->update(
+            array_merge(
+                $request->all(), [
+                    'guard' => 'web',
+                    'user_id' => Auth::guard('web')->user()->id
+                ]
+            )
+        );
+
+        return redirect()->back()->with($resp['status'], $resp['message']);
+    }
+
+    /**
+     * Update the user's Optional profile information.
+     */
+    public function updateOptional(Request $request): RedirectResponse
+    {
+        // dd($request->all());
+
+        $request->validate([
+            'gender_id' => ['nullable', 'integer', 'in:1,2,3,4'],
+            'date_of_birth' => [
+                'nullable', 'date_format:Y-m-d'
+            ],
+        ]);
+
+        $resp = $this->profileRepository->updateOptional(
             array_merge(
                 $request->all(), [
                     'guard' => 'web',

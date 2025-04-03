@@ -4,7 +4,14 @@
 
     <section class="bg-gray-100 dark:bg-gray-900 antialiased">
         <div class="pt-4 sm:pt-6 px-2 sm:px-2 md:px-3 lg:px-4 xl:px-4 2xl:px-0">
-            <h2 class="text-base font-semibold text-gray-900 dark:text-white sm:text-lg">Edit account</h2>
+            <div class="flex space-x-2 items-center">
+                <a href="{{ route('front.account.index') }}" class="hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full block sm:hidden">
+                    <div class="{{FD['iconClass']}}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/></svg>
+                    </div>
+                </a>
+                <h2 class="text-base font-semibold text-gray-900 dark:text-white sm:text-lg">Edit account</h2>
+            </div>
 
             @include('layouts.front.global-alert')
 
@@ -163,13 +170,13 @@
                                 <p class="mb-3 text-sm text-gray-600 dark:text-gray-500">Optional information</p>
                             </div>
 
-                            <form action="{{ route('front.account.update') }}" method="POST">@csrf
+                            <form action="{{ route('front.account.update.optional') }}" method="POST">@csrf
                                 <div class="grid gap-4 mb-4 sm:grid-cols-3">
                                     <div>
                                         <x-front.input-label for="gender_id" :value="__('Gender')" />
 
                                         <div class="w-full flex gap-2">
-                                            <x-front.radio-input-button id="someId1" name="gender_id" value="male">
+                                            <x-front.radio-input-button id="someId1" name="gender_id" value="1" :checked="Auth::guard('web')->user()->gender_id == 1">
                                                 <div class="text-center">
                                                     <div class="flex flex-col items-center gap-2">
                                                         <div>
@@ -179,7 +186,7 @@
                                                 </div>
                                             </x-front.radio-input-button>
 
-                                            <x-front.radio-input-button id="someId2" name="gender_id" value="female">
+                                            <x-front.radio-input-button id="someId2" name="gender_id" value="2" :checked="Auth::guard('web')->user()->gender_id == 2">
                                                 <div class="text-center">
                                                     <div class="flex flex-col items-center gap-2">
                                                         <div>
@@ -189,7 +196,7 @@
                                                 </div>
                                             </x-front.radio-input-button>
 
-                                            <x-front.radio-input-button id="someId3" name="gender_id" value="other">
+                                            <x-front.radio-input-button id="someId3" name="gender_id" value="3" :checked="Auth::guard('web')->user()->gender_id == 3">
                                                 <div class="text-center">
                                                     <div class="flex flex-col items-center gap-2">
                                                         <div>
@@ -199,7 +206,7 @@
                                                 </div>
                                             </x-front.radio-input-button>
 
-                                            <x-front.radio-input-button id="someId4" name="gender_id" value="Not specified">
+                                            <x-front.radio-input-button id="someId4" name="gender_id" value="4" :checked="Auth::guard('web')->user()->gender_id == 4">
                                                 <div class="text-center">
                                                     <div class="flex flex-col items-center gap-2">
                                                         <div>
@@ -217,7 +224,7 @@
                                 <div class="grid gap-4 mb-4 sm:grid-cols-3">
                                     <div>
                                         <x-front.input-label for="date_of_birth" :value="__('Date of Birth')" />
-                                        <x-front.text-input id="date_of_birth" class="block w-full" type="date" name="date_of_birth" placeholder="Enter Date of Birth" />
+                                        <x-front.text-input id="date_of_birth" class="block w-full" type="date" name="date_of_birth" placeholder="Enter Date of Birth" max="{{date('Y-m-d')}}" value="{{ Auth::guard('web')->user()->date_of_birth }}" />
                                         <x-front.input-error :messages="$errors->get('date_of_birth')" class="mt-2" />
                                     </div>
                                 </div>
