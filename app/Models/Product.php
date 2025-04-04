@@ -28,4 +28,9 @@ class Product extends Model
     {
         return $this->hasMany('App\Models\ProductPricing', 'product_id', 'id')->orderBy('id', 'asc');
     }
+
+    public function featured()
+    {
+        return $this->hasOne('App\Models\ProductFeature', 'product_id', 'id');
+    }
 }

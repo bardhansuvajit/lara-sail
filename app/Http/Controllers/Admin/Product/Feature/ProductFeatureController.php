@@ -6,14 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Interfaces\ProductFeatureInterface;
+use App\Interfaces\ProductListingInterface;
 
 class ProductFeatureController
 {
     private ProductFeatureInterface $productFeatureRepository;
+    private ProductListingInterface $productListingRepository;
 
-    public function __construct(ProductFeatureInterface $productFeatureRepository)
+    public function __construct(ProductFeatureInterface $productFeatureRepository, ProductListingInterface $productListingRepository)
     {
         $this->productFeatureRepository = $productFeatureRepository;
+        $this->productListingRepository = $productListingRepository;
     }
 
     public function index(Request $request): View
@@ -23,7 +26,7 @@ class ProductFeatureController
         $request->validate([
             'keyword' => 'nullable|string|max:255',
             'perPage' => 'nullable|string',
-            'sortBy' => 'nullable|string|in:id,title,slug',
+            'sortBy' => 'nullable|string|in:id,title,level',
             'sortOrder' => 'nullable|string|in:asc,desc',
             'status' => 'nullable|string|in:0,1'
         ]);
@@ -33,9 +36,9 @@ class ProductFeatureController
         $sortBy = $request->input('sortBy', 'id');
         $sortOrder = $request->input('sortOrder', 'desc');
         $filters = [
-            'status' => $request->input('status', ''),
+            'status' => $request->input('status', 1),
         ];
-        $resp = $this->productFeatureRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
+        $resp = $this->productListingRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
         return view('admin.product.feature.index', [
             'data' => $resp['data'],
