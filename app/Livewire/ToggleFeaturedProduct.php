@@ -4,32 +4,52 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\ProductFeature;
+use App\Interfaces\ProductFeatureInterface;
 
 class ToggleFeaturedProduct extends Component
 {
+    public $productTitle;
+    public $productId;
     public $featureId;
-    public $status;
+    private ProductFeatureInterface $productFeatureRepository;
 
-    public function mount($featureId)
+    public function mount($productTitle, $productId, $featureId, ProductFeatureInterface $productFeatureRepository)
     {
-        $data = ProductFeature::find($this->featureId);
-        $this->status = $data ? $data->status : 0;
+        $this->productTitle = $productTitle;
+        $this->productId = $productId;
+        $this->featureId = $featureId;
     }
 
     public function toggle()
     {
-        $data = ProductFeature::find($this->featureId);
+        $productFeatureRepository = app(ProductFeatureInterface::class);
+        $data = $productFeatureRepository->getByProductId($this->productId);
 
-        dd($data);
+        if($data['code'] == 200) {
+            // $productFeatureRepository->delete($data['data']->id);
 
-        if(!empty($data)) {
-            $data->status = ($data->status == 0) ? 1 : 0;
-            $data->save();
+            // $this->dispatch('notificationSend', [
+            //     'variant' => 'success',
+            //     'title' => 'Status updated',
+            //     'message' => $this->productTitle . ' is removed'
+            // ]);
 
+            $this->dispatch('notificationSend', [
+                'variant' => 'warning',
+                'title' => 'This action cannot be performed from here',
+                // 'message' => $this->productTitle . ' is removed'
+            ]);
+        } else {
+            $createArray = [
+                'product_id' => $this->productId,
+                'position' => 1,
+            ];
+
+            $storeResp = $productFeatureRepository->store($createArray);
             $this->dispatch('notificationSend', [
                 'variant' => 'success',
                 'title' => 'Status updated',
-                'message' => $data->title . ' is ' . (($data->status == 0) ? 'disabled' : 'active')
+                'message' => $this->productTitle . ' is added'
             ]);
         }
     }

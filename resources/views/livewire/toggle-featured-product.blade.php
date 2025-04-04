@@ -1,3 +1,3 @@
 <div>
-    <x-admin.input-checkbox-toggle-switch checked="{{ $status == 1 }}" />
+    <x-admin.input-checkbox-toggle-switch checked="{{ $featureId }}" />
 </div>

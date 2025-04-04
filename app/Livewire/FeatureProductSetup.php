@@ -8,11 +8,11 @@ use App\Models\ProductFeature;
 
 class FeatureProductSetup extends Component
 {
-    public collection $featuredProducts;
+    public collection $features;
 
     public function mount()
     {
-        $this->featuredProducts = ProductFeature::orderBy('position')->get();
+        $this->features = ProductFeature::orderBy('position')->orderBy('id', 'desc')->get();
     }
 
     public function render()

@@ -9,7 +9,7 @@
     <section class="sm:rounded-lg overflow-hidden px-1 py-2">
         <div class="grid grid-cols-3 gap-4">
             <div class="col-span-2">
-                <h5 class="text-xs font-medium">Featured List will be displayed in Homepage, Cart page, Checkout page, Account page as Featured products</h5>
+                <h5 class="text-xs font-medium text-gray-500">Featured List will be displayed in Homepage, Cart page, Checkout page, Account page as Featured products</h5>
                 {{-- <div class="mt-3 border-t border-gray-200 dark:border-gray-700"></div> --}}
 
                 @livewire('feature-product-setup')
@@ -186,7 +186,9 @@
                                             {{-- {{ $item->featured->id }} --}}
                                             @livewire('toggle-featured-product', [
                                                 // 'model' => 'Product',
-                                                'featureId' => $item->featured,
+                                                'productTitle' => $item->title,
+                                                'productId' => $item->id,
+                                                'featureId' => $item->featured ? $item->featured->id : null,
                                             ])
 
                                             <div class="text-xs font-bold {{$item->status == 1 ? 'text-green-500' : 'text-gray-500'}}">
