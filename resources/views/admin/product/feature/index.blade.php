@@ -67,51 +67,6 @@
                                         @endslot
                                     </x-admin.input-select>
                                 </div>
-
-                                <div class="w-max hidden" id="bulkAction">
-                                    <div class="flex space-x-1">
-                                        <x-admin.button-icon
-                                            element="button"
-                                            type="submit"
-                                            tag="secondary"
-                                            href="javascript: void(0)"
-                                            title="Archive"
-                                            class="border"
-                                            form="bulActionForm"
-                                            x-data=""
-                                            x-on:click.prevent="
-                                                $dispatch('open-modal', 'confirm-bulk-action');
-                                                $dispatch('data-desc', 'Are you sure you want to Archive selected data?');
-                                                $dispatch('data-button-text', 'Yes, Archive');
-                                                document.getElementById('bulkActionInput').value = 'archive';
-                                            ">
-                                            @slot('icon')
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m480-240 160-160-56-56-64 64v-168h-80v168l-64-64-56 56 160 160ZM200-640v440h560v-440H200Zm0 520q-33 0-56.5-23.5T120-200v-499q0-14 4.5-27t13.5-24l50-61q11-14 27.5-21.5T250-840h460q18 0 34.5 7.5T772-811l50 61q9 11 13.5 24t4.5 27v499q0 33-23.5 56.5T760-120H200Zm16-600h528l-34-40H250l-34 40Zm264 300Z"/></svg>
-                                            @endslot
-                                        </x-admin.button-icon>
-
-                                        <x-admin.button-icon
-                                            element="button"
-                                            type="submit"
-                                            tag="secondary"
-                                            href="javascript: void(0)"
-                                            title="Delete"
-                                            class="border"
-                                            form="bulActionForm"
-                                            x-data=""
-                                            x-on:click.prevent="
-                                                $dispatch('open-modal', 'confirm-bulk-action');
-                                                $dispatch('data-desc', 'Are you sure you want to Delete selected data?');
-                                                $dispatch('data-button-text', 'Yes, Delete');
-                                                $dispatch('set-route', '{{ route('admin.product.listing.bulk') }}');
-                                                document.getElementById('bulkActionInput').value = 'delete';
-                                            ">
-                                            @slot('icon')
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
-                                            @endslot
-                                        </x-admin.button-icon>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="flex flex-row space-x-1 items-end">
@@ -164,6 +119,7 @@
                             <tr>
                                 <th scope="col" class="px-2 py-1 text-start">ID</th>
                                 <th scope="col" class="px-2 py-1">Title</th>
+                                <th scope="col" class="px-2 py-1">Status</th>
                                 <th scope="col" class="px-2 py-1 text-end">Action</th>
                             </tr>
                         </thead>
@@ -175,38 +131,29 @@
                                     </td>
                                     <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                         <div class="flex space-x-2 items-center">
-                                            @if($item->image_s) <div class="h-10 overflow-hidden flex"><img src="{{ Storage::url($item->image_s) }}" alt=""></div> @endif
+                                            @if(count($item->activeImages) > 0) 
+                                                <div class="h-8 overflow-hidden flex">
+                                                    <img src="{{ Storage::url($item->activeImages[0]->image_s) }}" alt="">
+                                                </div>
+                                            @endif
+                                            {{-- @if($item->activeImages[0]->image_s) <div class="h-10 overflow-hidden flex"><img src="{{ Storage::url($item->image_s) }}" alt=""></div> @endif --}}
                                             <div>
                                                 <a href="{{ route('admin.product.listing.edit', $item->id) }}" target="_blank" class="text-xs font-bold underline hover:no-underline">{{ $item->title }}</a>
                                             </div>
                                         </div>
                                     </td>
+                                    <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                        <div class="text-xs font-bold {{$item->status == 1 ? 'text-green-500' : 'text-gray-500'}}">
+                                            {{$item->status == 1 ? 'Active' : 'Disabled'}}
+                                        </div>
+                                    </td>
                                     <td scope="row" class="px-2 py-1 text-gray-500">
                                         <div class="flex space-x-2 items-center justify-end">
-                                            {{-- {{ $item->featured->id }} --}}
                                             @livewire('toggle-featured-product', [
-                                                // 'model' => 'Product',
                                                 'productTitle' => $item->title,
                                                 'productId' => $item->id,
                                                 'featureId' => $item->featured ? $item->featured->id : null,
                                             ])
-
-                                            <div class="text-xs font-bold {{$item->status == 1 ? 'text-green-500' : 'text-gray-500'}}">
-                                                {{$item->status == 1 ? 'Active' : 'Disabled'}}
-                                            </div>
-
-                                            {{-- <x-admin.button-icon
-                                                element="a"
-                                                target="_blank"
-                                                tag="secondary"
-                                                :href="route('admin.product.listing.edit', $item->id)"
-                                                title="Edit"
-                                                class="border" >
-                                                @slot('icon')
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
-                                                @endslot
-                                            </x-admin.button-icon> --}}
-
                                         </div>
                                     </td>
                                 </tr>

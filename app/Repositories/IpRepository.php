@@ -2,12 +2,14 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ProductFeatureInterface;
-use App\Models\ProductFeature;
+use App\Interfaces\IpInterface;
+use App\Models\Ip;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
 
-class ProductFeatureRepository implements ProductFeatureInterface
+class IpRepository implements IpInterface
 {
     private TrashInterface $trashRepository;
 
@@ -20,7 +22,7 @@ class ProductFeatureRepository implements ProductFeatureInterface
     {
         try {
             DB::enableQueryLog();
-            $query = ProductFeature::query();
+            $query = Ip::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -74,80 +76,23 @@ class ProductFeatureRepository implements ProductFeatureInterface
         }
     }
 
-    public function getById(Int $id)
-    {
-        try {
-            $data = ProductFeature::find($id);
-
-            if (!empty($data)) {
-                return [
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data found',
-                    'data' => $data,
-                ];
-            } else {
-                return [
-                    'code' => 404,
-                    'status' => 'failure',
-                    'message' => 'No data found',
-                    'data' => [],
-                ];
-            }
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while fetching data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function getByProductId(Int $productId)
-    {
-        try {
-            $data = ProductFeature::where('product_id', $productId)->first();
-
-            if (!empty($data)) {
-                return [
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data found',
-                    'data' => $data,
-                ];
-            } else {
-                return [
-                    'code' => 404,
-                    'status' => 'failure',
-                    'message' => 'No data found',
-                    'data' => [],
-                ];
-            }
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while fetching data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    
     public function store(Array $array)
     {
-        // dd($array);
-        DB::beginTransaction();
-
+        // dd($array['image']);
         try {
-            $data = new ProductFeature();
-            $data->product_id = $array['product_id'];
-            $data->position = $array['position'];
-            $data->status = 1;
-            $data->save();
+            $data = new Ip();
+            $data->title = $array['title'];
+            $data->slug = Str::slug($array['title']);
 
-            DB::commit();
+            if (!empty($array['image'])) {
+                $uploadResp = fileUpload($array['image'], 'p-clt');
+
+                $data->image_s = $uploadResp['smallThumbName'];
+                $data->image_m = $uploadResp['mediumThumbName'];
+                $data->image_l = $uploadResp['largeThumbName'];
+            }
+
+            $data->save();
 
             return [
                 'code' => 200,
@@ -156,88 +101,20 @@ class ProductFeatureRepository implements ProductFeatureInterface
                 'data' => $data,
             ];
         } catch (\Exception $e) {
-            DB::rollback();
-
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => 'An error occurred while storing data.',
-                // 'message' => $e->getMessage(),
+                // 'message' => 'An error occurred while storing data.',
+                'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ];
         }
     }
 
-    public function delete(Int $id)
+    public function getById(Int $id)
     {
         try {
-            $data = $this->getById($id);
-
-            if ($data['code'] == 200) {
-                // Handling trash
-                $this->trashRepository->store([
-                    'model' => 'ProductFeature',
-                    'table_name' => 'product_features',
-                    'deleted_row_id' => $data['data']->id,
-                    'thumbnail' => $data['data']->image_s ?? null,
-                    'title' => $data['data']->product->title,
-                    'description' => $data['data']->product->title.' FEATURE data deleted from product_features table',
-                    'status' => 'deleted',
-                ]);
-
-                $data['data']->delete();
-
-                return [
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data deleted',
-                    'data' => $data,
-                ];
-            } else {
-                return $data;
-            }
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while deleting data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function position(Array $ids)
-    {
-        try {
-            foreach ($ids as $index => $id) {
-                ProductFeature::where('id', $id)->update([
-                    'position' => $index + 1
-                ]);
-            }
-
-            return [
-                'code' => 200,
-                'status' => 'success',
-                'message' => 'Position updated'
-            ];
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while deleting data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    /*
-    public function getByProductIdCountryId(Int $productId, Int $countryId)
-    {
-        try {
-            $data = ProductFeature::where([
-                ['product_id', $productId],
-                ['country_id', $countryId]
-            ])->first();
+            $data = ProductCollection::find($id);
 
             if (!empty($data)) {
                 return [
@@ -264,25 +141,23 @@ class ProductFeatureRepository implements ProductFeatureInterface
         }
     }
 
-    public function update(Int $id, Array $array)
+    public function update(Array $array)
     {
         try {
-            // $data = $this->getById($array['id']);
-            $data = $this->getById($id);
+            $data = $this->getById($array['id']);
 
             if ($data['code'] == 200) {
-                $data['data']->product_id = $array['product_id'];
-                $data['data']->country_id = $array['country_id'];
-                $data['data']->currency_code = $array['currency_code'];
-                $data['data']->currency_symbol = $array['currency_symbol'];
+                $data['data']->title = $array['title'];
+                $data['data']->slug = \Str::slug($array['title']);
 
-                $data['data']->selling_price = $array['selling_price'];
-                $data['data']->mrp = $array['mrp'];
-                $data['data']->discount = $array['discount'];
-                $data['data']->cost = $array['cost'];
-                $data['data']->profit = $array['profit'];
-                $data['data']->margin = $array['margin'];
-                $data['data']->status = 1;
+                if (!empty($array['image'])) {
+                    $uploadResp = fileUpload($array['image'], 'p-clt');
+
+                    $data['data']->image_s = $uploadResp['smallThumbName'];
+                    $data['data']->image_m = $uploadResp['mediumThumbName'];
+                    $data['data']->image_l = $uploadResp['largeThumbName'];
+                }
+
                 $data['data']->save();
 
                 return [
@@ -312,12 +187,12 @@ class ProductFeatureRepository implements ProductFeatureInterface
             if ($data['code'] == 200) {
                 // Handling trash
                 $this->trashRepository->store([
-                    'model' => 'ProductFeature',
-                    'table_name' => 'product_features',
+                    'model' => 'ProductCollection',
+                    'table_name' => 'product_collections',
                     'deleted_row_id' => $data['data']->id,
-                    'thumbnail' => $data['data']->image_s ?? null,
-                    'title' => $data['data']->currency_code,
-                    'description' => $data['data']->currency_symbol.' ('.$data['data']->currency_code.') currency data deleted from product_features table',
+                    'thumbnail' => $data['data']->image_s,
+                    'title' => $data['data']->title,
+                    'description' => $data['data']->title.' data deleted from product collections table',
                     'status' => 'deleted',
                 ]);
 
@@ -345,17 +220,18 @@ class ProductFeatureRepository implements ProductFeatureInterface
     public function bulkAction(Array $array)
     {
         try {
-            $data = ProductFeature::whereIn('id', $array['ids'])->get();
+            $data = ProductCollection::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
+
                     // Handling trash
                     $this->trashRepository->store([
-                        'model' => 'ProductFeature',
-                        'table_name' => 'product_features',
+                        'model' => 'ProductCollection',
+                        'table_name' => 'product_collections',
                         'deleted_row_id' => $item->id,
                         'thumbnail' => $item->image_s,
                         'title' => $item->title,
-                        'description' => $item->title.' data deleted from product_features table',
+                        'description' => $item->title.' data deleted from product collections table',
                         'status' => 'deleted',
                     ]);
 
@@ -391,7 +267,7 @@ class ProductFeatureRepository implements ProductFeatureInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'ProductFeature');
+            $processedCount = saveToDatabase($data, 'ProductCollection');
 
             return [
                 'code' => 200,
@@ -417,23 +293,23 @@ class ProductFeatureRepository implements ProductFeatureInterface
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
             if (count($data['data']) > 0) {
-                $fileName = "product_pricings_export_" . date('Y-m-d') . '-' . time();
+                $fileName = "product_collections_export_" . date('Y-m-d') . '-' . time();
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";
-                    return Excel::download(new ProductListingsExport($data['data']), $fileName.$fileExtension);
+                    return Excel::download(new ProductCollectionsExport($data['data']), $fileName.$fileExtension);
                 }
                 elseif ($type == 'csv') {
                     $fileExtension = ".csv";
-                    return Excel::download(new ProductListingsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
+                    return Excel::download(new ProductCollectionsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
                 }
                 elseif ($type == 'html') {
                     $fileExtension = ".html";
-                    return Excel::download(new ProductListingsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
+                    return Excel::download(new ProductCollectionsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
                 }
                 elseif ($type == 'pdf') {
                     $fileExtension = ".pdf";
-                    return Excel::download(new ProductListingsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
+                    return Excel::download(new ProductCollectionsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
                 }
                 else {
                     return [
@@ -462,5 +338,4 @@ class ProductFeatureRepository implements ProductFeatureInterface
             ];
         }
     }
-    */
 }

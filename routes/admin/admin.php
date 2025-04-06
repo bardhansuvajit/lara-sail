@@ -117,6 +117,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             // feature
             Route::prefix('feature')->name('feature.')->controller(ProductFeatureController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
             });
         });
 

@@ -44,4 +44,10 @@ class ProductFeatureController
             'data' => $resp['data'],
         ]);
     }
+
+    public function delete(Int $id)
+    {
+        $resp = $this->productFeatureRepository->delete($id);
+        return redirect()->back()->with($resp['status'], $resp['message']);
+    }
 }

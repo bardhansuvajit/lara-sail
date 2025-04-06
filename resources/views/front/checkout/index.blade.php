@@ -188,7 +188,7 @@
                                 </a>
                                 <div class="w-full">
                                     <a href="#" class="block {{FD['text-0']}} text-gray-900 hover:underline dark:text-white">Apple iPhone 15</a>
-                                    <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-icon">$</span>1,299</p>
+                                    <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-symbol">₹</span>1,299</p>
                                 </div>
                             </div>
 
@@ -222,7 +222,7 @@
                                 <div class="w-full">
                                     <a href="#" class="block {{FD['text-0']}} text-gray-900 hover:underline dark:text-white">Apple iPhone 15</a>
                                     <p class="{{FD['text-0']}} text-gray-400">some basic description to test the tab, another one</p>
-                                    <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-icon">$</span>1,299</p>
+                                    <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-symbol">₹</span>1,299</p>
                                 </div>
                             </div>
 
@@ -256,7 +256,7 @@
                                 <div class="w-full">
                                     <a href="#" class="block {{FD['text-0']}} text-gray-900 hover:underline dark:text-white">Apple iPhone 15</a>
                                     <p class="{{FD['text-0']}} text-gray-400">some basic description to test the tab, another one</p>
-                                    <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-icon">$</span>1,299</p>
+                                    <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-symbol">₹</span>1,299</p>
                                 </div>
                             </div>
 
@@ -290,7 +290,7 @@
                                 <div class="w-full">
                                     <a href="#" class="block {{FD['text-0']}} text-gray-900 hover:underline dark:text-white">Apple iPhone 15</a>
                                     <p class="{{FD['text-0']}} text-gray-400">some basic description to test the tab, another one</p>
-                                    <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-icon">$</span>1,299</p>
+                                    <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-symbol">₹</span>1,299</p>
                                 </div>
                             </div>
             
@@ -324,7 +324,7 @@
                                 <div class="w-full">
                                     <a href="#" class="block {{FD['text-0']}} text-gray-900 hover:underline dark:text-white">Apple iPhone 15 Apple pro max 16GB, Sky Blue, Some more texts to check the heigh tfot on theis cart drawer</a>
                                     <p class="{{FD['text-0']}} text-gray-400">some basic description to test the tab, another one</p>
-                                    <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-icon">$</span>1,299</p>
+                                    <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-symbol">₹</span>1,299</p>
                                 </div>
                             </div>
             
@@ -361,17 +361,17 @@
                                 <dl class="flex items-center justify-between gap-4">
                                     <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Original price
                                     </dt>
-                                    <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white">$7,592.00</dd>
+                                    <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">₹</span>7,592.00</dd>
                                 </dl>
 
                                 <dl class="flex items-center justify-between gap-4">
                                     <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Savings</dt>
-                                    <dd class="{{FD['text']}} font-medium text-green-600">-$299.00</dd>
+                                    <dd class="{{FD['text']}} font-medium text-green-600">-<span class="currency-symbol">₹</span>299.00</dd>
                                 </dl>
 
                                 <dl class="flex items-center justify-between gap-4">
                                     <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Tax</dt>
-                                    <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white">$799</dd>
+                                    <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">₹</span>799</dd>
                                 </dl>
 
                                 <dl class="flex items-center justify-between gap-4">
@@ -387,7 +387,7 @@
 
                         <dl class="flex items-center justify-between gap-4 border-0 dark:border-gray-700 pb-2 sm:pb-0">
                             <dt class="{{FD['text']}} font-bold text-gray-900 dark:text-white">Total</dt>
-                            <dd class="{{FD['text']}} font-bold text-gray-900 dark:text-white">$8,191.00</dd>
+                            <dd class="{{FD['text']}} font-bold text-gray-900 dark:text-white"><span class="currency-symbol">₹</span>8,191.00</dd>
                         </dl>
 
                         {{-- <div class="flex space-x-2 lg:space-x-0">

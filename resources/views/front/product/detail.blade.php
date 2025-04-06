@@ -83,10 +83,10 @@
                         {{-- pricing --}}
                         <div class="mt-2 flex items-center gap-4 mb-1 sm:mb-4">
                             <p class="{{FD['text-1']}} sm:text-lg font-bold leading-tight text-gray-900 dark:text-white">
-                                <span class="currency-icon">$</span>1,09,699
+                                <span class="currency-symbol">₹</span>1,09,699
                             </p>
                             <p class="{{FD['text-1']}} sm:text-lg font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400">
-                                <span class="currency-icon">$</span>17,699
+                                <span class="currency-symbol">₹</span>17,699
                             </p>
                             <p class="{{FD['text-1']}} font-black leading-tight {{FD['activeClass']}}">
                                 40% off

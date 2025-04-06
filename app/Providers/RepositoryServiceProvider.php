@@ -17,6 +17,7 @@ use App\Interfaces\ProductPricingInterface;
 use App\Interfaces\ProductImageInterface;
 use App\Interfaces\ProductFeatureInterface;
 use App\Interfaces\UserInterface;
+use App\Interfaces\IpInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -31,6 +32,7 @@ use App\Repositories\ProductPricingRepository;
 use App\Repositories\ProductImageRepository;
 use App\Repositories\ProductFeatureRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\IpRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -52,6 +54,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ProductImageInterface::class, ProductImageRepository::class);
         $this->app->bind(ProductFeatureInterface::class, ProductFeatureRepository::class);
         $this->app->bind(UserInterface::class, UserRepository::class);
+        $this->app->bind(IpInterface::class, IpRepository::class);
     }
 
     /**

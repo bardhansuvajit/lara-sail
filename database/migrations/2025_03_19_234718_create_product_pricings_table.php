@@ -18,7 +18,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('country_id')->nullable();
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('SET NULL');
-            $table->string('currency_code', 3)->nullable();
+            $table->string('currency_code', 3)->nullable()->comment('ISO 4217 code');
             $table->string('currency_symbol', 20)->nullable();
 
             $table->decimal('selling_price', 12, 2);

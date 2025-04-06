@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('phone_code');
             $table->integer('phone_no_digits')->nullable();
             $table->string('zip_code_format')->nullable()->comment('#:number');
-            $table->string('currency_code', 3);
+            $table->string('currency_code', 3)->comment('ISO 4217 code');
             $table->string('currency_symbol', 20);
             $table->string('continent');
             $table->text('flag')->nullable();

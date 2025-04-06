@@ -51,7 +51,7 @@
                 <div class="{{FD['text']}}">
                     <p>
                         You are only 
-                        <span class="font-medium"><span class="currency-icon">$</span><span id="free-shipping-amount">99.99</span></span> 
+                        <span class="font-medium"><span class="currency-symbol">₹</span><span id="free-shipping-amount">99.99</span></span> 
                         away from 
                         <span class="font-medium">Free Shipping</span> 
                     </p>
@@ -62,7 +62,7 @@
 
                 {{-- <p class="{{FD['text']}}">
                     You are only 
-                    <span class="font-medium"><span class="currency-icon">$</span><span id="free-shipping-amount">99.99</span></span> 
+                    <span class="font-medium"><span class="currency-symbol">₹</span><span id="free-shipping-amount">99.99</span></span> 
                     away from 
                     <span class="font-medium">Free Shipping</span> 
                     <a href="#" class="font-medium underline hover:no-underline block">How do i get this ?</a>
@@ -105,7 +105,7 @@
                                             </div>
                                         </div>
 
-                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-icon">$</span>1,09,699</p>
+                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-symbol">₹</span>1,09,699</p>
                                     </div>
 
                                 </div>
@@ -147,10 +147,10 @@
 
                                         <div class="my-2 flex items-center gap-2">
                                             <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
-                                                <span class="currency-icon">$</span>1,09,699
+                                                <span class="currency-symbol">₹</span>1,09,699
                                             </p>
                                             <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
-                                                <span class="currency-icon">$</span>17,699
+                                                <span class="currency-symbol">₹</span>17,699
                                             </p>
                                             <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
                                                 40% off
@@ -212,7 +212,7 @@
                                             </div>
                                         </div>
 
-                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-icon">$</span>1,09,699</p>
+                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-symbol">₹</span>1,09,699</p>
                                     </div>
 
                                 </div>
@@ -266,7 +266,7 @@
                                             </div>
                                         </div>
 
-                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-icon">$</span>1,09,699</p>
+                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-symbol">₹</span>1,09,699</p>
                                     </div>
 
                                 </div>
@@ -320,7 +320,7 @@
                                             </div>
                                         </div>
 
-                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-icon">$</span>1,09,699</p>
+                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-symbol">₹</span>1,09,699</p>
                                     </div>
 
                                 </div>
@@ -374,7 +374,7 @@
                                             </div>
                                         </div>
 
-                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-icon">$</span>1,09,699</p>
+                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-symbol">₹</span>1,09,699</p>
                                     </div>
 
                                 </div>
@@ -438,10 +438,10 @@
 
                                         <div class="mt-2 flex items-center gap-2">
                                             <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
-                                                <span class="currency-icon">$</span>1,09,699
+                                                <span class="currency-symbol">₹</span>1,09,699
                                             </p>
                                             <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
-                                                <span class="currency-icon">$</span>17,699
+                                                <span class="currency-symbol">₹</span>17,699
                                             </p>
                                             <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
                                                 40% off
@@ -496,10 +496,10 @@
 
                                         <div class="mt-2 flex items-center gap-2">
                                             <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
-                                                <span class="currency-icon">$</span>1,09,699
+                                                <span class="currency-symbol">₹</span>1,09,699
                                             </p>
                                             <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
-                                                <span class="currency-icon">$</span>17,699
+                                                <span class="currency-symbol">₹</span>17,699
                                             </p>
                                             <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
                                                 40% off
@@ -527,17 +527,17 @@
                                 <dl class="flex items-center justify-between gap-4">
                                     <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Original price
                                     </dt>
-                                    <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white">$7,592.00</dd>
+                                    <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">₹</span>7,592.00</dd>
                                 </dl>
 
                                 <dl class="flex items-center justify-between gap-4">
                                     <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Savings</dt>
-                                    <dd class="{{FD['text']}} font-medium text-green-600">-$299.00</dd>
+                                    <dd class="{{FD['text']}} font-medium text-green-600">-<span class="currency-symbol">₹</span>299.00</dd>
                                 </dl>
 
                                 <dl class="flex items-center justify-between gap-4">
                                     <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Tax</dt>
-                                    <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white">$799</dd>
+                                    <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">₹</span>799</dd>
                                 </dl>
 
                                 <dl class="flex items-center justify-between gap-4">
@@ -553,7 +553,7 @@
 
                         <dl class="flex items-center justify-between gap-4 border-0 dark:border-gray-700 pb-2 sm:pb-0">
                             <dt class="{{FD['text']}} font-bold text-gray-900 dark:text-white">Total</dt>
-                            <dd class="{{FD['text']}} font-bold text-gray-900 dark:text-white">$8,191.00</dd>
+                            <dd class="{{FD['text']}} font-bold text-gray-900 dark:text-white"><span class="currency-symbol">₹</span>8,191.00</dd>
                         </dl>
 
                         <div class="flex space-x-2 lg:space-x-0">

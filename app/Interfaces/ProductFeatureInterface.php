@@ -15,4 +15,5 @@ interface ProductFeatureInterface
     // public function bulkAction(Array $array);
     // public function import(UploadedFile $file);
     // public function export(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder, String $type);
+    public function position(Array $ids);
 }

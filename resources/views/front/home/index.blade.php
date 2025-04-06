@@ -29,10 +29,19 @@
 
             <div class="mb-4 grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-6" id="featured-products">
 
+                @foreach ($featuredProducts as $featuredItem)
                 <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
                     <a href="#">
                         <div class="h-40 w-full">
-                            <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
+                            @if (count($featuredItem->product->activeImages) > 0)
+                                <div class="flex items-center justify-center h-full">
+                                    <img src="{{ Storage::url($featuredItem->product->activeImages[0]->image_m) }}" alt="" class="max-w-full max-h-full">
+                                </div>
+                            @else
+                                <div class="flex items-center justify-center h-full w-full">
+                                    {!!FD['brokenImageFront']!!}
+                                </div>
+                            @endif
                         </div>
 
                         <div class="absolute top-0 right-0 w-full h-8 p-1 overflow-hidden">
@@ -53,22 +62,43 @@
                         </div>
 
                         <p class="font-semibold text-gray-900 hover:underline dark:text-gray-400 {{FD['text-0']}} sm:text-xs block leading-4 sm:leading-5 truncate">
-                            Apple iMac 27", 1TB HDD, Retina 5K Display, M3 Max some more texts to add here so that i can check it
+                            {{ $featuredItem->product->title }}
                         </p>
 
-                        <div class="mt-2 flex items-center gap-2">
+                        @if (count($featuredItem->product->pricings) > 0)
+                            @php
+                                $singlePricing = $featuredItem->product->pricings[0];
+                            @endphp
+                            {{-- @foreach ($featuredItem->product->pricings as $singlePricing) --}}
+                                <div class="mt-2 flex items-center gap-2">
+                                    <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
+                                        <span class="currency-icon">{{$singlePricing->currency_symbol}}</span>{{$singlePricing->selling_price}}
+                                    </p>
+                                    @if ($singlePricing->mrp != 0)
+                                        <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
+                                            <span class="currency-icon">{{$singlePricing->currency_symbol}}</span>{{$singlePricing->mrp}}
+                                        </p>
+                                        <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
+                                            {{$singlePricing->discount}}% off
+                                        </p>
+                                    @endif
+                                </div>
+                            {{-- @endforeach --}}
+                        @endif
+                        {{-- <div class="mt-2 flex items-center gap-2">
                             <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
-                                <span class="currency-icon">$</span>1,09,699
+                                <span class="currency-symbol">₹</span>1,09,699
                             </p>
                             <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
-                                <span class="currency-icon">$</span>17,699
+                                <span class="currency-symbol">₹</span>17,699
                             </p>
                             <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
                                 40% off
                             </p>
-                        </div>
+                        </div> --}}
                     </a>
                 </div>
+                @endforeach
 
             </div>
         </div>
@@ -84,7 +114,7 @@
             </div>
             <div class="me-auto place-self-center lg:col-span-7">
                 <h1 class="mb-3 text-2xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-4xl">
-                Save $500 today on your purchase <br />
+                Save <span class="currency-symbol">₹</span>500 today on your purchase <br />
                 of a new iMac computer.
                 </h1>
 

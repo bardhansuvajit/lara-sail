@@ -3,8 +3,8 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\ProductFeature;
 use App\Interfaces\ProductFeatureInterface;
+use Livewire\Attributes\On;
 
 class ToggleFeaturedProduct extends Component
 {
@@ -46,6 +46,9 @@ class ToggleFeaturedProduct extends Component
             ];
 
             $storeResp = $productFeatureRepository->store($createArray);
+
+            $this->dispatch('productEnabled');
+
             $this->dispatch('notificationSend', [
                 'variant' => 'success',
                 'title' => 'Status updated',

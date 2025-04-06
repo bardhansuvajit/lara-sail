@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 class Country extends Model
 {
@@ -25,4 +26,17 @@ class Country extends Model
         'cash_on_delivery_availability',
         'status',
     ];
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    // Cache countries for 24 hours
+    // public static function cachedCountries()
+    // {
+    //     return Cache::remember('active_countries', 86400, function () {
+    //         return self::active()->get();
+    //     });
+    // }
 }

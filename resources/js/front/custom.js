@@ -8,6 +8,42 @@ const phoneNoEl = document.getElementById('phone_no');
 let lastScrollPosition = 0;
 
 // GLOBAL
+
+// IP information
+async function getIpInfo() {
+    try {
+        const response = await fetch('http://ip-api.com/json?fields=status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,offset,currency,isp,org,as,asname,reverse,mobile,proxy,hosting,query');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        const ipInfo = {
+            ip: data.query,
+            country: data.country,
+            countryCode: data.countryCode,
+            state: data.regionName,
+            stateCode: data.region,
+            city: data.city,
+            zip: data.zip,
+            currency: data.currency,
+            lat: data.lat,
+            lon: data.lon,
+        };
+        return ipInfo;
+        // console.log(ipInfo);
+    } catch (error) {
+        console.error('Error fetching IP info:', error);
+    }
+}
+
+getIpInfo()
+    .then((resp) => {
+        console.log('resp>>', resp);
+    })
+    .catch((err) => {
+        console.log('err>>', err);
+    })
+
 // check if device is mobile
 function isMobileDevice() {
     return window.innerWidth <= 768; // Common breakpoint for mobile devices

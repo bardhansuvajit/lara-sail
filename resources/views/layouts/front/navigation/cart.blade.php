@@ -4,7 +4,7 @@
             <svg class="w-4 h-4 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"></path></svg>
 
             <span class="hidden lg:block me-1.5">4 items</span>
-            {{-- (<span class="currency-icon">$</span>106.7) --}}
+            {{-- (<span class="currency-symbol">₹</span>106.7) --}}
 
             {!! FD['dropdownCaret'] !!}
         </button>
@@ -25,7 +25,7 @@
                     </a>
                     <div class="w-full">
                         <a href="#" class="block {{FD['text-0']}} text-gray-900 hover:underline dark:text-white">Apple iPhone 15</a>
-                        <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-icon">$</span>1,299</p>
+                        <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-symbol">₹</span>1,299</p>
                     </div>
                 </div>
 
@@ -59,7 +59,7 @@
                     <div class="w-full">
                         <a href="#" class="block {{FD['text-0']}} text-gray-900 hover:underline dark:text-white">Apple iPhone 15</a>
                         <p class="{{FD['text-0']}} text-gray-400">some basic description to test the tab, another one</p>
-                        <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-icon">$</span>1,299</p>
+                        <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-symbol">₹</span>1,299</p>
                     </div>
                 </div>
 
@@ -93,7 +93,7 @@
                     <div class="w-full">
                         <a href="#" class="block {{FD['text-0']}} text-gray-900 hover:underline dark:text-white">Apple iPhone 15</a>
                         <p class="{{FD['text-0']}} text-gray-400">some basic description to test the tab, another one</p>
-                        <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-icon">$</span>1,299</p>
+                        <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-symbol">₹</span>1,299</p>
                     </div>
                 </div>
 
@@ -127,7 +127,7 @@
                     <div class="w-full">
                         <a href="#" class="block {{FD['text-0']}} text-gray-900 hover:underline dark:text-white">Apple iPhone 15</a>
                         <p class="{{FD['text-0']}} text-gray-400">some basic description to test the tab, another one</p>
-                        <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-icon">$</span>1,299</p>
+                        <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-symbol">₹</span>1,299</p>
                     </div>
                 </div>
 
@@ -161,7 +161,7 @@
                     <div class="w-full">
                         <a href="#" class="block {{FD['text-0']}} text-gray-900 hover:underline dark:text-white">Apple iPhone 15 Apple pro max 16GB, Sky Blue, Some more texts to check the heigh tfot on theis cart drawer</a>
                         <p class="{{FD['text-0']}} text-gray-400">some basic description to test the tab, another one</p>
-                        <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-icon">$</span>1,299</p>
+                        <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-symbol">₹</span>1,299</p>
                     </div>
                 </div>
 
@@ -190,7 +190,7 @@
             <div class="space-y-4 px-3 py-2 dark:border-gray-600">
                 <dl class="flex items-center justify-between">
                     <dt class="font-medium {{FD['text-1']}} leading-tight dark:text-white">Total</dt>
-                    <dd class="font-semibold {{FD['text-1']}} leading-tight dark:text-white"><span class="currency-icon">$</span>6,196</dd>
+                    <dd class="font-semibold {{FD['text-1']}} leading-tight dark:text-white"><span class="currency-symbol">₹</span>6,196</dd>
                 </dl>
 
                 <div class="flex space-x-2">

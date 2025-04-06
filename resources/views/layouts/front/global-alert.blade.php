@@ -6,7 +6,7 @@
     <div class="{{FD['text']}}">
         <p>
             You are only 
-            <span class="font-medium"><span class="currency-icon">$</span><span id="free-shipping-amount">99.99</span></span> 
+            <span class="font-medium"><span class="currency-symbol">₹</span><span id="free-shipping-amount">99.99</span></span> 
             away from 
             <span class="font-medium">Free Shipping</span> 
         </p>
@@ -17,7 +17,7 @@
 
     <p class="{{FD['text']}}">
         You are only 
-        <span class="font-medium"><span class="currency-icon">$</span><span id="free-shipping-amount">99.99</span></span> 
+        <span class="font-medium"><span class="currency-symbol">₹</span><span id="free-shipping-amount">99.99</span></span> 
         away from 
         <span class="font-medium">Free Shipping</span> 
         <a href="#" class="font-medium underline hover:no-underline block">How do i get this ?</a>
