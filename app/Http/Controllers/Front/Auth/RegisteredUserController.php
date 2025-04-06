@@ -71,6 +71,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('front.profile.index', absolute: false));
+        return redirect(route('front.account.index', absolute: false));
     }
 }

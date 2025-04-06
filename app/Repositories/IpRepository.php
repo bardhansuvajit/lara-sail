@@ -78,20 +78,17 @@ class IpRepository implements IpInterface
 
     public function store(Array $array)
     {
-        // dd($array['image']);
+        // dd($array);
+
         try {
             $data = new Ip();
-            $data->title = $array['title'];
-            $data->slug = Str::slug($array['title']);
-
-            if (!empty($array['image'])) {
-                $uploadResp = fileUpload($array['image'], 'p-clt');
-
-                $data->image_s = $uploadResp['smallThumbName'];
-                $data->image_m = $uploadResp['mediumThumbName'];
-                $data->image_l = $uploadResp['largeThumbName'];
-            }
-
+            $data->ipv4 = $array['ipv4'];
+            $data->country_code = $array['country_code'] ?? null;
+            $data->state_code = $array['state_code'] ?? null;
+            $data->city = $array['city'] ?? null;
+            $data->zip = $array['zip'] ?? null;
+            $data->currency_code = $array['currency_code'] ?? null;
+            $data->resp = $array['resp'] ?? null;
             $data->save();
 
             return [
@@ -104,8 +101,8 @@ class IpRepository implements IpInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                // 'message' => 'An error occurred while storing data.',
-                'message' => $e->getMessage(),
+                'message' => 'An error occurred while storing data.',
+                // 'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ];
         }
@@ -114,7 +111,7 @@ class IpRepository implements IpInterface
     public function getById(Int $id)
     {
         try {
-            $data = ProductCollection::find($id);
+            $data = Ip::find($id);
 
             if (!empty($data)) {
                 return [
@@ -129,6 +126,36 @@ class IpRepository implements IpInterface
                     'status' => 'failure',
                     'message' => 'No data found',
                     'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function getByIp(String $ip)
+    {
+        try {
+            $data = Ip::where('ipv4', $ip)->first();
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    // 'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    // 'data' => [],
                 ];
             }
         } catch (\Exception $e) {
@@ -187,7 +214,7 @@ class IpRepository implements IpInterface
             if ($data['code'] == 200) {
                 // Handling trash
                 $this->trashRepository->store([
-                    'model' => 'ProductCollection',
+                    'model' => 'Ip',
                     'table_name' => 'product_collections',
                     'deleted_row_id' => $data['data']->id,
                     'thumbnail' => $data['data']->image_s,
@@ -220,13 +247,13 @@ class IpRepository implements IpInterface
     public function bulkAction(Array $array)
     {
         try {
-            $data = ProductCollection::whereIn('id', $array['ids'])->get();
+            $data = Ip::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
 
                     // Handling trash
                     $this->trashRepository->store([
-                        'model' => 'ProductCollection',
+                        'model' => 'Ip',
                         'table_name' => 'product_collections',
                         'deleted_row_id' => $item->id,
                         'thumbnail' => $item->image_s,
@@ -267,7 +294,7 @@ class IpRepository implements IpInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'ProductCollection');
+            $processedCount = saveToDatabase($data, 'Ip');
 
             return [
                 'code' => 200,

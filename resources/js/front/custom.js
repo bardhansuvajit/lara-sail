@@ -10,14 +10,43 @@ let lastScrollPosition = 0;
 // GLOBAL
 
 // IP information
+async function checkIpInfo() {
+    try {
+        const storedData = localStorage.getItem('applicationSettings');
+        if (!storedData) return true; // Changed to true to skip IP fetch
+
+        const appData = JSON.parse(storedData);
+        const ipv4 = appData.ipv4;
+        if (!ipv4) return true; // Skip if no IP exists
+
+        const response = await fetch(`/api/ip/check/${ipv4}`);
+        if (!response.ok) return true; // Skip if API fails
+
+        const data = await response.json();
+        return data.code !== 200; // Return true if IP is invalid (needs refresh)
+    } catch (error) {
+        console.error('Error checking IP:', error);
+        return true; // Skip on error
+    }
+}
+
 async function getIpInfo() {
     try {
         const response = await fetch('http://ip-api.com/json?fields=status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,offset,currency,isp,org,as,asname,reverse,mobile,proxy,hosting,query');
+
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            console.error('IP API response not OK:', response.status);
+            return null;
         }
+
         const data = await response.json();
+
+        if (!data.query) {
+            throw new Error('Invalid IP data received');
+        }
+
         const ipInfo = {
+            data: data.data,
             ip: data.query,
             country: data.country,
             countryCode: data.countryCode,
@@ -33,16 +62,77 @@ async function getIpInfo() {
         // console.log(ipInfo);
     } catch (error) {
         console.error('Error fetching IP info:', error);
+        return null;
     }
 }
 
-getIpInfo()
-    .then((resp) => {
-        console.log('resp>>', resp);
-    })
-    .catch((err) => {
-        console.log('err>>', err);
-    })
+async function storeIpInfo(ipInfo) {
+    if (!ipInfo) return false;
+
+    try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+        if (!csrfToken) {
+            console.error('CSRF token not found');
+            return false;
+        }
+
+        const response = await fetch('/api/ip/store', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                data: ipInfo.data,
+                ip: ipInfo.ip,
+                country: ipInfo.country,
+                countryCode: ipInfo.countryCode,
+                state: ipInfo.state,
+                stateCode: ipInfo.stateCode,
+                city: ipInfo.city,
+                zip: ipInfo.zip,
+                currency: ipInfo.currency,
+                lat: ipInfo.lat,
+                lon: ipInfo.lon
+            })
+        });
+
+        if (!response.ok) {
+            console.error('Failed to store IP info:', response.status);
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error storing IP info:', error);
+        return false;
+    }
+}
+
+(async () => {
+    const shouldFetchNewIp = await checkIpInfo(); // true = fetch new IP
+    if (shouldFetchNewIp) {
+        const ipInfo = await getIpInfo();
+        if (ipInfo) {
+            await storeIpInfo(ipInfo);
+            applicationSettingsBrowserStore('ipv4', ipInfo.ip);
+            applicationSettingsBrowserStore('country', ipInfo.countryCode);
+            applicationSettingsBrowserStore('currency', ipInfo.currency);
+        }
+    }
+    // const checkIpExist = await checkIpInfo();
+
+    // if (!checkIpExist) {
+    //     const ipInfo = await getIpInfo();
+    //     if (ipInfo) {
+    //         const stored = await storeIpInfo(ipInfo);
+    //         applicationSettingsBrowserStore('ipv4', ipInfo.ip);
+    //     } else {
+    //         console.log('Location services unavailable');
+    //     }
+    // }
+})();
+
 
 // check if device is mobile
 function isMobileDevice() {
@@ -112,11 +202,17 @@ window.addEventListener('resize', function() {
 
 // dark mode toggle
 function applicationSettingsBrowserStore(objKey, objValue) {
-    let appData = localStorage.getItem('applicationSettings');
-    appData = appData ? JSON.parse(appData) : {};
+    try {
+        const storedData = localStorage.getItem('applicationSettings');
+        let appData = storedData ? JSON.parse(storedData) : {};
+        appData[objKey] = objValue;
+        localStorage.setItem('applicationSettings', JSON.stringify(appData));
 
-    appData[objKey] = objValue;
-    localStorage.setItem('applicationSettings', JSON.stringify(appData));
+        return true;
+    } catch (error) {
+        console.error("Error saving to localStorage:", error);
+        return false;
+    }
 }
 
 function applySavedTheme() {

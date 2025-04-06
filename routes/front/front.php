@@ -12,12 +12,12 @@ use App\Http\Controllers\Front\Product\ProductController;
 
 Route::name('front.')->group(function () {
     // global
-    Route::name('global.')->group(function() {
-        // ip
-        Route::name('ip.')->group(function() {
-            Route::get('/', [IpController::class, 'store'])->name('store');
-        });
-    });
+    // Route::prefix('global')->name('global.')->group(function() {
+    //     // ip
+    //     Route::prefix('ip')->name('ip.')->group(function() {
+    //         Route::post('/store', [IpController::class, 'store'])->name('store');
+    //     });
+    // });
 
     // home
     Route::name('home.')->group(function() {

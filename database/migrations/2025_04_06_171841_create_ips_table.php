@@ -15,12 +15,15 @@ return new class extends Migration
             $table->id();
 
             $table->string('ipv4', 100)->unique();
+            $table->string('ipv6', 100)->unique()->nullable();
             $table->string('country_code', 5)->nullable();
             $table->string('state_code', 5)->nullable();
             $table->string('city', 100)->nullable();
             $table->string('zip', 20)->nullable();
             $table->string('currency_code', 5)->nullable();
             $table->text('resp')->nullable();
+
+            $table->tinyInteger('is_blacklisted')->default(0);
 
             $table->tinyInteger('status')->default(1);
             $table->softDeletes();
