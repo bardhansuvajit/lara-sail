@@ -10,6 +10,10 @@
     <section class="grid grid-cols-6 lg:grid-cols-10 gap-4">
         {{-- <div class="col-span-2"></div> --}}
 
+        {{-- @if ($errors->any())
+            {{ dd($errors->all()) }}
+        @endif --}}
+
         <div class="col-span-6 lg:col-start-3">
             <div class="w-full mt-2">
                 <form action="{{ route('admin.product.listing.update') }}" method="post" enctype="multipart/form-data" id="productForm" >
@@ -329,26 +333,28 @@
                         <div>
                             <x-admin.input-checkbox 
                                 id="quantity-track-checkbox" 
-                                name="quantity_track" 
+                                name="track_quantity" 
                                 value="yes" 
                                 class="mb-3" 
                                 label="Track quantity" 
-                                :checked="old('quantity_track') ? (old('quantity_track') === 'yes') : ($data->quantity >= 0)" />
+                                :checked="old('track_quantity') ? (old('track_quantity') === 'yes') : ($data->stock_quantity > 0)" />
 
-                            <div id="qtyValueField" class="mb-4 {{ old('quantity_track') ? (old('quantity_track') !== 'yes' ? 'hidden' : '') : ($data->quantity >= 0 ? '' : 'hidden') }}">
-                                <x-admin.input-label for="quantity" :value="__('Quantity')" />
-                                <x-admin.text-input id="quantity" class="block" type="tel" name="quantity" :value="old('quantity') ? old('quantity') : $data->quantity" placeholder="Enter Quantity" />
-                                <x-admin.input-error :messages="$errors->get('quantity')" class="mt-2" />
+                            <div id="qtyValueField" class="mb-4 {{ old('track_quantity') ? (old('track_quantity') !== 'yes' ? 'hidden' : '') : ($data->stock_quantity > 0 ? '' : 'hidden') }}">
+                                <x-admin.input-label for="stock_quantity" :value="__('Quantity')" />
+                                <x-admin.text-input id="stock_quantity" class="block" type="tel" name="stock_quantity" :value="old('stock_quantity') ? old('stock_quantity') : (($data->stock_quantity == 0) ? '' : $data->stock_quantity)" placeholder="Enter Quantity" />
+                                <x-admin.input-error :messages="$errors->get('stock_quantity')" class="mt-2" />
+                                <x-admin.input-error :messages="$errors->get('track_quantity')" class="mt-2" />
                             </div>
                         </div>
                     </div>
                     <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
                         <div>
                             <x-admin.input-checkbox 
-                                id="out-of-stock-sell-checkbox"
-                                name="out_of_stock_sell" 
+                                id="allow-backorders-checkbox"
+                                name="allow_backorders" 
                                 value="yes"
-                                label="Continue selling when out of stock" />
+                                label="Continue selling when out of stock" 
+                                :checked="old('allow_backorders') ? (old('allow_backorders') === 'yes') : ($data->allow_backorders == 1)" />
                         </div>
                     </div>
 

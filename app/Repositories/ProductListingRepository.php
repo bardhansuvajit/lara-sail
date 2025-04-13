@@ -111,7 +111,9 @@ class ProductListingRepository implements ProductListingInterface
             $data->collection_ids = $array['collection_ids'];
 
             $data->sku = $array['sku'];
-            $data->quantity = $array['quantity'];
+            $data->track_quantity = $array['track_quantity'];
+            $data->stock_quantity = $array['stock_quantity'];
+            $data->allow_backorders = $array['allow_backorders'];
             $data->meta_title = $array['meta_title'];
             $data->meta_desc = $array['meta_description'];
             $data->status = 0;
@@ -203,6 +205,36 @@ class ProductListingRepository implements ProductListingInterface
         }
     }
 
+    public function getBySlug(String $slug)
+    {
+        try {
+            $data = Product::where('slug', $slug)->first();
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
     public function update(Array $array)
     {
         // dd($array);
@@ -222,7 +254,9 @@ class ProductListingRepository implements ProductListingInterface
                 $data['data']->collection_ids = $array['collection_ids'];
 
                 $data['data']->sku = $array['sku'];
-                $data['data']->quantity = $array['quantity'];
+                $data['data']->track_quantity = $array['track_quantity'];
+                $data['data']->stock_quantity = $array['stock_quantity'];
+                $data['data']->allow_backorders = $array['allow_backorders'];
                 $data['data']->meta_title = $array['meta_title'];
                 $data['data']->meta_desc = $array['meta_description'];
                 $data['data']->status = 0;
@@ -383,7 +417,47 @@ class ProductListingRepository implements ProductListingInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'Product');
+            // $processedCount = saveToDatabase($data, 'Product');
+
+            // save into Database
+            $processedCount = 0;
+
+            foreach ($data as $item) {
+                if (!isset($item['title'])) {
+                    continue; // Skip rows without a title
+                }
+
+                Product::create([
+                    'title' => $item['title'] ? $item['title'] : null,
+                    'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
+                    'category_id' => $item['category_id'] ? $item['category_id'] : null,
+                    'category_id' => $item['category_id'] ? $item['category_id'] : null,
+                    'collection_ids' => $item['collection_ids'] ? $item['collection_ids'] : null,
+                    'short_description' => $item['short_description'] ? $item['short_description'] : null,
+                    'long_description' => $item['long_description'] ? $item['long_description'] : null,
+                    'sku' => $item['sku'] ? $item['sku'] : null,
+                    'barcode' => $item['barcode'] ? $item['barcode'] : null,
+                    'has_variations' => $item['has_variations'] ? $item['has_variations'] : 0,
+                    'stock_quantity' => $item['stock_quantity'] ? $item['stock_quantity'] : null,
+                    'track_quantity' => $item['track_quantity'] ? $item['track_quantity'] : null,
+                    'allow_backorders' => $item['allow_backorders'] ? $item['allow_backorders'] : 0,
+                    'sold_count' => $item['sold_count'] ? $item['sold_count'] : 0,
+                    'in_cart_count' => $item['in_cart_count'] ? $item['in_cart_count'] : 0,
+                    'weight' => $item['weight'] ? $item['weight'] : 0,
+                    'height' => $item['height'] ? $item['height'] : 0,
+                    'width' => $item['width'] ? $item['width'] : 0,
+                    'length' => $item['length'] ? $item['length'] : 0,
+                    'weight_unit' => $item['weight_unit'] ? $item['weight_unit'] : 'g',
+                    'dimension_unit' => $item['dimension_unit'] ? $item['dimension_unit'] : 'cm',
+                    'tags' => $item['tags'] ? $item['tags'] : null,
+                    'meta_title' => $item['meta_title'] ? $item['meta_title'] : null,
+                    'meta_desc' => $item['meta_desc'] ? $item['meta_desc'] : null,
+                    'type' => $item['type'] ? $item['type'] : 'physical-product',
+                    'status' => $item['status'] ? $item['status'] : 0,
+                ]);
+
+                $processedCount++;
+            }
 
             return [
                 'code' => 200,

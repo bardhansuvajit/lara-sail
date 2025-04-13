@@ -284,7 +284,7 @@ class ProductImageRepository implements ProductImageInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'Product');
+            // $processedCount = saveToDatabase($data, 'Product');
 
             return [
                 'code' => 200,
@@ -352,6 +352,30 @@ class ProductImageRepository implements ProductImageInterface
                 'code' => 500,
                 'status' => 'error',
                 'message' => 'An unexpected error occurred while preparing the export.',
+            ];
+        }
+    }
+
+    public function position(Array $ids)
+    {
+        try {
+            foreach ($ids as $index => $id) {
+                ProductImage::where('id', $id)->update([
+                    'position' => $index + 1
+                ]);
+            }
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Position updated'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while positioning data.',
+                'error' => $e->getMessage(),
             ];
         }
     }

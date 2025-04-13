@@ -270,7 +270,29 @@ class ProductCollectionRepository implements ProductCollectionInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'ProductCollection');
+            // $processedCount = saveToDatabase($data, 'ProductCollection');
+
+            // save into Database
+            $processedCount = 0;
+
+            foreach ($data as $item) {
+                if (!isset($item['title'])) {
+                    continue; // Skip rows without a title
+                }
+
+                ProductCollection::create([
+                    'title' => $item['title'] ? $item['title'] : null,
+                    'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
+                    'short_description' => $item['short_description'] ? $item['short_description'] : null,
+                    'long_description' => $item['long_description'] ? $item['long_description'] : null,
+                    'tags' => $item['tags'] ? $item['tags'] : null,
+                    'meta_title' => $item['meta_title'] ? $item['meta_title'] : null,
+                    'meta_desc' => $item['meta_desc'] ? $item['meta_desc'] : null,
+                    'status' => $item['status'] ? $item['status'] : 0
+                ]);
+
+                $processedCount++;
+            }
 
             return [
                 'code' => 200,

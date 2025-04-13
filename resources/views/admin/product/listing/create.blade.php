@@ -229,24 +229,24 @@
                         <div>
                             <x-admin.input-checkbox 
                                 id="quantity-track-checkbox" 
-                                name="quantity_track" 
+                                name="track_quantity" 
                                 value="yes" 
                                 class="mb-3" 
                                 label="Track quantity" 
-                                :checked="old('quantity_track') === 'yes'" />
+                                :checked="old('track_quantity') === 'yes'" />
 
-                            <div id="qtyValueField" class="mb-4 {{ old('quantity_track') !== 'yes' ? 'hidden' : '' }}">
-                                <x-admin.input-label for="quantity" :value="__('Quantity')" />
-                                <x-admin.text-input id="quantity" class="block" type="tel" name="quantity" :value="old('quantity')" placeholder="Enter Quantity" />
-                                <x-admin.input-error :messages="$errors->get('quantity')" class="mt-2" />
+                            <div id="qtyValueField" class="mb-4 {{ old('track_quantity') !== 'yes' ? 'hidden' : '' }}">
+                                <x-admin.input-label for="stock_quantity" :value="__('Quantity')" />
+                                <x-admin.text-input id="stock_quantity" class="block" type="tel" name="stock_quantity" :value="old('stock_quantity')" placeholder="Enter Quantity" />
+                                <x-admin.input-error :messages="$errors->get('stock_quantity')" class="mt-2" />
                             </div>
                         </div>
                     </div>
                     <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
                         <div>
                             <x-admin.input-checkbox 
-                                id="out-of-stock-sell-checkbox"
-                                name="out_of_stock_sell" 
+                                id="allow-backorders-checkbox"
+                                name="allow_backorders" 
                                 value="yes"
                                 label="Continue selling when out of stock" />
                         </div>

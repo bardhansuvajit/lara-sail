@@ -294,7 +294,31 @@ class IpRepository implements IpInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'Ip');
+            // $processedCount = saveToDatabase($data, 'Ip');
+
+            // save into Database
+            $processedCount = 0;
+
+            foreach ($data as $item) {
+                if (!isset($item['ipv4'])) {
+                    continue; // Skip rows without a ipv4
+                }
+
+                IP::create([
+                    'ipv4' => $item['ipv4'] ? $item['ipv4'] : null,
+                    'ipv6' => $item['ipv6'] ? $item['ipv6'] : null,
+                    'country_code' => $item['country_code'] ? $item['country_code'] : null,
+                    'state_code' => $item['state_code'] ? $item['state_code'] : null,
+                    'city' => $item['city'] ? $item['city'] : null,
+                    'zip' => $item['zip'] ? $item['zip'] : null,
+                    'currency_code' => $item['currency_code'] ? $item['currency_code'] : null,
+                    'resp' => $item['resp'] ? $item['resp'] : null,
+                    'is_blacklisted' => $item['is_blacklisted'] ? $item['is_blacklisted'] : 0,
+                    'status' => $item['status'] ? $item['status'] : 1
+                ]);
+
+                $processedCount++;
+            }
 
             return [
                 'code' => 200,

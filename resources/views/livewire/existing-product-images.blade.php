@@ -5,7 +5,7 @@
                 <h5 class="text-gray-700 dark:text-gray-300 font-medium text-xs">Uploaded Images</h5>
             </div>
 
-            <div class="my-3 grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-8 gap-4">
+            <div id="sortable-container" class="my-3 grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-8 gap-4">
                 @foreach ($images as $imageKey => $singleImage)
                     @php
                         $imagePath = $singleImage->image_m;
@@ -19,7 +19,7 @@
                         $height = $dimensions ? $dimensions[1] : 'N/A';
                     @endphp
 
-                    <div class="relative group break-inside-avoid">
+                    <div class="relative group break-inside-avoid" data-id="{{$singleImage->id}}">
                         <img class="w-full h-auto transition-transform duration-300 transform group-hover:scale-105 border dark:border-gray-800" src="{{ Storage::url($imagePath) }}" alt="{{ $fileName }}" loading="lazy">
                         {{-- <p class="text-[8px] text-gray-700 dark:text-gray-300 mt-2 text-clip" title="{{ $fileName }}">{{ $fileName }}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400">{{ $fileSizeKB }}</p>
@@ -42,20 +42,23 @@
                             @endslot
                         </x-admin.button-icon>
 
+                        <div class="w-full mt-2 text-center">
+                            <div class="handle cursor-grab flex justify-center hidden">
+                                <svg class="size-4 text-gray-400 dark:text-neutral-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
+                                {{-- <p class="text-xs text-gray-400 dark:text-neutral-500">Drag me</p> --}}
+                            </div>
+                        </div>
+
                     </div>
                 @endforeach
             </div>
 
             <div class="border-t border-gray-300 dark:border-gray-500 pt-2">
                 <div>
-                    <a 
-                        href="javascript: void(0)" 
+                    <button 
+                        type="button"
                         class="text-xs inline-block text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-500" 
-                        id="highlightButton" 
-                        x-data="" 
-                        x-on:click.prevent="
-                            $dispatch('open-modal', 'highlight');
-                        " 
+                        id="imagesPositionToggleButton" 
                     >
                         <div class="flex items-center">
                             <div class="w-3 h-3 mr-2">
@@ -63,7 +66,7 @@
                             </div>
                             Change position
                         </div>
-                    </a>
+                    </button>
                 </div>
 
                 <div>
@@ -138,3 +141,25 @@
         <p class="text-xs text-red-400 dark:text-orange-700 space-y-1">A {{ $type }} must have some images to give an idea to the customers what they are paying for.</p>
     @endif
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js"></script>
+
+<script>
+window.addEventListener('load', () => {
+    (function () {
+        const sortable = document.querySelector("#sortable-container");
+
+        new Sortable(sortable, {
+            handle: '.handle',
+            animation: 150,
+            dragClass: 'rounded-none!',
+            onEnd: function (evt) {
+                const orderedIds = Array.from(sortable.children).map(el => el.dataset.id);
+                console.log(orderedIds);
+                
+                Livewire.dispatch('updateProductImageOrder', { ids: orderedIds });
+            }
+        });
+    })();
+});
+</script>

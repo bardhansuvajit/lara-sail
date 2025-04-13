@@ -27,6 +27,7 @@
                 if (qtyCheckField && qtyField) {
                     if (qtyCheckField.checked) {
                         qtyField.classList.remove('hidden');
+                        qtyField.querySelector('input').focus();
                     } else {
                         qtyField.classList.add('hidden');
                     }

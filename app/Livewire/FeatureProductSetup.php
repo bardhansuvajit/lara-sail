@@ -24,7 +24,9 @@ class FeatureProductSetup extends Component
     public function reloadProducts()
     {
         $productFeatureRepository = app(ProductFeatureInterface::class);
-        $this->features = $productFeatureRepository->list('', [], 'all', 'position', 'asc')['data'];
+        $resp = $productFeatureRepository->list('', [], 'all', 'position', 'asc')['data'];
+        $this->features = collect($resp);
+        // dd($resp);
         // $this->features = ProductFeature::orderBy('position')->orderBy('id', 'desc')->get();
     }
 

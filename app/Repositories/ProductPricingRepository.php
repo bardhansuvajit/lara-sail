@@ -311,7 +311,35 @@ class ProductPricingRepository implements ProductPricingInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'ProductPricing');
+            // $processedCount = saveToDatabase($data, 'ProductPricing');
+
+            // save into Database
+            $processedCount = 0;
+
+            foreach ($data as $item) {
+                if (!isset($item['product_id'])) {
+                    continue; // Skip rows without a product_id
+                }
+
+                Country::create([
+                    'product_id' => $item['product_id'] ? $item['product_id'] : null,
+                    'product_variation_id' => $item['product_variation_id'] ? $item['product_variation_id'] : null,
+                    'country_id' => $item['country_id'] ? $item['country_id'] : null,
+                    'currency_code' => $item['currency_code'] ? $item['currency_code'] : null,
+                    'currency_symbol' => $item['currency_symbol'] ? $item['currency_symbol'] : null,
+                    'min_quantity' => $item['min_quantity'] ? $item['min_quantity'] : null,
+                    'price_type' => $item['price_type'] ? $item['price_type'] : 'regular',
+                    'selling_price' => $item['selling_price'] ? $item['selling_price'] : 0,
+                    'mrp' => $item['mrp'] ? $item['mrp'] : 0,
+                    'discount' => $item['discount'] ? $item['discount'] : 0,
+                    'cost' => $item['cost'] ? $item['cost'] : 0,
+                    'profit' => $item['profit'] ? $item['profit'] : 0,
+                    'margin' => $item['margin'] ? $item['margin'] : 0,
+                    'status' => $item['status'] ? $item['status'] : 0
+                ]);
+
+                $processedCount++;
+            }
 
             return [
                 'code' => 200,

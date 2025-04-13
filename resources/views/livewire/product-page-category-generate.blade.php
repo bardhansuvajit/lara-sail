@@ -2,12 +2,6 @@
     x-data='{
         "selectedCategoryId": @json($category_id ?? 0),
         "selectedCategoryTitle": @json($category_name ?? ""),
-        {{-- "setCategory": function(id, title) { 
-            this.selectedCategoryId = id;
-            this.selectedCategoryTitle = title;
-            $wire.set("category_id", id);
-            $wire.set("category_name", title);
-        } --}}
     }' >
     <x-admin.input-label for="category_id" :value="__('Category *')" />
     <x-dropdown align="top" width="full">

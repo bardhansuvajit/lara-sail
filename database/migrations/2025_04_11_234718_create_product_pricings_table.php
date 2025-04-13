@@ -13,14 +13,22 @@ return new class extends Migration
     {
         Schema::create('product_pricings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id')->nullable();
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('SET NULL');
 
+            // Product
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->unsignedBigInteger('product_variation_id')->nullable();
+            $table->foreign('product_variation_id')->references('id')->on('product_variations')->onDelete('cascade');
+
+            // Currency
             $table->unsignedBigInteger('country_id')->nullable();
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('SET NULL');
             $table->string('currency_code', 3)->nullable()->comment('ISO 4217 code');
             $table->string('currency_symbol', 20)->nullable();
 
+            // Price type (for sale/group pricing)
+            $table->unsignedInteger('min_quantity')->default(1);
+            $table->enum('price_type', ['regular', 'sale', 'wholesale', 'b2b'])->default('regular');
             $table->decimal('selling_price', 12, 2);
             $table->decimal('mrp', 12, 2)->default(0.00);
             $table->tinyInteger('discount')->default(0)->comment('whole number percentage');

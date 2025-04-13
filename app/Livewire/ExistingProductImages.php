@@ -5,12 +5,13 @@ namespace App\Livewire;
 use Livewire\Component;
 use Illuminate\Database\Eloquent\Collection;
 use App\Interfaces\ProductImageInterface;
+use Livewire\Attributes\On;
 
 class ExistingProductImages extends Component
 {
     public Collection $images;
-    public String $type;
-    public int $imageId;
+    public string $type;
+    // public int $imageId;
     private ProductImageInterface $productImageRepository;
 
     public function mount(Collection $images, String $type, ProductImageInterface $productImageRepository)
@@ -20,11 +21,38 @@ class ExistingProductImages extends Component
         $this->productImageRepository = $productImageRepository;
     }
 
-    public function deleteImage($imageId)
+    public function deleteImage(int $imageId)
     {
         $productImageRepository = app(ProductImageInterface::class);
         $resp = $productImageRepository->delete($imageId);
         $this->images = $this->images->reject(fn($image) => $image->id == $imageId);
+    }
+
+    #[On('updateProductImageOrder')]
+    public function updateFeatureOrder(array $ids)
+    {
+        $productImageRepository = app(ProductImageInterface::class);
+        $positionResp = $productImageRepository->position($ids);
+
+        if ($positionResp['code'] == 200) {
+            $this->dispatch('notificationSend', [
+                'variant' => 'success',
+                'title' => 'Position updated',
+                // 'message' => $this->productTitle . ' is removed'
+            ]);
+
+            // Refresh the images collection with the new order
+            $this->images = $productImageRepository->list('', ['product_id' => $this->images->first()->product_id], 'all', 'position', 'asc')['data'];
+
+            // $this->images;
+
+            // $this->reloadProducts();
+        } else {
+            $this->dispatch('notificationSend', [
+                'variant' => 'warning',
+                'title' => $positionResp['message'],
+            ]);
+        }
     }
 
     public function render()

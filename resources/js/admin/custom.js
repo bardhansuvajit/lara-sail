@@ -10,8 +10,18 @@ const discountEl = document.getElementById('discount');
 const costEl = document.getElementById('cost');
 const profitEl = document.getElementById('profit');
 const marginEl = document.getElementById('margin');
+const imagesPositionToggleButton = document.getElementById('imagesPositionToggleButton');
 const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const maxFileSize = '2000'; // in kb
+
+// Global
+document.querySelector('form').addEventListener('submit', function () {
+    const submitBtn = this.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Loading...';
+    }
+});
 
 // ## listing pages, check all checkboxes
 if (parentCheckbox && otherCheckboxes && bulkActionDiv) {
@@ -138,10 +148,10 @@ const formatWholeNumberInput = (e) => {
     e.target.value = value;
 };
 
-["selling_price", "mrp", "cost", "quantity"].forEach(id => {
+["selling_price", "mrp", "cost", "stock_quantity"].forEach(id => {
     const element = document.getElementById(id);
     if (element) {
-        if (id == "quantity") {
+        if (id == "stock_quantity") {
             element.addEventListener("input", formatWholeNumberInput);
         } else {
             element.addEventListener("input", formatPriceInput);
@@ -352,3 +362,18 @@ if (document.getElementById("images")) {
     }
 }
 
+if (imagesPositionToggleButton) {
+    imagesPositionToggleButton.addEventListener('click', function () {
+        document.querySelectorAll('#sortable-container > div').forEach(el => {
+            if (!el.classList.contains('position-toggled')) {
+                el.classList.add('position-toggled');
+                el.querySelector('button').classList.add('hidden');
+                el.querySelector('.handle').classList.remove('hidden');
+            } else {
+                el.classList.remove('position-toggled');
+                el.querySelector('button').classList.remove('hidden');
+                el.querySelector('.handle').classList.add('hidden');
+            }
+        })
+    });
+}

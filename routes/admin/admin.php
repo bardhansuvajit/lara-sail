@@ -8,12 +8,15 @@ use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Admin\Profile\ProfileController;
 use App\Http\Controllers\Admin\Password\PasswordController;
 use App\Http\Controllers\Admin\Country\CountryController;
+
 use App\Http\Controllers\Admin\Product\Listing\ProductListingController;
 use App\Http\Controllers\Admin\Product\Category\ProductCategoryController;
 use App\Http\Controllers\Admin\Product\Collection\ProductCollectionController;
 use App\Http\Controllers\Admin\Product\Image\ProductImageController;
 use App\Http\Controllers\Admin\Product\Pricing\ProductPricingController;
 use App\Http\Controllers\Admin\Product\Feature\ProductFeatureController;
+use App\Http\Controllers\Admin\Product\Review\ProductReviewController;
+
 use App\Http\Controllers\Admin\CsvTemplate\CsvTemplateController;
 use App\Http\Controllers\Admin\Trash\TrashController;
 
@@ -118,6 +121,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::prefix('feature')->name('feature.')->controller(ProductFeatureController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::delete('/delete/{id}', 'delete')->name('delete');
+            });
+
+            // review
+            Route::prefix('review')->name('review.')->controller(ProductReviewController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+                Route::post('/bulk', 'bulk')->name('bulk');
+                Route::post('/import', 'import')->name('import');
+                Route::get('/export/{type}', 'export')->name('export');
             });
         });
 

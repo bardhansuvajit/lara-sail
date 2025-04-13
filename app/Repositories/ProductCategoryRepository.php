@@ -292,7 +292,8 @@ class ProductCategoryRepository implements ProductCategoryInterface
                     'long_description' => $item['long_description'] ? $item['long_description'] : null,
                     'tags' => $item['tags'] ? $item['tags'] : null,
                     'meta_title' => $item['meta_title'] ? $item['meta_title'] : null,
-                    'meta_desc' => $item['meta_desc'] ? $item['meta_desc'] : null
+                    'meta_desc' => $item['meta_desc'] ? $item['meta_desc'] : null,
+                    'status' => $item['status'] ? $item['status'] : 0
                 ]);
 
                 $processedCount++;

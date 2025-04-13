@@ -91,6 +91,13 @@ class ProductListingController
             'profit' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
             'margin' => 'nullable|numeric|min:0|max:99',
 
+            'track_quantity' => 'nullable|string|in:yes',
+            'stock_quantity' => 'nullable|numeric|min:0|max:9999999999',
+            'allow_backorders' => 'nullable|string|in:yes',
+
+            'meta_title' => 'nullable|string|min:2|max:1000',
+            'meta_description' => 'nullable|string|min:2',
+
             'images' => 'nullable|array',
             'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array)
         ], [
@@ -129,6 +136,7 @@ class ProductListingController
             'long_description' => ($request->description != "<p>&nbsp;</p>") ? $request->description : null,
             'category_id' => (int) $request->category_id,
             'collection_ids' => json_encode(array_map('intval', explode(',', $request->collection_id))),
+
             'currency_country_id' => (int) $request->currency,
             'selling_price' => (float) filter_var($request->selling_price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
             'mrp' => $request->mrp ? (float) filter_var($request->mrp, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
@@ -138,7 +146,9 @@ class ProductListingController
             'margin_percentage' => $request->cost ? marginCalc($request->selling_price, $request->cost) : 0,
 
             'sku' => $request->sku ? $request->sku : null,
-            'quantity' => $request->quantity ? (int) $request->quantity : null,
+            'track_quantity' => $request->track_quantity ? (bool) $request->track_quantity : false,
+            'stock_quantity' => $request->stock_quantity ? (int) $request->stock_quantity : 0,
+            'allow_backorders' => $request->allow_backorders ? (bool) $request->allow_backorders : false,
             'meta_title' => $request->meta_title ? $request->meta_title : null,
             'meta_description' => $request->meta_description ? $request->meta_title : null,
 
@@ -209,6 +219,13 @@ class ProductListingController
             'profit' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
             'margin' => 'nullable|numeric|min:0|max:99',
 
+            'track_quantity' => 'nullable|string|in:yes',
+            'stock_quantity' => 'nullable|numeric|min:0|max:9999999999',
+            'allow_backorders' => 'nullable|string|in:yes',
+
+            'meta_title' => 'nullable|string|min:2|max:1000',
+            'meta_description' => 'nullable|string|min:2',
+
             'images' => 'nullable|array',
             'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array)
         ], [
@@ -257,7 +274,9 @@ class ProductListingController
             'margin_percentage' => $request->cost ? marginCalc($request->selling_price, $request->cost) : 0,
 
             'sku' => $request->sku ? $request->sku : null,
-            'quantity' => $request->quantity ? (int) $request->quantity : null,
+            'track_quantity' => $request->track_quantity ? (bool) $request->track_quantity : false,
+            'stock_quantity' => $request->stock_quantity ? (int) $request->stock_quantity : 0,
+            'allow_backorders' => $request->allow_backorders ? (bool) $request->allow_backorders : false,
             'meta_title' => $request->meta_title ? $request->meta_title : null,
             'meta_description' => $request->meta_description ? $request->meta_title : null,
 
@@ -267,6 +286,7 @@ class ProductListingController
         // dd($productData);
 
         $resp = $this->productListingRepository->update($productData);
+        // dd($resp);
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 

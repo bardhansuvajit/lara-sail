@@ -265,7 +265,35 @@ class CountryRepository implements CountryInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            $processedCount = saveToDatabase($data, 'Country');
+            // $processedCount = saveToDatabase($data, 'Country');
+
+            // save into Database
+            $processedCount = 0;
+
+            foreach ($data as $item) {
+                if (!isset($item['name'])) {
+                    continue; // Skip rows without a name
+                }
+
+                Country::create([
+                    'short_name' => $item['short_name'] ? $item['short_name'] : null,
+                    'name' => $item['name'] ? $item['name'] : null,
+                    'phone_code' => $item['phone_code'] ? $item['phone_code'] : null,
+                    'phone_no_digits' => $item['phone_no_digits'] ? $item['phone_no_digits'] : null,
+                    'zip_code_format' => $item['zip_code_format'] ? $item['zip_code_format'] : null,
+                    'currency_code' => $item['currency_code'] ? $item['currency_code'] : null,
+                    'currency_symbol' => $item['currency_symbol'] ? $item['currency_symbol'] : null,
+                    'continent' => $item['continent'] ? $item['continent'] : null,
+                    'flag' => $item['flag'] ? $item['flag'] : null,
+                    'language' => $item['language'] ? $item['language'] : null,
+                    'time_zone' => $item['time_zone'] ? $item['time_zone'] : null,
+                    'shipping_availability' => $item['shipping_availability'] ? $item['shipping_availability'] : 0,
+                    'cash_on_delivery_availability' => $item['cash_on_delivery_availability'] ? $item['cash_on_delivery_availability'] : 0,
+                    'status' => $item['status'] ? $item['status'] : 0
+                ]);
+
+                $processedCount++;
+            }
 
             return [
                 'code' => 200,

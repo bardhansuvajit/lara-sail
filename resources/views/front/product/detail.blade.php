@@ -9,8 +9,18 @@
                 <div class="w-full h-80 overflow-hidden mx-auto">
                     <div class="swiper main-swiper {{FD['rounded']}} h-full">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide h-full">
-                                <div class="h-full w-full flex items-center justify-center"> <!-- Container for centering -->
+                            @foreach ($product->activeImages as $image)
+                                <div class="swiper-slide h-full">
+                                    <div class="flex items-center justify-center h-full">
+                                        <img src="{{ Storage::url($image->image_m) }}" alt="" class="max-w-full max-h-full">
+                                    </div>
+                                    {{-- <div class="h-full w-full flex items-center justify-center">
+                                        <img src="{{ Storage::url($image->image_m) }}" class="h-full w-full object-down">
+                                    </div> --}}
+                                </div>
+                            @endforeach
+                            {{-- <div class="swiper-slide h-full">
+                                <div class="h-full w-full flex items-center justify-center">
                                     <img src="https://placehold.co/300x400" class="h-full w-full object-down">
                                 </div>
                             </div>
@@ -18,7 +28,7 @@
                                 <div class="h-full w-full flex items-center justify-center">
                                     <img src="https://placehold.co/800x700" class="h-full w-full object-down">
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="swiper-pagination !flex justify-center gap-2"></div>
                         {{-- <button class="swiper-button-next"></button>
@@ -49,7 +59,7 @@
                         <div class="w-full flex justify-between items-center">
                             <div>
                                 {{-- title --}}
-                                <h4 class="{{FD['text']}} sm:text-base text-gray-500 dark:text-gray-300 font-medium">Blue Floral Bodycon Mini Dress</h4>
+                                <h4 class="{{FD['text']}} sm:text-base text-gray-500 dark:text-gray-300 font-medium">{{ $product->title }}</h4>
 
                                 {{-- short rating --}}
                                 <div class="flex items-center space-x-2 mt-2">
@@ -81,17 +91,24 @@
                         <div class="border-t dark:border-gray-700 my-4 sm:my-4"></div>
 
                         {{-- pricing --}}
-                        <div class="mt-2 flex items-center gap-4 mb-1 sm:mb-4">
-                            <p class="{{FD['text-1']}} sm:text-lg font-bold leading-tight text-gray-900 dark:text-white">
-                                <span class="currency-symbol">₹</span>1,09,699
-                            </p>
-                            <p class="{{FD['text-1']}} sm:text-lg font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400">
-                                <span class="currency-symbol">₹</span>17,699
-                            </p>
-                            <p class="{{FD['text-1']}} font-black leading-tight {{FD['activeClass']}}">
-                                40% off
-                            </p>
-                        </div>
+                        @if (count($product->pricings) > 0)
+                            @php
+                                $singlePricing = $product->pricings[0];
+                            @endphp
+                            <div class="mt-2 flex items-center gap-4 mb-1 sm:mb-2">
+                                <p class="{{FD['text-1']}} sm:text-lg font-bold leading-tight text-gray-900 dark:text-white">
+                                    <span class="currency-symbol">{{$singlePricing->currency_symbol}}</span>{{$singlePricing->selling_price}}
+                                </p>
+                                @if ($singlePricing->mrp != 0)
+                                    <p class="{{FD['text-1']}} sm:text-lg font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400">
+                                        <span class="currency-symbol">{{$singlePricing->currency_symbol}}</span>{{$singlePricing->mrp}}
+                                    </p>
+                                    <p class="{{FD['text-1']}} font-black leading-tight {{FD['activeClass']}}">
+                                        {{$singlePricing->discount}}% off
+                                    </p>
+                                @endif
+                            </div>
+                        @endif
 
                         <p class="{{FD['text-0']}} text-gray-500">Inclusive of all taxes</p>
 
@@ -112,7 +129,7 @@
                     <div class="space-y-2">
                         <div>
                             <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">Color</h3>
-    
+
                             <div class="w-full grid grid-cols-4 lg:grid-cols-6 gap-4">
                                 <x-front.radio-input-button id="someId1" name="variation-color" value="Lime" onclick="sendUrlParam('color', 'Lime')">
                                     <div class="text-center">
@@ -125,7 +142,7 @@
                                         </div>
                                     </div>
                                 </x-front.radio-input-button>
-    
+
                                 <x-front.radio-input-button id="someId2" name="variation-color" value="Red" onclick="sendUrlParam('color', 'Red')">
                                     <div class="text-center">
                                         <div class="flex flex-col items-center gap-2">
@@ -137,7 +154,7 @@
                                         </div>
                                     </div>
                                 </x-front.radio-input-button>
-    
+
                                 <x-front.radio-input-button id="someId3" name="variation-color" value="Blue" onclick="sendUrlParam('color', 'Blue')">
                                     <div class="text-center">
                                         <div class="flex flex-col items-center gap-2">
@@ -150,10 +167,10 @@
                                 </x-front.radio-input-button>
                             </div>
                         </div>
-    
+
                         <div>
                             <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">Size</h3>
-    
+
                             <div class="w-full grid grid-cols-4 lg:grid-cols-6 gap-4">
                                 <x-front.radio-input-button id="someId11" name="variation-size" value="M" onclick="sendUrlParam('size', 'M')">
                                     <div class="text-center">
@@ -166,7 +183,7 @@
                                         </div>
                                     </div>
                                 </x-front.radio-input-button>
-    
+
                                 <x-front.radio-input-button id="someId22" name="variation-size" value="L" onclick="sendUrlParam('size', 'L')">
                                     <div class="text-center">
                                         <div class="flex flex-col items-center gap-2">
@@ -178,7 +195,7 @@
                                         </div>
                                     </div>
                                 </x-front.radio-input-button>
-    
+
                                 <x-front.radio-input-button id="someId33" name="variation-size" value="XL" onclick="sendUrlParam('size', 'XL')">
                                     <div class="text-center">
                                         <div class="flex flex-col items-center gap-2">
@@ -189,7 +206,7 @@
                                         </div>
                                     </div>
                                 </x-front.radio-input-button>
-    
+
                                 <x-front.radio-input-button id="someId44" name="variation-size" value="2XL" onclick="sendUrlParam('size', '2XL')">
                                     <div class="text-center">
                                         <div class="flex flex-col items-center gap-2">
@@ -209,7 +226,7 @@
 
 
                     {{-- short description --}}
-                    <p class="{{FD['text']}} text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam beatae, consequuntur, eius illo pariatur odit et eveniet corrupti, omnis accusamus suscipit sunt! Optio, repellat laboriosam aliquid labore impedit quos sunt! Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi incidunt blanditiis excepturi et minus sint officiis quibusdam a neque, velit asperiores iure repellat? Ipsam laudantium explicabo dolorem reiciendis doloribus eos?</p>
+                    <p class="{{FD['text']}} text-gray-500">{{ $product->short_description }}</p>
 
 
                     <!-- Seller Info -->

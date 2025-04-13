@@ -33,4 +33,9 @@ class Product extends Model
     {
         return $this->hasOne('App\Models\ProductFeature', 'product_id', 'id');
     }
+
+    public function variations()
+    {
+        return $this->hasMany('App\Models\ProductVariation', 'product_id', 'id')->orderBy('position')->orderBy('id', 'desc');
+    }
 }

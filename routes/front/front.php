@@ -11,14 +11,6 @@ use App\Http\Controllers\Front\Profile\LoginController;
 use App\Http\Controllers\Front\Product\ProductController;
 
 Route::name('front.')->group(function () {
-    // global
-    // Route::prefix('global')->name('global.')->group(function() {
-    //     // ip
-    //     Route::prefix('ip')->name('ip.')->group(function() {
-    //         Route::post('/store', [IpController::class, 'store'])->name('store');
-    //     });
-    // });
-
     // home
     Route::name('home.')->group(function() {
         Route::get('/', [IndexController::class, 'index'])->name('index');
@@ -39,10 +31,10 @@ Route::name('front.')->group(function () {
         Route::get('/checkout', [CheckoutController::class, 'index'])->name('index');
     });
 
-    // // profile
-    // Route::name('login.')->group(function() {
-    //     Route::get('/login', [LoginController::class, 'index'])->name('index');
-    // });
+    // pages
+    Route::name('error.')->group(function() {
+        Route::get('/404', [ErrorPageController::class, 'index'])->name('404');
+    });
 
     // product
     Route::name('product.')->group(function() {

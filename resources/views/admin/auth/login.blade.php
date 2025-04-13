@@ -13,7 +13,7 @@
 
         <div class="mt-4">
             <x-admin.input-label for="password" :value="__('Password')" />
-            <x-admin.text-input id="password" class="block w-full" type="password" name="password" placeholder="xxxxxx" required autocomplete="current-password" />
+            <x-admin.text-input id="password" class="block w-full" type="password" name="password" placeholder="******" required autocomplete="current-password" />
             <x-admin.input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 

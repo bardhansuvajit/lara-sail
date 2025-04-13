@@ -26,6 +26,10 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->string('profile_picture')->nullable();
 
+            $table->tinyInteger('is_blacklisted')->default(0);
+
+            $table->tinyInteger('status')->default(1);
+            $table->softDeletes();
             $table->rememberToken();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

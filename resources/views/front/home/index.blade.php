@@ -21,8 +21,9 @@
         </div>
     </section>
 
+    @if (count($featuredProducts) > 0)
     <section class="bg-gray-50 mb-4 py-4 antialiased dark:bg-gray-900">
-        <div class="mx-auto max-w-screen-xl px-2 sm:px-4">
+        <div class="mx-auto max-w-screen-xl px-2 sm:px-0">
             <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0">
                 <p class="{{FD['text-1']}} font-semibold text-gray-600 dark:text-gray-500">FEATURED</h2>
             </div>
@@ -31,7 +32,7 @@
 
                 @foreach ($featuredProducts as $featuredItem)
                 <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
-                    <a href="#">
+                    <a href="{{ route('front.product.detail', $featuredItem->product->slug) }}">
                         <div class="h-40 w-full">
                             @if (count($featuredItem->product->activeImages) > 0)
                                 <div class="flex items-center justify-center h-full">
@@ -103,6 +104,7 @@
             </div>
         </div>
     </section>
+    @endif
 
     <section class="bg-white px-4 py-10 antialiased dark:bg-gray-900">
         <div class="mx-auto grid max-w-screen-xl rounded-lg bg-gray-50 p-4 dark:bg-gray-800 md:p-8 lg:grid-cols-12 lg:gap-8 lg:p-16 xl:gap-16">

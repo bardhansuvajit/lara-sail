@@ -26,10 +26,11 @@ return new class extends Migration
 
             $table->text('short_description')->nullable();
             $table->longText('long_description')->nullable();
-            $table->text('tags')->nullable();
+            $table->json('size_guide')->nullable();
 
             $table->text('meta_title')->nullable();
             $table->text('meta_desc')->nullable();
+            $table->text('tags')->nullable();
 
             $table->integer('position')->default(1);
 
