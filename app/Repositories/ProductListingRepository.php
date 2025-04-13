@@ -427,7 +427,7 @@ class ProductListingRepository implements ProductListingInterface
                     continue; // Skip rows without a title
                 }
 
-                Product::create([
+                $productCreated = Product::create([
                     'title' => $item['title'] ? $item['title'] : null,
                     'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
                     'category_id' => $item['category_id'] ? $item['category_id'] : null,
@@ -439,7 +439,7 @@ class ProductListingRepository implements ProductListingInterface
                     'barcode' => $item['barcode'] ? $item['barcode'] : null,
                     'has_variations' => $item['has_variations'] ? $item['has_variations'] : 0,
                     'stock_quantity' => $item['stock_quantity'] ? $item['stock_quantity'] : null,
-                    'track_quantity' => $item['track_quantity'] ? $item['track_quantity'] : null,
+                    'track_quantity' => $item['track_quantity'] ? $item['track_quantity'] : 0,
                     'allow_backorders' => $item['allow_backorders'] ? $item['allow_backorders'] : 0,
                     'sold_count' => $item['sold_count'] ? $item['sold_count'] : 0,
                     'in_cart_count' => $item['in_cart_count'] ? $item['in_cart_count'] : 0,
@@ -456,6 +456,27 @@ class ProductListingRepository implements ProductListingInterface
                     'status' => $item['status'] ? $item['status'] : 0,
                 ]);
 
+                // PRICING
+                $countryData = $this->countryRepository->getById($item['currency_country_id']);
+                if ($countryData['code'] == 200) {
+                    $currencyCode = $countryData['data']->currency_code;
+                    $currencySymbol = $countryData['data']->currency_symbol;
+
+                    $pricingData = [
+                        'product_id' => $productCreated->id,
+                        'country_id' => $item['currency_country_id'],
+                        'currency_code' => $currencyCode,
+                        'currency_symbol' => $currencySymbol,
+                        'selling_price' => $item['selling_price'] ? $item['selling_price'] : 0,
+                        'mrp' => $item['mrp'] ? $item['mrp'] : 0,
+                        'discount' => ($item['selling_price'] && $item['mrp']) ? discountPercentageCalc($item['selling_price'], $item['mrp']) : 0,
+                        'cost' => $item['cost'] ? $item['cost'] : 0,
+                        'profit' => ($item['selling_price'] && $item['cost']) ? profitCalc($item['selling_price'], $item['cost']) : 0,
+                        'margin' => ($item['selling_price'] && $item['cost']) ? marginCalc($item['selling_price'], $item['cost']) : 0,
+                    ];
+                    $pricingResp = $this->productPricingRepository->store($pricingData);
+                }
+
                 $processedCount++;
             }
 
@@ -471,7 +492,8 @@ class ProductListingRepository implements ProductListingInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => 'An error occurred while uploading data.',
+                // 'message' => 'An error occurred while uploading data.',
+                'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ];
         }

@@ -9,6 +9,36 @@ class Product extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = [
+        'title',
+        'slug',
+        'category_id',
+        'collection_ids',
+        'short_description',
+        'long_description',
+        'average_rating',
+        'review_count',
+        'sku',
+        'barcode',
+        'has_variations',
+        'stock_quantity',
+        'track_quantity',
+        'allow_backorders',
+        'sold_count',
+        'in_cart_count',
+        'weight',
+        'height',
+        'width',
+        'length',
+        'weight_unit',
+        'dimension_unit',
+        'tags',
+        'meta_title',
+        'meta_desc',
+        'type',
+        'status',
+    ];    
+
     public function category()
     {
         return $this->belongsTo('App\Models\ProductCategory', 'category_id', 'id');

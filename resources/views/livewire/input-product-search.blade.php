@@ -32,16 +32,16 @@
                                href="javascript:void(0)">
                                 <div class="w-full flex items-center justify-between">
                                     <div class="flex space-x-2 items-center">
-                                        @if($product->image_s)
+                                        {{-- @if($product->image_s)
                                         <div class="h-8 overflow-hidden flex">
                                             <img src="{{ Storage::url($product->image_s) }}" alt="">
                                         </div>
-                                        @endif
+                                        @endif --}}
                                         <p class="text-xs">{{ $product->title }}</p>
                                     </div>
-                                    <div class="text-xs bg-teal-500 text-white py-0 px-1">
+                                    {{-- <div class="text-xs bg-teal-500 text-white py-0 px-1">
                                         Level {{ $product->level ?? '' }}
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </a>
                         </li>
@@ -50,11 +50,13 @@
                     @endforelse
                 </ul>
 
-                <div class="px-2 py-1" 
-                    wire:key="product-pagination-{{ $products->currentPage() }}"
-                    @click.stop >
-                    {{ $products->links(data: ['scrollTo' => false]) }}
-                </div>
+                @if (count($products) > 0)
+                    <div class="px-2 py-1" 
+                        wire:key="product-pagination-{{ $products->currentPage() }}"
+                        @click.stop >
+                        {{ $products->links(data: ['scrollTo' => false]) }}
+                    </div>
+                @endif
             </div>
         </x-slot>
     </x-dropdown>
@@ -63,7 +65,7 @@
     <x-admin.input-error :messages="$errors->get('product_id')" class="mt-2" />
 </div>
 
-@section('scripts')
+@section('script')
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         if (window.Livewire) {

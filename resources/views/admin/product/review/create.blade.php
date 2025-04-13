@@ -12,17 +12,15 @@
             @csrf
 
             <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
-
                 @livewire('input-product-search', [
                     'product_id' => old('product_id', 0),
                     'product_title' => old('product_title', ''),
                 ])
 
-                {{-- @livewire('product-page-collection-generate', [
-                    'collection_id' => old('collection_id', ''),
-                    'collection_name' => old('collection_name', ''),
-                ]) --}}
-
+                @livewire('input-user-search', [
+                    'user_id' => old('user_id', 0),
+                    'user_name' => old('user_name', ''),
+                ])
             </div>
 
             <div class="grid gap-4 mb-3 grid-cols-1 lg:grid-cols-2">

@@ -33,7 +33,7 @@ return new class extends Migration
             // Identifiers
             $table->string('sku')->unique()->nullable();
             $table->string('barcode')->unique()->nullable();
-            $table->boolean('has_variations')->default(false);
+            $table->boolean('has_variations')->default(0);
 
             // $table->text('sku')->nullable();
             // $table->bigInteger('quantity')->nullable();
@@ -41,8 +41,8 @@ return new class extends Migration
 
             // Inventory management
             $table->unsignedInteger('stock_quantity')->default(0);
-            $table->boolean('track_quantity')->default(true);
-            $table->boolean('allow_backorders')->default(false);        // alow keep selling even when out of stock
+            $table->boolean('track_quantity')->default(1);
+            $table->boolean('allow_backorders')->default(0);        // alow keep selling even when out of stock
             $table->unsignedInteger('sold_count')->default(0);
             $table->unsignedInteger('in_cart_count')->default(0);
 
