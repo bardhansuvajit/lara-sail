@@ -261,3 +261,86 @@ if (!function_exists('genderString')) {
         }
     }
 }
+
+if (!function_exists('adminRatingHtml')) {
+    function adminRatingHtml($rating) {
+        $ratingSvg = '<div class="w-3 h-3">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-269 314-169q-11 7-23 6t-21-8q-9-7-14-17.5t-2-23.5l44-189-147-127q-10-9-12.5-20.5T140-571q4-11 12-18t22-9l194-17 75-178q5-12 15.5-18t21.5-6q11 0 21.5 6t15.5 18l75 178 194 17q14 2 22 9t12 18q4 11 1.5 22.5T809-528L662-401l44 189q3 13-2 23.5T690-171q-9 7-21 8t-23-6L480-269Z"/></svg>
+        </div>';
+
+        if ($rating <= 1) {
+            $colorCode = 'bg-red-600 text-gray-100';
+        } elseif ($rating > 1 && $rating <= 2) {
+            $colorCode = 'bg-orange-600 text-gray-100';
+        } elseif ($rating > 2 && $rating <= 3) {
+            $colorCode = 'bg-yellow-700 text-gray-100';
+        } elseif ($rating > 3 && $rating <= 4) {
+            $colorCode = 'bg-lime-600 text-gray-100';
+        } elseif ($rating > 4 && $rating <= 5) {
+            $colorCode = 'bg-green-700 text-gray-100';
+        } else {
+            $colorCode = 'bg-gray-900 text-gray-100';
+        }
+
+        return '<div class="inline-flex items-center space-x-1 px-1 '.$colorCode.'">
+            <span class="font-medium">'.number_format($rating, 1).'</span>
+            '.$ratingSvg.'
+        </div>
+        ';
+    }
+}
+
+if (!function_exists('frontRatingHtml')) {
+    function frontRatingHtml($rating) {
+        $ratingSvg = '<div class="w-3 h-3">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-269 314-169q-11 7-23 6t-21-8q-9-7-14-17.5t-2-23.5l44-189-147-127q-10-9-12.5-20.5T140-571q4-11 12-18t22-9l194-17 75-178q5-12 15.5-18t21.5-6q11 0 21.5 6t15.5 18l75 178 194 17q14 2 22 9t12 18q4 11 1.5 22.5T809-528L662-401l44 189q3 13-2 23.5T690-171q-9 7-21 8t-23-6L480-269Z"/></svg>
+        </div>';
+
+        if ($rating <= 1) {
+            $colorCode = 'bg-red-600 text-gray-100';
+        } elseif ($rating > 1 && $rating <= 2) {
+            $colorCode = 'bg-orange-600 text-gray-100';
+        } elseif ($rating > 2 && $rating <= 3) {
+            $colorCode = 'bg-yellow-700 text-gray-100';
+        } elseif ($rating > 3 && $rating <= 4) {
+            $colorCode = 'bg-lime-600 text-gray-100';
+        } elseif ($rating > 4 && $rating <= 5) {
+            $colorCode = 'bg-green-700 text-gray-100';
+        } else {
+            $colorCode = 'bg-gray-900 text-gray-100';
+        }
+
+        return '<div class="inline-flex items-center space-x-1 px-1 '.$colorCode.'">
+            <span class="font-medium text-xs">'.number_format($rating, 1).'</span>
+            '.$ratingSvg.'
+        </div>
+        ';
+    }
+}
+
+if (!function_exists('formatIndianMoney')) {
+    function formatIndianMoney($amount, $decimalPlaces = 2) {
+        // Set Indian locale (requires intl extension)
+        if (extension_loaded('intl')) {
+            $formatter = new NumberFormatter('en_IN', NumberFormatter::DECIMAL);
+            $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $decimalPlaces);
+            return $formatter->format($amount);
+        }
+        
+        // Fallback for when intl extension is not available
+        $amount = round((float) $amount, $decimalPlaces);
+        $parts = explode('.', number_format($amount, $decimalPlaces, '.', ''));
+        
+        $whole = $parts[0];
+        $lastThree = substr($whole, -3);
+        $otherNumbers = substr($whole, 0, -3);
+        
+        $formatted = ($otherNumbers ? preg_replace("/\B(?=(\d{2})+(?!\d))/", ",", $otherNumbers) . ',' : '') . $lastThree;
+        
+        if ($decimalPlaces > 0 && !empty($parts[1])) {
+            $formatted .= '.' . $parts[1];
+        }
+        
+        return $formatted;
+    }
+}

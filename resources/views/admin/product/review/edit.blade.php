@@ -10,68 +10,90 @@
     <div class="w-full mt-2">
         <form action="{{ route('admin.product.review.update') }}" method="post" enctype="multipart/form-data">
             @csrf
-            <div class="grid gap-4 mb-4 sm:grid-cols-3">
-                <div class="grid grid-cols-4 gap-1">
-                    @if (!empty($data->image_m))
-                        <div class="m-auto">
-                            <img src="{{ Storage::url($data->image_m) }}" alt="" class="w-full">
-                        </div>
-                    @else
-                        <div class="w-16 h-16 m-auto">
-                            <svg class="text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm40-337 132-132q12-12 28-12t28 12l132 132 132-132q12-12 28-12t28 12l12 12v-183H200v263l40 40Zm-40 257h560v-264l-40-40-132 132q-12 12-28 12t-28-12L400-504 268-372q-12 12-28 12t-28-12l-12-12v184Zm0 0v-264 80-376 560Z"/></svg>
-                        </div>
-                    @endif
-                    <div class="col-span-3">
-                        <x-admin.input-label for="image" :value="__('Image')" />
-                        <x-admin.file-input id="image" name="image" />
-                        <x-admin.input-error :messages="$errors->get('image')" class="mt-2" />
-                    </div>
+
+            <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                @livewire('input-product-search', [
+                    'product_id' => old('product_id', $data->product_id),
+                    'product_title' => old('product_title', $data->product ? $data->product->title : ''),
+                ])
+
+                @livewire('input-user-search', [
+                    'user_id' => old('user_id', $data->user_id),
+                    'user_name' => old('user_name', $data->user ? $data->user->first_name.' '.$data->user->last_name : ''),
+                ])
+            </div>
+
+            <div class="grid gap-4 mb-3 grid-cols-1 lg:grid-cols-2">
+                <div>
+                    <x-admin.input-label for="rating" :value="__('Rating *')" />
+                    <ul class="flex space-x-2">
+                        @for ($i = 1; $i < 6; $i++)
+                            <li>
+                                <x-admin.radio-input-button 
+                                    id="level_{{$i}}" 
+                                    name="rating" 
+                                    value="{{ $i }}" 
+                                    title="{{ $i }}" 
+                                    class="w-auto px-2" 
+                                    required 
+                                    :checked="old('rating') ? old('rating') == $i : $data->rating == $i" />
+                            </li>
+                        @endfor
+                    </ul>
+                    <x-admin.input-error :messages="$errors->get('rating')" class="mt-2" />
                 </div>
             </div>
 
-            <div class="grid gap-4 mb-4 sm:grid-cols-3">
-                <div> 
-                    <x-admin.input-label for="title" :value="__('Title *')" />
-                    <x-admin.text-input id="title" class="block w-full" type="text" name="title" :value="old('title') ? old('title') : $data->title" placeholder="Enter title" autofocus required />
+            <div class="grid gap-4 mb-3 grid-cols-1 items-center">
+                <div>
+                    <x-admin.input-label for="title" :value="__('Title')" />
+                    <x-admin.text-input id="title" class="block" type="text" name="title" :value="old('title') ? old('title') : $data->title" placeholder="Enter Title" />
                     <x-admin.input-error :messages="$errors->get('title')" class="mt-2" />
                 </div>
+            </div>
 
-                <div class="col-span-2">
-                    {{-- @livewire('product-review-selector', [
-                        'level' => $data->level,
-                        'parentId' => $data->parent_id
-                    ]) --}}
-                </div>
-
-                {{-- <div>
-                    <x-admin.input-label for="level" :value="__('Level *')" />
-                    <ul class="grid w-full gap-2 grid-cols-8">
-                        <li>
-                            <x-admin.radio-input-button id="level_1" name="level" value="1" required :checked="$data->level == 1" />
-                        </li>
-                        <li>
-                            <x-admin.radio-input-button id="level_2" name="level" value="2" :checked="$data->level == 2" />
-                        </li>
-                        <li>
-                            <x-admin.radio-input-button id="level_3" name="level" value="3" :checked="$data->level == 3" />
-                        </li>
-                        <li>
-                            <x-admin.radio-input-button id="level_4" name="level" value="4" :checked="$data->level == 4" />
-                        </li>
-                    </ul>
-
-                    <x-admin.input-error :messages="$errors->get('level')" class="mt-2" />
-                </div>
-
+            <div class="grid gap-4 mb-3 grid-cols-1 items-center">
                 <div>
-                    <x-admin.input-label for="parent_id" :value="__('Parent')" />
-                    <x-admin.input-select id="parent_id" name="parent_id" title="Select Parent" class="w-full">
-                        @slot('options')
-                            <x-admin.input-select-option value="" selected="selected"> None </x-admin.input-select-option>
-                        @endslot
-                    </x-admin.input-select>
-                    <x-admin.input-error :messages="$errors->get('parent_id')" class="mt-2" />
-                </div> --}}
+                    <x-admin.input-label for="review" :value="__('Review *')" />
+                    <x-admin.textarea id="review" class="block" type="text" name="review" :value="old('review') ? old('review') : $data->review" placeholder="Enter Review" />
+                    <x-admin.input-error :messages="$errors->get('review')" class="mt-2" />
+                </div>
+            </div>
+
+            <div class="grid gap-2 mb-3 grid-cols-1">
+                <div>
+                    <x-admin.input-label for="images" :value="__('Image')" />
+                    <x-admin.file-input-drag-drop id="images" class="h-12" name="images[]" accept="image/*" multiple />
+                </div>
+
+                @if ($errors->get('images.*'))
+                    <div x-data="{open: false}">
+                        <p class="text-xs text-red-600 dark:text-orange-700 space-y-1">
+                            Some error occured. 
+                            <a href="javascript: void(0)" @click="open = !open">
+                                <strong><em>See details</em></strong>
+                            </a>
+                        </p>
+
+                        <div x-show="open" class="mt-2">
+                            @foreach ($errors->get('images.*') as $field => $messages)
+                                @foreach ($messages as $message)
+                                    <x-admin.input-error :messages="$message" class="" />
+                                @endforeach
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                <div id="imagePreview"></div>
+
+                <div id="ExistingImages">
+                    @if ($data->images && count($data->images) > 0)
+                        @livewire('existing-product-review-images', [
+                            'images' => $data->images,
+                        ])
+                    @endif
+                </div>
             </div>
 
             <div class="items-center space-x-4 flex my-6">
@@ -83,10 +105,8 @@
                     @endslot
                     {{ __('Save data') }}
                 </x-admin.button>
-
+                <input type="hidden" name="id" value="{{ $data->id }}" />
             </div>
-
-            <input type="hidden" name="id" value="{{ $data->id }}" />
         </form>
     </div>
 </x-admin-app-layout>

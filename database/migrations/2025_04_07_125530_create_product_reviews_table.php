@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
 
             $table->unsignedTinyInteger('rating')->default(1);
-            $table->text('title');
+            $table->text('title')->nullable();
             $table->longText('review');
 
             $table->tinyInteger('status')->default(0)->comment('approval status');

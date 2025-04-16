@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreign('product_id')->references('id')->on('products')->onDelete('SET NULL');
             $table->unsignedBigInteger('product_variation_id')->nullable();
             $table->foreign('product_variation_id')->references('id')->on('product_variations')->onDelete('cascade');
-            $table->boolean('is_variation_specific')->default(false);
+            $table->boolean('is_variation_specific')->default(0);
 
             $table->string('image_s')->nullable();
             $table->string('image_m')->nullable();

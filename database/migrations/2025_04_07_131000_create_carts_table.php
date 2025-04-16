@@ -45,7 +45,7 @@ return new class extends Migration
             // Abandoned cart tracking
             $table->timestamp('last_activity_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('abandoned_at')->nullable();
-            $table->boolean('is_abandoned')->default(false);
+            $table->boolean('is_abandoned')->default(0);
             $table->unsignedInteger('reminder_count')->default(0);
 
             // Conversion tracking

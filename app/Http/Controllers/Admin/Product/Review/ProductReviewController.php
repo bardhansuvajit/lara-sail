@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Product\Review;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Validator;
 use App\Interfaces\ProductReviewInterface;
 
 class ProductReviewController
@@ -23,10 +24,10 @@ class ProductReviewController
         $request->validate([
             'keyword' => 'nullable|string|max:255',
             'perPage' => 'nullable|string',
-            'sortBy' => 'nullable|string|in:id,title,level',
+            'sortBy' => 'nullable|string|in:id,title,rating',
             'sortOrder' => 'nullable|string|in:asc,desc',
             'status' => 'nullable|string|in:0,1',
-            'level' => 'nullable|integer|in:1,2,3,4'
+            'rating' => 'nullable|integer|in:1,2,3,4,5'
         ]);
 
         $perPage = $request->input('perPage', 15);
@@ -35,7 +36,9 @@ class ProductReviewController
         $sortOrder = $request->input('sortOrder', 'desc');
         $filters = [
             'status' => $request->input('status', ''),
-            'level' => $request->input('level', ''),
+            'rating' => $request->input('rating', ''),
+            'product_id' => $request->input('productId', ''),
+            'user_id' => $request->input('userId', ''),
         ];
         $resp = $this->productReviewRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
@@ -53,14 +56,48 @@ class ProductReviewController
     {
         // dd($request->all());
 
-        $request->validate([
-            'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
-            'title' => 'required|min:2|max:255',
-            'level' => 'required|in:1,2,3,4',
-            'parent_id' => 'required_if:level,2,3,4'
+        // Get uploaded files
+        $uploadedFiles = $request->file('images');
+        $fileNames = [];
+        if ($uploadedFiles) {
+            foreach ($uploadedFiles as $index => $file) {
+                $fileNames["images.$index"] = $file->getClientOriginalName();
+            }
+        }
+
+        $validator = Validator::make($request->all(), [
+            'product_id' => 'required|integer|exists:products,id',
+            'user_id' => 'required|integer|exists:users,id',
+            'rating' => 'required|integer|in:1,2,3,4,5',
+            'title' => 'nullable|string|min:2|max:1000',
+            'review' => 'required|string|min:2',
+
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array)
         ], [
-            'image.max' => 'The image field must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
+            'images.*.max' => '":filename" must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
+            'images.*.mimes' => '":filename" must be a file of type: '.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
         ]);
+
+        $validator->after(function ($validator) use ($fileNames) {
+            $messages = $validator->errors(); // Get validation errors
+
+            foreach ($fileNames as $key => $fileName) {
+                if ($messages->has($key)) {
+                    $updatedErrors = [];
+
+                    foreach ($messages->get($key) as $error) {
+                        $updatedErrors[] = str_replace(':filename', $fileName, $error);
+                    }
+
+                    // Overwrite the errors for this key
+                    $messages->forget($key);
+                    $messages->add($key, $updatedErrors);
+                }
+            }
+        });
+
+        $validator->validate();
 
         $resp = $this->productReviewRepository->store($request->all());
         return redirect()->route('admin.product.review.index')->with($resp['status'], $resp['message']);
@@ -83,16 +120,51 @@ class ProductReviewController
     {
         // dd($request->all());
 
-        $request->validate([
-            'id' => 'required|integer',
-            'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
-            'title' => 'required|min:2|max:255',
-            'level' => 'required|in:1,2,3,4',
-            'parent_id' => 'required_if:level,2,3,4'
+        // Get uploaded files
+        $uploadedFiles = $request->file('images');
+        $fileNames = [];
+        if ($uploadedFiles) {
+            foreach ($uploadedFiles as $index => $file) {
+                $fileNames["images.$index"] = $file->getClientOriginalName();
+            }
+        }
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|min:1',
+            'product_id' => 'required|integer|exists:products,id',
+            'user_id' => 'required|integer|exists:users,id',
+            'rating' => 'required|integer|in:1,2,3,4,5',
+            'title' => 'nullable|string|min:2|max:1000',
+            'review' => 'required|string|min:2',
+
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array)
+        ], [
+            'images.*.max' => '":filename" must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
+            'images.*.mimes' => '":filename" must be a file of type: '.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
         ]);
 
+        $validator->after(function ($validator) use ($fileNames) {
+            $messages = $validator->errors(); // Get validation errors
+
+            foreach ($fileNames as $key => $fileName) {
+                if ($messages->has($key)) {
+                    $updatedErrors = [];
+
+                    foreach ($messages->get($key) as $error) {
+                        $updatedErrors[] = str_replace(':filename', $fileName, $error);
+                    }
+
+                    // Overwrite the errors for this key
+                    $messages->forget($key);
+                    $messages->add($key, $updatedErrors);
+                }
+            }
+        });
+
+        $validator->validate();
+
         $resp = $this->productReviewRepository->update($request->all());
-        // dd($resp);
         return redirect()->route('admin.product.review.index')->with($resp['status'], $resp['message']);
     }
 

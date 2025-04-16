@@ -63,15 +63,12 @@
 
                                 {{-- short rating --}}
                                 <div class="flex items-center space-x-2 mt-2">
+                                    @if ($product->average_rating > 0)
                                     <div class="flex items-center text-yellow-400 text-sm">
-                                        <div class="w-10 h-5 flex space-x-1 items-center bg-gray-50 px-1 border">
-                                            <p class="{{FD['text-0']}} text-gray-900 font-bold">3.9</p>
-                                            <div class="{{FD['iconClass']}} text-yellow-400 flex items-center">
-                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z"></path></svg>
-                                            </div>
-                                        </div>
-                                        <span class="text-gray-600 dark:text-gray-400 ml-2 {{FD['text']}}">(128 reviews)</span>
+                                        {!! frontRatingHtml($product->average_rating) !!}
+                                        <span class="text-gray-600 dark:text-gray-400 ml-2 {{FD['text']}}">({{ $product->review_count }} {{ ($product->review_count == 1) ? 'review' : 'reviews' }})</span>
                                     </div>
+                                    @endif
 
                                     <span class="text-green-600 {{FD['text']}}">In Stock</span>
                                 </div>
@@ -97,11 +94,11 @@
                             @endphp
                             <div class="mt-2 flex items-center gap-4 mb-1 sm:mb-2">
                                 <p class="{{FD['text-1']}} sm:text-lg font-bold leading-tight text-gray-900 dark:text-white">
-                                    <span class="currency-symbol">{{$singlePricing->currency_symbol}}</span>{{$singlePricing->selling_price}}
+                                    <span class="currency-symbol">{{$singlePricing->currency_symbol}}</span> {{ formatIndianMoney($singlePricing->selling_price) }}
                                 </p>
                                 @if ($singlePricing->mrp != 0)
                                     <p class="{{FD['text-1']}} sm:text-lg font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400">
-                                        <span class="currency-symbol">{{$singlePricing->currency_symbol}}</span>{{$singlePricing->mrp}}
+                                        <span class="currency-symbol">{{$singlePricing->currency_symbol}}</span>{{ formatIndianMoney($singlePricing->mrp) }}
                                     </p>
                                     <p class="{{FD['text-1']}} font-black leading-tight {{FD['activeClass']}}">
                                         {{$singlePricing->discount}}% off

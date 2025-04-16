@@ -205,6 +205,7 @@
                         </th>
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Title</th>
+                        <th scope="col" class="px-2 py-1">Rating</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
@@ -224,14 +225,33 @@
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 <div class="flex space-x-2 items-center">
-                                    @if($item->image_s) <div class="h-10 overflow-hidden flex"><img src="{{ Storage::url($item->image_s) }}" alt=""></div> @endif
+                                    @if(count($item->activeImages) > 0)
+                                        <div class="h-10 overflow-hidden flex">
+                                            <img src="{{ Storage::url($item->image_s) }}" alt="" class="h-8">
+                                        </div>
+                                    @endif
+
                                     <div>
-                                        <p class="text-xs font-bold">{{ $item->title }}</p>
+                                        <a href="{{ route('admin.product.listing.edit', $item->id) }}" class="hover:underline">
+                                            <p class="text-xs font-bold">{{ $item->title }}</p>
+                                        </a>
                                         {{-- <p class="text-xs">
                                             <span class="text-gray-500">{{ $item->slug }}</span>
                                         </p> --}}
                                     </div>
                                 </div>
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                @if ($item->average_rating > 0)
+                                    <a href="{{ route('admin.product.review.index', ['productId' => $item->id]) }}" class="hover:underline">
+                                        <div class="flex space-x-2 items-center">
+                                            {!! adminRatingHtml($item->average_rating) !!}
+                                            <p class="text-xs">
+                                                <span class="text-gray-500">{{ $item->review_count }} {{ ($item->review_count == 1) ? 'review' : 'reviews' }}</span>
+                                            </p>
+                                        </div>
+                                    </a>
+                                @endif
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">

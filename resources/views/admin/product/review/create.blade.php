@@ -62,7 +62,7 @@
 
             <div class="grid gap-2 mb-3 grid-cols-1">
                 <div>
-                    <x-admin.input-label for="images" :value="__('Image *')" />
+                    <x-admin.input-label for="images" :value="__('Image')" />
                     <x-admin.file-input-drag-drop id="images" class="h-12" name="images[]" accept="image/*" multiple />
                 </div>
 

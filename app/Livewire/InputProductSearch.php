@@ -37,6 +37,7 @@ class InputProductSearch extends Component
         $products = Product::when($this->product, function ($query) {
             $query->where('title', 'like', '%' . $this->product . '%');
         })
+        ->where('status', 1)
         ->orderBy('title')
         ->simplePaginate(15);
 

@@ -34,7 +34,7 @@ return new class extends Migration
             $table->decimal('total', 12, 4);
 
             // Inventory tracking
-            $table->boolean('is_available')->default(true);
+            $table->boolean('is_available')->default(1);
             $table->text('availability_message')->nullable(); // e.g. In stock (10+ available)/ Only 2 left!/ Releases on 2024-09-01/ Available for in-store pickup only
 
             // Custom options

@@ -24,8 +24,8 @@ return new class extends Migration
 
             // Inventory management
             $table->unsignedInteger('stock_quantity')->default(0);
-            $table->boolean('track_quantity')->default(true);
-            $table->boolean('allow_backorders')->default(false);        // alow keep selling even when out of stock
+            $table->boolean('track_quantity')->default(1);
+            $table->boolean('allow_backorders')->default(0);        // alow keep selling even when out of stock
             $table->unsignedInteger('sold_count')->default(0);
             $table->unsignedInteger('in_cart_count')->default(0);
 
@@ -42,7 +42,7 @@ return new class extends Migration
             $table->enum('dimension_unit', ['mm', 'cm', 'm', 'in', 'ft'])->default('cm');
 
             // Default
-            $table->boolean('is_default')->default(false);
+            $table->boolean('is_default')->default(0);
 
             // Status/ Timestamp
             $table->tinyInteger('status')->default(1);

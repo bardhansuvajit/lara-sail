@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->string('name'); // "Color", "Size", "RAM"
             $table->string('slug')->unique(); // "color", "size"
-            $table->boolean('is_global')->default(false); // For attributes like Color used across categories
+            $table->boolean('is_global')->default(0); // For attributes like Color used across categories
 
             // Status/ Timestamp
             $table->tinyInteger('status')->default(1);

@@ -9,15 +9,27 @@ class ProductVariation extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = [
+        'product_id', 'sku', 'barcode', 'stock_quantity', 'track_quantity',
+        'allow_backorders', 'sold_count', 'in_cart_count', 'primary_image_id',
+        'price_adjustment', 'adjustment_type', 'weight_adjustment',
+        'height_adjustment', 'width_adjustment', 'length_adjustment',
+        'weight_unit', 'dimension_unit', 'is_default', 'status'
+    ];
+
+    protected $casts = [
+        'meta' => 'array',
+    ];
+
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo('App\Models\Product', 'product_id', 'id');
     }
 
     public function getFinalPriceAttribute()
     {
         $basePrice = $this->getBasePrice();
-        
+
         return match($this->adjustment_type) {
             'fixed' => $basePrice + $this->price_adjustment,
             'percentage' => $basePrice * (1 + ($this->price_adjustment / 100)),

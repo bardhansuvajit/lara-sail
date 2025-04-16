@@ -15,7 +15,20 @@ $maxWidth = [
     '2xl' => 'sm:max-w-2xl',
 ][$maxWidth];
 
-$direction = $direction === 'left' ? 'left-0' : 'right-0';
+$directionClasses = [
+    'left' => 'left-0',
+    'right' => 'right-0',
+][$direction];
+
+$enterTranslate = [
+    'left' => '-translate-x-full',
+    'right' => 'translate-x-full',
+][$direction];
+
+$leaveTranslate = [
+    'left' => '-translate-x-full',
+    'right' => 'translate-x-full',
+][$direction];
 @endphp
 
 <div
@@ -69,13 +82,13 @@ $direction = $direction === 'left' ? 'left-0' : 'right-0';
 
     <div
         x-show="show"
-        class="fixed top-0 {{ $direction }} h-full overflow-auto mb-6 bg-white dark:bg-gray-700 shadow-xl transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto"
+        class="fixed top-0 {{ $directionClasses }} h-full overflow-auto mb-6 bg-white dark:bg-gray-700 shadow-xl transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto"
         x-transition:enter="ease-out duration-300"
-        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+        x-transition:enter-start="opacity-0 {{ $enterTranslate }}"
+        x-transition:enter-end="opacity-100 translate-x-0"
         x-transition:leave="ease-in duration-200"
-        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        x-transition:leave-start="opacity-100 translate-x-0"
+        x-transition:leave-end="opacity-0 {{ $leaveTranslate }}"
     >
         @if($header)
         <header class="flex items-center justify-between p-4 border-b dark:border-gray-800">

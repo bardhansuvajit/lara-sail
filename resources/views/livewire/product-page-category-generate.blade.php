@@ -77,7 +77,7 @@
     <x-admin.input-error :messages="$errors->get('category_id')" class="mt-2" />
 </div>
 
-@section('script')
+{{-- @section('script') --}}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         if (window.Livewire) {
@@ -100,4 +100,4 @@
         }
     });
 </script>
-@endsection
+{{-- @endsection --}}

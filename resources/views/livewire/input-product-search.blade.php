@@ -65,8 +65,8 @@
     <x-admin.input-error :messages="$errors->get('product_id')" class="mt-2" />
 </div>
 
-@section('script')
 <script>
+    // alert('ips');
     document.addEventListener("DOMContentLoaded", function () {
         if (window.Livewire) {
             window.setProduct = function (id, title) {
@@ -120,4 +120,3 @@
     });
     */
 </script>
-@endsection

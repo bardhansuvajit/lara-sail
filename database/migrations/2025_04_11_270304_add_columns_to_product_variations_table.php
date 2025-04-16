@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('product_variations', function (Blueprint $table) {
             // Media/ Image
             // $table->unsignedBigInteger('image_id')->nullable();
-            $table->unsignedBigInteger('primary_image_id')->nullable()->comment('Main display image');
+            $table->unsignedBigInteger('primary_image_id')->nullable()->after('in_cart_count')->comment('Main display image');
             $table->foreign('primary_image_id')->references('id')->on('product_images')->onDelete('set null');
         });
     }

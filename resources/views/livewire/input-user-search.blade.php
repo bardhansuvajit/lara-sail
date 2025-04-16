@@ -1,7 +1,7 @@
 <div 
     x-data='{
         "selectedUserId": @json($user_id ?? 0),
-        "selectedUserTitle": @json($user_name ?? ""),
+        "selectedUserName": @json($user_name ?? ""),
     }' 
     wire:ignore.self
 >
@@ -15,7 +15,7 @@
                 iconPosition="end" 
                 type="text" 
                 name="user_name" 
-                x-model="selectedUserTitle"
+                x-model="selectedUserName"
                 placeholder="Search user" 
                 aria-autocomplete="off" 
                 autocomplete="off" 
@@ -65,19 +65,18 @@
     <x-admin.input-error :messages="$errors->get('user_id')" class="mt-2" />
 </div>
 
-@section('script')
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         if (window.Livewire) {
             window.setUser = function (id, full_name) {
-                let categoryIdInput = document.querySelector('input[name="user_id"]');
-                let categoryNameInput = document.querySelector('input[name="user_name"]');
+                const categoryIdInput = document.querySelector('input[name="user_id"]');
+                const categoryNameInput = document.querySelector('input[name="user_name"]');
 
                 if (categoryIdInput) {
                     categoryIdInput.value = id;
                 }
                 if (categoryNameInput) {
-                    categoryNameInput.value = title;
+                    categoryNameInput.value = full_name;
                 }
 
                 // Ensure Livewire is ready before emitting
@@ -120,4 +119,3 @@
     });
     */
 </script>
-@endsection

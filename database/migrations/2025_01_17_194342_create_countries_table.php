@@ -26,8 +26,8 @@ return new class extends Migration
             $table->string('language');
             $table->string('time_zone');
 
-            $table->boolean('shipping_availability')->default(true);
-            $table->boolean('cash_on_delivery_availability')->default(false);
+            $table->boolean('shipping_availability')->default(1);
+            $table->boolean('cash_on_delivery_availability')->default(0);
 
             $table->tinyInteger('status')->default(1)->comment('1:active, 0: inactive');
             $table->softDeletes();

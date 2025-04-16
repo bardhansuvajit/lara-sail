@@ -68,4 +68,21 @@ class Product extends Model
     {
         return $this->hasMany('App\Models\ProductVariation', 'product_id', 'id')->orderBy('position')->orderBy('id', 'desc');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany('App\Models\ProductReview', 'product_id', 'id');
+    }
+
+    public function updateRating()
+    {
+        $reviews = $this->reviews()->where('status', 1)->get();
+
+        $this->review_count = $reviews->count();
+        $this->average_rating = $this->review_count > 0 
+            ? round($reviews->avg('rating'), 1)
+            : 0;
+
+        $this->save();
+    }
 }

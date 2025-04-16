@@ -2,33 +2,30 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ProductReviewInterface;
-use App\Models\ProductReview;
+use App\Interfaces\ProductReviewImageInterface;
+use App\Models\ProductReviewImage;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
-use App\Interfaces\ProductReviewImageInterface;
 
-use App\Exports\ProductReviewsExport;
+use App\Exports\ProductListingsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ProductReviewRepository implements ProductReviewInterface
+class ProductReviewImageRepository implements ProductReviewImageInterface
 {
     private TrashInterface $trashRepository;
-    private ProductReviewImageInterface $productReviewImageRepository;
 
-    public function __construct(TrashInterface $trashRepository, ProductReviewImageInterface $productReviewImageRepository)
+    public function __construct(TrashInterface $trashRepository)
     {
         $this->trashRepository = $trashRepository;
-        $this->productReviewImageRepository = $productReviewImageRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
-            $query = ProductReview::query();
+            $query = ProductReviewImage::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -84,31 +81,19 @@ class ProductReviewRepository implements ProductReviewInterface
 
     public function store(Array $array)
     {
-        // dd($array['image']);
+        // dd($array);
+        DB::beginTransaction();
 
         try {
-            $data = new ProductReview();
-            $data->product_id = $array['product_id'];
-            $data->user_id = $array['user_id'];
-            $data->rating = $array['rating'];
-            $data->title = $array['title'] ? $array['title'] : null;
-            $data->review = $array['review'];
+            $data = new ProductReviewImage();
+            $data->review_id = $array['review_id'];
+            $data->image_s = $array['image_s'];
+            $data->image_m = $array['image_m'];
+            $data->image_l = $array['image_l'];
+            $data->status = 1;
             $data->save();
 
-            // IMAGES
-            if (isset($array['images']) && count($array['images']) > 0) {
-                foreach($array['images'] as $imageKey => $singleImage) {
-                    $uploadResp = fileUpload($singleImage, 'p-review-img');
-
-                    $imageData = [
-                        'review_id' => $data->id,
-                        'image_s' => $uploadResp['smallThumbName'],
-                        'image_m' => $uploadResp['mediumThumbName'],
-                        'image_l' => $uploadResp['largeThumbName'],
-                    ];
-                    $imageResp = $this->productReviewImageRepository->store($imageData);
-                }
-            }
+            DB::commit();
 
             return [
                 'code' => 200,
@@ -117,11 +102,13 @@ class ProductReviewRepository implements ProductReviewInterface
                 'data' => $data,
             ];
         } catch (\Exception $e) {
+            DB::rollback();
+
             return [
                 'code' => 500,
                 'status' => 'error',
-                // 'message' => 'An error occurred while storing data.',
-                'message' => $e->getMessage(),
+                'message' => 'An error occurred while storing data.',
+                // 'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ];
         }
@@ -130,7 +117,7 @@ class ProductReviewRepository implements ProductReviewInterface
     public function getById(Int $id)
     {
         try {
-            $data = ProductReview::find($id);
+            $data = ProductReviewImage::find($id);
 
             if (!empty($data)) {
                 return [
@@ -159,11 +146,23 @@ class ProductReviewRepository implements ProductReviewInterface
 
     public function update(Array $array)
     {
-        // dd($array);
         try {
             $data = $this->getById($array['id']);
 
             if ($data['code'] == 200) {
+                $data['data']->type = $array['type'];
+                $data['data']->title = $array['title'];
+                $data['data']->slug = Str::slug($array['title']);
+                $data['data']->short_description = $array['short_description'];
+                $data['data']->long_description = $array['long_description'];
+                $data['data']->category_id = $array['category_id'];
+                $data['data']->collection_ids = $array['collection_ids'];
+
+                $data['data']->sku = $array['sku'];
+                $data['data']->quantity = $array['quantity'];
+                $data['data']->meta_title = $array['meta_title'];
+                $data['data']->meta_desc = $array['meta_description'];
+
                 // $data['data']->title = $array['title'];
                 // $data['data']->slug = \Str::slug($array['title']);
                 // $data['data']->level = $array['level'];
@@ -177,29 +176,7 @@ class ProductReviewRepository implements ProductReviewInterface
                 //     $data['data']->image_l = $uploadResp['largeThumbName'];
                 // }
 
-                // $data['data']->save();
-
-                $data['data']->product_id = $array['product_id'];
-                $data['data']->user_id = $array['user_id'];
-                $data['data']->rating = $array['rating'];
-                $data['data']->title = $array['title'] ? $array['title'] : null;
-                $data['data']->review = $array['review'];
                 $data['data']->save();
-
-                // IMAGES
-                if (isset($array['images']) && count($array['images']) > 0) {
-                    foreach($array['images'] as $imageKey => $singleImage) {
-                        $uploadResp = fileUpload($singleImage, 'p-review-img');
-
-                        $imageData = [
-                            'review_id' => $array['id'],
-                            'image_s' => $uploadResp['smallThumbName'],
-                            'image_m' => $uploadResp['mediumThumbName'],
-                            'image_l' => $uploadResp['largeThumbName'],
-                        ];
-                        $imageResp = $this->productReviewImageRepository->store($imageData);
-                    }
-                }
 
                 return [
                     'code' => 200,
@@ -214,8 +191,7 @@ class ProductReviewRepository implements ProductReviewInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                // 'message' => 'An error occurred while updating data.',
-                'message' => $e->getMessage(),
+                'message' => 'An error occurred while updating data.',
                 'error' => $e->getMessage(),
             ];
         }
@@ -229,12 +205,12 @@ class ProductReviewRepository implements ProductReviewInterface
             if ($data['code'] == 200) {
                 // Handling trash
                 $this->trashRepository->store([
-                    'model' => 'ProductReview',
-                    'table_name' => 'product_reviews',
+                    'model' => 'ProductReviewImage',
+                    'table_name' => 'product_images',
                     'deleted_row_id' => $data['data']->id,
-                    'thumbnail' => null,
+                    'thumbnail' => $data['data']->image_s,
                     'title' => $data['data']->title,
-                    'description' => $data['data']->title.' data deleted from product reviews table',
+                    'description' => $data['data']->title.' data deleted from product images table',
                     'status' => 'deleted',
                 ]);
 
@@ -262,17 +238,17 @@ class ProductReviewRepository implements ProductReviewInterface
     public function bulkAction(Array $array)
     {
         try {
-            $data = ProductReview::whereIn('id', $array['ids'])->get();
+            $data = Product::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
                     // Handling trash
                     $this->trashRepository->store([
-                        'model' => 'ProductReview',
-                        'table_name' => 'product_reviews',
+                        'model' => 'Product',
+                        'table_name' => 'product_images',
                         'deleted_row_id' => $item->id,
                         'thumbnail' => $item->image_s,
                         'title' => $item->title,
-                        'description' => $item->title.' data deleted from product reviews table',
+                        'description' => $item->title.' data deleted from product images table',
                         'status' => 'deleted',
                     ]);
 
@@ -308,31 +284,7 @@ class ProductReviewRepository implements ProductReviewInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            // $processedCount = saveToDatabase($data, 'ProductReview');
-
-            // save into Database
-            $processedCount = 0;
-
-            foreach ($data as $item) {
-                if (!isset($item['title'])) {
-                    continue; // Skip rows without a title
-                }
-
-                ProductReview::create([
-                    'title' => $item['title'] ? $item['title'] : null,
-                    'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
-                    'parent_id' => $item['parent_id'] ? $item['parent_id'] : null,
-                    'level' => $item['level'] ? $item['level'] : null,
-                    'short_description' => $item['short_description'] ? $item['short_description'] : null,
-                    'long_description' => $item['long_description'] ? $item['long_description'] : null,
-                    'tags' => $item['tags'] ? $item['tags'] : null,
-                    'meta_title' => $item['meta_title'] ? $item['meta_title'] : null,
-                    'meta_desc' => $item['meta_desc'] ? $item['meta_desc'] : null,
-                    'status' => $item['status'] ? $item['status'] : 0
-                ]);
-
-                $processedCount++;
-            }
+            // $processedCount = saveToDatabase($data, 'Product');
 
             return [
                 'code' => 200,
@@ -346,8 +298,7 @@ class ProductReviewRepository implements ProductReviewInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                // 'message' => 'An error occurred while uploading data.',
-                'message' => $e->getMessage(),
+                'message' => 'An error occurred while uploading data.',
                 'error' => $e->getMessage(),
             ];
         }
@@ -359,23 +310,23 @@ class ProductReviewRepository implements ProductReviewInterface
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
             if (count($data['data']) > 0) {
-                $fileName = "product_reviews_export_" . date('Y-m-d') . '-' . time();
+                $fileName = "product_images_export_" . date('Y-m-d') . '-' . time();
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";
-                    return Excel::download(new ProductReviewsExport($data['data']), $fileName.$fileExtension);
+                    return Excel::download(new ProductListingsExport($data['data']), $fileName.$fileExtension);
                 }
                 elseif ($type == 'csv') {
                     $fileExtension = ".csv";
-                    return Excel::download(new ProductReviewsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
+                    return Excel::download(new ProductListingsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
                 }
                 elseif ($type == 'html') {
                     $fileExtension = ".html";
-                    return Excel::download(new ProductReviewsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
+                    return Excel::download(new ProductListingsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
                 }
                 elseif ($type == 'pdf') {
                     $fileExtension = ".pdf";
-                    return Excel::download(new ProductReviewsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
+                    return Excel::download(new ProductListingsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
                 }
                 else {
                     return [
@@ -401,6 +352,30 @@ class ProductReviewRepository implements ProductReviewInterface
                 'code' => 500,
                 'status' => 'error',
                 'message' => 'An unexpected error occurred while preparing the export.',
+            ];
+        }
+    }
+
+    public function position(Array $ids)
+    {
+        try {
+            foreach ($ids as $index => $id) {
+                ProductReviewImage::where('id', $id)->update([
+                    'position' => $index + 1
+                ]);
+            }
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Position updated'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while positioning data.',
+                'error' => $e->getMessage(),
             ];
         }
     }

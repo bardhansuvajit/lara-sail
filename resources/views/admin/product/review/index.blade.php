@@ -88,8 +88,8 @@
 
                             if ($sortBy === 'title') {
                                 $select_title = 'Title';
-                            } elseif ($sortBy === 'level') {
-                                $select_title = 'Level';
+                            } elseif ($sortBy === 'rating') {
+                                $select_title = 'Rating';
                             }
                         @endphp
 
@@ -103,7 +103,7 @@
                                 @slot('options')
                                     <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('ID') }} </x-admin.input-select-option>
                                     <x-admin.input-select-option value="title" :selected="request()->input('sortBy') == 'title'"> {{ __('Title') }} </x-admin.input-select-option>
-                                    <x-admin.input-select-option value="level" :selected="request()->input('sortBy') == 'level'"> {{ __('Level') }} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="rating" :selected="request()->input('sortBy') == 'rating'"> {{ __('Rating') }} </x-admin.input-select-option>
                                 @endslot
                             </x-admin.input-select>
                         </div>
@@ -170,18 +170,19 @@
                 </div>
                 <div class="col-span-8 flex flex-row space-x-1 justify-end items-end">
                     <div class="basis-1/15">
-                        <x-admin.input-label for="level" :value="__('Level')" />
+                        <x-admin.input-label for="rating" :value="__('Rating')" />
                         <x-admin.input-select 
-                            id="level" 
-                            name="level" 
-                            :title="request()->input('level')"
+                            id="rating" 
+                            name="rating" 
+                            :title="request()->input('rating')"
                         >
                             @slot('options')
                                 <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
-                                <x-admin.input-select-option value="1" :selected="request()->input('status') == '1'"> {{ __('1') }} </x-admin.input-select-option>
-                                <x-admin.input-select-option value="2" :selected="request()->input('status') == '2'"> {{ __('2') }} </x-admin.input-select-option>
-                                <x-admin.input-select-option value="3" :selected="request()->input('status') == '3'"> {{ __('3') }} </x-admin.input-select-option>
-                                <x-admin.input-select-option value="4" :selected="request()->input('status') == '4'"> {{ __('4') }} </x-admin.input-select-option>
+                                <x-admin.input-select-option value="1" :selected="request()->input('rating') == '1'"> {{ __('1') }} </x-admin.input-select-option>
+                                <x-admin.input-select-option value="2" :selected="request()->input('rating') == '2'"> {{ __('2') }} </x-admin.input-select-option>
+                                <x-admin.input-select-option value="3" :selected="request()->input('rating') == '3'"> {{ __('3') }} </x-admin.input-select-option>
+                                <x-admin.input-select-option value="4" :selected="request()->input('rating') == '4'"> {{ __('4') }} </x-admin.input-select-option>
+                                <x-admin.input-select-option value="5" :selected="request()->input('rating') == '5'"> {{ __('5') }} </x-admin.input-select-option>
                             @endslot
                         </x-admin.input-select>
                     </div>
@@ -237,8 +238,11 @@
                             <x-admin.input-checkbox id="checkbox-all" />
                         </th>
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
-                        <th scope="col" class="px-2 py-1">Title</th>
-                        <th scope="col" class="px-2 py-1">Level</th>
+                        <th scope="col" class="px-2 py-1">Product</th>
+                        <th scope="col" class="px-2 py-1">User</th>
+                        <th scope="col" class="px-2 py-1">Rating</th>
+                        <th scope="col" class="px-2 py-1 w-12">Review</th>
+                        <th scope="col" class="px-2 py-1">Datetime</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
@@ -257,28 +261,41 @@
                                 <p class="text-xs">{{ $item->id }}</p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <div class="flex space-x-2 items-center">
-                                    @if($item->image_s) <div class="h-10 overflow-hidden flex"><img src="{{ Storage::url($item->image_s) }}" alt=""></div> @endif
-                                    <div>
-                                        <p class="text-xs font-bold">{{ $item->title }}</p>
-                                        <p class="text-xs text-gray-500">{{ $item->slug }}</p>
-                                    </div>
-                                </div>
+                                @if ($item->product)
+                                    <a href="{{route('admin.product.listing.edit', $item->product_id)}}" class="text-xs underline hover:no-underline">{{ $item->product->title }}</a>
+                                @else
+                                    <p class="text-xs text-red-600">ERROR</p>
+                                @endif
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <p class="text-xs">{{ $item->level }}</p>
-                                @if ($item->parentDetails)
-                                    <p class="text-xs text-gray-500">
-                                        Parent 
-                                        <span class="font-medium text-gray-800 dark:text-gray-300">{{ $item->parentDetails->title }}</span>
-                                    </p>
+                                @if ($item->user)
+                                    <a href="{{route('admin.user.edit', $item->user_id)}}" class="text-xs underline hover:no-underline">{{ $item->user->first_name.' '.$item->user->last_name }}</a>
+                                @else
+                                    <p class="text-xs text-red-600">ERROR</p>
                                 @endif
-                                @if (count($item->childDetails) > 0)
-                                    <p class="text-xs text-gray-500">
-                                        No. of Sub-categories 
-                                        <span class="font-medium text-gray-800 dark:text-gray-300">{{ count($item->childDetails) }}</span>
-                                    </p>
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                {!! adminRatingHtml($item->rating) !!}
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white w-12">
+                                <div>
+                                    @if ($item->title)
+                                        <p class="text-xs">{{ $item->title }}</p>
+                                    @endif
+                                    <div class="prose text-xs text-gray-500 dark:text-gray-500 line-clamp-3">{!! nl2br($item->review) !!}</div>
+                                    {{-- <p class="text-xs text-gray-500 dark:text-gray-500 line-clamp-2">{!! $item->review !!}</p> --}}
+                                </div>
+
+                                @if ($item->images)
+                                    <div class="flex space-x-2 my-2">
+                                        @foreach ($item->images as $reviewImage)
+                                            <img src="{{ Storage::url($reviewImage->image_s) }}" alt="" class="h-10">
+                                        @endforeach
+                                    </div>
                                 @endif
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-500 dark:text-gray-500">
+                                <p class="text-xs">{{ $item->created_at }}</p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">
@@ -287,21 +304,15 @@
                                         'modelId' => $item->id,
                                     ])
 
-                                    <x-admin.button-icon
-                                        element="a"
-                                        tag="secondary"
-                                        href="javascript: void(0)"
-                                        title="View"
-                                        class="border"
-                                        x-data=""
+                                    <x-admin.button-icon 
+                                        element="a" 
+                                        tag="secondary" 
+                                        href="javascript: void(0)" 
+                                        title="View" 
+                                        class="border" 
+                                        x-data="" 
                                         x-on:click.prevent="
                                             $dispatch('open-sidebar', 'quick-data-view');
-                                            $dispatch('data-image', '{{ $item->image_m }}');
-                                            $dispatch('data-title', '{{ $item->title }}');
-                                            $dispatch('data-slug', '{{ $item->slug }}');
-                                            $dispatch('data-level', '{{ $item->level }}');
-                                            $dispatch('data-parent', '{{ $item->parent_id ? $item->parentDetails->title : '' }}');
-                                            $dispatch('data-child', '{{ (count($item->childDetails) > 0) ? $item->childDetails : '' }}');
                                         " >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>
@@ -359,63 +370,8 @@
     @include('admin.includes.export-modal')
 
     <x-admin.sidebar name="quick-data-view" maxWidth="sm" direction="right" header="Quick View" focusable>
-        <div 
-            class="p-4"
-            x-data="{image: '', title: '', slug: '', level: '', parent: '', child: []}"
-            x-on:data-image.window="image = $event.detail"
-            x-on:data-title.window="title = $event.detail"
-            x-on:data-slug.window="slug = $event.detail"
-            x-on:data-level.window="level = $event.detail"
-            x-on:data-parent.window="parent = $event.detail"
-            x-on:data-child.window="child = $event.detail"
-        >
-            <h5 class="text-xs font-bold mb-1">Image</h5>
-            <div>
-                <template x-if="image && image.trim() !== ''">
-                    <div class="h-50 mb-3">
-                        <img :src="'{{ Storage::url('') }}' + image" alt="Image" class="h-full w-auto border-4" />
-                    </div>
-                </template>
-                <template x-if="!image || image.trim() === ''">
-                    <p class="text-sm mb-3 text-orange-500 font-bold">NA</p>
-                </template>
-            </div>
-
-            <h5 class="text-xs font-bold mb-1">Title</h5>
-            <p class="text-sm mb-3" x-text="title"></p>
-
-            <h5 class="text-xs font-bold mb-1">Slug</h5>
-            <p class="text-sm mb-3" x-text="slug"></p>
-
-            <h5 class="text-xs font-bold mb-1">Level</h5>
-            <p class="text-sm mb-3" x-text="level"></p>
-
-            <div>
-                <h5 class="text-xs font-bold mb-1">Parent</h5>
-                <template x-if="parent">
-                    <p class="text-sm mb-3" x-text="parent"></p>
-                </template>
-                <template x-if="!parent">
-                    <p class="text-sm mb-3 text-orange-500 font-bold">NA</p>
-                </template>
-            </div>
-
-            <div>
-                <h5 class="text-xs font-bold mb-1">Sub-categories</h5>
-                <p class="text-sm mb-3" x-text="child"></p>
-
-                <template x-if="child.length">
-                    <div>
-                        <template x-for="item in child" :key="item.id">
-                            <p class="text-sm mb-3" x-text="item.title"></p>
-                        </template>
-                    </div>
-                </template>
-                <template x-if="child.length === 0">
-                    <p class="text-sm mb-3 text-orange-500 font-bold">NA</p>
-                </template>
-            </div>
-
+        <div>
+            here
         </div>
     </x-admin.sidebar>
 
