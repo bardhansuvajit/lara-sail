@@ -2,17 +2,17 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ProductCategoryInterface;
-use App\Models\ProductCategory;
+use App\Interfaces\ProductVariationAttributeValueInterface;
+use App\Models\ProductVariationAttributeValue;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
 
-use App\Exports\ProductCategoriesExport;
+use App\Exports\ProductVariationAttributeValuesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ProductCategoryRepository implements ProductCategoryInterface
+class ProductVariationAttributeValueRepository implements ProductVariationAttributeValueInterface
 {
     private TrashInterface $trashRepository;
 
@@ -25,7 +25,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
     {
         try {
             DB::enableQueryLog();
-            $query = ProductCategory::query();
+            $query = ProductVariationAttributeValue::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -83,20 +83,11 @@ class ProductCategoryRepository implements ProductCategoryInterface
     {
         // dd($array['image']);
         try {
-            $data = new ProductCategory();
+            $data = new ProductVariationAttributeValue();
+            $data->attribute_id = $array['attribute_id'];
             $data->title = $array['title'];
             $data->slug = Str::slug($array['title']);
-            $data->parent_id = $array['parent_id'] ?? null;
-            $data->level = $array['level'];
-
-            if (!empty($array['image'])) {
-                $uploadResp = fileUpload($array['image'], 'p-cat');
-
-                $data->image_s = $uploadResp['smallThumbName'];
-                $data->image_m = $uploadResp['mediumThumbName'];
-                $data->image_l = $uploadResp['largeThumbName'];
-            }
-
+            $data->meta = isset($array['meta']) ? $array['meta'] : null;
             $data->save();
 
             return [
@@ -119,7 +110,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
     public function getById(Int $id)
     {
         try {
-            $data = ProductCategory::find($id);
+            $data = ProductVariationAttributeValue::find($id);
 
             if (!empty($data)) {
                 return [
@@ -152,19 +143,10 @@ class ProductCategoryRepository implements ProductCategoryInterface
             $data = $this->getById($array['id']);
 
             if ($data['code'] == 200) {
+                $data['data']->attribute_id = $array['attribute_id'];
                 $data['data']->title = $array['title'];
-                $data['data']->slug = \Str::slug($array['title']);
-                $data['data']->level = $array['level'];
-                $data['data']->parent_id = $array['parent_id'] ?? null;
-
-                if (!empty($array['image'])) {
-                    $uploadResp = fileUpload($array['image'], 'p-cat');
-
-                    $data['data']->image_s = $uploadResp['smallThumbName'];
-                    $data['data']->image_m = $uploadResp['mediumThumbName'];
-                    $data['data']->image_l = $uploadResp['largeThumbName'];
-                }
-
+                $data['data']->slug = Str::slug($array['title']);
+                $data['data']->meta = isset($array['meta']) ? $array['meta'] : null;
                 $data['data']->save();
 
                 return [
@@ -194,12 +176,12 @@ class ProductCategoryRepository implements ProductCategoryInterface
             if ($data['code'] == 200) {
                 // Handling trash
                 $this->trashRepository->store([
-                    'model' => 'ProductCategory',
-                    'table_name' => 'product_categories',
+                    'model' => 'ProductVariationAttributeValue',
+                    'table_name' => 'product_variation_attribute_values',
                     'deleted_row_id' => $data['data']->id,
                     'thumbnail' => $data['data']->image_s,
                     'title' => $data['data']->title,
-                    'description' => $data['data']->title.' data deleted from product categories table',
+                    'description' => $data['data']->title.' data deleted from product variation attributes table',
                     'status' => 'deleted',
                 ]);
 
@@ -227,17 +209,17 @@ class ProductCategoryRepository implements ProductCategoryInterface
     public function bulkAction(Array $array)
     {
         try {
-            $data = ProductCategory::whereIn('id', $array['ids'])->get();
+            $data = ProductVariationAttributeValue::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
                     // Handling trash
                     $this->trashRepository->store([
-                        'model' => 'ProductCategory',
-                        'table_name' => 'product_categories',
+                        'model' => 'ProductVariationAttributeValue',
+                        'table_name' => 'product_variation_attribute_values',
                         'deleted_row_id' => $item->id,
                         'thumbnail' => $item->image_s,
                         'title' => $item->title,
-                        'description' => $item->title.' data deleted from product categories table',
+                        'description' => $item->title.' data deleted from product variation attributes table',
                         'status' => 'deleted',
                     ]);
 
@@ -273,26 +255,21 @@ class ProductCategoryRepository implements ProductCategoryInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            // $processedCount = saveToDatabase($data, 'ProductCategory');
+            // $processedCount = saveToDatabase($data, 'ProductVariationAttributeValue');
 
             // save into Database
             $processedCount = 0;
 
             foreach ($data as $item) {
-                if (!isset($item['title'])) {
+                if (!isset($item['title']) && !isset($item['attribute_id'])) {
                     continue; // Skip rows without a title
                 }
 
-                ProductCategory::create([
+                ProductVariationAttributeValue::create([
+                    'attribute_id' => $item['attribute_id'] ? $item['attribute_id'] : null,
                     'title' => $item['title'] ? $item['title'] : null,
                     'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
-                    'parent_id' => isset($item['parent_id']) ? $item['parent_id'] : null,
-                    'level' => isset($item['level']) ? $item['level'] : null,
-                    'short_description' => isset($item['short_description']) ? $item['short_description'] : null,
-                    'long_description' => isset($item['long_description']) ? $item['long_description'] : null,
-                    'tags' => isset($item['tags']) ? $item['tags'] : null,
-                    'meta_title' => isset($item['meta_title']) ? $item['meta_title'] : null,
-                    'meta_desc' => isset($item['meta_desc']) ? $item['meta_desc'] : null,
+                    'meta' => isset($item['meta']) ? $item['meta'] : null,
                     'status' => isset($item['status']) ? $item['status'] : 0
                 ]);
 
@@ -324,23 +301,23 @@ class ProductCategoryRepository implements ProductCategoryInterface
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
             if (count($data['data']) > 0) {
-                $fileName = "product_categories_export_" . date('Y-m-d') . '-' . time();
+                $fileName = "product_variation_attribute_values_export_" . date('Y-m-d') . '-' . time();
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";
-                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension);
+                    return Excel::download(new ProductVariationAttributeValuesExport($data['data']), $fileName.$fileExtension);
                 }
                 elseif ($type == 'csv') {
                     $fileExtension = ".csv";
-                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
+                    return Excel::download(new ProductVariationAttributeValuesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
                 }
                 elseif ($type == 'html') {
                     $fileExtension = ".html";
-                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
+                    return Excel::download(new ProductVariationAttributeValuesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
                 }
                 elseif ($type == 'pdf') {
                     $fileExtension = ".pdf";
-                    return Excel::download(new ProductCategoriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
+                    return Excel::download(new ProductVariationAttributeValuesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
                 }
                 else {
                     return [
@@ -361,11 +338,35 @@ class ProductCategoryRepository implements ProductCategoryInterface
                 'filters' => $filters,
                 'exception' => $e
             ]);
-    
+
             return [
                 'code' => 500,
                 'status' => 'error',
                 'message' => 'An unexpected error occurred while preparing the export.',
+            ];
+        }
+    }
+
+    public function position(Array $ids)
+    {
+        try {
+            foreach ($ids as $index => $id) {
+                ProductVariationAttributeValue::where('id', $id)->update([
+                    'position' => $index + 1
+                ]);
+            }
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Position updated'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while positioning data.',
+                'error' => $e->getMessage(),
             ];
         }
     }

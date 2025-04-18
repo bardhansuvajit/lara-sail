@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('product_variation_attributes', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name'); // "Color", "Size", "RAM"
+            $table->string('title'); // "Color", "Size", "RAM"
             $table->string('slug')->unique(); // "color", "size"
             $table->boolean('is_global')->default(0); // For attributes like Color used across categories
 
@@ -23,6 +23,8 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+
+            $table->index('title');
         });
     }
 

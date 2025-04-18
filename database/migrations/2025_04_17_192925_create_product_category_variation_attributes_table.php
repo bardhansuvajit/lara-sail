@@ -11,23 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_variation_attribute_values', function (Blueprint $table) {
+        Schema::create('product_category_variation_attributes', function (Blueprint $table) {
             $table->id();
+
+            $table->unsignedBigInteger('category_id');
+            $table->foreign('category_id')->references('id')->on('product_categories')->onDelete('cascade');
 
             $table->unsignedBigInteger('attribute_id');
             $table->foreign('attribute_id')->references('id')->on('product_variation_attributes')->onDelete('cascade');
 
-            $table->string('title'); // "Red", "8GB"
-            $table->string('slug')->unique(); // "red", "8gb"
-            $table->json('meta')->nullable(); // { hex: "#FF0000", image: "red.jpg" }
-
-            // Status/ Timestamp
-            $table->tinyInteger('status')->default(1);
+            $table->integer('position')->default(1);
+            $table->tinyInteger('status')->comment('1: active, 0: inactive')->default(1);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
-
-            $table->index('title');
         });
     }
 
@@ -36,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_variation_attribute_values');
+        Schema::dropIfExists('product_category_variation_attributes');
     }
 };

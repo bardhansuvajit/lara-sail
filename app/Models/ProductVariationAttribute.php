@@ -9,5 +9,10 @@ class ProductVariationAttribute extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'slug', 'is_global', 'status'];
+    protected $fillable = ['title', 'slug', 'is_global', 'status'];
+
+    public function values()
+    {
+        return $this->hasMany('App\Models\ProductVariationAttributeValue', 'attribute_id', 'id');
+    }
 }

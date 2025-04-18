@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\Product\Image\ProductImageController;
 use App\Http\Controllers\Admin\Product\Pricing\ProductPricingController;
 use App\Http\Controllers\Admin\Product\Feature\ProductFeatureController;
 use App\Http\Controllers\Admin\Product\Review\ProductReviewController;
+use App\Http\Controllers\Admin\Product\Variation\ProductVariationAttributeController;
+use App\Http\Controllers\Admin\Product\Variation\ProductVariationAttributeValueController;
 
 use App\Http\Controllers\Admin\CsvTemplate\CsvTemplateController;
 use App\Http\Controllers\Admin\Trash\TrashController;
@@ -142,6 +144,35 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/bulk', 'bulk')->name('bulk');
                 Route::post('/import', 'import')->name('import');
                 Route::get('/export/{type}', 'export')->name('export');
+            });
+
+            // variation
+            Route::prefix('variation')->name('variation.')->group(function() {
+                // attribute
+                Route::prefix('attribute')->name('attribute.')->controller(ProductVariationAttributeController::class)->group(function() {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/create', 'create')->name('create');
+                    Route::post('/store', 'store')->name('store');
+                    Route::get('/edit/{id}', 'edit')->name('edit');
+                    Route::post('/update', 'update')->name('update');
+                    Route::delete('/delete/{id}', 'delete')->name('delete');
+                    Route::post('/bulk', 'bulk')->name('bulk');
+                    Route::post('/import', 'import')->name('import');
+                    Route::get('/export/{type}', 'export')->name('export');
+                });
+
+                // attribute value
+                Route::prefix('attribute/value')->name('attribute.value.')->controller(ProductVariationAttributeValueController::class)->group(function() {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/create', 'create')->name('create');
+                    Route::post('/store', 'store')->name('store');
+                    Route::get('/edit/{id}', 'edit')->name('edit');
+                    Route::post('/update', 'update')->name('update');
+                    Route::delete('/delete/{id}', 'delete')->name('delete');
+                    Route::post('/bulk', 'bulk')->name('bulk');
+                    Route::post('/import', 'import')->name('import');
+                    Route::get('/export/{type}', 'export')->name('export');
+                });
             });
         });
 

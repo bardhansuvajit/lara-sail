@@ -39,6 +39,7 @@ class InputProductSearch extends Component
         })
         ->where('status', 1)
         ->orderBy('title')
+        ->select(['id', 'title'])
         ->simplePaginate(15);
 
         return view('livewire.input-product-search', ['products' => $products]);

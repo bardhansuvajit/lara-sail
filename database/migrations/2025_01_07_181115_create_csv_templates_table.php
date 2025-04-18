@@ -44,6 +44,16 @@ return new class extends Migration
                 'file_path' => 'products.csv',
                 'description' => 'Products',
             ],
+            [
+                'model' => 'ProductVariationAttribute',
+                'file_path' => 'product_variation_attributes.csv',
+                'description' => 'Product Variation Attributes',
+            ],
+            [
+                'model' => 'ProductVariationAttributeValue',
+                'file_path' => 'product_variation_attribute_values.csv',
+                'description' => 'Product Variation Attribute Values',
+            ]
         ];
 
         DB::table('csv_templates')->insert($data);

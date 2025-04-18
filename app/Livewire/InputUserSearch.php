@@ -39,6 +39,7 @@ class InputUserSearch extends Component
                 ->orWhere('last_name', 'like', '%' . $this->user . '%');
         })
         ->orderBy('first_name')
+        ->select(['id', 'first_name', 'last_name'])
         ->simplePaginate(15);
 
         return view('livewire.input-user-search', ['users' => $users]);

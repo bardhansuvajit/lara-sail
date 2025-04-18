@@ -110,6 +110,19 @@
                                 <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __('Review') }}</span>
                             </a>
                         </li>
+
+                        <li>
+                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
+                                @if(request()->is('admin/product/variation*')) bg-primary-200 dark:bg-gray-600 @endif"
+                                href="{{ route('admin.product.variation.attribute.index') }}"
+                            >
+                                <div class="flex-shrink-0 w-4 h-4 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M680-120q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm0-80q33 0 56.5-23.5T760-280q0-33-23.5-56.5T680-360q-33 0-56.5 23.5T600-280q0 33 23.5 56.5T680-200Zm-400-40q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm0-80q33 0 56.5-23.5T360-400q0-33-23.5-56.5T280-480q-33 0-56.5 23.5T200-400q0 33 23.5 56.5T280-320Zm160-240q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm0-80q33 0 56.5-23.5T520-720q0-33-23.5-56.5T440-800q-33 0-56.5 23.5T360-720q0 33 23.5 56.5T440-640Zm240 360ZM280-400Zm160-320Z"/></svg>
+                                </div>
+
+                                <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __('Variation') }}</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
