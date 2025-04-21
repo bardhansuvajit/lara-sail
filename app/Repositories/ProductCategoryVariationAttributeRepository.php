@@ -2,17 +2,17 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ProductVariationAttributeValueInterface;
-use App\Models\ProductVariationAttributeValue;
+use App\Interfaces\ProductCategoryVariationAttributeInterface;
+use App\Models\ProductCategoryVariationAttribute;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
 
-use App\Exports\ProductVariationAttributeValuesExport;
+use App\Exports\ProductVariationAttributesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ProductVariationAttributeValueRepository implements ProductVariationAttributeValueInterface
+class ProductCategoryVariationAttributeRepository implements ProductCategoryVariationAttributeInterface
 {
     private TrashInterface $trashRepository;
 
@@ -25,7 +25,7 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
     {
         try {
             DB::enableQueryLog();
-            $query = ProductVariationAttributeValue::query();
+            $query = ProductCategoryVariationAttribute::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -81,13 +81,11 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
 
     public function store(Array $array)
     {
-        // dd($array['image']);
         try {
-            $data = new ProductVariationAttributeValue();
+            $data = new ProductCategoryVariationAttribute();
+            $data->category_id = $array['category_id'];
             $data->attribute_id = $array['attribute_id'];
-            $data->title = $array['title'];
-            $data->slug = Str::slug($array['title']);
-            $data->meta = isset($array['meta']) ? $array['meta'] : null;
+            $data->position = isset($array['position']) ? $array['position'] : 1;
             $data->status = isset($array['status']) ? $array['status'] : 1;
             $data->save();
 
@@ -111,7 +109,37 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
     public function getById(Int $id)
     {
         try {
-            $data = ProductVariationAttributeValue::find($id);
+            $data = ProductCategoryVariationAttribute::find($id);
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function exists(Array $conditions)
+    {
+        try {
+            $data = ProductCategoryVariationAttribute::where($conditions)->exists();
 
             if (!empty($data)) {
                 return [
@@ -144,11 +172,9 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
             $data = $this->getById($array['id']);
 
             if ($data['code'] == 200) {
-                $data['data']->attribute_id = $array['attribute_id'];
                 $data['data']->title = $array['title'];
                 $data['data']->slug = Str::slug($array['title']);
-                $data['data']->meta = isset($array['meta']) ? $array['meta'] : null;
-                $data->status = isset($array['status']) ? $array['status'] : 1;
+                $data['data']->is_global = $array['is_global'] ? $array['is_global'] : 0;
                 $data['data']->save();
 
                 return [
@@ -178,8 +204,8 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
             if ($data['code'] == 200) {
                 // Handling trash
                 $this->trashRepository->store([
-                    'model' => 'ProductVariationAttributeValue',
-                    'table_name' => 'product_variation_attribute_values',
+                    'model' => 'ProductCategoryVariationAttribute',
+                    'table_name' => 'product_variation_attributes',
                     'deleted_row_id' => $data['data']->id,
                     'thumbnail' => $data['data']->image_s,
                     'title' => $data['data']->title,
@@ -211,13 +237,13 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
     public function bulkAction(Array $array)
     {
         try {
-            $data = ProductVariationAttributeValue::whereIn('id', $array['ids'])->get();
+            $data = ProductCategoryVariationAttribute::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
                     // Handling trash
                     $this->trashRepository->store([
-                        'model' => 'ProductVariationAttributeValue',
-                        'table_name' => 'product_variation_attribute_values',
+                        'model' => 'ProductCategoryVariationAttribute',
+                        'table_name' => 'product_variation_attributes',
                         'deleted_row_id' => $item->id,
                         'thumbnail' => $item->image_s,
                         'title' => $item->title,
@@ -257,21 +283,20 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            // $processedCount = saveToDatabase($data, 'ProductVariationAttributeValue');
+            // $processedCount = saveToDatabase($data, 'ProductCategoryVariationAttribute');
 
             // save into Database
             $processedCount = 0;
 
             foreach ($data as $item) {
-                if (!isset($item['title']) && !isset($item['attribute_id'])) {
+                if (!isset($item['title'])) {
                     continue; // Skip rows without a title
                 }
 
-                ProductVariationAttributeValue::create([
-                    'attribute_id' => $item['attribute_id'] ? $item['attribute_id'] : null,
+                ProductCategoryVariationAttribute::create([
                     'title' => $item['title'] ? $item['title'] : null,
                     'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
-                    'meta' => isset($item['meta']) ? $item['meta'] : null,
+                    'is_global' => $item['is_global'] ? $item['is_global'] : 0,
                     'status' => isset($item['status']) ? $item['status'] : 0
                 ]);
 
@@ -303,23 +328,23 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
             if (count($data['data']) > 0) {
-                $fileName = "product_variation_attribute_values_export_" . date('Y-m-d') . '-' . time();
+                $fileName = "product_variation_attributes_export_" . date('Y-m-d') . '-' . time();
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";
-                    return Excel::download(new ProductVariationAttributeValuesExport($data['data']), $fileName.$fileExtension);
+                    return Excel::download(new ProductVariationAttributesExport($data['data']), $fileName.$fileExtension);
                 }
                 elseif ($type == 'csv') {
                     $fileExtension = ".csv";
-                    return Excel::download(new ProductVariationAttributeValuesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
+                    return Excel::download(new ProductVariationAttributesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
                 }
                 elseif ($type == 'html') {
                     $fileExtension = ".html";
-                    return Excel::download(new ProductVariationAttributeValuesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
+                    return Excel::download(new ProductVariationAttributesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
                 }
                 elseif ($type == 'pdf') {
                     $fileExtension = ".pdf";
-                    return Excel::download(new ProductVariationAttributeValuesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
+                    return Excel::download(new ProductVariationAttributesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
                 }
                 else {
                     return [
@@ -353,7 +378,7 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
     {
         try {
             foreach ($ids as $index => $id) {
-                ProductVariationAttributeValue::where('id', $id)->update([
+                ProductCategoryVariationAttribute::where('id', $id)->update([
                     'position' => $index + 1
                 ]);
             }

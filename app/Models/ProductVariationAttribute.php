@@ -15,4 +15,9 @@ class ProductVariationAttribute extends Model
     {
         return $this->hasMany('App\Models\ProductVariationAttributeValue', 'attribute_id', 'id');
     }
+
+    public function categoryAttributes()
+    {
+        return $this->hasMany('App\Models\ProductCategoryVariationAttribute', 'attribute_id', 'id');
+    }
 }

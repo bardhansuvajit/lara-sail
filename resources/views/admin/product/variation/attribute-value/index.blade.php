@@ -1,17 +1,27 @@
+@php
+    $attributeTitle = request()->input('attributeId') && isset($data[0]->attribute)
+        ? __('Product Variation Attribute Value for ') . $data[0]->attribute->title
+        : __('Product Variation Attribute Value');
+@endphp
+
 <x-admin-app-layout
     screen="md:w-full"
-    title="{{ __('Product Variation Attribute Value') }}"
+    :title="$attributeTitle"
     :breadcrumb="[
         ['label' => 'Product variation attribute value']
     ]"
 >
 
     <section class="sm:rounded-lg overflow-hidden px-1 py-2">
+        @php
+            $createURL = route('admin.product.variation.attribute.value.create') . (request()->getQueryString() ? '?'.request()->getQueryString() : '');
+        @endphp
+
         {{-- add data --}}
         <div class="flex space-x-2 justify-end">
             <x-admin.button
                 element="a"
-                :href="route('admin.product.variation.attribute.value.create')">
+                :href="$createURL">
                 @slot('icon')
                     <svg fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" /></svg>
                 @endslot
@@ -52,6 +62,17 @@
                 @endslot
                 {{ __('Export') }}
             </x-admin.button>
+
+            <x-admin.button 
+                element="button" 
+                tag="secondary" 
+                title="Position" 
+                id="positionButton">
+                @slot('icon')
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z"/></svg>
+                @endslot
+                {{ __('Position') }}
+            </x-admin.button>
         </div>
     </section>
 
@@ -84,6 +105,8 @@
 
                             if ($sortBy === 'title') {
                                 $select_title = 'Title';
+                            } elseif ($sortBy === 'position') {
+                                $select_title = 'Position';
                             }
                         @endphp
 
@@ -97,6 +120,7 @@
                                 @slot('options')
                                     <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('ID') }} </x-admin.input-select-option>
                                     <x-admin.input-select-option value="title" :selected="request()->input('sortBy') == 'title'"> {{ __('Title') }} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="position" :selected="request()->input('sortBy') == 'position'"> {{ __('Position') }} </x-admin.input-select-option>
                                 @endslot
                             </x-admin.input-select>
                         </div>
@@ -220,9 +244,9 @@
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="sortable-container" data-route="{{ route('admin.product.variation.attribute.value.position') }}">
                     @forelse ($data as $item)
-                        <tr class="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <tr class="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700" data-id="{{$item->id}}">
                             <td class="p-2 w-2">
                                 <x-admin.input-checkbox 
                                     id="checkbox-table-search-{{ $item->id }}"
@@ -230,6 +254,10 @@
                                     form="bulActionForm" 
                                     name="ids[]" 
                                     value="{{ $item->id }}" />
+
+                                <div class="position-tab handle cursor-grab hidden">
+                                    <svg class="size-4 text-gray-400 dark:text-neutral-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z"/></svg>
+                                </div>
                             </td>
                             <td scope="row" class="px-2 py-1 w-8 text-gray-900 dark:text-white">
                                 <p class="text-xs">{{ $item->id }}</p>
@@ -252,7 +280,7 @@
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">
                                     @livewire('toggle-status', [
-                                        'model' => 'ProductVariationAttribute',
+                                        'model' => 'ProductVariationAttributeValue',
                                         'modelId' => $item->id,
                                     ])
 
@@ -273,16 +301,24 @@
                                         @endslot
                                     </x-admin.button-icon>
 
+                                    @php
+                                        $editURL = route('admin.product.variation.attribute.value.edit', $item->id) . (request()->getQueryString() ? '?'.request()->getQueryString() : '');
+                                    @endphp
+
                                     <x-admin.button-icon
                                         element="a"
                                         tag="secondary"
-                                        :href="route('admin.product.variation.attribute.value.edit', $item->id)"
+                                        :href="$editURL"
                                         title="Edit"
                                         class="border" >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
                                         @endslot
                                     </x-admin.button-icon>
+
+                                    @php
+                                        $deleteURL = route('admin.product.variation.attribute.value.delete', $item->id) . (request()->getQueryString() ? '?'.request()->getQueryString() : '');
+                                    @endphp
 
                                     <x-admin.button-icon
                                         element="a"
@@ -292,7 +328,7 @@
                                         x-on:click.prevent="
                                             $dispatch('open-modal', 'confirm-data-deletion'); 
                                             $dispatch('data-title', '{{ $item->title }}');
-                                            $dispatch('set-delete-route', '{{ route('admin.product.variation.attribute.value.delete', $item->id) }}')
+                                            $dispatch('set-delete-route', '{{ $deleteURL }}')
                                         " >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>

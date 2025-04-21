@@ -155,8 +155,6 @@ window.addEventListener('load', () => {
             dragClass: 'rounded-none!',
             onEnd: function (evt) {
                 const orderedIds = Array.from(sortable.children).map(el => el.dataset.id);
-                console.log(orderedIds);
-                
                 Livewire.dispatch('updateProductImageOrder', { ids: orderedIds });
             }
         });

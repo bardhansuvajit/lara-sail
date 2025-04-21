@@ -29,10 +29,15 @@ class ProductCategory extends Model
     public function parentDetails()
     {
         return $this->belongsTo('App\Models\ProductCategory', 'parent_id', 'id');
-    } 
+    }
 
     public function childDetails()
     {
         return $this->hasMany('App\Models\ProductCategory', 'parent_id', 'id');
-    } 
+    }
+
+    public function variationAttributes()
+    {
+        return $this->hasMany('App\Models\ProductCategoryVariationAttribute', 'category_id', 'id');
+    }
 }

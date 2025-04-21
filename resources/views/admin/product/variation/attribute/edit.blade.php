@@ -44,6 +44,21 @@
                     </ul>
                     <x-admin.input-error :messages="$errors->get('is_global')" class="mt-2" />
                 </div>
+
+                @php
+                    $categories = $data?->categoryAttributes?->loadMissing('category') ?? collect();
+                @endphp
+
+                @livewire('product-category-multi-select', [
+                    'category_id' => old(
+                        'category_id', 
+                        $categories->isNotEmpty() ? $categories->pluck('category_id')->implode(',') : ''
+                    ),
+                    'category_name' => old(
+                        'category_name', 
+                        $categories->isNotEmpty() ? $categories->pluck('category.title')->filter()->implode(', ') : ''
+                    ),
+                ])
             </div>
 
             <div class="items-center space-x-4 flex my-6">
@@ -58,5 +73,34 @@
                 <input type="hidden" name="id" value="{{ $data->id }}" />
             </div>
         </form>
+
+        {{-- categories --}}
+        @if ($categories->isNotEmpty())
+            <hr class="dark:border-gray-700 mb-4">
+
+            <h3 class="text-base mb-3">Categories information</h3>
+
+            @foreach ($categories as $category)
+                <h3 class="text-sm font-semibold mb-1 text-gray-500 dark:text-gray-400">
+                    <a href="{{ route('admin.product.category.edit', $category->category_id) }}" class="underline hover:no-underline">
+                        {{ $category->category->title }}
+                    </a>
+                </h3>
+
+                <div class="grid gap-4 mb-4 grid-cols-1">
+                    <div>
+                        <x-admin.input-label for="short_description" :value="__('Meta')" />
+                        <x-admin.textarea id="short_description" class="block" type="text" name="short_description" :value="old('short_description')" placeholder="Enter Meta" maxlength="1000" />
+                        <x-admin.input-error :messages="$errors->get('short_description')" class="mt-2" />
+                    </div>
+                </div>
+
+                @if (!$loop->last)
+                    <hr class="dark:border-gray-700 mb-4">
+                @endif
+
+            @endforeach
+        @endif
+
     </div>
 </x-admin-app-layout>

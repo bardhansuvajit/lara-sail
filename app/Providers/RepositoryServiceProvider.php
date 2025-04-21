@@ -22,6 +22,7 @@ use App\Interfaces\ProductReviewInterface;
 use App\Interfaces\ProductReviewImageInterface;
 use App\Interfaces\ProductVariationAttributeInterface;
 use App\Interfaces\ProductVariationAttributeValueInterface;
+use App\Interfaces\ProductCategoryVariationAttributeInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -41,6 +42,7 @@ use App\Repositories\ProductReviewRepository;
 use App\Repositories\ProductReviewImageRepository;
 use App\Repositories\ProductVariationAttributeRepository;
 use App\Repositories\ProductVariationAttributeValueRepository;
+use App\Repositories\ProductCategoryVariationAttributeRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -67,6 +69,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ProductReviewImageInterface::class, ProductReviewImageRepository::class);
         $this->app->bind(ProductVariationAttributeInterface::class, ProductVariationAttributeRepository::class);
         $this->app->bind(ProductVariationAttributeValueInterface::class, ProductVariationAttributeValueRepository::class);
+        $this->app->bind(ProductCategoryVariationAttributeInterface::class, ProductCategoryVariationAttributeRepository::class);
     }
 
     /**

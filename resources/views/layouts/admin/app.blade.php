@@ -24,6 +24,8 @@
             'resources/js/admin/custom.js'
         ])
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js"></script>
+
         @livewireStyles
     </head>
     <body class="dark:bg-gray-800 dark:text-slate-300">

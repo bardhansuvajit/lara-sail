@@ -13,6 +13,8 @@ const marginEl = document.getElementById('margin');
 const imagesPositionToggleButton = document.getElementById('imagesPositionToggleButton');
 const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const maxFileSize = '2000'; // in kb
+const positionButton = document.getElementById('positionButton');
+const positionTabs = document.querySelectorAll('.position-tab');
 
 // Global
 document.querySelector('form').addEventListener('submit', function () {
@@ -375,5 +377,65 @@ if (imagesPositionToggleButton) {
                 el.querySelector('.handle').classList.add('hidden');
             }
         })
+    });
+}
+
+if (positionButton) {
+    positionButton.addEventListener('click', function () {
+        if (parentCheckbox && otherCheckboxes && positionTabs) {
+            if (!parentCheckbox.classList.contains('hidden')) {
+                positionButton.classList.add('border-2', 'border-gray-800', 'dark:border-gray-300');
+                positionTabs.forEach(checkbox => {
+                    checkbox.classList.remove('hidden');
+                });
+
+                parentCheckbox.classList.add('hidden');
+                otherCheckboxes.forEach(checkbox => {
+                    checkbox.classList.add('hidden');
+                });
+
+                const sortable = document.querySelector("#sortable-container");
+
+                new Sortable(sortable, {
+                    handle: '.handle',
+                    animation: 150,
+                    dragClass: 'rounded-none!',
+                    onEnd: function (evt) {
+                        const orderedIds = Array.from(sortable.children).map(el => el.dataset.id);
+                        console.log(orderedIds);
+                        // Livewire.dispatch('updateProductImageOrder', { ids: orderedIds });
+
+                        const updateRoute = sortable.dataset.route;
+
+                        // Send to Laravel via fetch (or axios if you're using it)
+                        fetch(updateRoute, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({ ids: orderedIds })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Order updated:', data);
+                        })
+                        .catch(error => {
+                            console.error('Error updating order:', error);
+                        });
+                    }
+                });
+            } else {
+                positionButton.classList.remove('border-2', 'border-gray-800', 'dark:border-gray-300');
+                positionTabs.forEach(checkbox => {
+                    checkbox.classList.add('hidden');
+                });
+
+                parentCheckbox.classList.remove('hidden');
+                otherCheckboxes.forEach(checkbox => {
+                    checkbox.classList.remove('hidden');
+                });
+            }
+        }
     });
 }

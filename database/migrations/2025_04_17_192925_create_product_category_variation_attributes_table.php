@@ -20,6 +20,8 @@ return new class extends Migration
             $table->unsignedBigInteger('attribute_id');
             $table->foreign('attribute_id')->references('id')->on('product_variation_attributes')->onDelete('cascade');
 
+            $table->text('meta')->nullable(); // store information like size chart
+
             $table->integer('position')->default(1);
             $table->tinyInteger('status')->comment('1: active, 0: inactive')->default(1);
             $table->softDeletes();

@@ -239,6 +239,7 @@
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Title</th>
                         <th scope="col" class="px-2 py-1">Level</th>
+                        <th scope="col" class="px-2 py-1">Available Variations</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
@@ -278,6 +279,20 @@
                                         No. of Sub-categories 
                                         <span class="font-medium text-gray-800 dark:text-gray-300">{{ count($item->childDetails) }}</span>
                                     </p>
+                                @endif
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                @if ($item->variationAttributes)
+                                    <div class="flex space-x-1">
+                                        @foreach ($item->variationAttributes as $attrbuteId)
+                                            @if ($attrbuteId->attribute)
+                                                <a href="{{route('admin.product.variation.attribute.edit', $attrbuteId->attribute_id)}}" class="text-xs underline hover:no-underline">{{ $attrbuteId->attribute->title }}</a>
+                                            @else
+                                                <p class="text-xs text-red-600">ERROR</p>
+                                            @endif
+                                            @if (!$loop->last) , @endif
+                                        @endforeach
+                                    </div>
                                 @endif
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">

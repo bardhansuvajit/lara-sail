@@ -2,18 +2,18 @@
     screen="md:max-w-screen-lg"
     title="{{ __('Create Product Variation Attribute Value') }}"
     :breadcrumb="[
-        ['label' => 'Product variation attribute value', 'url' => route('admin.product.variation.attribute.value.index')],
+        ['label' => 'Product variation attribute value', 'url' => route('admin.product.variation.attribute.value.index', request()->query())],
         ['label' => 'Create']
     ]"
 >
 
     <div class="w-full mt-2">
-        <form action="{{ route('admin.product.variation.attribute.value.store') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('admin.product.variation.attribute.value.store') . (request()->getQueryString() ? '?'.request()->getQueryString() : '') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
                 @livewire('input-product-variation-attribute-value', [
-                    'attribute_id' => old('attribute_id', 0),
-                    'attribute_title' => old('attribute_title', ''),
+                    'attribute_id' => old('attribute_id', request()->input('attributeId') ? request()->input('attributeId') : 0),
+                    'attribute_title' => old('attribute_title', request()->input('attributeId') ? $variationAttrTitle : ''),
                 ])
             </div>
 

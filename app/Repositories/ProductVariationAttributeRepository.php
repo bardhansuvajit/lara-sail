@@ -11,14 +11,17 @@ use App\Interfaces\TrashInterface;
 
 use App\Exports\ProductVariationAttributesExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Interfaces\ProductCategoryVariationAttributeInterface;
 
 class ProductVariationAttributeRepository implements ProductVariationAttributeInterface
 {
     private TrashInterface $trashRepository;
+    private ProductCategoryVariationAttributeInterface $productCategoryVariationAttributeRepository;
 
-    public function __construct(TrashInterface $trashRepository)
+    public function __construct(TrashInterface $trashRepository, ProductCategoryVariationAttributeInterface $productCategoryVariationAttributeRepository)
     {
         $this->trashRepository = $trashRepository;
+        $this->productCategoryVariationAttributeRepository = $productCategoryVariationAttributeRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
@@ -82,12 +85,38 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
     public function store(Array $array)
     {
         // dd($array['image']);
+        DB::beginTransaction();
+
         try {
             $data = new ProductVariationAttribute();
             $data->title = $array['title'];
             $data->slug = Str::slug($array['title']);
             $data->is_global = $array['is_global'] ? $array['is_global'] : 0;
             $data->save();
+
+            // category
+            if (!empty($array['category_id'])) {
+                $category_ids = explode(',', $array['category_id']);
+                foreach ($category_ids as $category_key => $category_id) {
+                    $category_id = trim($category_id);
+
+                    if ($category_id !== '') {
+                        $exists = $this->productCategoryVariationAttributeRepository->exists([
+                            'category_id' => $category_id,
+                            'attribute_id' => $data->id
+                        ]);
+
+                        if ($exists['code'] == 404) {
+                            $this->productCategoryVariationAttributeRepository->store([
+                                'category_id' => $category_id,
+                                'attribute_id' => $data->id
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            DB::commit();
 
             return [
                 'code' => 200,
@@ -96,6 +125,8 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
                 'data' => $data,
             ];
         } catch (\Exception $e) {
+            DB::rollback();
+
             return [
                 'code' => 500,
                 'status' => 'error',
@@ -138,6 +169,8 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
 
     public function update(Array $array)
     {
+        DB::beginTransaction();
+
         try {
             $data = $this->getById($array['id']);
 
@@ -146,6 +179,30 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
                 $data['data']->slug = Str::slug($array['title']);
                 $data['data']->is_global = $array['is_global'] ? $array['is_global'] : 0;
                 $data['data']->save();
+
+                // category
+                if (!empty($array['category_id'])) {
+                    $category_ids = explode(',', $array['category_id']);
+                    foreach ($category_ids as $category_key => $category_id) {
+                        $category_id = trim($category_id);
+
+                        if ($category_id !== '') {
+                            $exists = $this->productCategoryVariationAttributeRepository->exists([
+                                'category_id' => $category_id,
+                                'attribute_id' => $data['data']->id
+                            ]);
+
+                            if ($exists['code'] == 404) {
+                                $this->productCategoryVariationAttributeRepository->store([
+                                    'category_id' => $category_id,
+                                    'attribute_id' => $data['data']->id
+                                ]);
+                            }
+                        }
+                    }
+                }
+
+                DB::commit();
 
                 return [
                     'code' => 200,
@@ -157,6 +214,8 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
                 return $data;
             }
         } catch (\Exception $e) {
+            DB::rollback();
+
             return [
                 'code' => 500,
                 'status' => 'error',

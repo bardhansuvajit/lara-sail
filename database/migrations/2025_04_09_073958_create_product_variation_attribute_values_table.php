@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('slug')->unique(); // "red", "8gb"
             $table->json('meta')->nullable(); // { hex: "#FF0000", image: "red.jpg" }
 
+            $table->integer('position')->default(1);
+
             // Status/ Timestamp
             $table->tinyInteger('status')->default(1);
             $table->softDeletes();
