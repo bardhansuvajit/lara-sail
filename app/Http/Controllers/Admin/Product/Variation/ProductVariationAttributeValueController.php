@@ -73,6 +73,12 @@ class ProductVariationAttributeValueController
         $request->validate([
             'attribute_id' => 'required|integer|min:1|exists:product_variation_attributes,id',
             'title' => 'required|string|min:1|max:255',
+            'category_id' => 'required|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
+            'category_name' => 'required|string|min:2',
+            'type' => 'nullable|integer|min:1',
+            'short_description' => 'nullable|string|min:2|max:1000',
+            'long_description' => 'nullable|string|min:2',
+            'tags' => 'nullable|string|min:1',
         ]);
 
         $resp = $this->productVariationAttributeValueRepository->store($request->all());
@@ -99,13 +105,22 @@ class ProductVariationAttributeValueController
         // dd($request->all());
 
         $request->validate([
-            'id' => 'required|integer',
+            'id' => 'required|integer|min:1',
             'attribute_id' => 'required|integer|min:1|exists:product_variation_attributes,id',
             'title' => 'required|string|min:1|max:255',
+            'category_id' => 'required|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
+            'category_name' => 'required|string|min:2',
+            'type' => 'nullable|integer|min:1',
+            'short_description' => 'nullable|string|min:2|max:1000',
+            'long_description' => 'nullable|string|min:2',
+            'tags' => 'nullable|string|min:1',
         ]);
 
         $resp = $this->productVariationAttributeValueRepository->update($request->all());
-        return redirect()->route('admin.product.variation.attribute.value.index')->with($resp['status'], $resp['message']);
+        return redirect()
+            ->back()
+            // ->route('admin.product.variation.attribute.value.index', request()->query())
+            ->with($resp['status'], $resp['message']);
     }
 
     public function delete(Int $id)

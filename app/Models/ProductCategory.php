@@ -36,8 +36,18 @@ class ProductCategory extends Model
         return $this->hasMany('App\Models\ProductCategory', 'parent_id', 'id');
     }
 
-    public function variationAttributes()
+    public function variationAttributeValues()
     {
         return $this->hasMany('App\Models\ProductCategoryVariationAttribute', 'category_id', 'id');
+    }
+
+    public function variationValues()
+    {
+        return $this->belongsToMany(
+            ProductVariationAttributeValue::class,
+            'product_category_variation_attributes',
+            'category_id',
+            'attribute_value_id'
+        );
     }
 }

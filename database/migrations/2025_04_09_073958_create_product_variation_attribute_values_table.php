@@ -21,6 +21,16 @@ return new class extends Migration
             $table->string('slug')->unique(); // "red", "8gb"
             $table->json('meta')->nullable(); // { hex: "#FF0000", image: "red.jpg" }
 
+            // Type
+            // `size`/ other attributes have different values based on Category. 
+            // e.g. Type 1 has values for T-shirt | Type 2 has values for Mens Shoes | Type 3 has values for Kids Shoes
+            $table->tinyInteger('type')->default(1)->comment('Optional column'); 
+
+            // Description/ Tags
+            $table->text('short_description')->nullable();
+            $table->longText('long_description')->nullable();
+            $table->text('tags')->nullable();
+
             $table->integer('position')->default(1);
 
             // Status/ Timestamp

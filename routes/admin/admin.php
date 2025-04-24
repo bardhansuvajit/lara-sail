@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\Country\CountryController;
 
 use App\Http\Controllers\Admin\Product\Listing\ProductListingController;
 use App\Http\Controllers\Admin\Product\Category\ProductCategoryController;
+use App\Http\Controllers\Admin\Product\Category\Variation\ProductCategoryVariationAttributeController;
 use App\Http\Controllers\Admin\Product\Collection\ProductCollectionController;
 use App\Http\Controllers\Admin\Product\Image\ProductImageController;
 use App\Http\Controllers\Admin\Product\Pricing\ProductPricingController;
@@ -94,6 +95,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/bulk', 'bulk')->name('bulk');
                 Route::post('/import', 'import')->name('import');
                 Route::get('/export/{type}', 'export')->name('export');
+
+                // variation
+                Route::prefix('variation')->name('variation.')->controller(ProductCategoryVariationAttributeController::class)->group(function() {
+                    Route::get('/toggle/{categoryId}/{attrValueId}', 'toggle')->name('toggle');
+                    Route::delete('/delete/{id}', 'delete')->name('delete');
+                });
             });
 
             // collection

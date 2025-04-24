@@ -114,4 +114,5 @@
     <input type="hidden" name="collection_name" :value="selectedCollectionTitles.join(',')" required>
     <input type="hidden" name="collection_id" :value="selectedCollectionIds.length ? selectedCollectionIds.join(',') : null" required>
     <x-admin.input-error :messages="$errors->get('collection_id')" class="mt-2" />
+    <x-admin.input-error :messages="$errors->get('collection_name')" class="mt-2" />
 </div>

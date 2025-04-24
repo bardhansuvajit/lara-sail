@@ -259,7 +259,7 @@ class ProductListingRepository implements ProductListingInterface
                 $data['data']->allow_backorders = $array['allow_backorders'];
                 $data['data']->meta_title = $array['meta_title'];
                 $data['data']->meta_desc = $array['meta_description'];
-                $data['data']->status = 0;
+                // $data['data']->status = 0;
                 $data['data']->save();
 
                 // PRICING

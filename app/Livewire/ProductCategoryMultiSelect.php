@@ -34,7 +34,7 @@ class ProductCategoryMultiSelect extends Component
         if ($this->category) {
             $query->where('title', 'like', "%{$this->category}%");
         }
-        $this->categoriesArrSend = $query->orderBy('position')->get()->toArray();
+        $this->categoriesArrSend = $query->where('status', 1)->orderBy('position')->get()->toArray();
     }
 
     public function render()

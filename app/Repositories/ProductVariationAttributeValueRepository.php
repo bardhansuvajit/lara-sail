@@ -8,6 +8,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
+use App\Interfaces\ProductCategoryVariationAttributeInterface;
 
 use App\Exports\ProductVariationAttributeValuesExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -15,10 +16,12 @@ use Maatwebsite\Excel\Facades\Excel;
 class ProductVariationAttributeValueRepository implements ProductVariationAttributeValueInterface
 {
     private TrashInterface $trashRepository;
+    private ProductCategoryVariationAttributeInterface $productCategoryVariationAttributeRepository;
 
-    public function __construct(TrashInterface $trashRepository)
+    public function __construct(TrashInterface $trashRepository, ProductCategoryVariationAttributeInterface $productCategoryVariationAttributeRepository)
     {
         $this->trashRepository = $trashRepository;
+        $this->productCategoryVariationAttributeRepository = $productCategoryVariationAttributeRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
@@ -82,14 +85,51 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
     public function store(Array $array)
     {
         // dd($array['image']);
+        DB::beginTransaction();
+
         try {
             $data = new ProductVariationAttributeValue();
             $data->attribute_id = $array['attribute_id'];
             $data->title = $array['title'];
             $data->slug = Str::slug($array['title']);
             $data->meta = isset($array['meta']) ? $array['meta'] : null;
+
+            // get max position for given attribute_id and type
+            $lastPosition = ProductVariationAttributeValue::where('attribute_id', $array['attribute_id'])
+            ->where('type', isset($array['type']) ? $array['type'] : 1)
+            ->max('position');
+            $data->position = $lastPosition ? $lastPosition + 1 : 1;
+
+            $data->type = isset($array['type']) ? $array['type'] : 1;
+            $data->short_description = isset($array['short_description']) ? $array['short_description'] : null;
+            $data->long_description = isset($array['long_description']) ? $array['long_description'] : null;
+            $data->tags = isset($array['tags']) ? $array['tags'] : null;
             $data->status = isset($array['status']) ? $array['status'] : 1;
             $data->save();
+
+            // category
+            if (!empty($array['category_id'])) {
+                $category_ids = explode(',', $array['category_id']);
+                foreach ($category_ids as $category_key => $category_id) {
+                    $category_id = trim($category_id);
+
+                    if ($category_id !== '') {
+                        $exists = $this->productCategoryVariationAttributeRepository->exists([
+                            'category_id' => $category_id,
+                            'attribute_value_id' => $data->id
+                        ]);
+
+                        if ($exists['code'] == 404) {
+                            $this->productCategoryVariationAttributeRepository->store([
+                                'category_id' => $category_id,
+                                'attribute_value_id' => $data->id
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            DB::commit();
 
             return [
                 'code' => 200,
@@ -98,6 +138,8 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
                 'data' => $data,
             ];
         } catch (\Exception $e) {
+            DB::rollback();
+
             return [
                 'code' => 500,
                 'status' => 'error',
@@ -140,6 +182,8 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
 
     public function update(Array $array)
     {
+        DB::beginTransaction();
+
         try {
             $data = $this->getById($array['id']);
 
@@ -148,8 +192,63 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
                 $data['data']->title = $array['title'];
                 $data['data']->slug = Str::slug($array['title']);
                 $data['data']->meta = isset($array['meta']) ? $array['meta'] : null;
-                $data->status = isset($array['status']) ? $array['status'] : 1;
+                $data['data']->type = isset($array['type']) ? $array['type'] : 1;
+                $data['data']->short_description = isset($array['short_description']) ? $array['short_description'] : null;
+                $data['data']->long_description = isset($array['long_description']) ? $array['long_description'] : null;
+                $data['data']->tags = isset($array['tags']) ? $array['tags'] : null;
+                $data['data']->status = isset($array['status']) ? $array['status'] : 1;
                 $data['data']->save();
+
+                // category
+                if (!empty($array['category_id'])) {
+                    $category_ids = array_map('intval', explode(',', $array['category_id']));
+                    $attrValueExistData = $this->productCategoryVariationAttributeRepository->exists([
+                        'attribute_value_id' => $data['data']->id
+                    ]);
+                
+                    if ($attrValueExistData['code'] == 200) {
+                        // Get existing category IDs
+                        $existingCategories = $attrValueExistData['data']->pluck('category_id')->toArray();
+                        
+                        // Find categories to remove (exist in DB but not in new list)
+                        $categoriesToRemove = array_diff($existingCategories, $category_ids);
+                        
+                        if (!empty($categoriesToRemove)) {
+                            // Get IDs of records to delete
+                            $recordsToDelete = $attrValueExistData['data']
+                                ->whereIn('category_id', $categoriesToRemove)
+                                ->pluck('id')
+                                ->toArray();
+                                
+                            $deleteChk = $this->productCategoryVariationAttributeRepository->bulkAction([
+                                'ids' => $recordsToDelete,
+                                'action' => 'delete'
+                            ]);
+                        }
+                        
+                        // Find categories to add (exist in new list but not in DB)
+                        $categoriesToAdd = array_diff($category_ids, $existingCategories);
+                        foreach ($categoriesToAdd as $category_id) {
+                            $this->productCategoryVariationAttributeRepository->store([
+                                'category_id' => $category_id,
+                                'attribute_value_id' => $data['data']->id
+                            ]);
+                        }
+                    } else {
+                        // Original code for when no existing records are found
+                        foreach ($category_ids as $category_id) {
+                            $category_id = trim($category_id);
+                            if ($category_id !== '') {
+                                $this->productCategoryVariationAttributeRepository->store([
+                                    'category_id' => $category_id,
+                                    'attribute_value_id' => $data['data']->id
+                                ]);
+                            }
+                        }
+                    }
+                }
+
+                DB::commit();
 
                 return [
                     'code' => 200,
@@ -161,10 +260,13 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
                 return $data;
             }
         } catch (\Exception $e) {
+            DB::rollback();
+
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => 'An error occurred while updating data.',
+                // 'message' => 'An error occurred while updating data.',
+                'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ];
         }
@@ -358,18 +460,18 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
                 ]);
             }
 
-            return [
+            return response()->json([
                 'code' => 200,
                 'status' => 'success',
                 'message' => 'Position updated'
-            ];
+            ]);
         } catch (\Exception $e) {
-            return [
+            return response()->json([
                 'code' => 500,
                 'status' => 'error',
                 'message' => 'An error occurred while positioning data.',
                 'error' => $e->getMessage(),
-            ];
+            ]);
         }
     }
 }

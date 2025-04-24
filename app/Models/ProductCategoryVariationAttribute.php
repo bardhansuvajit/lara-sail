@@ -14,9 +14,9 @@ class ProductCategoryVariationAttribute extends Model
         return $this->belongsTo('App\Models\ProductCategory', 'category_id', 'id');
     }
 
-    public function attribute()
+    public function attributeValue()
     {
-        return $this->belongsTo('App\Models\ProductVariationAttribute', 'attribute_id', 'id');
+        return $this->belongsTo('App\Models\ProductVariationAttributeValue', 'attribute_value_id', 'id');
     }
 
 }

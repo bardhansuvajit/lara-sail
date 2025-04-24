@@ -45,10 +45,10 @@
                     <x-admin.input-error :messages="$errors->get('is_global')" class="mt-2" />
                 </div>
 
-                @livewire('product-category-multi-select', [
+                {{-- @livewire('product-category-multi-select', [
                     'category_id' => old('category_id', ''),
                     'category_name' => old('category_name', ''),
-                ])
+                ]) --}}
             </div>
 
             <div class="items-center space-x-4 flex my-6">

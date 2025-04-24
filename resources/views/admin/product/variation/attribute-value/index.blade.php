@@ -241,6 +241,8 @@
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Title</th>
                         <th scope="col" class="px-2 py-1">Attribute</th>
+                        <th scope="col" class="px-2 py-1">Categories</th>
+                        <th scope="col" class="px-2 py-1">Type</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
@@ -276,6 +278,20 @@
                                 @else
                                     <p class="text-xs text-red-600">ERROR</p>
                                 @endif
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                {{-- {{$item->categoryAttributes?->category?->title ?? ''}} --}}
+                                @if (count($item->categoryAttributes))
+                                    <div class="flex space-x-1">
+                                        @foreach ($item->categoryAttributes->loadMissing('category') as $attribute_value)
+                                            <a href="{{route('admin.product.category.edit', $attribute_value->category_id)}}" class="text-xs underline hover:no-underline">{{ $attribute_value->category->title }}</a>
+                                            @if (!$loop->last) , @endif
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                <p class="text-xs text-gray-500">{{ $item->type }}</p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">

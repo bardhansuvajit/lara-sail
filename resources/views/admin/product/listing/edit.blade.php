@@ -11,7 +11,9 @@
         {{-- <div class="col-span-2"></div> --}}
 
         {{-- @if ($errors->any())
-            {{ dd($errors->all()) }}
+            @foreach ($errors->all() as $error)
+                <p class="text-red-600">{{ $error }}</p>
+            @endforeach
         @endif --}}
 
         <div class="col-span-6 lg:col-start-3">
@@ -362,18 +364,10 @@
 
                     <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Variants</h4>
 
-                    <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
-                        <div>
-                            <a href="" class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500">
-                                <div class="flex items-center">
-                                    <div class="w-3 h-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
-                                    </div>
-                                    Add options like Colors and Size
-                                </div>
-                            </a>
-                        </div>
-                    </div>
+                    @livewire('product-variant', [
+                        'product_id' => $data->id,
+                        'category_id' => $data->category_id,
+                    ])
 
                     <div class="border-t border-gray-200 dark:border-gray-700"></div>
 

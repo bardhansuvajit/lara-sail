@@ -6,14 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Interfaces\ProductCategoryInterface;
+use App\Interfaces\ProductVariationAttributeInterface;
 
 class ProductCategoryController
 {
     private ProductCategoryInterface $productCategoryRepository;
+    private ProductVariationAttributeInterface $productVariationAttributeRepository;
 
-    public function __construct(ProductCategoryInterface $productCategoryRepository)
+    public function __construct(ProductCategoryInterface $productCategoryRepository, ProductVariationAttributeInterface $productVariationAttributeRepository)
     {
         $this->productCategoryRepository = $productCategoryRepository;
+        $this->productVariationAttributeRepository = $productVariationAttributeRepository;
     }
 
     public function index(Request $request): View
@@ -69,10 +72,12 @@ class ProductCategoryController
     public function edit(Int $id): View|RedirectResponse
     {
         $resp = $this->productCategoryRepository->getById($id);
-        // dd($resp);
+        $variations = $this->productVariationAttributeRepository->list('', ['status' => 1], 'all', 'position', 'asc')['data'];
+
         if ($resp['code'] == 200) {
             return view('admin.product.category.edit', [
                 'data' => $resp['data'],
+                'variations' => $variations,
             ]);
         } else {
             return redirect()->back()->with($resp['status'], $resp['message']);

@@ -43,6 +43,5 @@ class InputUserSearch extends Component
         ->simplePaginate(15);
 
         return view('livewire.input-user-search', ['users' => $users]);
-
     }
 }

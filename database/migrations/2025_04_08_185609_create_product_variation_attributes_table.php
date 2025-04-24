@@ -18,6 +18,13 @@ return new class extends Migration
             $table->string('slug')->unique(); // "color", "size"
             $table->boolean('is_global')->default(0); // For attributes like Color used across categories
 
+            // Description/ Tags
+            $table->text('short_description')->nullable();
+            $table->longText('long_description')->nullable();
+            $table->text('tags')->nullable();
+
+            $table->integer('position')->default(1);
+
             // Status/ Timestamp
             $table->tinyInteger('status')->default(1);
             $table->softDeletes();

@@ -51,8 +51,8 @@ class ProductCategoryVariationAttributeRepository implements ProductCategoryVari
 
             // page
             $data = $perPage !== 'all'
-            ? $query->orderBy($sortBy, $sortOrder)->paginate($perPage)->withQueryString()
-            : $query->orderBy($sortBy, $sortOrder)->get();
+            ? $query->orderBy($sortBy, $sortOrder)->with('category', 'attributeValue')->paginate($perPage)->withQueryString()
+            : $query->orderBy($sortBy, $sortOrder)->with('category', 'attributeValue')->get();
 
             if ($data->isNotEmpty()) {
                 return [
@@ -84,8 +84,15 @@ class ProductCategoryVariationAttributeRepository implements ProductCategoryVari
         try {
             $data = new ProductCategoryVariationAttribute();
             $data->category_id = $array['category_id'];
-            $data->attribute_id = $array['attribute_id'];
-            $data->position = isset($array['position']) ? $array['position'] : 1;
+            $data->attribute_value_id = $array['attribute_value_id'];
+
+            // get max position for given attribute_id and type
+            $lastPosition = ProductCategoryVariationAttribute::where('category_id', $array['category_id'])
+            ->where('attribute_value_id', $array['attribute_value_id'])
+            ->max('position');
+            $data->position = $lastPosition ? $lastPosition + 1 : 1;
+
+            // $data->position = isset($array['position']) ? $array['position'] : 1;
             $data->status = isset($array['status']) ? $array['status'] : 1;
             $data->save();
 
@@ -109,7 +116,7 @@ class ProductCategoryVariationAttributeRepository implements ProductCategoryVari
     public function getById(Int $id)
     {
         try {
-            $data = ProductCategoryVariationAttribute::find($id);
+            $data = ProductCategoryVariationAttribute::where('id', $id)->with('category', 'attributeValue')->first();
 
             if (!empty($data)) {
                 return [
@@ -139,9 +146,9 @@ class ProductCategoryVariationAttributeRepository implements ProductCategoryVari
     public function exists(Array $conditions)
     {
         try {
-            $data = ProductCategoryVariationAttribute::where($conditions)->exists();
+            $data = ProductCategoryVariationAttribute::where($conditions)->get();
 
-            if (!empty($data)) {
+            if (!empty($data) && count($data) > 0) {
                 return [
                     'code' => 200,
                     'status' => 'success',
@@ -203,17 +210,17 @@ class ProductCategoryVariationAttributeRepository implements ProductCategoryVari
 
             if ($data['code'] == 200) {
                 // Handling trash
-                $this->trashRepository->store([
+                $trashStore = $this->trashRepository->store([
                     'model' => 'ProductCategoryVariationAttribute',
-                    'table_name' => 'product_variation_attributes',
+                    'table_name' => 'product_category_variation_attributes',
                     'deleted_row_id' => $data['data']->id,
                     'thumbnail' => $data['data']->image_s,
-                    'title' => $data['data']->title,
-                    'description' => $data['data']->title.' data deleted from product variation attributes table',
+                    'title' => $data['data']->category->title.'&'.$data['data']->attributeValue->title.' combination',
+                    'description' => $data['data']->category->title.'&'.$data['data']->attributeValue->title.' combination data deleted from product category variation attributes table',
                     'status' => 'deleted',
                 ]);
 
-                $data['data']->delete();
+                $deleted = $data['data']->delete();
 
                 return [
                     'code' => 200,
@@ -238,16 +245,17 @@ class ProductCategoryVariationAttributeRepository implements ProductCategoryVari
     {
         try {
             $data = ProductCategoryVariationAttribute::whereIn('id', $array['ids'])->get();
+
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
                     // Handling trash
                     $this->trashRepository->store([
                         'model' => 'ProductCategoryVariationAttribute',
-                        'table_name' => 'product_variation_attributes',
+                        'table_name' => 'product_category_variation_attributes',
                         'deleted_row_id' => $item->id,
                         'thumbnail' => $item->image_s,
                         'title' => $item->title,
-                        'description' => $item->title.' data deleted from product variation attributes table',
+                        'description' => $item->title.' data deleted from product category variation attributes table',
                         'status' => 'deleted',
                     ]);
 
@@ -328,7 +336,7 @@ class ProductCategoryVariationAttributeRepository implements ProductCategoryVari
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
             if (count($data['data']) > 0) {
-                $fileName = "product_variation_attributes_export_" . date('Y-m-d') . '-' . time();
+                $fileName = "product_category_variation_attributes_export_" . date('Y-m-d') . '-' . time();
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";

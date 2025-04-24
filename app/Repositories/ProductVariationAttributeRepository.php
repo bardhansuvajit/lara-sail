@@ -11,17 +11,14 @@ use App\Interfaces\TrashInterface;
 
 use App\Exports\ProductVariationAttributesExport;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Interfaces\ProductCategoryVariationAttributeInterface;
 
 class ProductVariationAttributeRepository implements ProductVariationAttributeInterface
 {
     private TrashInterface $trashRepository;
-    private ProductCategoryVariationAttributeInterface $productCategoryVariationAttributeRepository;
 
-    public function __construct(TrashInterface $trashRepository, ProductCategoryVariationAttributeInterface $productCategoryVariationAttributeRepository)
+    public function __construct(TrashInterface $trashRepository)
     {
         $this->trashRepository = $trashRepository;
-        $this->productCategoryVariationAttributeRepository = $productCategoryVariationAttributeRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
@@ -54,8 +51,8 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
 
             // page
             $data = $perPage !== 'all'
-            ? $query->orderBy($sortBy, $sortOrder)->paginate($perPage)->withQueryString()
-            : $query->orderBy($sortBy, $sortOrder)->get();
+            ? $query->orderBy($sortBy, $sortOrder)->with('values.categories')->paginate($perPage)->withQueryString()
+            : $query->orderBy($sortBy, $sortOrder)->with('values.categories')->get();
 
             if ($data->isNotEmpty()) {
                 return [
@@ -93,28 +90,6 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
             $data->slug = Str::slug($array['title']);
             $data->is_global = $array['is_global'] ? $array['is_global'] : 0;
             $data->save();
-
-            // category
-            if (!empty($array['category_id'])) {
-                $category_ids = explode(',', $array['category_id']);
-                foreach ($category_ids as $category_key => $category_id) {
-                    $category_id = trim($category_id);
-
-                    if ($category_id !== '') {
-                        $exists = $this->productCategoryVariationAttributeRepository->exists([
-                            'category_id' => $category_id,
-                            'attribute_id' => $data->id
-                        ]);
-
-                        if ($exists['code'] == 404) {
-                            $this->productCategoryVariationAttributeRepository->store([
-                                'category_id' => $category_id,
-                                'attribute_id' => $data->id
-                            ]);
-                        }
-                    }
-                }
-            }
 
             DB::commit();
 
@@ -179,28 +154,6 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
                 $data['data']->slug = Str::slug($array['title']);
                 $data['data']->is_global = $array['is_global'] ? $array['is_global'] : 0;
                 $data['data']->save();
-
-                // category
-                if (!empty($array['category_id'])) {
-                    $category_ids = explode(',', $array['category_id']);
-                    foreach ($category_ids as $category_key => $category_id) {
-                        $category_id = trim($category_id);
-
-                        if ($category_id !== '') {
-                            $exists = $this->productCategoryVariationAttributeRepository->exists([
-                                'category_id' => $category_id,
-                                'attribute_id' => $data['data']->id
-                            ]);
-
-                            if ($exists['code'] == 404) {
-                                $this->productCategoryVariationAttributeRepository->store([
-                                    'category_id' => $category_id,
-                                    'attribute_id' => $data['data']->id
-                                ]);
-                            }
-                        }
-                    }
-                }
 
                 DB::commit();
 

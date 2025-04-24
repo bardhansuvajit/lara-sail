@@ -17,8 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('product_categories')->onDelete('cascade');
 
-            $table->unsignedBigInteger('attribute_id');
-            $table->foreign('attribute_id')->references('id')->on('product_variation_attributes')->onDelete('cascade');
+            $table->unsignedBigInteger('attribute_value_id');
+            $table->foreign('attribute_value_id')->references('id')->on('product_variation_attribute_values')->onDelete('cascade');
 
             $table->text('meta')->nullable(); // store information like size chart
 

@@ -15,6 +15,11 @@
                     'attribute_id' => old('attribute_id', request()->input('attributeId') ? request()->input('attributeId') : 0),
                     'attribute_title' => old('attribute_title', request()->input('attributeId') ? $variationAttrTitle : ''),
                 ])
+
+                @livewire('product-category-multi-select', [
+                    'category_id' => old('category_id', ''),
+                    'category_name' => old('category_name', ''),
+                ])
             </div>
 
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
@@ -23,6 +28,38 @@
                     <x-admin.text-input id="title" class="block w-full" type="text" name="title" :value="old('title')" placeholder="Enter title" autofocus required />
                     <p class="text-xs mt-2 dark:text-gray-400">e.g. "Red", "8GB", "XL"</p>
                     <x-admin.input-error :messages="$errors->get('title')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-admin.input-label for="type" :value="__('Type')" />
+                    <x-admin.text-input id="type" class="block w-full" type="text" name="type" :value="old('type') ? old('type') : 1" placeholder="Enter type" />
+                    <p class="text-xs mt-2 dark:text-gray-400">e.g. "1", "2" | Types are used to easily identify amongst category based values</p>
+                    <x-admin.input-error :messages="$errors->get('type')" class="mt-2" />
+                </div>
+            </div>
+
+            <div class="grid gap-4 mb-4 sm:grid-cols-1">
+                <div>
+                    <x-admin.input-label for="short_description" :value="__('Short Description')" />
+                    <x-admin.textarea id="short_description" class="block" type="text" name="short_description" :value="old('short_description')" placeholder="Enter Short Description" maxlength="1000" />
+                    <x-admin.input-error :messages="$errors->get('short_description')" class="mt-2" />
+                </div>
+            </div>
+
+            <div class="grid gap-4 mb-4 sm:grid-cols-1">
+                <div>
+                    <x-admin.input-label for="long_description" :value="__('Long Description')" />
+                    <x-admin.textarea id="long_description" class="block" type="text" name="long_description" :value="old('long_description')" placeholder="Enter Long Description" maxlength="1000" />
+                    <x-admin.input-error :messages="$errors->get('long_description')" class="mt-2" />
+                </div>
+            </div>
+
+            <div class="grid gap-4 mb-4 sm:grid-cols-1">
+                <div>
+                    <x-admin.input-label for="tags" :value="__('Tags (comma separated)')" />
+                    <x-admin.textarea id="tags" class="block" type="text" name="tags" :value="old('tags')" placeholder="Enter Tags" maxlength="1000" />
+                    <p class="text-xs mt-2 dark:text-gray-400">e.g. "tag 1, tag 2, tag 3"</p>
+                    <x-admin.input-error :messages="$errors->get('tags')" class="mt-2" />
                 </div>
             </div>
 

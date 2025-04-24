@@ -45,7 +45,7 @@
                     <x-admin.input-error :messages="$errors->get('is_global')" class="mt-2" />
                 </div>
 
-                @php
+                {{-- @php
                     $categories = $data?->categoryAttributes?->loadMissing('category') ?? collect();
                 @endphp
 
@@ -58,7 +58,7 @@
                         'category_name', 
                         $categories->isNotEmpty() ? $categories->pluck('category.title')->filter()->implode(', ') : ''
                     ),
-                ])
+                ]) --}}
             </div>
 
             <div class="items-center space-x-4 flex my-6">
@@ -75,7 +75,7 @@
         </form>
 
         {{-- categories --}}
-        @if ($categories->isNotEmpty())
+        {{-- @if ($categories->isNotEmpty())
             <hr class="dark:border-gray-700 mb-4">
 
             <h3 class="text-base mb-3">Categories information</h3>
@@ -100,7 +100,7 @@
                 @endif
 
             @endforeach
-        @endif
+        @endif --}}
 
     </div>
 </x-admin-app-layout>

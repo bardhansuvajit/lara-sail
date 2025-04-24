@@ -244,18 +244,33 @@
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 <div class="flex items-center space-x-2">
-                                    @if ($item->values)
+                                    @php
+                                        $values = $item->values;
+                                        $countValues = count($values);
+                                        $maxValuesToShow = 5;
+                                        $hasMoreValues = $countValues > $maxValuesToShow;
+                                    @endphp
+
+                                    @if ($countValues > 0)
                                         <div class="flex space-x-1">
-                                            @foreach ($item->values as $attribute_value)
-                                                @if ($attribute_value->status == 1)
-                                                    <p class="font-medium text-xs">{{ $attribute_value->title }}</p>
-                                                @else
-                                                    <p class="font-medium text-xs text-gray-400 dark:text-gray-500">{{ $attribute_value->title }}</p>
+                                            @foreach ($values as $attribute_index => $attribute_value)
+                                                @if ($hasMoreValues && $attribute_index >= $maxValuesToShow)
+                                                    @break
                                                 @endif
-                                                @if (!$loop->last) , @endif
+
+                                                <p class="font-medium text-xs @if($attribute_value->status != 1) text-gray-400 dark:text-gray-500 @endif">
+                                                    {{ $attribute_value->title }}
+                                                </p>
+
+                                                @if ($hasMoreValues && $attribute_index === ($maxValuesToShow - 1))
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">+{{ $countValues - $maxValuesToShow }} more</p>
+                                                @elseif(!$loop->last)
+                                                    <span>,</span>
+                                                @endif
                                             @endforeach
                                         </div>
                                     @endif
+
                                     <div>
                                         <x-admin.button-icon
                                             element="a"
@@ -271,14 +286,14 @@
                                 </div>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                @if ($item->categoryAttributes)
+                                {{-- @if ($item->categoryAttributes)
                                     <div class="flex space-x-1">
                                         @foreach ($item->categoryAttributes->loadMissing('category') as $attribute_value)
                                             <a href="{{route('admin.product.category.edit', $attribute_value->category_id)}}" class="text-xs underline hover:no-underline">{{ $attribute_value->category->title }}</a>
                                             @if (!$loop->last) , @endif
                                         @endforeach
                                     </div>
-                                @endif
+                                @endif --}}
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">

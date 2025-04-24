@@ -4,4 +4,5 @@ return [
     App\Providers\AppServiceProvider::class,
     App\Providers\RepositoryServiceProvider::class,
     Maatwebsite\Excel\ExcelServiceProvider::class,
+    Barryvdh\Debugbar\ServiceProvider::class,
 ];

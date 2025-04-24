@@ -13,11 +13,11 @@ class ProductVariationAttribute extends Model
 
     public function values()
     {
-        return $this->hasMany('App\Models\ProductVariationAttributeValue', 'attribute_id', 'id');
+        return $this->hasMany('App\Models\ProductVariationAttributeValue', 'attribute_id', 'id')->orderBy('position', 'asc')->orderBy('id', 'desc');
     }
 
-    public function categoryAttributes()
-    {
-        return $this->hasMany('App\Models\ProductCategoryVariationAttribute', 'attribute_id', 'id');
-    }
+    // public function categoryAttributes()
+    // {
+    //     return $this->hasMany('App\Models\ProductCategoryVariationAttribute', 'attribute_id', 'id');
+    // }
 }

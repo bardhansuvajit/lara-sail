@@ -402,7 +402,7 @@ if (positionButton) {
                     dragClass: 'rounded-none!',
                     onEnd: function (evt) {
                         const orderedIds = Array.from(sortable.children).map(el => el.dataset.id);
-                        console.log(orderedIds);
+                        // console.log(orderedIds);
                         // Livewire.dispatch('updateProductImageOrder', { ids: orderedIds });
 
                         const updateRoute = sortable.dataset.route;
@@ -419,6 +419,7 @@ if (positionButton) {
                         .then(response => response.json())
                         .then(data => {
                             console.log('Order updated:', data);
+                            showNotification('success', 'Position updated');
                         })
                         .catch(error => {
                             console.error('Error updating order:', error);

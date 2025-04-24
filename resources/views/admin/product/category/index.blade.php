@@ -282,11 +282,16 @@
                                 @endif
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                @if ($item->variationAttributes)
+                                @php
+                                    $categoryAttributeValues = $item->variationAttributeValues?->loadMissing('attributeValue') ?? collect();
+                                @endphp
+
+                                @if (count($categoryAttributeValues) > 0)
                                     <div class="flex space-x-1">
-                                        @foreach ($item->variationAttributes as $attrbuteId)
-                                            @if ($attrbuteId->attribute)
-                                                <a href="{{route('admin.product.variation.attribute.edit', $attrbuteId->attribute_id)}}" class="text-xs underline hover:no-underline">{{ $attrbuteId->attribute->title }}</a>
+                                        @foreach ($categoryAttributeValues as $attrbuteValue)
+                                            {{-- {{$attrbuteValue->attributeValue?->title}} --}}
+                                            @if ($attrbuteValue->attributeValue)
+                                                <a href="{{route('admin.product.variation.attribute.value.edit', $attrbuteValue->attribute_value_id)}}" class="text-xs underline hover:no-underline">{{ $attrbuteValue->attributeValue?->title }}</a>
                                             @else
                                                 <p class="text-xs text-red-600">ERROR</p>
                                             @endif
