@@ -16,6 +16,10 @@ return new class extends Migration
 
             $table->unsignedBigInteger('variation_id');
             $table->foreign('variation_id')->references('id')->on('product_variations')->onDelete('cascade');
+
+            $table->unsignedBigInteger('attribute_id');
+            $table->foreign('attribute_id')->references('id')->on('product_variation_attributes')->onDelete('cascade');
+
             $table->unsignedBigInteger('attribute_value_id');
             $table->foreign('attribute_value_id')->references('id')->on('product_variation_attribute_values')->onDelete('cascade');
 

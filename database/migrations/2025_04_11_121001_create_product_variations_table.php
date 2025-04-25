@@ -19,13 +19,14 @@ return new class extends Migration
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
 
             // Variation identifiers
+            $table->json('variation_identifier')->nullable()->comment('Auto-generated name like "Red-Small"');
             $table->string('sku')->unique()->nullable();
             $table->string('barcode')->unique()->nullable();
 
             // Inventory management
             $table->unsignedInteger('stock_quantity')->default(0);
             $table->boolean('track_quantity')->default(1);
-            $table->boolean('allow_backorders')->default(0);        // alow keep selling even when out of stock
+            $table->boolean('allow_backorders')->default(0);        // allow keep selling even when out of stock
             $table->unsignedInteger('sold_count')->default(0);
             $table->unsignedInteger('in_cart_count')->default(0);
 

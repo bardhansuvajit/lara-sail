@@ -17,16 +17,36 @@
         </div>
     </div>
 
-    <x-modal name="add-variant" maxWidth="6xl" show focusable>
-        @if (count($variations) > 0)
-            @foreach ($variations as $variation)
-                {{$variation->attributeValue->title}}
-                <br>
-                <br>
-                <br>
+    <x-modal name="add-variant" maxWidth="7xl" show focusable>
+        <div class="p-4">
+            @if (count($variations) > 0)
+            @foreach ($variations as $variationAttr)
+                {{-- {{$variationAttr}} --}}
+
+                <div class="mb-6">
+                    <h5 class="text-base font-medium hover:text-primary-600 transition-colors">
+                        <a href="{{ route('admin.product.variation.attribute.edit', $variationAttr->id) }}" 
+                        target="_blank"
+                        class="flex items-center gap-1">
+                            {{ $variationAttr->title }}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                                <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                            </svg>
+                        </a>
+                    </h5>
+
+                    @foreach ($variationAttr->values as $attrValue)
+                        <p class="text-sm font-bold">{{ $attrValue->title }}</p>
+
+                        {{$attrValue}}
+                    @endforeach
+                </div>
+
             @endforeach
         @else
             <p class="text-sm italic">{{ __('No variations found for this Category') }}</p>
         @endif
+        </div>
     </x-modal>    
 </div>
