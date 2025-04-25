@@ -92,19 +92,19 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
             $data->attribute_id = $array['attribute_id'];
             $data->title = $array['title'];
             $data->slug = Str::slug($array['title']);
-            $data->meta = isset($array['meta']) ? $array['meta'] : null;
+            $data->meta = !empty($array['meta']) ? $array['meta'] : null;
 
             // get max position for given attribute_id and type
             $lastPosition = ProductVariationAttributeValue::where('attribute_id', $array['attribute_id'])
-            ->where('type', isset($array['type']) ? $array['type'] : 1)
+            ->where('type', !empty($array['type']) ? $array['type'] : 1)
             ->max('position');
             $data->position = $lastPosition ? $lastPosition + 1 : 1;
 
-            $data->type = isset($array['type']) ? $array['type'] : 1;
-            $data->short_description = isset($array['short_description']) ? $array['short_description'] : null;
-            $data->long_description = isset($array['long_description']) ? $array['long_description'] : null;
-            $data->tags = isset($array['tags']) ? $array['tags'] : null;
-            $data->status = isset($array['status']) ? $array['status'] : 1;
+            $data->type = !empty($array['type']) ? $array['type'] : 1;
+            $data->short_description = !empty($array['short_description']) ? $array['short_description'] : null;
+            $data->long_description = !empty($array['long_description']) ? $array['long_description'] : null;
+            $data->tags = !empty($array['tags']) ? $array['tags'] : null;
+            $data->status = !empty($array['status']) ? $array['status'] : 1;
             $data->save();
 
             // category
@@ -372,9 +372,14 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
                 ProductVariationAttributeValue::create([
                     'attribute_id' => $item['attribute_id'] ? $item['attribute_id'] : null,
                     'title' => $item['title'] ? $item['title'] : null,
-                    'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
-                    'meta' => isset($item['meta']) ? $item['meta'] : null,
-                    'status' => isset($item['status']) ? $item['status'] : 0
+                    'slug' => !empty($item['slug']) ? Str::slug($item['title']) : null,
+                    'meta' => !empty($item['meta']) ? $item['meta'] : null,
+                    'type' => !empty($item['type']) ? $item['type'] : null,
+                    'short_description' => !empty($item['short_description']) ? $item['short_description'] : null,
+                    'long_description' => !empty($item['long_description']) ? $item['long_description'] : null,
+                    'tags' => !empty($item['tags']) ? $item['tags'] : null,
+                    'position' => !empty($item['position']) ? $item['position'] : 1,
+                    'status' => !empty($item['status']) ? $item['status'] : 0
                 ]);
 
                 $processedCount++;

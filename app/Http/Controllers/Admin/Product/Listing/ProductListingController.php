@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Interfaces\ProductListingInterface;
 use App\Interfaces\CountryInterface;
 use Illuminate\Validation\Rule;
+
+use App\Models\Product;
 
 class ProductListingController
 {
@@ -298,15 +301,109 @@ class ProductListingController
 
     public function bulk(Request $request)
     {
-        // dd($request->all());
+        // dd($request->all(), $request->action);
 
         $request->validate([
             'ids' => 'required|array',
-            'action' => 'required|in:delete,archive',
+            'action' => 'required|in:delete,archive,edit',
         ]);
 
-        $resp = $this->productListingRepository->bulkAction($request->except('_token'));
-        return redirect()->back()->with($resp['status'], $resp['message']);
+        if ($request->action == "edit") {
+            return redirect()->route('admin.product.listing.bulk.edit')
+            ->with('edit_ids', $request->ids);
+        } else {
+            $resp = $this->productListingRepository->bulkAction($request->except('_token'));
+            return redirect()->back()->with($resp['status'], $resp['message']);
+        }
+    }
+
+    public function bulkEdit()
+    {
+        if (!session()->has('edit_ids')) {
+            return redirect()->back()->with('error', 'No products selected for editing');
+        }
+    
+        $ids = session()->pull('edit_ids');
+        
+        $resp = $this->productListingRepository->getByIds($ids);
+        
+        if ($resp['code'] !== 200) {
+            return redirect()->back()->with('error', $resp['message']);
+        }
+    
+        return view('admin.product.listing.bulk-edit', [
+            'data' => $resp['data']
+        ]);
+    }
+
+    public function bulkUpdate(Request $request)
+    {
+        // dd($request->all());
+
+        $request->validate([
+            'id' => 'required|array',
+            'id.*' => 'exists:products,id',
+            'title' => 'required|array',
+            'title.*' => 'string|max:255',
+            'slug' => 'required|array',
+            'slug.*' => [
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($request) {
+                    $index = explode('.', $attribute)[1];
+                    $productId = $request->id[$index];
+                    
+                    if (Product::where('slug', $value)
+                        ->where('id', '!=', $productId)
+                        ->exists()) {
+                        $fail('The slug has already been taken.');
+                    }
+                },
+            ],
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            foreach ($request->id as $index => $id) {
+                $this->productListingRepository->update([
+                    'id' => $id,
+                    'title' => $request->title[$index],
+                    'slug' => $request->slug[$index],
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('admin.product.listing.bulk.edit')
+                ->with([
+                    'success' => count($request->id) . ' products updated successfully',
+                    'edit_ids' => $request->id
+                ]);
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Bulk update failed: '.$e->getMessage());
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Failed to update products. Please try again.');
+        }
+
+        // foreach ($request->id as $index => $id) {
+        //     $productData = [
+        //         'id' => $id,
+        //         'title' => $request->title[$index],
+        //         'slug' => $request->slug[$index],
+        //     ];
+
+        //     $this->productListingRepository->update($productData);
+        // }
+
+        // return redirect()->route('admin.product.listing.bulk.edit')
+        //     ->with('edit_ids', $request->id);
+
+        // return redirect()->back();
     }
 
     public function import(Request $request)

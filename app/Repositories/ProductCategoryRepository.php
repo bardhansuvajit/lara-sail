@@ -283,17 +283,19 @@ class ProductCategoryRepository implements ProductCategoryInterface
                     continue; // Skip rows without a title
                 }
 
+                // dd($item['parent_id']);
+
                 ProductCategory::create([
                     'title' => $item['title'] ? $item['title'] : null,
-                    'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
-                    'parent_id' => isset($item['parent_id']) ? $item['parent_id'] : null,
-                    'level' => isset($item['level']) ? $item['level'] : null,
-                    'short_description' => isset($item['short_description']) ? $item['short_description'] : null,
-                    'long_description' => isset($item['long_description']) ? $item['long_description'] : null,
-                    'tags' => isset($item['tags']) ? $item['tags'] : null,
-                    'meta_title' => isset($item['meta_title']) ? $item['meta_title'] : null,
-                    'meta_desc' => isset($item['meta_desc']) ? $item['meta_desc'] : null,
-                    'status' => isset($item['status']) ? $item['status'] : 0
+                    'slug' => !empty($item['title']) ? Str::slug($item['title']) : null,
+                    'parent_id' => !empty($item['parent_id']) ? $item['parent_id'] : null,
+                    'level' => !empty($item['level']) ? $item['level'] : null,
+                    'short_description' => !empty($item['short_description']) ? $item['short_description'] : null,
+                    'long_description' => !empty($item['long_description']) ? $item['long_description'] : null,
+                    'tags' => !empty($item['tags']) ? $item['tags'] : null,
+                    'meta_title' => !empty($item['meta_title']) ? $item['meta_title'] : null,
+                    'meta_desc' => !empty($item['meta_desc']) ? $item['meta_desc'] : null,
+                    'status' => !empty($item['status']) ? $item['status'] : 0
                 ]);
 
                 $processedCount++;

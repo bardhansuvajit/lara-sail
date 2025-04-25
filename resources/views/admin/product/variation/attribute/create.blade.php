@@ -44,11 +44,14 @@
                     </ul>
                     <x-admin.input-error :messages="$errors->get('is_global')" class="mt-2" />
                 </div>
+            </div>
 
-                {{-- @livewire('product-category-multi-select', [
-                    'category_id' => old('category_id', ''),
-                    'category_name' => old('category_name', ''),
-                ]) --}}
+            <div class="grid gap-4 mb-4 grid-cols-1">
+                <div>
+                    <x-admin.input-label for="values" :value="__('Bulk add - Values')" />
+                    <x-admin.textarea id="values" class="block" type="text" name="values" :value="old('values')" placeholder="Enter Values (Comma separated)" maxlength="1000" />
+                    <x-admin.input-error :messages="$errors->get('values')" class="mt-2" />
+                </div>
             </div>
 
             <div class="items-center space-x-4 flex my-6">

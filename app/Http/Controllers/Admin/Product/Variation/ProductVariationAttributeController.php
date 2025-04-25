@@ -54,6 +54,7 @@ class ProductVariationAttributeController
         $request->validate([
             'title' => 'required|min:2|max:255',
             'is_global' => 'required|in:0,1',
+            'values' => 'nullable|string|min:2'
         ]);
 
         $resp = $this->productVariationAttributeRepository->store($request->all());
@@ -81,6 +82,7 @@ class ProductVariationAttributeController
             'id' => 'required|integer|min:1',
             'title' => 'required|min:2|max:255',
             'is_global' => 'required|in:0,1',
+            'values' => 'nullable|string|min:2'
         ]);
 
         $resp = $this->productVariationAttributeRepository->update($request->all());

@@ -303,9 +303,9 @@ class ProductCategoryVariationAttributeRepository implements ProductCategoryVari
 
                 ProductCategoryVariationAttribute::create([
                     'title' => $item['title'] ? $item['title'] : null,
-                    'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
-                    'is_global' => $item['is_global'] ? $item['is_global'] : 0,
-                    'status' => isset($item['status']) ? $item['status'] : 0
+                    'slug' => !empty($item['title']) ? Str::slug($item['title']) : null,
+                    'is_global' => !empty($item['is_global']) ? $item['is_global'] : 0,
+                    'status' => !empty($item['status']) ? $item['status'] : 0
                 ]);
 
                 $processedCount++;

@@ -8,6 +8,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
+use App\Interfaces\ProductVariationAttributeValueInterface;
 
 use App\Exports\ProductVariationAttributesExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -15,10 +16,12 @@ use Maatwebsite\Excel\Facades\Excel;
 class ProductVariationAttributeRepository implements ProductVariationAttributeInterface
 {
     private TrashInterface $trashRepository;
+    private ProductVariationAttributeValueInterface $productVariationAttributeValueRepository;
 
-    public function __construct(TrashInterface $trashRepository)
+    public function __construct(TrashInterface $trashRepository, ProductVariationAttributeValueInterface $productVariationAttributeValueRepository)
     {
         $this->trashRepository = $trashRepository;
+        $this->productVariationAttributeValueRepository = $productVariationAttributeValueRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
@@ -91,6 +94,17 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
             $data->is_global = $array['is_global'] ? $array['is_global'] : 0;
             $data->save();
 
+            if (!empty($array['values'])) {
+                $explodedValues = array_map('trim', explode(',', $array['values']));
+
+                foreach ($explodedValues as $key => $singleValue) {
+                    $this->productVariationAttributeValueRepository->store([
+                        'attribute_id' => $data->id,
+                        'title' => $singleValue
+                    ]);
+                }
+            }
+
             DB::commit();
 
             return [
@@ -156,6 +170,17 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
                 $data['data']->save();
 
                 DB::commit();
+
+                if (!empty($array['values']) && count($data['data']->values) == 0) {
+                    $explodedValues = array_map('trim', explode(',', $array['values']));
+
+                    foreach ($explodedValues as $key => $singleValue) {
+                        $dd = $this->productVariationAttributeValueRepository->store([
+                            'attribute_id' => $array['id'],
+                            'title' => $singleValue
+                        ]);
+                    }
+                }
 
                 return [
                     'code' => 200,
@@ -275,12 +300,28 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
                     continue; // Skip rows without a title
                 }
 
-                ProductVariationAttribute::create([
+                $createdData = ProductVariationAttribute::create([
                     'title' => $item['title'] ? $item['title'] : null,
-                    'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
-                    'is_global' => $item['is_global'] ? $item['is_global'] : 0,
-                    'status' => isset($item['status']) ? $item['status'] : 0
+                    'slug' => !empty($item['title']) ? Str::slug($item['title']) : null,
+                    'is_global' => !empty($item['is_global']) ? $item['is_global'] : 0,
+                    'short_description' => !empty($item['short_description']) ? $item['short_description'] : null,
+                    'long_description' => !empty($item['long_description']) ? $item['long_description'] : null,
+                    'tags' => !empty($item['tags']) ? $item['tags'] : null,
+                    'position' => !empty($item['position']) ? $item['position'] : 1,
+                    'status' => !empty($item['status']) ? $item['status'] : 0
                 ]);
+
+                // attribute values
+                if (!empty($item['values']) && count($createdData->values) == 0) {
+                    $explodedValues = array_map('trim', explode(',', $item['values']));
+
+                    foreach ($explodedValues as $key => $singleValue) {
+                        $dd = $this->productVariationAttributeValueRepository->store([
+                            'attribute_id' => $createdData->id,
+                            'title' => $singleValue
+                        ]);
+                    }
+                }
 
                 $processedCount++;
             }

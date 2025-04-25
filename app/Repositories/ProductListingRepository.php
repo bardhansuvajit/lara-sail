@@ -140,7 +140,7 @@ class ProductListingRepository implements ProductListingInterface
             $pricingResp = $this->productPricingRepository->store($pricingData);
 
             // IMAGES
-            if ($array['images'] && count($array['images']) > 0) {
+            if (!empty($array['images']) && count($array['images']) > 0) {
                 foreach($array['images'] as $imageKey => $singleImage) {
                     $uploadResp = fileUpload($singleImage, 'p-img');
 
@@ -205,6 +205,45 @@ class ProductListingRepository implements ProductListingInterface
         }
     }
 
+    public function getByIds(Array $ids)
+    {
+        try {
+            if (empty($ids)) {
+                return [
+                    'code' => 400,
+                    'status' => 'error',
+                    'message' => 'No IDs provided',
+                    'data' => [],
+                ];
+            }
+
+            $data = Product::whereIn('id', $ids)->get();
+
+            if ($data->isNotEmpty()) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
     public function getBySlug(String $slug)
     {
         try {
@@ -245,57 +284,65 @@ class ProductListingRepository implements ProductListingInterface
             $data = $this->getById($array['id']);
 
             if ($data['code'] == 200) {
-                $data['data']->type = $array['type'];
-                $data['data']->title = $array['title'];
-                $data['data']->slug = Str::slug($array['title']);
-                $data['data']->short_description = $array['short_description'];
-                $data['data']->long_description = $array['long_description'];
-                $data['data']->category_id = $array['category_id'];
-                $data['data']->collection_ids = $array['collection_ids'];
+                if (!empty($array['type']))                 $data['data']->type = $array['type'];
+                if (!empty($array['title']))                $data['data']->title = $array['title'];
 
-                $data['data']->sku = $array['sku'];
-                $data['data']->track_quantity = $array['track_quantity'];
-                $data['data']->stock_quantity = $array['stock_quantity'];
-                $data['data']->allow_backorders = $array['allow_backorders'];
-                $data['data']->meta_title = $array['meta_title'];
-                $data['data']->meta_desc = $array['meta_description'];
-                // $data['data']->status = 0;
+                // slug
+                if (!empty($array['slug']))                 $data['data']->slug = $array['slug'];
+                else                                        $data['data']->slug = Str::slug($array['title']);
+
+                if (!empty($array['short_description']))    $data['data']->short_description = $array['short_description'];
+                if (!empty($array['long_description']))     $data['data']->long_description = $array['long_description'];
+                if (!empty($array['category_id']))          $data['data']->category_id = $array['category_id'];
+                if (!empty($array['collection_ids']))       $data['data']->collection_ids = $array['collection_ids'];
+
+                if (!empty($array['sku']))                  $data['data']->sku = $array['sku'];
+                if (!empty($array['track_quantity']))       $data['data']->track_quantity = $array['track_quantity'];
+                if (!empty($array['stock_quantity']))       $data['data']->stock_quantity = $array['stock_quantity'];
+                if (!empty($array['allow_backorders']))     $data['data']->allow_backorders = $array['allow_backorders'];
+                if (!empty($array['meta_title']))           $data['data']->meta_title = $array['meta_title'];
+                if (!empty($array['meta_description']))     $data['data']->meta_desc = $array['meta_description'];
                 $data['data']->save();
 
                 // PRICING
-                // **** pricing 1 - setting up data
-                $countryData = $this->countryRepository->getById($array['currency_country_id']);
-                if ($countryData['code'] == 200) {
-                    $currencyCode = $countryData['data']->currency_code;
-                    $currencySymbol = $countryData['data']->currency_symbol;
-                }
-                $pricingData = [
-                    'product_id' => $array['id'],
-                    'country_id' => $array['currency_country_id'],
-                    'currency_code' => $currencyCode,
-                    'currency_symbol' => $currencySymbol,
-                    'selling_price' => $array['selling_price'],
-                    'mrp' => $array['mrp'],
-                    'discount' => $array['discount_percentage'],
-                    'cost' => $array['cost'],
-                    'profit' => $array['profit'],
-                    'margin' => $array['margin_percentage'],
-                ];
+                if (
+                    !empty($array['currency_country_id']) &&
+                    !empty($array['selling_price'])
+                ) {
+                    // **** pricing 1 - setting up data
+                    $countryData = $this->countryRepository->getById($array['currency_country_id']);
+                    if ($countryData['code'] == 200) {
+                        $currencyCode = $countryData['data']->currency_code;
+                        $currencySymbol = $countryData['data']->currency_symbol;
+                    }
+                    $pricingData = [
+                        'product_id' => $array['id'],
+                        'country_id' => $array['currency_country_id'],
+                        'currency_code' => $currencyCode,
+                        'currency_symbol' => $currencySymbol,
+                        'selling_price' => $array['selling_price'],
+                        'mrp' => $array['mrp'],
+                        'discount' => $array['discount_percentage'],
+                        'cost' => $array['cost'],
+                        'profit' => $array['profit'],
+                        'margin' => $array['margin_percentage'],
+                    ];
 
-                // **** pricing 2 - check if pricing exists for this product id & country id
-                $existingPricingData = $this->productPricingRepository->getByProductIdCountryId($array['id'], $array['currency_country_id']);
+                    // **** pricing 2 - check if pricing exists for this product id & country id
+                    $existingPricingData = $this->productPricingRepository->getByProductIdCountryId($array['id'], $array['currency_country_id']);
 
-                // **** pricing 2 - if pricing exists update it, else add new
-                if ($existingPricingData['code'] == 200) {
-                    $existingPricingDataId = $existingPricingData['data']->id;
-                    // dd($existingPricingDataId);
-                    $pricingResp = $this->productPricingRepository->update($existingPricingDataId, $pricingData);
-                } else {
-                    $pricingResp = $this->productPricingRepository->store($pricingData);
+                    // **** pricing 2 - if pricing exists update it, else add new
+                    if ($existingPricingData['code'] == 200) {
+                        $existingPricingDataId = $existingPricingData['data']->id;
+                        // dd($existingPricingDataId);
+                        $pricingResp = $this->productPricingRepository->update($existingPricingDataId, $pricingData);
+                    } else {
+                        $pricingResp = $this->productPricingRepository->store($pricingData);
+                    }
                 }
 
                 // IMAGES
-                if ($array['images'] && count($array['images']) > 0) {
+                if (!empty($array['images']) && count($array['images']) > 0) {
                     foreach($array['images'] as $imageKey => $singleImage) {
                         $uploadResp = fileUpload($singleImage, 'p-img');
 

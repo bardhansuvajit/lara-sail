@@ -80,6 +80,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/update', 'update')->name('update');
                 Route::delete('/delete/{id}', 'delete')->name('delete');
                 Route::post('/bulk', 'bulk')->name('bulk');
+                Route::get('/bulk/edit', 'bulkEdit')->name('bulk.edit');
+                Route::post('/bulk/update', 'bulkUpdate')->name('bulk.update');
                 Route::post('/import', 'import')->name('import');
                 Route::get('/export/{type}', 'export')->name('export');
             });

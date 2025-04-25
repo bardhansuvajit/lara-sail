@@ -282,13 +282,14 @@ class ProductCollectionRepository implements ProductCollectionInterface
 
                 ProductCollection::create([
                     'title' => $item['title'] ? $item['title'] : null,
-                    'slug' => isset($item['title']) ? Str::slug($item['title']) : null,
-                    'short_description' => $item['short_description'] ? $item['short_description'] : null,
-                    'long_description' => $item['long_description'] ? $item['long_description'] : null,
-                    'tags' => $item['tags'] ? $item['tags'] : null,
-                    'meta_title' => $item['meta_title'] ? $item['meta_title'] : null,
-                    'meta_desc' => $item['meta_desc'] ? $item['meta_desc'] : null,
-                    'status' => $item['status'] ? $item['status'] : 0
+                    'slug' => !empty($item['title']) ? Str::slug($item['title']) : null,
+                    'short_description' => !empty($item['short_description']) ? $item['short_description'] : null,
+                    'long_description' => !empty($item['long_description']) ? $item['long_description'] : null,
+                    'tags' => !empty($item['tags']) ? $item['tags'] : null,
+                    'meta_title' => !empty($item['meta_title']) ? $item['meta_title'] : null,
+                    'meta_desc' => !empty($item['meta_desc']) ? $item['meta_desc'] : null,
+                    'position' => !empty($item['position']) ? $item['position'] : 1,
+                    'status' => !empty($item['status']) ? $item['status'] : 0
                 ]);
 
                 $processedCount++;

@@ -1,3 +1,4 @@
-title,level,description,tags
-test 11,1,test 1 desc,tags1
-test 22,2,test 2 desc,tags2
+"title","slug","short_description","long_description","tags","meta_title","meta_desc","position","status"
+"Sale 60% OFF","sale-60-off","","","","","","1","1"
+"Mens Best Friend","mens-best-friend","","","","","","2","1"
+"Summer Collection","summer-collection","","","","","","3","1"

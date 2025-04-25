@@ -38,7 +38,7 @@
                 </div>
             </div>
 
-            <div class="grid gap-4 mb-4 sm:grid-cols-1">
+            <div class="grid gap-4 mb-4 grid-cols-1">
                 <div>
                     <x-admin.input-label for="short_description" :value="__('Short Description')" />
                     <x-admin.textarea id="short_description" class="block" type="text" name="short_description" :value="old('short_description')" placeholder="Enter Short Description" maxlength="1000" />
@@ -46,7 +46,7 @@
                 </div>
             </div>
 
-            <div class="grid gap-4 mb-4 sm:grid-cols-1">
+            <div class="grid gap-4 mb-4 grid-cols-1">
                 <div>
                     <x-admin.input-label for="long_description" :value="__('Long Description')" />
                     <x-admin.textarea id="long_description" class="block" type="text" name="long_description" :value="old('long_description')" placeholder="Enter Long Description" maxlength="1000" />
@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <div class="grid gap-4 mb-4 sm:grid-cols-1">
+            <div class="grid gap-4 mb-4 grid-cols-1">
                 <div>
                     <x-admin.input-label for="tags" :value="__('Tags (comma separated)')" />
                     <x-admin.textarea id="tags" class="block" type="text" name="tags" :value="old('tags')" placeholder="Enter Tags" maxlength="1000" />

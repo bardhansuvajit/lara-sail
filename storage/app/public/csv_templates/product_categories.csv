@@ -1,3 +1,6 @@
-title,level,description,tags
-test 1,1,test 1 desc,tags1
-test 2,2,test 2 desc,tags2
+title,slug,parent_id,level,short_description,long_description,size_guide,meta_title,meta_desc,tags,position,status
+T-shirt,t-shirt,,1,,,,,,tags1,1,1
+Shoes,shoes,,1,,,,,,tags2,1,1
+Mens Shoes,mens-shoes,2,2,,,,,,,1,1
+Womens Shoes,womens-shoes,2,2,,,,,,,1,1
+Kids Shoes,kids-shoes,2,2,,,,,,,1,1
