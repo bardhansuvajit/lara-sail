@@ -226,6 +226,7 @@
                         </th>
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Title</th>
+                        <th scope="col" class="px-2 py-1">Category</th>
                         <th scope="col" class="px-2 py-1">Rating</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
@@ -253,13 +254,20 @@
                                     @endif
 
                                     <div>
-                                        <a href="{{ route('admin.product.listing.edit', $item->id) }}" class="hover:underline">
+                                        <a href="{{ route('admin.product.listing.edit', $item->id) }}" class="underline hover:no-underline">
                                             <p class="text-xs font-bold">{{ $item->title }}</p>
                                         </a>
-                                        {{-- <p class="text-xs">
+                                        <p class="text-xs">
                                             <span class="text-gray-500">{{ $item->slug }}</span>
-                                        </p> --}}
+                                        </p>
                                     </div>
+                                </div>
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-gray-400">
+                                <div>
+                                    <a href="{{ route('admin.product.category.edit', $item->category_id) }}" class="underline hover:no-underline">
+                                        <p class="text-xs font-bold">{{ $item->category->title }}</p>
+                                    </a>
                                 </div>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">

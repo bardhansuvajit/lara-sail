@@ -23,7 +23,7 @@ class ProductVariationAttributeController
         $request->validate([
             'keyword' => 'nullable|string|max:255',
             'perPage' => 'nullable|string',
-            'sortBy' => 'nullable|string|in:id,title',
+            'sortBy' => 'nullable|string|in:id,title,position',
             'sortOrder' => 'nullable|string|in:asc,desc',
             'status' => 'nullable|string|in:0,1',
         ]);
@@ -143,5 +143,11 @@ class ProductVariationAttributeController
         }
 
         return redirect()->back()->with('error', $resp['message']);
+    }
+
+    public function position(Request $request)
+    {
+        $resp = $this->productVariationAttributeRepository->position($request->ids);
+        // return redirect()->back()->with($resp['status'], $resp['message']);
     }
 }

@@ -54,8 +54,8 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
 
             // page
             $data = $perPage !== 'all'
-            ? $query->orderBy($sortBy, $sortOrder)->paginate($perPage)->withQueryString()
-            : $query->orderBy($sortBy, $sortOrder)->get();
+            ? $query->orderBy($sortBy, $sortOrder)->with('attribute', 'categoryAttributes', 'categories')->paginate($perPage)->withQueryString()
+            : $query->orderBy($sortBy, $sortOrder)->with('attribute', 'categoryAttributes', 'categories')->get();
 
             if ($data->isNotEmpty()) {
                 return [

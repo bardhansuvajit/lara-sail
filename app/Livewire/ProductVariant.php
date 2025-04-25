@@ -23,12 +23,6 @@ class ProductVariant extends Component
 
     public function loadVariations()
     {
-        // $query = ProductVariationAttribute::query();
-        // $query->where(function ($query) use ($keyword) {
-        //     $query->where('status', 1);
-        // });
-        // $data = $query->orderBy('position', 'asc')->with('values.categories')->get();
-
         $this->variations = ProductVariationAttribute::query()
             ->where('status', 1)
             ->where(function($query) {

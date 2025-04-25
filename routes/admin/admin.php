@@ -168,6 +168,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                     Route::post('/bulk', 'bulk')->name('bulk');
                     Route::post('/import', 'import')->name('import');
                     Route::get('/export/{type}', 'export')->name('export');
+                    Route::post('/position', 'position')->name('position');
                 });
 
                 // attribute value

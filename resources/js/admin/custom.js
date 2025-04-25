@@ -384,7 +384,15 @@ if (positionButton) {
     positionButton.addEventListener('click', function () {
         if (parentCheckbox && otherCheckboxes && positionTabs) {
             if (!parentCheckbox.classList.contains('hidden')) {
-                positionButton.classList.add('border-2', 'border-gray-800', 'dark:border-gray-300');
+                // positionButton.classList.add('border-2', 'border-gray-800', 'dark:border-white');
+                positionButton.classList.add(
+                    '!text-white',
+                    '!bg-primary-600',
+                    '!border-primary-600',
+                    'hover:!bg-primary-700',
+                    'dark:!bg-primary-600',
+                    'dark:hover:!bg-primary-700'
+                );
                 positionTabs.forEach(checkbox => {
                     checkbox.classList.remove('hidden');
                 });
@@ -427,7 +435,15 @@ if (positionButton) {
                     }
                 });
             } else {
-                positionButton.classList.remove('border-2', 'border-gray-800', 'dark:border-gray-300');
+                // positionButton.classList.remove('border-2', 'border-gray-800', 'dark:border-gray-300');
+                positionButton.classList.remove(
+                    '!text-white',
+                    '!bg-primary-600',
+                    '!border-primary-600',
+                    'hover:!bg-primary-700',
+                    'dark:!bg-primary-600',
+                    'dark:hover:!bg-primary-700'
+                );
                 positionTabs.forEach(checkbox => {
                     checkbox.classList.add('hidden');
                 });
