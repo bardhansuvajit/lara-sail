@@ -371,10 +371,10 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
 
                 ProductVariationAttributeValue::create([
                     'attribute_id' => $item['attribute_id'] ? $item['attribute_id'] : null,
-                    'title' => $item['title'] ? $item['title'] : null,
-                    'slug' => !empty($item['slug']) ? Str::slug($item['title']) : null,
+                    'title' => $item['title'],
+                    'slug' => Str::slug($item['title']),
                     'meta' => !empty($item['meta']) ? $item['meta'] : null,
-                    'type' => !empty($item['type']) ? $item['type'] : null,
+                    'type' => !empty($item['type']) ? $item['type'] : 1,
                     'short_description' => !empty($item['short_description']) ? $item['short_description'] : null,
                     'long_description' => !empty($item['long_description']) ? $item['long_description'] : null,
                     'tags' => !empty($item['tags']) ? $item['tags'] : null,

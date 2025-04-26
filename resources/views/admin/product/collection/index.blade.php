@@ -56,6 +56,17 @@
                 @endslot
                 {{ __('Export') }}
             </x-admin.button>
+
+            <x-admin.button 
+                element="button" 
+                tag="secondary" 
+                title="Position" 
+                id="positionButton">
+                @slot('icon')
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z"/></svg>
+                @endslot
+                {{ __('Position') }}
+            </x-admin.button>
         </div>
     </section>
 
@@ -92,6 +103,7 @@
                                 @slot('options')
                                     <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('ID') }} </x-admin.input-select-option>
                                     <x-admin.input-select-option value="title" :selected="request()->input('sortBy') == 'title'"> {{ __('Title') }} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="position" :selected="request()->input('sortBy') == 'position'"> {{ __('Position') }} </x-admin.input-select-option>
                                 @endslot
                             </x-admin.input-select>
                         </div>
@@ -203,7 +215,7 @@
         <div class="overflow-x-auto mb-3">
             <table class="w-full text-xs text-left text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
+                    <tr class="h-8">
                         <th scope="col" class="p-2">
                             <x-admin.input-checkbox id="checkbox-all" />
                         </th>
@@ -212,16 +224,21 @@
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="sortable-container" data-route="{{ route('admin.product.collection.position') }}">
                     @forelse ($data as $item)
-                        <tr class="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <tr class="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700" data-id="{{$item->id}}">
                             <td class="p-2 w-2">
                                 <x-admin.input-checkbox 
+                                    class="w-[1.2rem]"
                                     id="checkbox-table-search-{{ $item->id }}"
                                     onclick="event.stopPropagation()"
                                     form="bulActionForm" 
                                     name="ids[]" 
                                     value="{{ $item->id }}" />
+
+                                <div class="position-tab handle cursor-grab hidden">
+                                    <svg class="size-4 text-primary-500 dark:text-primary-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z"/></svg>
+                                </div>
                             </td>
                             <td scope="row" class="px-2 py-1 w-8 text-gray-900 dark:text-white">
                                 <p class="text-xs">{{ $item->id }}</p>

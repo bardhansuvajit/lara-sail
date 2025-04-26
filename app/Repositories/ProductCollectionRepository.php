@@ -364,4 +364,28 @@ class ProductCollectionRepository implements ProductCollectionInterface
             ];
         }
     }
+
+    public function position(Array $ids)
+    {
+        try {
+            foreach ($ids as $index => $id) {
+                ProductCollection::where('id', $id)->update([
+                    'position' => $index + 1
+                ]);
+            }
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Position updated'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while positioning data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
 }

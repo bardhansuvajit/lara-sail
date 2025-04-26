@@ -13,7 +13,7 @@
                 <form action="{{ route('admin.product.listing.bulk.update') }}" method="post">@csrf
                     <table class="w-full text-xs text-left text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
+                            <tr class="h-8">
                                 <th scope="col" class="px-2 py-1 text-start">ID</th>
                                 <th scope="col" class="px-2 py-1">Title</th>
                                 <th scope="col" class="px-2 py-1">Slug</th>

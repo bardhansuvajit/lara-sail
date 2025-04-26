@@ -124,7 +124,7 @@
         <div class="overflow-x-auto mb-3">
             <table class="w-full text-xs text-left text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
+                    <tr class="h-8">
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Data</th>
                         <th scope="col" class="px-2 py-1">Model</th>

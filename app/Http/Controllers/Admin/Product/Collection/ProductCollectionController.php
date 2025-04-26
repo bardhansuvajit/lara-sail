@@ -23,7 +23,7 @@ class ProductCollectionController
         $request->validate([
             'keyword' => 'nullable|string|max:255',
             'perPage' => 'nullable|string',
-            'sortBy' => 'nullable|string|in:id,title,slug',
+            'sortBy' => 'nullable|string|in:id,title,position',
             'sortOrder' => 'nullable|string|in:asc,desc',
             'status' => 'nullable|string|in:0,1'
         ]);
@@ -143,5 +143,11 @@ class ProductCollectionController
         }
 
         return redirect()->back()->with('error', $resp['message']);
+    }
+
+    public function position(Request $request)
+    {
+        $resp = $this->productCollectionRepository->position($request->ids);
+        // return redirect()->back()->with($resp['status'], $resp['message']);
     }
 }
