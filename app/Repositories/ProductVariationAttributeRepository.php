@@ -92,6 +92,9 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
             $data->title = $array['title'];
             $data->slug = Str::slug($array['title']);
             $data->is_global = $array['is_global'] ? $array['is_global'] : 0;
+            $data->short_description = !empty($array['short_description']) ? $array['short_description'] : null;
+            $data->long_description = !empty($array['long_description']) ? $array['long_description'] : null;
+            $data->tags = !empty($array['tags']) ? $array['tags'] : null;
             $data->save();
 
             if (!empty($array['values'])) {
@@ -167,6 +170,9 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
                 $data['data']->title = $array['title'];
                 $data['data']->slug = Str::slug($array['title']);
                 $data['data']->is_global = $array['is_global'] ? $array['is_global'] : 0;
+                $data['data']->short_description = isset($array['short_description']) ? $array['short_description'] : null;
+                $data['data']->long_description = isset($array['long_description']) ? $array['long_description'] : null;
+                $data['data']->tags = isset($array['tags']) ? $array['tags'] : null;
                 $data['data']->save();
 
                 DB::commit();

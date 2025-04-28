@@ -54,11 +54,18 @@ class ProductVariationAttributeController
         $request->validate([
             'title' => 'required|min:2|max:255',
             'is_global' => 'required|in:0,1',
-            'values' => 'nullable|string|min:2'
+            'values' => 'nullable|string|min:2',
+            'short_description' => 'nullable|string|min:2|max:1000',
+            'long_description' => 'nullable|string|min:2',
+            'tags' => 'nullable|string|min:1'
         ]);
 
         $resp = $this->productVariationAttributeRepository->store($request->all());
-        return redirect()->route('admin.product.variation.attribute.index')->with($resp['status'], $resp['message']);
+        if (!empty($request->stay) && $request->stay == 'yes') {
+            return redirect()->route('admin.product.variation.attribute.index')->with($resp['status'], $resp['message']);
+        } else {
+            return redirect()->route('admin.product.variation.attribute.create')->with($resp['status'], $resp['message']);
+        }
     }
 
     public function edit(Int $id): View|RedirectResponse
@@ -82,7 +89,10 @@ class ProductVariationAttributeController
             'id' => 'required|integer|min:1',
             'title' => 'required|min:2|max:255',
             'is_global' => 'required|in:0,1',
-            'values' => 'nullable|string|min:2'
+            'values' => 'nullable|string|min:2',
+            'short_description' => 'nullable|string|min:2|max:1000',
+            'long_description' => 'nullable|string|min:2',
+            'tags' => 'nullable|string|min:1'
         ]);
 
         $resp = $this->productVariationAttributeRepository->update($request->all());

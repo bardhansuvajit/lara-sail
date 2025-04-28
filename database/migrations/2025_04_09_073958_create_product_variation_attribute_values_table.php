@@ -24,7 +24,7 @@ return new class extends Migration
             // Type
             // `size`/ other attributes have different values based on Category. 
             // e.g. Type 1 has values for T-shirt | Type 2 has values for Mens Shoes | Type 3 has values for Kids Shoes
-            $table->tinyInteger('type')->default(1)->comment('Optional column'); 
+            $table->tinyInteger('type')->default(1);
 
             // Description/ Tags
             $table->text('short_description')->nullable();

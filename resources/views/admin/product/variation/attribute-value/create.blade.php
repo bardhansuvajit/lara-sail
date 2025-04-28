@@ -63,6 +63,18 @@
                 </div>
             </div>
 
+            <div class="grid gap-4 mb-4 grid-cols-1">
+                <div>
+                    <x-admin.input-checkbox 
+                        class=""
+                        id="stay"
+                        label="Save changes and stay in this page" 
+                        name="stay" 
+                        value="yes"
+                        checked />
+                </div>
+            </div>
+
             <div class="items-center space-x-4 flex my-6">
                 <x-admin.button
                     type="submit"

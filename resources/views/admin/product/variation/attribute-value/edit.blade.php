@@ -7,6 +7,12 @@
     ]"
 >
 
+    {{-- @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            <p>{{$error}}</p>
+        @endforeach
+    @endif --}}
+
     <div class="w-full mt-2">
         <form action="{{ route('admin.product.variation.attribute.value.update') . (request()->getQueryString() ? '?'.request()->getQueryString() : '') }}" method="post" enctype="multipart/form-data">
             @csrf

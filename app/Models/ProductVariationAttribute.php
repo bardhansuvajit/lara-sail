@@ -9,7 +9,7 @@ class ProductVariationAttribute extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'slug', 'is_global', 'status'];
+    protected $fillable = ['title', 'slug', 'is_global', 'short_description', 'long_description', 'tags', 'position', 'status'];
 
     public function values()
     {

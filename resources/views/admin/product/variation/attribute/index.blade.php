@@ -282,7 +282,7 @@
                                                 </p>
 
                                                 @if ($hasMoreValues && $attribute_index === ($maxValuesToShow - 1))
-                                                    <p class="text-xs text-gray-500 dark:text-gray-400">+{{ $countValues - $maxValuesToShow }} more</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">... +{{ $countValues - $maxValuesToShow }} more</p>
                                                 @elseif(!$loop->last)
                                                     <span>,</span>
                                                 @endif

@@ -73,8 +73,8 @@ class ProductVariationAttributeValueController
         $request->validate([
             'attribute_id' => 'required|integer|min:1|exists:product_variation_attributes,id',
             'title' => 'required|string|min:1|max:255',
-            'category_id' => 'required|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
-            'category_name' => 'required|string|min:2',
+            'category_id' => 'nullable|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
+            'category_name' => 'nullable|string|min:2',
             'type' => 'nullable|integer|min:1',
             'short_description' => 'nullable|string|min:2|max:1000',
             'long_description' => 'nullable|string|min:2',
@@ -82,9 +82,15 @@ class ProductVariationAttributeValueController
         ]);
 
         $resp = $this->productVariationAttributeValueRepository->store($request->all());
-        return redirect()
+        if (!empty($request->stay) && $request->stay == 'yes') {
+            return redirect()
+            ->route('admin.product.variation.attribute.value.create', request()->query())
+            ->with($resp['status'], $resp['message']);
+        } else {
+            return redirect()
             ->route('admin.product.variation.attribute.value.index', request()->query())
             ->with($resp['status'], $resp['message']);
+        }
     }
 
     public function edit(Int $id): View|RedirectResponse
@@ -108,8 +114,8 @@ class ProductVariationAttributeValueController
             'id' => 'required|integer|min:1',
             'attribute_id' => 'required|integer|min:1|exists:product_variation_attributes,id',
             'title' => 'required|string|min:1|max:255',
-            'category_id' => 'required|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
-            'category_name' => 'required|string|min:2',
+            'category_id' => 'nullable|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
+            'category_name' => 'nullable|string|min:2',
             'type' => 'nullable|integer|min:1',
             'short_description' => 'nullable|string|min:2|max:1000',
             'long_description' => 'nullable|string|min:2',

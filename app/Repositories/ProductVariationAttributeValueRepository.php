@@ -205,27 +205,27 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
                     $attrValueExistData = $this->productCategoryVariationAttributeRepository->exists([
                         'attribute_value_id' => $data['data']->id
                     ]);
-                
+
                     if ($attrValueExistData['code'] == 200) {
                         // Get existing category IDs
                         $existingCategories = $attrValueExistData['data']->pluck('category_id')->toArray();
-                        
+
                         // Find categories to remove (exist in DB but not in new list)
                         $categoriesToRemove = array_diff($existingCategories, $category_ids);
-                        
+
                         if (!empty($categoriesToRemove)) {
                             // Get IDs of records to delete
                             $recordsToDelete = $attrValueExistData['data']
                                 ->whereIn('category_id', $categoriesToRemove)
                                 ->pluck('id')
                                 ->toArray();
-                                
+
                             $deleteChk = $this->productCategoryVariationAttributeRepository->bulkAction([
                                 'ids' => $recordsToDelete,
                                 'action' => 'delete'
                             ]);
                         }
-                        
+
                         // Find categories to add (exist in new list but not in DB)
                         $categoriesToAdd = array_diff($category_ids, $existingCategories);
                         foreach ($categoriesToAdd as $category_id) {
@@ -374,7 +374,7 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
                     'title' => $item['title'],
                     'slug' => Str::slug($item['title']),
                     'meta' => !empty($item['meta']) ? $item['meta'] : null,
-                    'type' => !empty($item['type']) ? $item['type'] : 1,
+                    'type' => !empty($item['type']) ? (int) $item['type'] : 1,
                     'short_description' => !empty($item['short_description']) ? $item['short_description'] : null,
                     'long_description' => !empty($item['long_description']) ? $item['long_description'] : null,
                     'tags' => !empty($item['tags']) ? $item['tags'] : null,
