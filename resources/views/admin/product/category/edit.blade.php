@@ -81,6 +81,27 @@
                                 <p class="mt-2 text-sm text-green-500 dark:text-green-600">
                                     <span class="italic font-black">{{ __('Global variation') }}</span> {{ __('Values are automatically available to all categories') }}
                                 </p>
+
+                                @foreach ($singleVariation->values->groupBy('type') as $type => $values)
+                                    <div class="mb-4 last:mb-0">
+                                        <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 inline-block">Type {{ $type }}</span>
+                                        <div class="flex flex-wrap gap-2">
+                                            @foreach ($values as $value)
+                                                <div class="border dark:border-gray-700 text-center overflow-hidden min-w-[40px] bg-white dark:bg-gray-700">
+                                                    <p class="text-sm p-2 bg-gray-50 dark:bg-gray-600">{{ $value->title }}</p>
+                                                    <x-admin.button-icon
+                                                        element="a"
+                                                        tag="success"
+                                                        class="w-full !rounded-none cursor-pointer" >
+                                                        @slot('icon')
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-4 h-4" fill="currentColor"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>
+                                                        @endslot
+                                                    </x-admin.button-icon>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endforeach
                             @else
                                 @foreach ($singleVariation->values->groupBy('type') as $type => $values)
                                     <div class="mb-4 last:mb-0">

@@ -10,6 +10,7 @@ class ProductVariant extends Component
     public int $product_id; 
     public int $category_id;
     public $variations;
+    public string $search = '';
 
     public function mount(
         $product_id, 
@@ -18,6 +19,11 @@ class ProductVariant extends Component
     {
         $this->product_id = $product_id;
         $this->category_id = $category_id;
+        $this->loadVariations();
+    }
+
+    public function updatedSearch()
+    {
         $this->loadVariations();
     }
 
@@ -37,11 +43,14 @@ class ProductVariant extends Component
             })
             ->with(['values' => function($query) {
                 $query->where('status', 1)
-                      ->where(function($q) {
-                          $q->whereHas('categories', fn($q) => $q->where('category_id', $this->category_id))
-                            ->orWhereHas('attribute', fn($q) => $q->where('is_global', 1));
-                      })
-                      ->with('categories'); // Eager load categories if needed
+                        ->where(function($q) {
+                            $q->whereHas('categories', fn($q) => $q->where('category_id', $this->category_id))
+                                ->orWhereHas('attribute', fn($q) => $q->where('is_global', 1));
+                        })
+                        ->when($this->search, function($q) {
+                            $q->where('title', 'like', '%'.$this->search.'%');
+                        })
+                        ->with('categories'); // Eager load categories if needed
             }])
             ->orderBy('position', 'asc')
             ->get();
