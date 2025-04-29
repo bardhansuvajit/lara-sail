@@ -62,9 +62,9 @@ class ProductVariationAttributeController
 
         $resp = $this->productVariationAttributeRepository->store($request->all());
         if (!empty($request->stay) && $request->stay == 'yes') {
-            return redirect()->route('admin.product.variation.attribute.index')->with($resp['status'], $resp['message']);
-        } else {
             return redirect()->route('admin.product.variation.attribute.create')->with($resp['status'], $resp['message']);
+        } else {
+            return redirect()->route('admin.product.variation.attribute.index')->with($resp['status'], $resp['message']);
         }
     }
 
