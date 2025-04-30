@@ -87,16 +87,13 @@
 
                     <div class="col-span-1">
                         {{-- heading --}}
-                        <h5 class="text-xs font-bold text-gray-700 dark:text-gray-200"> {{ __('Create New Variation') }} </h5>
-                        <p class="mb-3 text-xs text-gray-500 dark:text-gray-400"> {{ __('New variation will be displayed here') }} </p>
+                        {{-- <h5 class="text-xs font-bold text-gray-700 dark:text-gray-200"> {{ __('Create New Variation') }} </h5>
+                        <p class="mb-3 text-xs text-gray-500 dark:text-gray-400"> {{ __('New variation will be displayed here') }} </p> --}}
 
-                        <div id="selectedVariationsPanel" class="mb-6 p-4 border rounded-lg dark:border-gray-700" style="display: none;">
+                        <div id="selectedVariationsPanel" class="" style="display: none;">
                             <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg">
-                                <div class="px-4 py-3 border-b dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
-                                    <h5 class="text-sm font-medium text-gray-700 dark:text-gray-200">Selected Variations</h5>
-                                </div>
                                 <div id="selectedVariationsList" class="divide-y divide-gray-200 dark:divide-gray-700"></div>
-                                <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700/50 text-right">
+                                <div class="px-4 py-3 bg-gray-200 dark:bg-gray-700/50 text-right">
                                     <button 
                                         id="saveVariantsBtn"
                                         type="button" 
@@ -105,7 +102,7 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                                         </svg>
-                                        Save Variants
+                                        Save this Variant
                                     </button>
                                 </div>
                             </div>
@@ -183,7 +180,7 @@
 
         selectedVariations.forEach(variation => {
             const item = document.createElement('div');
-            item.className = 'flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors';
+            item.className = 'flex items-center justify-between px-4 py-3 bg-gray-200/20 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors';
             item.innerHTML = `
                 <div class="flex items-center">
                     <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-300 mr-3">
