@@ -1,29 +1,132 @@
-<div>
-    <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
-        <div>
-            <button 
-                type="button" 
-                class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500" 
-                x-data=""
-                x-on:click.prevent="$dispatch('open-modal', 'add-variant');"
-            >
-                <div class="flex items-center">
-                    <div class="w-3 h-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+<div wire:key="product-variant-{{ $product_id }}">
+    @if(!empty($existingVariations['raw']) && count($existingVariations['raw']) > 0)
+        <div id="existingVariationsPanelDetailed" class="grid gap-4 mb-3 grid-cols-1">
+            <div>
+                <button 
+                    type="button" 
+                    class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500" 
+                    x-data=""
+                    x-on:click.prevent="$dispatch('open-modal', 'add-variant');"
+                >
+                    <div class="flex items-center">
+                        <div class="w-3 h-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                        </div>
+                        Add more options like Colors and Size
                     </div>
-                    Add options like Colors and Size
-                </div>
-            </button>
-        </div>
-    </div>
+                </button>
+            </div>
 
-    <x-modal name="add-variant" maxWidth="7xl" show focusable>
+            <div wire:key="existing-variations-{{ $product_id }}">
+                {{-- heading --}}
+                <div class="space-y-4">
+                    <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg">
+                        <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                            @foreach($existingVariations['raw'] as $variationIndex => $variation)
+                                <div class="p-3 hover:bg-gray-50 {{ ($variationIndex % 2 == 0) ? 'dark:bg-gray-700/50' : 'dark:bg-gray-700/20' }} dark:hover:bg-gray-900/50 transition-colors">
+                                    <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+                                        <div class="flex flex-wrap gap-1 mb-2">
+                                            @foreach($variation['combinations'] as $combo)
+                                                <span class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700">
+                                                    {{ $combo['attribute_title'] }}: {{ $combo['value_title'] }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+
+                                        <div class="flex space-x-2 items-center justify-end">
+                                            <x-admin.button-icon
+                                                element="button"
+                                                type="button"
+                                                tag="secondary"
+                                                class="!w-6 !h-6 !p-0 border"
+                                                x-data=""
+                                                x-on:click.prevent="$dispatch('open-modal', 'edit-variant');"
+                                                title="Edit"
+                                            >
+                                                @slot('icon')
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+                                                @endslot
+                                            </x-admin.button-icon>
+
+                                            <x-admin.button-icon
+                                                element="button"
+                                                type="button"
+                                                tag="danger"
+                                                class="!w-6 !h-6 !p-0"
+                                                x-on:click.prevent="
+                                                    $dispatch('open-modal', 'confirm-variation-deletion');
+                                                    $dispatch('set-variation-id', {{ $variation['id'] }})
+                                                    $dispatch('data-title', '{{ $variation['variation_identifier'] }}');
+                                                "
+                                                title="Delete"
+                                            >
+                                                @slot('icon')
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor">
+                                                        <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                                                    </svg>
+                                                @endslot
+                                            </x-admin.button-icon>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid gap-4 grid-cols-1 xl:grid-cols-3 2xl:grid-cols-4">
+                                        <div>
+                                            <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                                                SKU
+                                                <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">{{$variation['sku']}}</span>
+                                            </p>
+                                            <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                                                Barcode
+                                                <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">{{$variation['barcode']}}</span>
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                                                Stock quantity
+                                                <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">{{$variation['stock_quantity']}}</span>
+                                            </p>
+                                            <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                                                Allow Backorders
+                                                <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">{{$variation['allow_backorders'] == 0 ? 'NA' : 'YES'}}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @else
+        <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+            <div>
+                <button 
+                    type="button" 
+                    class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500" 
+                    x-data=""
+                    x-on:click.prevent="$dispatch('open-modal', 'add-variant');"
+                >
+                    <div class="flex items-center">
+                        <div class="w-3 h-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                        </div>
+                        Add options like Colors and Size
+                    </div>
+                </button>
+            </div>
+        </div>
+    @endif
+
+
+    {{-- add variant modal --}}
+    <x-modal name="add-variant" maxWidth="7xl" sh ow focusable>
         <div class="p-4">
             @if (count($variations) > 0)
                 <div class="grid space-x-2 grid-cols-3">
                     <div class="col-span-2">
                         {{-- heading --}}
-                        <h5 class="text-xs font-bold text-gray-700 dark:text-gray-200"> {{ __('Available Variations') }} </h5>
+                        <h5 class="text-xs font-bold text-gray-700 dark:text-gray-200"> {{ __('Available Variations to create from') }} </h5>
                         <p class="mb-3 text-xs text-gray-500 dark:text-gray-400"> {{ __('These available variations are shown based on Category.') }} {{ __('Select one by one from the Variation Attributes Value list below and tap on Create New') }} </p>
 
                         {{-- search --}}
@@ -33,7 +136,7 @@
                                 <x-admin.text-input 
                                     id="search" 
                                     class="block" 
-                                    type="text" 
+                                    type="search" 
                                     name="search" 
                                     wire:model.live.debounce.300ms="search"
                                     placeholder="Search..." 
@@ -91,29 +194,109 @@
                         <p class="mb-3 text-xs text-gray-500 dark:text-gray-400"> {{ __('New variation will be displayed here') }} </p> --}}
 
                         <div id="selectedVariationsPanel" class="" style="display: none;">
-                            <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg">
+                            <div class="bg-white dark:bg-gray-800 shadow-sm rounded-none">
                                 <div id="selectedVariationsList" class="divide-y divide-gray-200 dark:divide-gray-700"></div>
                                 <div class="px-4 py-3 bg-gray-200 dark:bg-gray-700/50 text-right">
-                                    <button 
+                                    <x-admin.button
+                                        element="button"
+                                        type="button"
                                         id="saveVariantsBtn"
-                                        type="button" 
-                                        class="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-md shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                        </svg>
-                                        Save this Variant
-                                    </button>
+                                        @slot('icon')
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                                        @endslot
+                                        {{ __('Save this Variant') }}
+                                    </x-admin.button>
                                 </div>
                             </div>
+
+                            @if(!empty($existingVariations['grouped']) && count($existingVariations['grouped']) > 0)
+                                <hr class="border-gray-200 dark:border-gray-600 my-4"></hr>
+                            @endif
                         </div>
+
+                        @if(!empty($existingVariations['grouped']) && count($existingVariations['grouped']) > 0)
+                            <div id="existingVariationsPanel" class="">
+                                {{-- heading --}}
+                                <h5 class="text-xs font-bold text-gray-700 dark:text-gray-200"> {{ __('Existing Variations') }} </h5>
+                                <p class="mb-3 text-xs text-gray-500 dark:text-gray-400"> {{ __('These existing variations are already added based on Category.') }} {{ __('You can also add more information to the variation groups like, SKU, Stock Quantity, Price adjustment, Images etc') }} </p>
+
+                                <div class="space-y-4">
+                                    @foreach($existingVariations['grouped'] as $attribute => $values)
+                                        <div>
+                                            <h4 class="text-xs font-bold text-primary-500 dark:text-primary-400">{{ $attribute }}</h4>
+                                            <div class="flex flex-wrap gap-2 mt-2">
+                                                @foreach($values as $value)
+                                                    <span class="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded-full">
+                                                        {{ $value }}
+                                                    </span>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             @else
                 <p class="text-sm italic">{{ __('No variations found for this Category') }}</p>
             @endif
         </div>
-    </x-modal>    
+    </x-modal>
+
+
+    {{-- delete confirm modal --}}
+    <x-modal name="confirm-variation-deletion" maxWidth="sm" focusable>
+        <div 
+            class="p-6" 
+            x-data="{ variationId: null, title: '' }" 
+            x-on:set-variation-id.window="variationId = $event.detail"
+            x-on:data-title.window="title = $event.detail"
+        >
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ __('Are you sure?') }}
+            </h2>
+
+            <h5 x-text="title" class="text-gray-500 mt-1 capitalize"></h5>
+
+            <p class="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                {{ __('Once this variation is deleted, it cannot be recovered') }}
+            </p>
+
+            <div class="mt-6 flex justify-end">
+                <x-admin.button
+                    element="button"
+                    type="button"
+                    tag="secondary"
+                    class="border"
+                    x-on:click="$dispatch('close')"
+                >
+                    {{ __('Cancel') }}
+                </x-admin.button>
+    
+                <x-admin.button
+                    element="button"
+                    type="button"
+                    tag="danger"
+                    class="ms-3"
+                    wire:click="deleteVariation(variationId)"
+                    x-on:click="$dispatch('close')"
+                >
+                    {{ __('Delete') }}
+                </x-admin.button>
+            </div>
+        </div>
+    </x-modal>
+
+
+    {{-- edit variant modal --}}
+    <x-modal name="edit-variant" maxWidth="7xl" sh ow focusable>
+        <div class="p-4">
+            
+        </div>
+    </x-modal>
+
 </div>
 
 <script>
@@ -180,29 +363,59 @@
 
         selectedVariations.forEach(variation => {
             const item = document.createElement('div');
-            item.className = 'flex items-center justify-between px-4 py-3 bg-gray-200/20 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors';
+            item.className = 'flex items-center justify-between p-2 bg-gray-200/20 hover:bg-gray-100 dark:hover:bg-gray-700/50';
             item.innerHTML = `
                 <div class="flex items-center">
-                    <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-300 mr-3">
+                    <span class="inline-flex items-center justify-center h-8 w-8 rounded-md bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-300 mr-3">
                         ${variation.attributeTitle.charAt(0)}
                     </span>
                     <div>
-                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200">${variation.attributeTitle}</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">${variation.valueTitle}</p>
+                        <p class="text-xs font-medium text-gray-800 dark:text-gray-200">${variation.attributeTitle}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">${variation.valueTitle}</p>
                     </div>
                 </div>
                 <button 
                     onclick="removeVariation('${variation.attributeId}')" 
-                    class="p-1 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                    class="p-1 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
                     aria-label="Remove"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
                 </button>
             `;
             list.appendChild(item);
         });
+
+        // Add input fields after the variations
+        const inputsContainer = document.createElement('div');
+        inputsContainer.className = 'flex flex-col';
+        inputsContainer.innerHTML = `
+            <div class="flex items-center justify-between p-2 bg-gray-200/20 hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                <label class="text-xs font-medium text-gray-800 dark:text-gray-200">Price Adjust</label>
+                <div class="flex items-center gap-2">
+                    <select name="adjustment_type" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1">
+                        <option value="fixed" selected>Fixed</option>
+                        <option value="percentage">Percentage</option>
+                    </select>
+                    <input type="number" name="price_adjustment" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-32" placeholder="0.00">
+                </div>
+            </div>
+            <div class="flex items-center justify-between p-2 bg-gray-200/20 hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                <label class="text-xs font-medium text-gray-800 dark:text-gray-200">SKU</label>
+                <input type="text" name="sku_variant" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-32" placeholder="SKU">
+            </div>
+            <div class="flex items-center justify-between p-2 bg-gray-200/20 hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                <label class="text-xs font-medium text-gray-800 dark:text-gray-200">Stock</label>
+                <input type="number" name="stock_quantity_variant" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-20" placeholder="0">
+            </div>
+            <div class="flex items-center justify-between p-2 bg-gray-200/20 hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                <label for="allow_backorders" class="text-xs font-medium text-gray-800 dark:text-gray-200">Allow Backorders</label>
+                <input type="checkbox" name="allow_backorders" id="allow_backorders" class="rounded border-gray-300 dark:border-gray-600 text-primary-600 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 dark:bg-gray-700 dark:checked:bg-primary-500">
+            </div>
+        `;
+
+        list.appendChild(inputsContainer);
     }
 
     function removeVariation(attributeId) {
@@ -219,8 +432,19 @@
 
     // Save variants
     document.getElementById('saveVariantsBtn').addEventListener('click', async () => {
+        // console.log(selectedVariations);
+
         try {
-            const response = await fetch('{{ route("admin.product.listing.store") }}', {
+            const adjustmentType = document.querySelector('select[name=adjustment_type]').value;
+            const priceAdjustment = document.querySelector('input[name=price_adjustment]').value;
+            const sku = document.querySelector('input[name=sku_variant]').value;
+            const stockQuantity = document.querySelector('input[name=stock_quantity_variant]').value;
+            // const allowBackordersCheckbox = document.querySelector('input[name="allow_backorders"]');
+            // const allowBackorders = allowBackordersCheckbox.checked ? 1 : 0;
+            const allowBackorders = document.querySelector('input[name=allow_backorders]').checked ? 1 : 0;
+            console.log('Checkbox element:', allowBackorders);
+
+            const response = await fetch('/api/variation/store', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -228,25 +452,44 @@
                 },
                 body: JSON.stringify({
                     product_id: {{ $product_id }},
+                    adjustment_type: adjustmentType,
+                    price_adjustment: priceAdjustment,
+                    sku: sku,
+                    stock_quantity: stockQuantity,
+                    allow_backorders: allowBackorders,
                     variations: selectedVariations.map(v => ({
                         attribute_id: v.attributeId,
-                        value_id: v.valueId
+                        attribute_value_id: v.valueId,
+                        attribute_value_title: v.valueTitle
                     }))
                 })
             });
-            
+
             const result = await response.json();
-            
+
             if (response.ok) {
-                alert('Variations saved successfully!');
-                // Close modal or refresh data as needed
-                $dispatch('close-modal', 'add-variant');
+                if (result.code == 200) {
+                    window.showNotification('success', 'Success!', result.message);
+
+                    // Refresh the Livewire component
+                    Livewire.dispatch('variation-added');
+
+                    // Clear selections
+                    selectedVariations = [];
+                    updateSelectedVariationsUI();
+
+                    // Remove highlights from all buttons
+                    document.querySelectorAll('[data-attr-id]').forEach(btn => {
+                        btn.classList.remove('bg-primary-400', 'hover:bg-primary-500', 'dark:bg-primary-600', 'dark:hover:bg-primary-700');
+                    });
+                } else {
+                    window.showNotification('warning', 'Oops!', result.message);
+                }
             } else {
-                throw new Error(result.message || 'Failed to save variations');
+                throw new Error(result.message);
             }
         } catch (error) {
             console.error('Error saving variations:', error);
-            alert('Error saving variations: ' + error.message);
         }
     });
 </script>

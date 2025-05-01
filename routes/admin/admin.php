@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\Product\Feature\ProductFeatureController;
 use App\Http\Controllers\Admin\Product\Review\ProductReviewController;
 use App\Http\Controllers\Admin\Product\Variation\ProductVariationAttributeController;
 use App\Http\Controllers\Admin\Product\Variation\ProductVariationAttributeValueController;
+use App\Http\Controllers\Admin\Product\Variation\ProductVariationController;
 
 use App\Http\Controllers\Admin\CsvTemplate\CsvTemplateController;
 use App\Http\Controllers\Admin\Trash\TrashController;
@@ -53,6 +54,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::prefix('activity')->name('activity.')->controller(ActivityController::class)->group(function() {
                 Route::get('/', 'index')->name('log');
                 Route::delete('/delete/{id}', 'delete')->name('delete');
+            });
+        });
+
+        // application
+        Route::prefix('application')->name('application.')->group(function() {
+            Route::prefix('settings')->name('settings.')->controller(ApplicationSettingsController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/edit', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
             });
         });
 
@@ -158,6 +168,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
             // variation
             Route::prefix('variation')->name('variation.')->group(function() {
+
+                Route::controller(ProductVariationController::class)->group(function() {
+                    Route::delete('/delete/{id}', 'delete')->name('delete');
+                });
+
                 // attribute
                 Route::prefix('attribute')->name('attribute.')->controller(ProductVariationAttributeController::class)->group(function() {
                     Route::get('/', 'index')->name('index');

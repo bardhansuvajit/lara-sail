@@ -26,6 +26,12 @@ return new class extends Migration
         $data = [
             [
                 'category' => 'stage1',
+                'key' => 'company_domain',
+                'value' => 'core-commerce',
+                'description' => 'Default domain category for company setup',
+            ],
+            [
+                'category' => 'stage1',
                 'key' => 'domain_name',
                 'value' => 'www.example.com',
                 'description' => '',
@@ -40,7 +46,7 @@ return new class extends Migration
                 'category' => 'stage2',
                 'key' => 'country_id',
                 'value' => 82,
-                'description' => 'application country id from countries table',
+                'description' => 'Application country id from countries table',
             ],
         ];
 

@@ -76,7 +76,17 @@
         @include('layouts.admin.notification')
 
         <script>
+            // moved it outside to make global
+            function showNotification(variant, title, message) {
+                setTimeout(() => {
+                    window.dispatchEvent(new CustomEvent('notify', {
+                        detail: { variant: variant, title: title, message: message }
+                    }));
+                }, 100);
+            }
+
             document.addEventListener('DOMContentLoaded', function () {
+                /*
                 function showNotification(variant, title, message) {
                     setTimeout(() => {
                         window.dispatchEvent(new CustomEvent('notify', {
@@ -84,6 +94,7 @@
                         }));
                     }, 100);
                 }
+                */
 
                 window.addEventListener('notificationSend', event => {
                     // console.log(event.detail[0]);

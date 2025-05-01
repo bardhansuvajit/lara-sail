@@ -26,6 +26,11 @@ class ProductVariation extends Model
         return $this->belongsTo('App\Models\Product', 'product_id', 'id');
     }
 
+    public function combinations()
+    {
+        return $this->hasMany('App\Models\ProductVariationCombination', 'variation_id', 'id');
+    }
+
     public function getFinalPriceAttribute()
     {
         $basePrice = $this->getBasePrice();

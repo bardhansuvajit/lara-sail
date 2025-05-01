@@ -17,20 +17,20 @@
 
                     <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Basics</h4>
 
-                    <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                    <div class="grid gap-4 mb-3 grid-cols-1">
                         <div>
                             <x-admin.input-label for="type" :value="__('Type *')" />
-                            <ul class="flex space-x-2">
-                                @foreach (PRODUCT_TYPE as $indexOption => $option)
+                            <ul class="flex flex-wrap gap-2">
+                                @foreach ($productType->children as $indexOption => $option)
                                     <li>
                                         <x-admin.radio-input-button 
                                             id="level_{{$indexOption}}" 
                                             name="type" 
-                                            value="{{ $option['key'] }}" 
-                                            title="{{ $option['title'] }}" 
+                                            value="{{ $option->key }}" 
+                                            title="{{ $option->title }}" 
                                             class="w-auto px-2" 
                                             required 
-                                            :checked="old('type') ? old('type') == $option['key'] : $indexOption == 0" />
+                                            :checked="old('type') ? old('type') == $option->key : $indexOption == 0" />
                                     </li>
                                 @endforeach
                             </ul>

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\ProductListingInterface;
 use App\Interfaces\CountryInterface;
+use App\Interfaces\DeveloperSettingInterface;
 use Illuminate\Validation\Rule;
 
 use App\Models\Product;
@@ -17,11 +18,13 @@ class ProductListingController
 {
     private ProductListingInterface $productListingRepository;
     private CountryInterface $countryRepository;
+    private DeveloperSettingInterface $developerSettingRepository;
 
-    public function __construct(ProductListingInterface $productListingRepository, CountryInterface $countryRepository)
+    public function __construct(ProductListingInterface $productListingRepository, CountryInterface $countryRepository, DeveloperSettingInterface $developerSettingRepository)
     {
         $this->productListingRepository = $productListingRepository;
         $this->countryRepository = $countryRepository;
+        $this->developerSettingRepository = $developerSettingRepository;
     }
 
     public function index(Request $request): View
@@ -56,8 +59,15 @@ class ProductListingController
             'status' => 1,
         ];
         $activeCountries = $this->countryRepository->list('', $countries_filters, 'all', 'name', 'asc');
+
+        // product type
+        $companyDomain = applicationSettings('company_domain');
+        $productTypes = json_decode($this->developerSettingRepository->getByKey('product_type')['data']->value);
+        $productType = collect($productTypes)->firstWhere('key', $companyDomain);
+
         return view('admin.product.listing.create', [
-            'activeCountries' => $activeCountries['data']
+            'activeCountries' => $activeCountries['data'],
+            'productType' => $productType
         ]);
     }
 
@@ -76,7 +86,8 @@ class ProductListingController
 
         // $request->validate([
         $validator = Validator::make($request->all(), [
-            'type' => 'required|string|in:'.collect(PRODUCT_TYPE)->pluck('key')->implode(','),
+            // 'type' => 'required|string|in:'.collect(PRODUCT_TYPE)->pluck('key')->implode(','),
+            'type' => 'required|string',
             'title' => 'required|string|min:2|max:1000',
             'description' => 'required|string|min:2',
             'short_description' => 'nullable|string|min:2',
@@ -172,9 +183,16 @@ class ProductListingController
                 'status' => 1,
             ];
             $activeCountries = $this->countryRepository->list('', $countries_filters, 'all', 'name', 'asc');
+
+            // product type
+            $companyDomain = applicationSettings('company_domain');
+            $productTypes = json_decode($this->developerSettingRepository->getByKey('product_type')['data']->value);
+            $productType = collect($productTypes)->firstWhere('key', $companyDomain);
+
             return view('admin.product.listing.edit', [
                 'data' => $resp['data'],
-                'activeCountries' => $activeCountries['data']
+                'activeCountries' => $activeCountries['data'],
+                'productType' => $productType
             ]);
         } else {
             return redirect()->back()->with($resp['status'], $resp['message']);
@@ -197,7 +215,8 @@ class ProductListingController
         // $request->validate([
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|min:1',
-            'type' => 'required|string|in:'.collect(PRODUCT_TYPE)->pluck('key')->implode(','),
+            // 'type' => 'required|string|in:'.collect(PRODUCT_TYPE)->pluck('key')->implode(','),
+            'type' => 'required|string',
             'title' => 'required|string|min:2|max:1000',
             'description' => 'required|string|min:2',
             'short_description' => 'nullable|string|min:2',

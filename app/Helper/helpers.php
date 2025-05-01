@@ -27,10 +27,6 @@ define("FD", [
 ]);
 
 define("PRICE_REGEX", "/^\d+(\.\d{1,2})?$/"); // regex for up to 2 decimal places
-define("PRODUCT_TYPE", [
-    ['key' => 'physical-product', 'title' => 'Physical Product'],
-    ['key' => 'service', 'title' => 'Service']
-]);
 
 if (!function_exists('fileStore')) {
     /**
@@ -137,7 +133,8 @@ if (!function_exists('applicationSettings')) {
     function applicationSettings(String $key) {
         $applicationSettingRepository = app(ApplicationSettingRepository::class);
         $resp = $applicationSettingRepository->getByKey($key);
-        return json_decode($resp['data']->value);
+        return $resp['data']->value;
+        // return json_decode($resp['data']->value);
     }
 }
 

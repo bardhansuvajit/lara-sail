@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->string('category', 100);
             $table->string('key', 200)->unique();
-            $table->longText('value');
+            $table->json('value');
             $table->text('description');
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -34,6 +34,84 @@ return new class extends Migration
             'store_original_image' => true,
             'resize_image' => true,
             'image_thumbnail_height_array' => [100, 250, 500]
+        ]);
+
+        $product_type = json_encode([
+            [
+                'key' => 'core-commerce',
+                'title' => 'Core Commerce Products',
+                'children' => [
+                    ['key' => 'physical-product', 'title' => 'Physical Product', 'description' => 'Tangible goods that require shipping'],
+                    ['key' => 'digital-product', 'title' => 'Digital Product', 'description' => 'Downloadable files, software, or media'],
+                    ['key' => 'service', 'title' => 'Service', 'description' => 'Intangible offerings like consulting or repairs'],
+                    ['key' => 'subscription', 'title' => 'Subscription', 'description' => 'Recurring access to products/services'],
+                ]
+            ],
+            [
+                'key' => 'travel',
+                'title' => 'Travel Industry',
+                'children' => [
+                    ['key' => 'hotel-booking', 'title' => 'Hotel Booking', 'description' => 'Accommodation reservations'],
+                    ['key' => 'flight-ticket', 'title' => 'Flight Ticket', 'description' => 'Air travel bookings'],
+                    ['key' => 'tour-package', 'title' => 'Tour Package', 'description' => 'Bundled travel experiences'],
+                    ['key' => 'car-rental', 'title' => 'Car Rental', 'description' => 'Vehicle rental services'],
+                    ['key' => 'cruise', 'title' => 'Cruise', 'description' => 'Sea voyage packages'],
+                ]
+            ],
+            [
+                'key' => 'entertainment',
+                'title' => 'Event & Entertainment',
+                'children' => [
+                    ['key' => 'event-ticket', 'title' => 'Event Ticket', 'description' => 'Admission to concerts, shows, etc.'],
+                    ['key' => 'movie-ticket', 'title' => 'Movie Ticket', 'description' => 'Cinema bookings'],
+                    ['key' => 'theme-park', 'title' => 'Theme Park Ticket', 'description' => 'Amusement park admissions'],
+                ]
+            ],
+            [
+                'key' => 'food-beverage',
+                'title' => 'Food & Beverage',
+                'children' => [
+                    ['key' => 'restaurant-booking', 'title' => 'Restaurant Booking', 'description' => 'Dining reservations'],
+                    ['key' => 'food-delivery', 'title' => 'Food Delivery', 'description' => 'Prepared meal delivery'],
+                    ['key' => 'grocery', 'title' => 'Grocery', 'description' => 'Supermarket/grocery items'],
+                ]
+            ],
+            [
+                'key' => 'financial',
+                'title' => 'Financial Products',
+                'children' => [
+                    ['key' => 'insurance', 'title' => 'Insurance', 'description' => 'Insurance policy products'],
+                    ['key' => 'loan', 'title' => 'Loan', 'description' => 'Financial lending products'],
+                ]
+            ],
+            [
+                'key' => 'education',
+                'title' => 'Education',
+                'children' => [
+                    ['key' => 'online-course', 'title' => 'Online Course', 'description' => 'Digital educational programs'],
+                    ['key' => 'ebook', 'title' => 'E-Book', 'description' => 'Digital books and publications'],
+                    ['key' => 'workshop', 'title' => 'Workshop', 'description' => 'In-person training sessions'],
+                ]
+            ],
+            [
+                'key' => 'health-wellness',
+                'title' => 'Health & Wellness',
+                'children' => [
+                    ['key' => 'medical-appointment', 'title' => 'Medical Appointment', 'description' => 'Healthcare service bookings'],
+                    ['key' => 'fitness-class', 'title' => 'Fitness Class', 'description' => 'Exercise sessions'],
+                    ['key' => 'spa-service', 'title' => 'Spa Service', 'description' => 'Beauty/wellness treatments'],
+                ]
+            ],
+            [
+                'key' => 'special',
+                'title' => 'Custom & Special Cases',
+                'children' => [
+                    ['key' => 'bundle', 'title' => 'Product Bundle', 'description' => 'Grouped products sold together'],
+                    ['key' => 'custom-made', 'title' => 'Custom Made', 'description' => 'Personalized/made-to-order items'],
+                    ['key' => 'rental', 'title' => 'Rental', 'description' => 'Temporary usage of physical items'],
+                    ['key' => 'membership', 'title' => 'Membership', 'description' => 'Access to exclusive benefits'],
+                ]
+            ]
         ]);
 
         $product_highlight_icons = json_encode([
@@ -72,10 +150,16 @@ return new class extends Migration
             ],
             [
                 'category' => 'product',
+                'key' => 'product_type',
+                'value' => $product_type,
+                'description' => '',
+            ],
+            [
+                'category' => 'product',
                 'key' => 'product_highlight_icons',
                 'value' => $product_highlight_icons,
                 'description' => '',
-            ],
+            ]
         ];
 
         DB::table('developer_settings')->insert($data);
