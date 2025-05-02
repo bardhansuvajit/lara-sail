@@ -14,6 +14,7 @@ class ProductVariant extends Component
     public string $search = '';
     public $existingVariations = [];
     protected $listeners = ['variation-added' => 'loadExistingVariations'];
+    public $editingVariation = null;
 
     public function mount($product_id, $category_id)
     {
@@ -109,8 +110,8 @@ class ProductVariant extends Component
                     'allow_backorders' => $variation->allow_backorders,
                     'price_adjustment' => $variation->price_adjustment,
                     'adjustment_type' => $variation->adjustment_type,
-                    'barcode' => $variation->barcode,
-                    'barcode' => $variation->barcode,
+                    // 'barcode' => $variation->barcode,
+                    // 'barcode' => $variation->barcode,
                     'created_at' => $variation->created_at->format('M d, Y'),
                 ];
             });
@@ -143,20 +144,81 @@ class ProductVariant extends Component
         try {
             $variation = ProductVariation::findOrFail($variationId);
             $variation->delete();
-            
-            // Reload the existing variations
+
             $this->loadExistingVariations();
-            
-            // Show success notification
-            $this->dispatch('notify', [
-                'type' => 'success',
-                'message' => 'Variation deleted successfully'
+
+            $this->dispatch('notificationSend', [
+                'variant' => 'success',
+                'title' => 'Success!',
+                'message' => 'Variation deleted successfully',
             ]);
-            
         } catch (\Exception $e) {
-            $this->dispatch('notify', [
-                'type' => 'error',
+            $this->dispatch('notificationSend', [
+                'variant' => 'danger',
+                'title' => 'OOPS!',
                 'message' => 'Failed to delete variation: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function editVariation($variationId)
+    {
+        // $this->editingVariation = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue'])
+        //     ->findOrFail($variationId)
+        //     ->toArray();
+
+        // $this->dispatch('open-modal', 'edit-variant');
+
+        $variation = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue'])
+        ->findOrFail($variationId);
+        $this->editingVariation = $variation->toArray();
+
+        // Set default values if they're null
+        $this->editingVariation['track_quantity'] = $this->editingVariation['track_quantity'] ?? false;
+        $this->editingVariation['allow_backorders'] = $this->editingVariation['allow_backorders'] ?? false;
+
+        $this->dispatch('open-modal', 'edit-variant');
+    }
+
+    public function updateVariation()
+    {
+        try {
+            $variation = ProductVariation::findOrFail($this->editingVariation['id']);
+
+            $validated = $this->validate([
+                'editingVariation.variation_identifier' => 'required|string|unique:product_variations,variation_identifier,'.$variation->id,
+                'editingVariation.sku' => 'nullable|string|max:50|unique:product_variations,sku,'.$variation->id,
+                'editingVariation.barcode' => 'nullable|string|max:50|unique:product_variations,barcode,'.$variation->id,
+                'editingVariation.stock_quantity' => 'required|integer|min:0',
+                'editingVariation.track_quantity' => 'required|boolean',
+                'editingVariation.allow_backorders' => 'required|boolean',
+                'editingVariation.price_adjustment' => 'required|numeric',
+                'editingVariation.adjustment_type' => 'required|in:fixed,percentage',
+
+                'editingVariation.weight_adjustment' => 'required|min:0',
+                'editingVariation.weight_unit' => 'required|in:g,kg,lb,oz',
+
+                'editingVariation.length_adjustment' => 'required|min:0',
+                'editingVariation.width_adjustment' => 'required|min:0',
+                'editingVariation.height_adjustment' => 'required|min:0',
+                'editingVariation.dimension_unit' => 'required|in:mm,cm,m,in,ft',
+            ]);
+
+            $variation->update($validated['editingVariation']);
+
+            // $this->dispatch('close-modal', 'edit-variant');
+            $this->loadExistingVariations();
+
+            $this->dispatch('notificationSend', [
+                'variant' => 'success',
+                'title' => 'Success!',
+                'message' => 'Variation updated successfully',
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('notificationSend', [
+                'variant' => 'danger',
+                'title' => 'OOPS!',
+                'message' => $e->getMessage()
             ]);
         }
     }

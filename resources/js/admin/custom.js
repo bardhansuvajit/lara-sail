@@ -12,7 +12,7 @@ const profitEl = document.getElementById('profit');
 const marginEl = document.getElementById('margin');
 const imagesPositionToggleButton = document.getElementById('imagesPositionToggleButton');
 const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-const maxFileSize = '2000'; // in kb
+const maxFileSize = 2000; // in kb
 const positionButton = document.getElementById('positionButton');
 const positionTabs = document.querySelectorAll('.position-tab');
 
@@ -234,38 +234,47 @@ if (sellingPriceEl && costEl && profitEl && marginEl) {
 }
 
 // image upload preview
-if (document.getElementById("images")) {
-    document.getElementById("images").addEventListener("change", function(event) {
+document.querySelectorAll(".images").forEach((uploader) => {
+    uploader.addEventListener("change", function(event) {
+        const preview = uploader.closest(".image-uploader-container")?.querySelector(".imagePreview");
+        if (!preview) return;
+
         const input = event.target;
-        const preview = document.getElementById('imagePreview');
+
         preview.innerHTML = `
             <div class="border border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-700 p-2 rounded-lg">
                 <h5 class="text-gray-700 dark:text-gray-300 font-medium mb-1 text-xs">Image Preview</h5>
-                <p class="text-gray-700 dark:text-gray-400 font-medium text-[10px] border-b border-gray-300 dark:border-gray-500 mb-3 pb-2">This is only Preview. To upload these images click on <strong class="font-bold"><em>Save Data</em></strong></p>
-                <div class="grid grid-cols-8 mt-4 mb-3 flex-wrap gap-4" id="imageGrid"></div>
+                <p class="text-gray-700 dark:text-gray-400 font-medium text-[10px] border-b border-gray-300 dark:border-gray-500 mb-3 pb-2">This is only a preview. Click <strong class="font-bold"><em>Save Data</em></strong> to upload.</p>
+                <div class="grid grid-cols-8 mt-4 mb-3 flex-wrap gap-4 image-grid"></div>
             </div>
         `;
-        const imageGrid = document.getElementById('imageGrid');
-
-        // image text & warning
-        const previewNoticeEl = document.createElement('div');
-        previewNoticeEl.classList.add('col-span-8', 'flex', 'space-x-2', 'items-center', 'text-amber-500');
-        previewNoticeEl.innerHTML = `
-            <div class="w-3 h-3">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M109-120q-11 0-20-5.5T75-140q-5-9-5.5-19.5T75-180l370-640q6-10 15.5-15t19.5-5q10 0 19.5 5t15.5 15l370 640q6 10 5.5 20.5T885-140q-5 9-14 14.5t-20 5.5H109Zm69-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm0-120q17 0 28.5-11.5T520-400v-120q0-17-11.5-28.5T480-560q-17 0-28.5 11.5T440-520v120q0 17 11.5 28.5T480-360Zm0-100Z"/></svg>
-            </div>
-            <p class="text-[10px]">Unsupported files/ Not Image files/ File more than ${maxFileSize/1000} MB of size, will not be uploaded</p>
-        `;
-
+        const imageGrid = preview.querySelector(".image-grid");
         const files = Array.from(input.files);
-        const dataTransfer = new DataTransfer(); 
+        const dataTransfer = new DataTransfer();
+        let hasInvalidFiles = false;
 
         if (files.length > 0) {
+            // image text & warning
+            const previewNoticeEl = document.createElement('div');
+            previewNoticeEl.classList.add('col-span-8', 'flex', 'space-x-2', 'items-center', 'text-amber-500');
+            previewNoticeEl.innerHTML = `
+                <div class="w-3 h-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M109-120q-11 0-20-5.5T75-140q-5-9-5.5-19.5T75-180l370-640q6-10 15.5-15t19.5-5q10 0 19.5 5t15.5 15l370 640q6 10 5.5 20.5T885-140q-5 9-14 14.5t-20 5.5H109Zm69-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm0-120q17 0 28.5-11.5T520-400v-120q0-17-11.5-28.5T480-560q-17 0-28.5 11.5T440-520v120q0 17 11.5 28.5T480-360Zm0-100Z"/></svg>
+                </div>
+                <p class="text-[10px]">Unsupported files or files > ${maxFileSize/1000}MB will be ignored.</p>
+            `;
+            // imageGrid.appendChild(previewNoticeEl);
+
             files.forEach((file, index) => {
                 const reader = new FileReader();
                 const fileType = file.type;
                 let fileSize = (file.size / 1024).toFixed(2);
                 let fileSizeText = fileSize + " KB";
+
+                if (!imageTypes.includes(file.type) || file.size > maxFileSize * 1024) {
+                    hasInvalidFiles = true;
+                }
+
                 if (fileSize > 1000) {
                     let fileSizeMB = (fileSize / 1024).toFixed(2);
                     fileSizeText = fileSizeMB + " MB";
@@ -286,9 +295,9 @@ if (document.getElementById("images")) {
                 closeBtn.classList.add('w-5', 'h-5', 'absolute', '-top-2', '-right-2', 'bg-gray-200', 'hover:bg-gray-400', 'text-gray-800', 'dark:bg-gray-800', 'dark:hover:bg-gray-600', 'dark:text-white', 'border', 'rounded-full', 'cursor-pointer');
 
                 // Remove item on click
-                closeBtn.addEventListener("click", function() {
-                    fileWrapper.remove(); // Remove from preview
-                    removeFile(file); // Remove from input
+                closeBtn.addEventListener("click", () => {
+                    fileWrapper.remove(); // Remove from DOM
+                    removeFile(file, input); // Remove from input
                 });
 
                 // File name
@@ -344,25 +353,25 @@ if (document.getElementById("images")) {
                     fileWrapper.appendChild(fileSizeContainer);
                     imageGrid.appendChild(fileWrapper);
                 }
-                imageGrid.appendChild(previewNoticeEl);
             });
+
+            if (hasInvalidFiles) {
+                imageGrid.appendChild(previewNoticeEl); // Only show if invalid files exist
+            }
 
             // Update input files after processing all
             input.files = dataTransfer.files;
         }
     });
 
-    function removeFile(fileToRemove) {
-        const input = document.getElementById("images");
+    function removeFile(fileToRemove, input) {
         const newDataTransfer = new DataTransfer();
         Array.from(input.files).forEach(file => {
-            if (file !== fileToRemove) {
-                newDataTransfer.items.add(file); // Keep only non-deleted files
-            }
+            if (file !== fileToRemove) newDataTransfer.items.add(file);
         });
-        input.files = newDataTransfer.files; // Update input with modified FileList
+        input.files = newDataTransfer.files;
     }
-}
+});
 
 if (imagesPositionToggleButton) {
     imagesPositionToggleButton.addEventListener('click', function () {

@@ -33,7 +33,7 @@ class ProductVariationController
             'barcode' => $request->barcode ?? null,
             'track_quantity' => $request->stock_quantity > 0 ? 1 : 0,
             'stock_quantity' => $request->stock_quantity ?? 0,
-            'allow_backorders' => $request->allow_backorders ? ($request->allow_backorders == "yes" ? 1 : 0) : 0,
+            'allow_backorders' => $request->allow_backorders,
             'sold_count' => $request->sold_count ?? 0,
             'in_cart_count' => $request->in_cart_count ?? 0,
             'primary_image_id' => $request->primary_image_id ?? null,

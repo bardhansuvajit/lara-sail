@@ -100,47 +100,48 @@
                     </div>
 
                     <div class="grid gap-2 mb-3 grid-cols-1">
-                        <div>
-                            <x-admin.input-label for="images" :value="__('Image *')" />
-                            <x-admin.file-input-drag-drop id="images" class="h-12" name="images[]" accept="image/*" multiple />
-                        </div>
-
-                        @if ($errors->get('images.*'))
-                            <div x-data="{open: false}">
-                                <p class="text-xs text-red-600 dark:text-orange-700 space-y-1">
-                                    Some error occured. 
-                                    <a href="javascript: void(0)" @click="open = !open">
-                                        <strong><em>See details</em></strong>
-                                    </a>
-                                </p>
-
-                                <div x-show="open" class="mt-2">
-                                    @foreach ($errors->get('images.*') as $field => $messages)
-                                        @foreach ($messages as $message)
-                                            <x-admin.input-error :messages="$message" class="" />
-                                        @endforeach
-                                    @endforeach
-                                </div>
+                        <div class="image-uploader-container space-y-4">
+                            <div>
+                                <x-admin.input-label for="images" :value="__('Image *')" />
+                                <x-admin.file-input-drag-drop id="images" class="h-12 images" name="images[]" accept="image/*" multiple />
                             </div>
-                        @endif
 
-                        <div id="imagePreview"></div>
+                            @if ($errors->get('images.*'))
+                                <div x-data="{open: false}">
+                                    <p class="text-xs text-red-600 dark:text-orange-700 space-y-1">
+                                        Some error occured. 
+                                        <a href="javascript: void(0)" @click="open = !open">
+                                            <strong><em>See details</em></strong>
+                                        </a>
+                                    </p>
 
-                        <div id="ExistingImages">
-                            @if ($data->images && count($data->images) > 0)
-                                @livewire('existing-product-images', [
-                                    'images' => $data->images,
-                                    'type' => $data->type,
-                                ])
-                            @else
-                                {{-- if image error message are there, hide this alert --}}
-                                @if (!$errors->get('images.*'))
-                                    <p class="text-base font-medium text-red-600 dark:text-orange-600 space-y-1">No Images found !</p>
-                                    <p class="text-xs text-red-400 dark:text-orange-700 space-y-1">A {{ $data->type }} must have some images to give an idea to the customers what they are paying for.</p>
-                                @endif
+                                    <div x-show="open" class="mt-2">
+                                        @foreach ($errors->get('images.*') as $field => $messages)
+                                            @foreach ($messages as $message)
+                                                <x-admin.input-error :messages="$message" class="" />
+                                            @endforeach
+                                        @endforeach
+                                    </div>
+                                </div>
                             @endif
-                        </div>
 
+                            <div class="imagePreview"></div>
+
+                            <div class="existing-images">
+                                @if ($data->images && count($data->images) > 0)
+                                    @livewire('existing-product-images', [
+                                        'images' => $data->images,
+                                        'type' => $data->type,
+                                    ])
+                                @else
+                                    {{-- if image error message are there, hide this alert --}}
+                                    @if (!$errors->get('images.*'))
+                                        <p class="text-base font-medium text-red-600 dark:text-orange-600 space-y-1">No Images found !</p>
+                                        <p class="text-xs text-red-400 dark:text-orange-700 space-y-1">A {{ $data->type }} must have some images to give an idea to the customers what they are paying for.</p>
+                                    @endif
+                                @endif
+                            </div>
+                        </div>
                     </div>
 
                     <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">

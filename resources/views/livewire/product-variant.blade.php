@@ -39,8 +39,7 @@
                                                 type="button"
                                                 tag="secondary"
                                                 class="!w-6 !h-6 !p-0 border"
-                                                x-data=""
-                                                x-on:click.prevent="$dispatch('open-modal', 'edit-variant');"
+                                                wire:click="editVariation({{ $variation['id'] }})"
                                                 title="Edit"
                                             >
                                                 @slot('icon')
@@ -72,6 +71,10 @@
                                     <div class="grid gap-4 grid-cols-1 xl:grid-cols-3 2xl:grid-cols-4">
                                         <div>
                                             <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                                                Identifier
+                                                <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">{{$variation['variation_identifier']}}</span>
+                                            </p>
+                                            <p class="text-[10px] text-gray-500 dark:text-gray-400">
                                                 SKU
                                                 <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">{{$variation['sku']}}</span>
                                             </p>
@@ -82,11 +85,15 @@
                                         </div>
                                         <div>
                                             <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                                                Track quantity
+                                                <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">{{$variation['track_quantity'] == 0 ? 'NA' : 'YES'}}</span>
+                                            </p>
+                                            <p class="text-[10px] text-gray-500 dark:text-gray-400">
                                                 Stock quantity
                                                 <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">{{$variation['stock_quantity']}}</span>
                                             </p>
                                             <p class="text-[10px] text-gray-500 dark:text-gray-400">
-                                                Allow Backorders
+                                                Continue selling when out of stock
                                                 <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">{{$variation['allow_backorders'] == 0 ? 'NA' : 'YES'}}</span>
                                             </p>
                                         </div>
@@ -120,7 +127,7 @@
 
 
     {{-- add variant modal --}}
-    <x-modal name="add-variant" maxWidth="7xl" sh ow focusable>
+    <x-modal name="add-variant" maxWidth="7xl" focusable>
         <div class="p-4">
             @if (count($variations) > 0)
                 <div class="grid space-x-2 grid-cols-3">
@@ -291,9 +298,268 @@
 
 
     {{-- edit variant modal --}}
-    <x-modal name="edit-variant" maxWidth="7xl" sh ow focusable>
+    <x-modal name="edit-variant" maxWidth="7xl" focusable>
         <div class="p-4">
-            
+            {{-- heading --}}
+            <h5 class="text-xs font-bold text-gray-700 dark:text-gray-200"> {{ __('Edit Product Variant') }} </h5>
+            <p class="mb-3 text-xs text-gray-500 dark:text-gray-400"> {{ __('These available variations are shown based on Category.') }} {{ __('Select one by one from the Variation Attributes Value list below and tap on Create New') }} </p>
+
+            @if($editingVariation)
+                <div class="space-y-4">
+                    <!-- Variation Info -->
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded">
+                        <div class="flex flex-wrap gap-1 mb-2">
+                            @foreach($editingVariation['combinations'] as $combo)
+                                <span class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-600">
+                                    <span class="font-bold text-primary-500 dark:text-primary-400">{{ $combo['attribute']['title'] }}</span>:
+                                    {{ $combo['attribute_value']['title'] }}
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <hr class="border-gray-200 dark:border-gray-600 my-4"></hr>
+
+                    <div class="grid gap-4 grid-cols-1 md:grid-cols-4">
+                        <div class="col-span-1">
+                            <!-- Images Section -->
+                            <div>
+                                <h5 class="text-sm font-bold text-primary-500 dark:text-primary-400 mb-3">Images</h5>
+
+                                <div class="grid gap-2 mb-3 grid-cols-1">
+                                    <div class="image-uploader-container space-y-4">
+                                        <div>
+                                            <x-admin.file-input-drag-drop id="variantImages" class="h-12 images" name="variantImages[]" accept="image/*" multiple />
+                                        </div>
+
+                                        @if ($errors->get('variantImages.*'))
+                                            <div x-data="{open: false}">
+                                                <p class="text-xs text-red-600 dark:text-orange-700 space-y-1">
+                                                    Some error occured. 
+                                                    <a href="javascript: void(0)" @click="open = !open">
+                                                        <strong><em>See details</em></strong>
+                                                    </a>
+                                                </p>
+
+                                                <div x-show="open" class="mt-2">
+                                                    @foreach ($errors->get('variantImages.*') as $field => $messages)
+                                                        @foreach ($messages as $message)
+                                                            <x-admin.input-error :messages="$message" class="" />
+                                                        @endforeach
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        <div class="imagePreview"></div>
+
+                                        {{-- <div class="existing-images">
+                                            @if ($data->images && count($data->images) > 0)
+                                                @livewire('existing-product-images', [
+                                                    'images' => $data->images,
+                                                    'type' => $data->type,
+                                                ])
+                                            @else
+                                                @if (!$errors->get('images.*'))
+                                                    <p class="text-base font-medium text-red-600 dark:text-orange-600 space-y-1">No Images found !</p>
+                                                    <p class="text-xs text-red-400 dark:text-orange-700 space-y-1">A {{ $data->type }} must have some images to give an idea to the customers what they are paying for.</p>
+                                                @endif
+                                            @endif
+                                        </div> --}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-span-3">
+                            <!-- Inventory Section -->
+                            <div>
+                                <h5 class="text-sm font-bold text-primary-500 dark:text-primary-400 mb-3">Inventory</h5>
+
+                                <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                                    <div>
+                                        <x-admin.input-label for="edit-identifier" :value="__('Variation Identifier')" />
+                                        <x-admin.text-input wire:model="editingVariation.variation_identifier" id="edit-identifier" class="block w-full" 
+                                            type="text" placeholder="Enter Variation Identifier" maxlength="100" />
+                                        <x-admin.input-error :messages="$errors->get('editingVariation.variation_identifier')" class="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <x-admin.input-label for="edit-sku" :value="__('SKU')" />
+                                        <x-admin.text-input wire:model="editingVariation.sku" id="edit-sku" class="block w-full" 
+                                            type="text" placeholder="Enter SKU" maxlength="50" />
+                                        <x-admin.input-error :messages="$errors->get('editingVariation.sku')" class="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <x-admin.input-label for="edit-barcode" :value="__('Barcode')" />
+                                        <x-admin.text-input wire:model="editingVariation.barcode" id="edit-barcode" class="block w-full" 
+                                            type="text" placeholder="Enter barcode" maxlength="50" />
+                                        <x-admin.input-error :messages="$errors->get('editingVariation.barcode')" class="mt-2" />
+                                    </div>
+                                </div>
+
+                                <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                                    <div>
+                                        <x-admin.input-checkbox 
+                                            id="edit-track-quantity" 
+                                            class="mt-3" 
+                                            label="Track quantity" 
+                                            wire:model="editingVariation.track_quantity"
+                                            value="1"
+                                            :checked="$editingVariation['track_quantity'] ?? false"
+                                        />
+                                        <x-admin.input-checkbox 
+                                            id="edit-backorders" 
+                                            class="mt-1" 
+                                            label="Continue selling when out of stock" 
+                                            wire:model="editingVariation.allow_backorders"
+                                            value="1"
+                                            :checked="$editingVariation['allow_backorders'] ?? false"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <x-admin.input-label for="edit-stock" :value="__('Stock Quantity')" />
+                                        <x-admin.text-input wire:model="editingVariation.stock_quantity" id="edit-stock" class="block" 
+                                            type="tel" :value="old('stock_quantity')" placeholder="Enter quantity" min="0" />
+                                        <x-admin.input-error :messages="$errors->get('editingVariation.stock_quantity')" class="mt-2" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="border-gray-200 dark:border-gray-600 my-4"></hr>
+
+                            <!-- Pricing Section -->
+                            <div>
+                                <h5 class="text-sm font-bold text-primary-500 dark:text-primary-400 mb-3">Pricing</h5>
+
+                                <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                                    <div>
+                                        <x-admin.input-label for="edit-price-adjustment" :value="__('Price Adjustment')" />
+                                        <x-admin.text-input wire:model="editingVariation.price_adjustment" id="edit-price-adjustment" 
+                                            class="block w-full" type="number" step="0.01" />
+                                        <x-admin.input-error :messages="$errors->get('editingVariation.price_adjustment')" class="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <x-admin.input-label for="edit-adjustment-type" :value="__('Adjustment Type')" />
+                                        {{-- <x-admin.select-input wire:model="editingVariation.adjustment_type" id="edit-adjustment-type" class="block w-full">
+                                            <option value="fixed">Fixed Amount</option>
+                                            <option value="percentage">Percentage</option>
+                                        </x-admin.select-input> --}}
+                                        <x-admin.input-select wire:model="editingVariation.adjustment_type" id="edit-adjustment-type" class="w-full">
+                                            @slot('options')
+                                                <x-admin.input-select-option value="fixed"> Fixed Amount </x-admin.input-select-option>
+                                                <x-admin.input-select-option value="percentage"> Percentage </x-admin.input-select-option>
+                                            @endslot
+                                        </x-admin.input-select>
+                                        <x-admin.input-error :messages="$errors->get('editingVariation.adjustment_type')" class="mt-2" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="border-gray-200 dark:border-gray-600 my-4"></hr>
+
+                            <!-- Shipping Dimensions -->
+                            <div>
+                                <h5 class="text-sm font-bold text-primary-500 dark:text-primary-400 mb-3">Shipping Dimensions</h5>
+
+                                <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                                    <div>
+                                        <x-admin.input-label for="edit-weight" :value="__('Weight Adjustment')" />
+                                        <x-admin.text-input wire:model="editingVariation.weight_adjustment" id="edit-weight" 
+                                            class="block w-full" type="number" step="0.01" />
+                                    </div>
+                                    <div>
+                                        <x-admin.input-label for="edit-weight-unit" :value="__('Weight Unit')" />
+                                        {{-- <x-admin.select-input wire:model="editingVariation.weight_unit" id="edit-weight-unit" class="block w-full">
+                                            <option value="g">Grams (g)</option>
+                                            <option value="kg">Kilograms (kg)</option>
+                                            <option value="lb">Pounds (lb)</option>
+                                            <option value="oz">Ounces (oz)</option>
+                                        </x-admin.select-input> --}}
+                                        <x-admin.input-select wire:model="editingVariation.weight_unit" id="edit-weight-unit" class="w-full">
+                                            @slot('options')
+                                                <x-admin.input-select-option value="g"> Grams (g) </x-admin.input-select-option>
+                                                <x-admin.input-select-option value="kg"> Kilograms (kg) </x-admin.input-select-option>
+                                                <x-admin.input-select-option value="lb"> Pounds (lb) </x-admin.input-select-option>
+                                                <x-admin.input-select-option value="oz"> Ounces (oz) </x-admin.input-select-option>
+                                            @endslot
+                                        </x-admin.input-select>
+                                    </div>
+                                </div>
+
+                                <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                                    <div>
+                                        <x-admin.input-label for="edit-length" :value="__('Length Adjustment')" />
+                                        <x-admin.text-input wire:model="editingVariation.length_adjustment" id="edit-length" 
+                                            class="block w-full" type="number" step="0.01" />
+                                    </div>
+                                    <div>
+                                        <x-admin.input-label for="edit-width" :value="__('Width Adjustment')" />
+                                        <x-admin.text-input wire:model="editingVariation.width_adjustment" id="edit-width" 
+                                            class="block w-full" type="number" step="0.01" />
+                                    </div>
+                                    <div>
+                                        <x-admin.input-label for="edit-height" :value="__('Height Adjustment')" />
+                                        <x-admin.text-input wire:model="editingVariation.height_adjustment" id="edit-height" 
+                                            class="block w-full" type="number" step="0.01" />
+                                    </div>
+                                    <div>
+                                        <x-admin.input-label for="edit-dimension-unit" :value="__('Dimension Unit')" />
+                                        {{-- <x-admin.select-input wire:model="editingVariation.dimension_unit" id="edit-dimension-unit" class="block w-full">
+                                            <option value="mm">Millimeters (mm)</option>
+                                            <option value="cm">Centimeters (cm)</option>
+                                            <option value="m">Meters (m)</option>
+                                            <option value="in">Inches (in)</option>
+                                            <option value="ft">Feet (ft)</option>
+                                        </x-admin.select-input> --}}
+                                        <x-admin.input-select wire:model="editingVariation.dimension_unit" id="edit-dimension-unit" class="w-full">
+                                            @slot('options')
+                                                <x-admin.input-select-option value="mm"> Millimeters (mm) </x-admin.input-select-option>
+                                                <x-admin.input-select-option value="cm"> Centimeters (cm) </x-admin.input-select-option>
+                                                <x-admin.input-select-option value="m"> Meters (m) </x-admin.input-select-option>
+                                                <x-admin.input-select-option value="in"> Inches (in) </x-admin.input-select-option>
+                                                <x-admin.input-select-option value="ft"> Feet (ft) </x-admin.input-select-option>
+                                            @endslot
+                                        </x-admin.input-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1">
+                        <!-- buttons -->
+                        <div>
+                            <hr class="border-gray-200 dark:border-gray-600 my-4"></hr>
+
+                            <div class="flex gap-4 justify-end">
+                                <x-admin.button
+                                    x-on:click="$dispatch('close-modal', 'edit-variant')"
+                                    type="button"
+                                    tag="secondary"
+                                    element="button">
+                                    {{ __('Cancel') }}
+                                </x-admin.button>
+
+                                <x-admin.button
+                                    wire:click="updateVariation"
+                                    wire:loading.attr="disabled"
+                                    type="button"
+                                    element="button">
+                                    @slot('icon')
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM480-240q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"/></svg>
+                                    @endslot
+                                    {{ __('Save Changes') }}
+                                </x-admin.button>
+                            </div>
+                        </div>
+                    </grid>
+                </div>
+            @endif
+
         </div>
     </x-modal>
 
@@ -410,8 +676,9 @@
                 <input type="number" name="stock_quantity_variant" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-20" placeholder="0">
             </div>
             <div class="flex items-center justify-between p-2 bg-gray-200/20 hover:bg-gray-100 dark:hover:bg-gray-700/50">
-                <label for="allow_backorders" class="text-xs font-medium text-gray-800 dark:text-gray-200">Allow Backorders</label>
-                <input type="checkbox" name="allow_backorders" id="allow_backorders" class="rounded border-gray-300 dark:border-gray-600 text-primary-600 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 dark:bg-gray-700 dark:checked:bg-primary-500">
+                <label for="allow_backorders" class="text-xs font-medium text-gray-800 dark:text-gray-200">Continue selling when out of stock</label>
+                <input type="checkbox" name="allow_backorders" id="allow_backorders" x-on:change="document.querySelector('input[name=allowBackordersFailsafe]').value = $event.target.checked" class="rounded border-gray-300 dark:border-gray-600 text-primary-600 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 dark:bg-gray-700 dark:checked:bg-primary-500">
+                <input type="hidden" name="allowBackordersFailsafe" value="false">
             </div>
         `;
 
@@ -439,10 +706,7 @@
             const priceAdjustment = document.querySelector('input[name=price_adjustment]').value;
             const sku = document.querySelector('input[name=sku_variant]').value;
             const stockQuantity = document.querySelector('input[name=stock_quantity_variant]').value;
-            // const allowBackordersCheckbox = document.querySelector('input[name="allow_backorders"]');
-            // const allowBackorders = allowBackordersCheckbox.checked ? 1 : 0;
-            const allowBackorders = document.querySelector('input[name=allow_backorders]').checked ? 1 : 0;
-            console.log('Checkbox element:', allowBackorders);
+            const allowBackorders = document.querySelector('input[name=allowBackordersFailsafe]').value == "true" ? 1 : 0;
 
             const response = await fetch('/api/variation/store', {
                 method: 'POST',
@@ -492,4 +756,11 @@
             console.error('Error saving variations:', error);
         }
     });
+
+    setTimeout(() => {
+        const firstEditBtn = document.querySelector('button[title="Edit"]');
+        if (firstEditBtn) {
+            firstEditBtn.click();
+        }
+    }, 200);
 </script>

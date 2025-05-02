@@ -10,7 +10,7 @@ class ProductVariation extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'product_id', 'sku', 'barcode', 'stock_quantity', 'track_quantity',
+        'product_id', 'variation_identifier', 'sku', 'barcode', 'stock_quantity', 'track_quantity',
         'allow_backorders', 'sold_count', 'in_cart_count', 'primary_image_id',
         'price_adjustment', 'adjustment_type', 'weight_adjustment',
         'height_adjustment', 'width_adjustment', 'length_adjustment',
