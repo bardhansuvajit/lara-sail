@@ -4,33 +4,33 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Illuminate\Database\Eloquent\Collection;
-use App\Interfaces\ProductReviewImageInterface;
+use App\Interfaces\ProductImageInterface;
 use Livewire\Attributes\On;
 
-class ExistingProductReviewImages extends Component
+class ExistingProductVariationImages extends Component
 {
     public Collection $images;
     // public int $imageId;
-    private ProductReviewImageInterface $productReviewImageRepository;
+    private ProductImageInterface $productImageRepository;
 
-    public function mount(Collection $images, ProductReviewImageInterface $productReviewImageRepository)
+    public function mount(Collection $images, ProductImageInterface $productImageRepository)
     {
         $this->images = $images;
-        $this->productReviewImageRepository = $productReviewImageRepository;
+        $this->productImageRepository = $productImageRepository;
     }
 
     public function deleteImage(int $imageId)
     {
-        $productReviewImageRepository = app(ProductReviewImageInterface::class);
-        $resp = $productReviewImageRepository->delete($imageId);
+        $productImageRepository = app(ProductImageInterface::class);
+        $resp = $productImageRepository->delete($imageId);
         $this->images = $this->images->reject(fn($image) => $image->id == $imageId);
     }
 
-    #[On('updateProductImageOrder')]
+    #[On('updateProductVariationImageOrder')]
     public function updateFeatureOrder(array $ids)
     {
-        $productReviewImageRepository = app(ProductReviewImageInterface::class);
-        $positionResp = $productReviewImageRepository->position($ids);
+        $productImageRepository = app(ProductImageInterface::class);
+        $positionResp = $productImageRepository->position($ids);
 
         if ($positionResp['code'] == 200) {
             $this->dispatch('notificationSend', [
@@ -40,7 +40,10 @@ class ExistingProductReviewImages extends Component
             ]);
 
             // Refresh the images collection with the new order
-            $this->images = $productReviewImageRepository->list('', ['product_id' => $this->images->first()->product_id], 'all', 'position', 'asc')['data'];
+            $this->images = $productImageRepository->list('', [
+                'product_id' => $this->images->first()->product_id,
+                'product_variation_id' => $this->images->first()->product_variation_id,
+            ], 'all', 'position', 'asc')['data'];
 
             // $this->images;
 
@@ -55,6 +58,6 @@ class ExistingProductReviewImages extends Component
 
     public function render()
     {
-        return view('livewire.existing-product-review-images');
+        return view('livewire.existing-product-variation-images');
     }
 }

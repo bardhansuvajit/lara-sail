@@ -94,6 +94,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/bulk/update', 'bulkUpdate')->name('bulk.update');
                 Route::post('/import', 'import')->name('import');
                 Route::get('/export/{type}', 'export')->name('export');
+
+                Route::prefix('variation')->name('variation.')->controller(ProductVariationController::class)->group(function() {
+                    Route::get('/edit/{id}', 'edit')->name('edit');
+                    Route::post('/update', 'update')->name('update');
+                    Route::delete('/delete/{id}', 'delete')->name('delete');
+                });
             });
 
             // category
@@ -168,11 +174,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
             // variation
             Route::prefix('variation')->name('variation.')->group(function() {
-
-                Route::controller(ProductVariationController::class)->group(function() {
-                    Route::delete('/delete/{id}', 'delete')->name('delete');
-                });
-
                 // attribute
                 Route::prefix('attribute')->name('attribute.')->controller(ProductVariationAttributeController::class)->group(function() {
                     Route::get('/', 'index')->name('index');

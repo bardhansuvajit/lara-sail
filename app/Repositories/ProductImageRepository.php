@@ -87,9 +87,15 @@ class ProductImageRepository implements ProductImageInterface
         try {
             $data = new ProductImage();
             $data->product_id = $array['product_id'];
+
             $data->image_s = $array['image_s'];
             $data->image_m = $array['image_m'];
             $data->image_l = $array['image_l'];
+
+            if (!empty($array['product_variation_id'])) $data->product_variation_id = $array['product_variation_id'];
+            if (!empty($array['is_variation_specific'])) $data->is_variation_specific = $array['is_variation_specific'];
+            if (!empty($array['alt_text'])) $data->alt_text = $array['alt_text'];
+
             $data->status = 1;
             $data->save();
 

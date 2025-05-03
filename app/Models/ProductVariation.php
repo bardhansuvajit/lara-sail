@@ -31,6 +31,11 @@ class ProductVariation extends Model
         return $this->hasMany('App\Models\ProductVariationCombination', 'variation_id', 'id');
     }
 
+    public function images()
+    {
+        return $this->hasMany('App\Models\ProductImage', 'product_variation_id', 'id')->orderBy('position', 'asc');
+    }
+
     public function getFinalPriceAttribute()
     {
         $basePrice = $this->getBasePrice();

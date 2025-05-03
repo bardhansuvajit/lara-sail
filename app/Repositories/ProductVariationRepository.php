@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
 use App\Interfaces\ProductVariationCombinationInterface;
+use App\Interfaces\ProductImageInterface;
 use App\Models\ProductVariationCombination;
 
 use App\Exports\ProductVariationAttributesExport;
@@ -18,11 +19,13 @@ class ProductVariationRepository implements ProductVariationInterface
 {
     private TrashInterface $trashRepository;
     private ProductVariationCombinationInterface $productVariationCombinationRepository;
+    private ProductImageInterface $productImageRepository;
 
-    public function __construct(TrashInterface $trashRepository, ProductVariationCombinationInterface $productVariationCombinationRepository)
+    public function __construct(TrashInterface $trashRepository, ProductVariationCombinationInterface $productVariationCombinationRepository, ProductImageInterface $productImageRepository)
     {
         $this->trashRepository = $trashRepository;
         $this->productVariationCombinationRepository = $productVariationCombinationRepository;
+        $this->productImageRepository = $productImageRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
@@ -203,7 +206,9 @@ class ProductVariationRepository implements ProductVariationInterface
     public function getById(Int $id)
     {
         try {
-            $data = ProductVariation::find($id);
+            $data = ProductVariation::where('id', $id)
+                ->with('product', 'combinations', )
+                ->first();
 
             if (!empty($data)) {
                 return [
@@ -238,26 +243,50 @@ class ProductVariationRepository implements ProductVariationInterface
             $data = $this->getById($array['id']);
 
             if ($data['code'] == 200) {
-                $data['data']->title = $array['title'];
-                $data['data']->slug = Str::slug($array['title']);
-                $data['data']->is_global = $array['is_global'] ? $array['is_global'] : 0;
-                $data['data']->short_description = isset($array['short_description']) ? $array['short_description'] : null;
-                $data['data']->long_description = isset($array['long_description']) ? $array['long_description'] : null;
-                $data['data']->tags = isset($array['tags']) ? $array['tags'] : null;
+
+                // dd($array);
+
+                if (!empty($array['variation_identifier'])) $data['data']->variation_identifier = $array['variation_identifier'];
+                if (!empty($array['sku']))                  $data['data']->sku = $array['sku'];
+                if (!empty($array['barcode']))              $data['data']->barcode = $array['barcode'];
+
+                $data['data']->track_quantity = $array['track_quantity'];
+                $data['data']->stock_quantity = $array['stock_quantity'];
+                $data['data']->allow_backorders = $array['allow_backorders'];
+
+                if (!empty($array['primary_image_id']))     $data['data']->primary_image_id = $array['primary_image_id'];
+                if (!empty($array['price_adjustment']))     $data['data']->price_adjustment = $array['price_adjustment'];
+                if (!empty($array['adjustment_type']))      $data['data']->adjustment_type = $array['adjustment_type'];
+
+                if (!empty($array['weight_adjustment']))    $data['data']->weight_adjustment = $array['weight_adjustment'];
+                if (!empty($array['height_adjustment']))    $data['data']->height_adjustment = $array['height_adjustment'];
+                if (!empty($array['width_adjustment']))     $data['data']->width_adjustment = $array['width_adjustment'];
+                if (!empty($array['length_adjustment']))    $data['data']->length_adjustment = $array['length_adjustment'];
+                if (!empty($array['weight_unit']))          $data['data']->weight_unit = $array['weight_unit'];
+                if (!empty($array['dimension_unit']))       $data['data']->dimension_unit = $array['dimension_unit'];
+                if (!empty($array['is_default']))           $data['data']->is_default = $array['is_default'];
+                if (!empty($array['status']))               $data['data']->status = $array['status'];
+
                 $data['data']->save();
 
-                DB::commit();
+                // IMAGES
+                if (!empty($array['images']) && count($array['images']) > 0) {
+                    foreach($array['images'] as $imageKey => $singleImage) {
+                        $uploadResp = fileUpload($singleImage, 'p-img');
 
-                if (!empty($array['values']) && count($data['data']->values) == 0) {
-                    $explodedValues = array_map('trim', explode(',', $array['values']));
-
-                    foreach ($explodedValues as $key => $singleValue) {
-                        $dd = $this->productVariationAttributeValueRepository->store([
-                            'attribute_id' => $array['id'],
-                            'title' => $singleValue
-                        ]);
+                        $imageData = [
+                            'product_id' => $data['data']->product_id,
+                            'product_variation_id' => $array['id'],
+                            'is_variation_specific' => 1,
+                            'image_s' => $uploadResp['smallThumbName'],
+                            'image_m' => $uploadResp['mediumThumbName'],
+                            'image_l' => $uploadResp['largeThumbName'],
+                        ];
+                        $imageResp = $this->productImageRepository->store($imageData);
                     }
                 }
+
+                DB::commit();
 
                 return [
                     'code' => 200,
@@ -274,7 +303,8 @@ class ProductVariationRepository implements ProductVariationInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => 'An error occurred while updating data.',
+                // 'message' => 'An error occurred while updating data.',
+                'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ];
         }

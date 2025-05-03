@@ -14,7 +14,7 @@ class ProductVariant extends Component
     public string $search = '';
     public $existingVariations = [];
     protected $listeners = ['variation-added' => 'loadExistingVariations'];
-    public $editingVariation = null;
+    // public $editingVariation = null;
 
     public function mount($product_id, $category_id)
     {
@@ -60,34 +60,6 @@ class ProductVariant extends Component
 
     public function loadExistingVariations()
     {
-        /*
-        $variations = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue'])
-            ->where('product_id', $this->product_id)
-            ->get()
-            ->map(function ($variation) {
-                return $variation->combinations->map(function ($combo) {
-                    return [
-                        'attribute_id' => $combo->attribute_id,
-                        'attribute_title' => $combo->attribute->title,
-                        'value_id' => $combo->attribute_value_id,
-                        'value_title' => $combo->attributeValue->title,
-                    ];
-                });
-            })
-            ->collapse() // Flatten all combinations from all variations
-            ->groupBy('attribute_title') // Group by attribute name
-            ->map(function ($group) {
-                // Get unique values for each attribute
-                return $group->unique('value_id')
-                    ->pluck('value_title')
-                    ->sort()
-                    ->values()
-                    ->toArray();
-            });
-
-            $this->existingVariations = $variations->all();
-        */
-
         $rawVariations = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue'])
             ->where('product_id', $this->product_id)
             ->get()
@@ -110,8 +82,6 @@ class ProductVariant extends Component
                     'allow_backorders' => $variation->allow_backorders,
                     'price_adjustment' => $variation->price_adjustment,
                     'adjustment_type' => $variation->adjustment_type,
-                    // 'barcode' => $variation->barcode,
-                    // 'barcode' => $variation->barcode,
                     'created_at' => $variation->created_at->format('M d, Y'),
                 ];
             });
@@ -161,21 +131,15 @@ class ProductVariant extends Component
         }
     }
 
+    /*
     public function editVariation($variationId)
     {
-        // $this->editingVariation = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue'])
-        //     ->findOrFail($variationId)
-        //     ->toArray();
-
-        // $this->dispatch('open-modal', 'edit-variant');
-
         $variation = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue'])
         ->findOrFail($variationId);
         $this->editingVariation = $variation->toArray();
 
-        // Set default values if they're null
-        $this->editingVariation['track_quantity'] = $this->editingVariation['track_quantity'] ?? false;
-        $this->editingVariation['allow_backorders'] = $this->editingVariation['allow_backorders'] ?? false;
+        $this->editingVariation['track_quantity'] = (int) ($variation->track_quantity ?? 0);
+        $this->editingVariation['allow_backorders'] = (bool)($this->editingVariation['allow_backorders'] ?? false);
 
         $this->dispatch('open-modal', 'edit-variant');
     }
@@ -190,8 +154,8 @@ class ProductVariant extends Component
                 'editingVariation.sku' => 'nullable|string|max:50|unique:product_variations,sku,'.$variation->id,
                 'editingVariation.barcode' => 'nullable|string|max:50|unique:product_variations,barcode,'.$variation->id,
                 'editingVariation.stock_quantity' => 'required|integer|min:0',
-                'editingVariation.track_quantity' => 'required|boolean',
-                'editingVariation.allow_backorders' => 'required|boolean',
+                'editingVariation.track_quantity' => 'nullable',
+                // 'editingVariation.allow_backorders' => 'nullable',
                 'editingVariation.price_adjustment' => 'required|numeric',
                 'editingVariation.adjustment_type' => 'required|in:fixed,percentage',
 
@@ -203,6 +167,11 @@ class ProductVariant extends Component
                 'editingVariation.height_adjustment' => 'required|min:0',
                 'editingVariation.dimension_unit' => 'required|in:mm,cm,m,in,ft',
             ]);
+
+            dd($validated['editingVariation']['track_quantity']);
+
+            // $validated['editingVariation']['track_quantity'] = (bool)($validated['editingVariation']['track_quantity'] ?? false);
+            // $validated['editingVariation']['allow_backorders'] = (bool)($validated['editingVariation']['allow_backorders'] ?? false);
 
             $variation->update($validated['editingVariation']);
 
@@ -222,6 +191,7 @@ class ProductVariant extends Component
             ]);
         }
     }
+    */
 
     public function render()
     {

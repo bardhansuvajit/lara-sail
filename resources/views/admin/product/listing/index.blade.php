@@ -248,9 +248,10 @@
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 <div class="flex space-x-2 items-center">
+                                    {{-- {{dd($item->activeImages)}} --}}
                                     @if(count($item->activeImages) > 0)
                                         <div class="h-10 overflow-hidden flex">
-                                            <img src="{{ Storage::url($item->image_s) }}" alt="" class="h-8">
+                                            <img src="{{ Storage::url($item->activeImages[0]->image_m) }}" alt="" class="h-8">
                                         </div>
                                     @endif
 
