@@ -57,7 +57,7 @@ class ProductCategoryController
         // dd($request->all());
 
         $request->validate([
-            'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
+            'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
             'title' => 'required|min:2|max:255',
             'level' => 'required|in:1,2,3,4',
             'parent_id' => 'required_if:level,2,3,4'
@@ -90,7 +90,7 @@ class ProductCategoryController
 
         $request->validate([
             'id' => 'required|integer',
-            'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
+            'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
             'title' => 'required|min:2|max:255',
             'level' => 'required|in:1,2,3,4',
             'parent_id' => 'required_if:level,2,3,4'

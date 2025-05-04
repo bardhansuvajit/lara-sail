@@ -66,7 +66,7 @@ class Product extends Model
 
     public function variations()
     {
-        return $this->hasMany('App\Models\ProductVariation', 'product_id', 'id')->orderBy('position')->orderBy('id', 'desc');
+        return $this->hasMany('App\Models\ProductVariation', 'product_id', 'id')->orderBy('id', 'desc');
     }
 
     public function reviews()

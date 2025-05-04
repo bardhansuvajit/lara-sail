@@ -12,9 +12,13 @@ class ProductVariant extends Component
     public int $category_id;
     public $variations;
     public string $search = '';
+    public string $sortBy = 'position';
+    public string $sortOrder = 'asc';
     public $existingVariations = [];
-    protected $listeners = ['variation-added' => 'loadExistingVariations'];
-    // public $editingVariation = null;
+    // protected $listeners = ['variation-added' => 'loadExistingVariations'];
+    protected $listeners = [
+        'variation-added' => 'onVariationAdded'
+    ];
 
     public function mount($product_id, $category_id)
     {
@@ -29,21 +33,33 @@ class ProductVariant extends Component
         $this->loadVariations();
     }
 
+    public function updatedSortBy()
+    {
+        $this->loadVariations();
+    }
+
+    public function updatedSortOrder()
+    {
+        $this->loadVariations();
+    }
+
     public function loadVariations()
     {
+        \DB::enableQueryLog();
+
         $this->variations = ProductVariationAttribute::query()
             ->where('status', 1)
             ->where(function($query) {
                 $query->where(function($q) {
                         $q->where('is_global', 1)
-                          ->whereHas('values');
+                          ->whereHas('valuesUnsorted');
                     })
                     ->orWhere(function($q) {
                         $q->where('is_global', 0)
-                          ->whereHas('values.categories', fn($q) => $q->where('category_id', $this->category_id));
+                          ->whereHas('valuesUnsorted.categories', fn($q) => $q->where('category_id', $this->category_id));
                     });
             })
-            ->with(['values' => function($query) {
+            ->with(['valuesUnsorted' => function($query) {
                 $query->where('status', 1)
                         ->where(function($q) {
                             $q->whereHas('categories', fn($q) => $q->where('category_id', $this->category_id))
@@ -52,15 +68,21 @@ class ProductVariant extends Component
                         ->when($this->search, function($q) {
                             $q->where('title', 'like', '%'.$this->search.'%');
                         })
-                        ->with('categories'); // Eager load categories
+                        ->with('categories') // Eager load categories
+                        ->orderBy($this->sortBy, $this->sortOrder);
             }])
+            // ->orderBy($this->sortBy, $this->sortOrder)
             ->orderBy('position', 'asc')
             ->get();
+
+        // dd(\DB::getQueryLog());
+
+        // dd($this->variations);
     }
 
     public function loadExistingVariations()
     {
-        $rawVariations = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue'])
+        $rawVariations = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue', 'images'])
             ->where('product_id', $this->product_id)
             ->get()
             ->map(function ($variation) {
@@ -74,6 +96,7 @@ class ProductVariant extends Component
                             'value_title' => $combo->attributeValue->title,
                         ];
                     }),
+                    'images' => $variation->images,
                     'variation_identifier' => $variation->variation_identifier,
                     'sku' => $variation->sku,
                     'barcode' => $variation->barcode,
@@ -131,67 +154,11 @@ class ProductVariant extends Component
         }
     }
 
-    /*
-    public function editVariation($variationId)
+    public function onVariationAdded()
     {
-        $variation = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue'])
-        ->findOrFail($variationId);
-        $this->editingVariation = $variation->toArray();
-
-        $this->editingVariation['track_quantity'] = (int) ($variation->track_quantity ?? 0);
-        $this->editingVariation['allow_backorders'] = (bool)($this->editingVariation['allow_backorders'] ?? false);
-
-        $this->dispatch('open-modal', 'edit-variant');
+        $this->loadExistingVariations();
+        $this->loadVariations(); // refresh filtered variations
     }
-
-    public function updateVariation()
-    {
-        try {
-            $variation = ProductVariation::findOrFail($this->editingVariation['id']);
-
-            $validated = $this->validate([
-                'editingVariation.variation_identifier' => 'required|string|unique:product_variations,variation_identifier,'.$variation->id,
-                'editingVariation.sku' => 'nullable|string|max:50|unique:product_variations,sku,'.$variation->id,
-                'editingVariation.barcode' => 'nullable|string|max:50|unique:product_variations,barcode,'.$variation->id,
-                'editingVariation.stock_quantity' => 'required|integer|min:0',
-                'editingVariation.track_quantity' => 'nullable',
-                // 'editingVariation.allow_backorders' => 'nullable',
-                'editingVariation.price_adjustment' => 'required|numeric',
-                'editingVariation.adjustment_type' => 'required|in:fixed,percentage',
-
-                'editingVariation.weight_adjustment' => 'required|min:0',
-                'editingVariation.weight_unit' => 'required|in:g,kg,lb,oz',
-
-                'editingVariation.length_adjustment' => 'required|min:0',
-                'editingVariation.width_adjustment' => 'required|min:0',
-                'editingVariation.height_adjustment' => 'required|min:0',
-                'editingVariation.dimension_unit' => 'required|in:mm,cm,m,in,ft',
-            ]);
-
-            dd($validated['editingVariation']['track_quantity']);
-
-            // $validated['editingVariation']['track_quantity'] = (bool)($validated['editingVariation']['track_quantity'] ?? false);
-            // $validated['editingVariation']['allow_backorders'] = (bool)($validated['editingVariation']['allow_backorders'] ?? false);
-
-            $variation->update($validated['editingVariation']);
-
-            // $this->dispatch('close-modal', 'edit-variant');
-            $this->loadExistingVariations();
-
-            $this->dispatch('notificationSend', [
-                'variant' => 'success',
-                'title' => 'Success!',
-                'message' => 'Variation updated successfully',
-            ]);
-        } catch (\Exception $e) {
-            $this->dispatch('notificationSend', [
-                'variant' => 'danger',
-                'title' => 'OOPS!',
-                'message' => $e->getMessage()
-            ]);
-        }
-    }
-    */
 
     public function render()
     {

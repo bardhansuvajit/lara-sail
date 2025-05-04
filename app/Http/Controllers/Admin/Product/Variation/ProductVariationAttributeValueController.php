@@ -76,6 +76,7 @@ class ProductVariationAttributeValueController
             'category_id' => 'nullable|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
             'category_name' => 'nullable|string|min:2',
             'type' => 'nullable|integer|min:1',
+            'meta' => 'nullable|string|min:2',
             'short_description' => 'nullable|string|min:2|max:1000',
             'long_description' => 'nullable|string|min:2',
             'tags' => 'nullable|string|min:1',
@@ -117,6 +118,7 @@ class ProductVariationAttributeValueController
             'category_id' => 'nullable|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
             'category_name' => 'nullable|string|min:2',
             'type' => 'nullable|integer|min:1',
+            'meta' => 'nullable|string|min:2',
             'short_description' => 'nullable|string|min:2|max:1000',
             'long_description' => 'nullable|string|min:2',
             'tags' => 'nullable|string|min:1',

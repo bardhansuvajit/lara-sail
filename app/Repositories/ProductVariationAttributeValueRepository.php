@@ -191,12 +191,12 @@ class ProductVariationAttributeValueRepository implements ProductVariationAttrib
                 $data['data']->attribute_id = $array['attribute_id'];
                 $data['data']->title = $array['title'];
                 $data['data']->slug = Str::slug($array['title']);
-                $data['data']->meta = isset($array['meta']) ? $array['meta'] : null;
-                $data['data']->type = isset($array['type']) ? $array['type'] : 1;
-                $data['data']->short_description = isset($array['short_description']) ? $array['short_description'] : null;
-                $data['data']->long_description = isset($array['long_description']) ? $array['long_description'] : null;
-                $data['data']->tags = isset($array['tags']) ? $array['tags'] : null;
-                $data['data']->status = isset($array['status']) ? $array['status'] : 1;
+                $data['data']->meta = !empty($array['meta']) ? $array['meta'] : null;
+                $data['data']->type = !empty($array['type']) ? $array['type'] : 1;
+                $data['data']->short_description = !empty($array['short_description']) ? $array['short_description'] : null;
+                $data['data']->long_description = !empty($array['long_description']) ? $array['long_description'] : null;
+                $data['data']->tags = !empty($array['tags']) ? $array['tags'] : null;
+                $data['data']->status = !empty($array['status']) ? $array['status'] : 1;
                 $data['data']->save();
 
                 // category

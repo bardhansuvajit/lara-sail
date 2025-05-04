@@ -40,6 +40,14 @@
 
             <div class="grid gap-4 mb-4 grid-cols-1">
                 <div>
+                    <x-admin.input-label for="meta" :value="__('Meta (Supports JSON format only)')" />
+                    <x-admin.textarea id="meta" class="block" type="text" name="meta" :value="old('meta')" placeholder="Enter Meta" />
+                    <x-admin.input-error :messages="$errors->get('meta')" class="mt-2" />
+                </div>
+            </div>
+
+            <div class="grid gap-4 mb-4 grid-cols-1">
+                <div>
                     <x-admin.input-label for="short_description" :value="__('Short Description')" />
                     <x-admin.textarea id="short_description" class="block" type="text" name="short_description" :value="old('short_description')" placeholder="Enter Short Description" maxlength="1000" />
                     <x-admin.input-error :messages="$errors->get('short_description')" class="mt-2" />
@@ -49,7 +57,7 @@
             <div class="grid gap-4 mb-4 grid-cols-1">
                 <div>
                     <x-admin.input-label for="long_description" :value="__('Long Description')" />
-                    <x-admin.textarea id="long_description" class="block" type="text" name="long_description" :value="old('long_description')" placeholder="Enter Long Description" maxlength="1000" />
+                    <x-admin.textarea id="long_description" class="block" type="text" name="long_description" :value="old('long_description')" placeholder="Enter Long Description" />
                     <x-admin.input-error :messages="$errors->get('long_description')" class="mt-2" />
                 </div>
             </div>
@@ -57,7 +65,7 @@
             <div class="grid gap-4 mb-4 grid-cols-1">
                 <div>
                     <x-admin.input-label for="tags" :value="__('Tags (comma separated)')" />
-                    <x-admin.textarea id="tags" class="block" type="text" name="tags" :value="old('tags')" placeholder="Enter Tags" maxlength="1000" />
+                    <x-admin.textarea id="tags" class="block" type="text" name="tags" :value="old('tags')" placeholder="Enter Tags" />
                     <p class="text-xs mt-2 dark:text-gray-400">e.g. "tag 1, tag 2, tag 3"</p>
                     <x-admin.input-error :messages="$errors->get('tags')" class="mt-2" />
                 </div>

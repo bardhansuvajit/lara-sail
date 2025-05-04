@@ -16,6 +16,12 @@ class ProductVariationAttribute extends Model
         return $this->hasMany('App\Models\ProductVariationAttributeValue', 'attribute_id', 'id')->orderBy('position', 'asc')->orderBy('id', 'desc');
     }
 
+    // mainly used in 'ProductVariant' Livewire
+    public function valuesUnsorted()
+    {
+        return $this->hasMany('App\Models\ProductVariationAttributeValue', 'attribute_id', 'id');
+    }
+
     // public function categoryAttributes()
     // {
     //     return $this->hasMany('App\Models\ProductCategoryVariationAttribute', 'attribute_id', 'id');

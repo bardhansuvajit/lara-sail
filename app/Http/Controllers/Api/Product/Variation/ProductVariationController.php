@@ -46,7 +46,7 @@ class ProductVariationController
             'weight_unit' => $request->weight_unit ?? 'g',
             'dimension_unit' => $request->dimension_unit ?? 'cm',
             'is_default' => $request->is_default ?? 0,
-            'status' => $request->status ?? 1
+            'status' => $request->status ?? 0
         ]);
         return $resp;
     }

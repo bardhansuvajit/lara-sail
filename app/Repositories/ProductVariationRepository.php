@@ -140,7 +140,7 @@ class ProductVariationRepository implements ProductVariationInterface
             $data->weight_unit = !empty($array['weight_unit']) ? $array['weight_unit'] : 'g';
             $data->dimension_unit = !empty($array['dimension_unit']) ? $array['dimension_unit'] : 'cm';
             $data->is_default = !empty($array['is_default']) ? $array['is_default'] : 0;
-            $data->status = !empty($array['status']) ? $array['status'] : 1;
+            $data->status = !empty($array['status']) ? $array['status'] : 0;
             $data->save();
 
             if (!empty($array['variations']) && count($array['variations']) > 0) {

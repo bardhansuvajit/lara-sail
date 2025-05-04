@@ -21,6 +21,22 @@ class ProductVariation extends Model
         'meta' => 'array',
     ];
 
+    protected static function booted()
+    {
+        static::created(function ($variation) {
+            $variation->product->update(['has_variations' => 1]);
+        });
+
+        static::deleted(function ($variation) {
+            $hasOtherVariations = $variation->product->variations()->exists();
+
+            $variation->product->update([
+                'has_variations' => $hasOtherVariations ? 1 : 0
+            ]);
+        });
+    }
+
+
     public function product()
     {
         return $this->belongsTo('App\Models\Product', 'product_id', 'id');

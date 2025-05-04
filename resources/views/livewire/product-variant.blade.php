@@ -25,15 +25,34 @@
                             @foreach($existingVariations['raw'] as $variationIndex => $variation)
                                 <div class="p-3 hover:bg-gray-50 {{ ($variationIndex % 2 == 0) ? 'dark:bg-gray-700/50' : 'dark:bg-gray-700/20' }} dark:hover:bg-gray-900/50 transition-colors">
                                     <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
-                                        <div class="flex flex-wrap gap-1 mb-2">
-                                            @foreach($variation['combinations'] as $combo)
-                                                <span class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700">
-                                                    {{ $combo['attribute_title'] }}: {{ $combo['value_title'] }}
-                                                </span>
-                                            @endforeach
+                                        <div class="flex gap-4">
+                                            <div class="h-6">
+                                                @if (!empty($variation['images']) && count($variation['images']) > 0)
+                                                    <div class="flex items-center justify-center h-full">
+                                                        <img src="{{ Storage::url($variation['images'][0]->image_m) }}" alt="" class="max-w-full max-h-full">
+                                                    </div>
+                                                @else
+                                                    <div class="flex items-center justify-center h-8 w-8">
+                                                        {!!FD['brokenImage']!!}
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="flex flex-wrap gap-1 mb-2">
+                                                @foreach($variation['combinations'] as $combo)
+                                                    <span class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700">
+                                                        {{ $combo['attribute_title'] }}: {{ $combo['value_title'] }}
+                                                    </span>
+                                                @endforeach
+                                            </div>
                                         </div>
 
                                         <div class="flex space-x-2 items-center justify-end">
+                                            @livewire('toggle-status', [
+                                                'model' => 'ProductVariation',
+                                                'modelId' => $variation['id'],
+                                            ])
+
                                             <x-admin.button-icon
                                                 element="a"
                                                 :href="route('admin.product.listing.variation.edit', $variation['id'])"
@@ -191,29 +210,116 @@
                                     placeholder="Search..." 
                                 />
                             </div>
+
+                            <div class="col-span-3 flex flex-row space-x-1 justify-end items-end">
+                                <div class="w-max">
+                                    <x-admin.input-label for="sortBy" :value="__('Sort by')" />
+                                    <x-admin.input-select 
+                                        id="sortBy" 
+                                        name="sortBy" 
+                                        wire:model.live.debounce.300ms="sortBy"
+                                        :title="$sortBy"  
+                                    >
+                                        @slot('options')
+                                            <x-admin.input-select-option 
+                                                value="id" 
+                                                :selected="request()->input('sortBy') == 'id'"
+                                            >
+                                                {{ __('ID') }}
+                                            </x-admin.input-select-option>
+
+                                            <x-admin.input-select-option 
+                                                value="title" 
+                                                :selected="request()->input('sortBy') == 'title'"
+                                            >
+                                                {{ __('Title') }}
+                                            </x-admin.input-select-option>
+
+                                            <x-admin.input-select-option 
+                                                value="position" 
+                                                :selected="request()->input('sortBy') == 'position'"
+                                            >
+                                                {{ __('Position') }}
+                                            </x-admin.input-select-option>
+                                        @endslot
+                                    </x-admin.input-select>
+                                </div>
+        
+                                <div class="w-max">
+                                    <x-admin.input-label for="sortOrder" :value="__('Order by')" />
+                                    <x-admin.input-select 
+                                        id="sortOrder" 
+                                        name="sortOrder" 
+                                        wire:model.live.debounce.300ms="sortOrder"
+                                        :title="$sortOrder" 
+                                    >
+                                        @slot('options')
+                                            <x-admin.input-select-option 
+                                                value="asc" 
+                                                :selected="request()->input('sortOrder') == 'asc'"
+                                            >
+                                                {{ __('ASC') }}
+                                            </x-admin.input-select-option>
+
+                                            <x-admin.input-select-option 
+                                                value="desc"
+                                                :selected="request()->input('sortOrder') == 'desc'"
+                                            >
+                                                {{ __('DESC') }}
+                                            </x-admin.input-select-option>
+                                        @endslot
+                                    </x-admin.input-select>
+                                </div>
+                            </div>
                         </div>
 
                         {{-- attribute values --}}
                         @foreach ($variations as $variationAttr)
                             <div class="mb-6">
                                 {{-- attribute --}}
-                                <h5 class="text-base font-medium text-primary-500 dark:text-primary-400 hover:text-primary-600 transition-colors inline-block mb-3">
-                                    <a href="{{ route('admin.product.variation.attribute.edit', $variationAttr->id) }}" 
-                                    target="_blank"
-                                    class="flex items-center gap-1">
-                                        {{ $variationAttr->title }}
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-                                            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-                                        </svg>
-                                    </a>
-                                </h5>
+                                <div class="flex justify-between">
+                                    <div>
+                                        <h5 class="text-base font-medium text-primary-500 dark:text-primary-400 hover:text-primary-600 transition-colors inline-block mb-3">
+                                            <a href="{{ route('admin.product.variation.attribute.edit', $variationAttr->id) }}" 
+                                                target="_blank"
+                                                class="flex items-center gap-1">
+                                                {{ $variationAttr->title }}
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                                                    <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                                                </svg>
+                                            </a>
+                                        </h5>
+                                    </div>
+
+                                    @if (strtolower($variationAttr->title) == "color")
+                                        <div>
+                                            <x-admin.input-checkbox 
+                                                id="toggle-colors-checkbox" 
+                                                name="track_quantity" 
+                                                value="yes" 
+                                                class="mb-3" 
+                                                label="Show colors" 
+                                            />
+                                        </div>
+                                    @endif
+                                </div>
 
                                 {{-- values --}}
                                 <div class="flex flex-wrap gap-2">
-                                    @forelse ($variationAttr->values as $attrValue)
+                                    @forelse ($variationAttr->valuesUnsorted as $attrValue)
                                         <div class="border dark:border-gray-700 text-center overflow-hidden min-w-[40px] bg-white dark:bg-gray-700">
+                                            {{-- OPTIONAL - Show colors with Attr Values --}}
+                                            @if (strtolower($variationAttr->title) == "color")
+                                                @php
+                                                    $meta = json_decode($attrValue->meta, true);
+                                                    $hexColor = $meta['hex'] ?? '#ffffff';
+                                                @endphp
+                                                <div class="w-full h-4 show-colors hidden" style="background-color: {{ $hexColor }}"></div>
+                                            @endif
+
                                             <p class="text-xs p-1 bg-gray-50 dark:bg-gray-600">{{ $attrValue->title }}</p>
+
                                             <x-admin.button-icon
                                                 element="a" 
                                                 tag="secondary" 
@@ -531,4 +637,16 @@
             console.error('Error saving variations:', error);
         }
     });
+
+    document.getElementById('toggle-colors-checkbox').addEventListener('click', function() {
+        if (this.checked) {
+            document.querySelectorAll('.show-colors').forEach(element => {
+                element.classList.remove('hidden');
+            });
+        } else {
+            document.querySelectorAll('.show-colors').forEach(element => {
+                element.classList.add('hidden');
+            });
+        }
+    })
 </script>

@@ -144,26 +144,35 @@ if (!function_exists('fileUpload')) {
         $fileExtension = $file->getClientOriginalExtension();
         $fileName = uniqid().'-'.time().'.'.$fileExtension;
 
-        $originalFilePath = 'uploads/' . $uploadPath . '/' . $fileName;
-        Storage::disk('public')->put($originalFilePath, file_get_contents($tmpPath));
+        // file extension check
+        if (in_array($fileExtension, developerSettings('image_validation')->image_upload_mimes_array)) {
+            $originalFilePath = 'uploads/' . $uploadPath . '/' . $fileName;
+            Storage::disk('public')->put($originalFilePath, file_get_contents($tmpPath));
 
-        if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'webp'])) {
-            $smallThumbName = 'uploads/'.$uploadPath.'/' .uniqid().'-'.time().'-s.'.$fileExtension;
-            $mediumThumbName = 'uploads/'.$uploadPath.'/' .uniqid().'-'.time().'-m.'.$fileExtension;
-            $largeThumbName = 'uploads/'.$uploadPath.'/' .uniqid().'-'.time().'-l.'.$fileExtension;
+            if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'webp'])) {
+                $smallThumbName = 'uploads/'.$uploadPath.'/' .uniqid().'-'.time().'-s.'.$fileExtension;
+                $mediumThumbName = 'uploads/'.$uploadPath.'/' .uniqid().'-'.time().'-m.'.$fileExtension;
+                $largeThumbName = 'uploads/'.$uploadPath.'/' .uniqid().'-'.time().'-l.'.$fileExtension;
 
-            resizeImage($tmpPath, 100, $smallThumbName);
-            resizeImage($tmpPath, 250, $mediumThumbName);
-            resizeImage($tmpPath, 500, $largeThumbName);
+                resizeImage($tmpPath, 100, $smallThumbName);
+                resizeImage($tmpPath, 250, $mediumThumbName);
+                resizeImage($tmpPath, 500, $largeThumbName);
 
+                return [
+                    'smallThumbName' => $smallThumbName,
+                    'mediumThumbName' => $mediumThumbName,
+                    'largeThumbName' => $largeThumbName
+                ];
+            } else {
+                return [
+                    'originalFilePath' => $originalFilePath
+                ];
+            }
+        } else { 
             return [
-                'smallThumbName' => $smallThumbName,
-                'mediumThumbName' => $mediumThumbName,
-                'largeThumbName' => $largeThumbName
-            ];
-        } else {
-            return [
-                'originalFilePath' => $originalFilePath
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'Invalid File Extension: '.$fileExtension
             ];
         }
     }

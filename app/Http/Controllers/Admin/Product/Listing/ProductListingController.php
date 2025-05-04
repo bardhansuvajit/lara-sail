@@ -113,7 +113,7 @@ class ProductListingController
             'meta_description' => 'nullable|string|min:2',
 
             'images' => 'nullable|array',
-            'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array)
+            'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array)
         ], [
             'selling_price.regex' => 'The selling price accepts value upto 2 decimals.',
             'mrp.regex' => 'The selling price accepts value upto 2 decimals.',
@@ -121,6 +121,7 @@ class ProductListingController
             'profit.regex' => 'The selling price accepts value upto 2 decimals.',
             'images.*.max' => '":filename" must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
             'images.*.mimes' => '":filename" must be a file of type: '.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
+            'images.*.extensions' => '":filename" is not supported. Please upload an image of these formats: '.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
         ]);
 
         $validator->after(function ($validator) use ($fileNames) {
@@ -249,7 +250,7 @@ class ProductListingController
             'meta_description' => 'nullable|string|min:2',
 
             'images' => 'nullable|array',
-            'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array)
+            'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array)
         ], [
             'selling_price.regex' => 'The selling price accepts value upto 2 decimals.',
             'mrp.regex' => 'The selling price accepts value upto 2 decimals.',
@@ -257,6 +258,7 @@ class ProductListingController
             'profit.regex' => 'The selling price accepts value upto 2 decimals.',
             'images.*.max' => '":filename" must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
             'images.*.mimes' => '":filename" must be a file of type: '.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
+            'images.*.extensions' => '":filename" is not supported. Please upload an image of these formats: '.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
         ]);
 
         $validator->after(function ($validator) use ($fileNames) {
