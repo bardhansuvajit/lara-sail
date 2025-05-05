@@ -2,17 +2,17 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\CountryInterface;
-use App\Models\Country;
+use App\Interfaces\CityInterface;
+use App\Models\City;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
 
-use App\Exports\CountriesExport;
+use App\Exports\CitiesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class CountryRepository implements CountryInterface
+class CityRepository implements CityInterface
 {
     private TrashInterface $trashRepository;
 
@@ -25,7 +25,7 @@ class CountryRepository implements CountryInterface
     {
         try {
             DB::enableQueryLog();
-            $query = Country::query();
+            $query = City::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -83,7 +83,7 @@ class CountryRepository implements CountryInterface
 
     public function store(Array $array)
     {
-        $data = new Country();
+        $data = new City();
         $data->title = $array['title'];
         $data->slug = Str::slug($array['title']);
         $data->parent_id = $array['parent_id'];
@@ -101,7 +101,7 @@ class CountryRepository implements CountryInterface
     public function getById(Int $id)
     {
         try {
-            $data = Country::find($id);
+            $data = City::find($id);
 
             if (!empty($data)) {
                 return [
@@ -131,7 +131,7 @@ class CountryRepository implements CountryInterface
     public function getByShortName(String $shortName)
     {
         try {
-            $data = Country::where('short_name', $shortName)->first();
+            $data = City::where('short_name', $shortName)->first();
 
             if (!empty($data)) {
                 return [
@@ -197,12 +197,12 @@ class CountryRepository implements CountryInterface
             if ($data['code'] == 200) {
                 // Handling trash
                 $this->trashRepository->store([
-                    'model' => 'Country',
-                    'table_name' => 'countries',
+                    'model' => 'City',
+                    'table_name' => 'cities',
                     'deleted_row_id' => $data['data']->id,
                     'thumbnail' => null,
                     'title' => $data['data']->name,
-                    'description' => $data['data']->name.' data deleted from countries table',
+                    'description' => $data['data']->name.' data deleted from cities table',
                     'status' => 'deleted',
                 ]);
 
@@ -230,7 +230,7 @@ class CountryRepository implements CountryInterface
     public function bulkAction(Array $array)
     {
         try {
-            $data = Country::whereIn('id', $array['ids'])->get();
+            $data = City::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
                     $item->delete();
@@ -265,7 +265,7 @@ class CountryRepository implements CountryInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            // $processedCount = saveToDatabase($data, 'Country');
+            // $processedCount = saveToDatabase($data, 'City');
 
             // save into Database
             $processedCount = 0;
@@ -275,18 +275,15 @@ class CountryRepository implements CountryInterface
                     continue; // Skip rows without a name
                 }
 
-                Country::create([
-                    'short_name' => !empty($item['short_name']) ? $item['short_name'] : null,
+                City::create([
+                    'country_id' => !empty($item['country_id']) ? $item['country_id'] : null,
+                    'state_id' => !empty($item['state_id']) ? $item['state_id'] : null,
                     'name' => $item['name'] ? $item['name'] : null,
-                    'phone_code' => !empty($item['phone_code']) ? $item['phone_code'] : null,
-                    'phone_no_digits' => !empty($item['phone_no_digits']) ? $item['phone_no_digits'] : null,
-                    'zip_code_format' => !empty($item['zip_code_format']) ? $item['zip_code_format'] : null,
-                    'currency_code' => !empty($item['currency_code']) ? $item['currency_code'] : null,
-                    'currency_symbol' => !empty($item['currency_symbol']) ? $item['currency_symbol'] : null,
-                    'continent' => !empty($item['continent']) ? $item['continent'] : null,
-                    'flag' => !empty($item['flag']) ? $item['flag'] : null,
+                    'district' => !empty($item['district']) ? $item['district'] : null,
+                    'postal_code' => !empty($item['postal_code']) ? $item['postal_code'] : null,
+                    'latitude' => !empty($item['latitude']) ? $item['latitude'] : null,
+                    'longitude' => !empty($item['longitude']) ? $item['longitude'] : null,
                     'language' => !empty($item['language']) ? $item['language'] : null,
-                    'time_zone' => !empty($item['time_zone']) ? $item['time_zone'] : null,
                     'shipping_availability' => !empty($item['shipping_availability']) ? $item['shipping_availability'] : 0,
                     'cash_on_delivery_availability' => !empty($item['cash_on_delivery_availability']) ? $item['cash_on_delivery_availability'] : 0,
                     'status' => !empty($item['status']) ? $item['status'] : 0
@@ -307,7 +304,8 @@ class CountryRepository implements CountryInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => 'An error occurred while uploading data.',
+                // 'message' => 'An error occurred while uploading data.',
+                'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ];
         }
@@ -319,23 +317,23 @@ class CountryRepository implements CountryInterface
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
             if (count($data['data']) > 0) {
-                $fileName = "countries_export_" . date('Y-m-d') . '-' . time();
+                $fileName = "cities_export_" . date('Y-m-d') . '-' . time();
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";
-                    return Excel::download(new CountriesExport($data['data']), $fileName.$fileExtension);
+                    return Excel::download(new CitiesExport($data['data']), $fileName.$fileExtension);
                 }
                 elseif ($type == 'csv') {
                     $fileExtension = ".csv";
-                    return Excel::download(new CountriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
+                    return Excel::download(new CitiesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
                 }
                 elseif ($type == 'html') {
                     $fileExtension = ".html";
-                    return Excel::download(new CountriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
+                    return Excel::download(new CitiesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
                 }
                 elseif ($type == 'pdf') {
                     $fileExtension = ".pdf";
-                    return Excel::download(new CountriesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
+                    return Excel::download(new CitiesExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
                 }
                 else {
                     return [

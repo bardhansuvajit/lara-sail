@@ -1,0 +1,3 @@
+"country_id","state_id","name","district","postal_code","latitude","longitude","language","shipping_availability","cash_on_delivery_availability","status"
+82,28,"Kolkata","Kolkata","700 xxx","22.5744° N","88.3629° E","Bengali,Hindi,English",1,1,1
+82,28,"Barasat","North 24 parganas","700124, 700125, 700126, 700127","22.7248° N","88.4789° E","Bengali,Hindi,English",1,1,1

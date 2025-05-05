@@ -53,6 +53,16 @@ return new class extends Migration
                 'model' => 'ProductVariationAttributeValue',
                 'file_path' => 'product_variation_attribute_values.csv',
                 'description' => 'Product Variation Attribute Values',
+            ],
+            [
+                'model' => 'State',
+                'file_path' => 'states.csv',
+                'description' => 'States',
+            ],
+            [
+                'model' => 'City',
+                'file_path' => 'cities.csv',
+                'description' => 'Cities',
             ]
         ];
 

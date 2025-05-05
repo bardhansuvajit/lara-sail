@@ -123,6 +123,7 @@
 
 
                     {{-- variation --}}
+                    {{ dd($variation) }}
                     <div class="space-y-2">
                         <div>
                             <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">Color</h3>

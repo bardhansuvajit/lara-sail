@@ -188,7 +188,7 @@
 
 
     {{-- add variant modal --}}
-    <x-modal name="add-variant" maxWidth="7xl" show focusable>
+    <x-modal name="add-variant" maxWidth="7xl" focusable>
         <div class="p-4">
             @if (count($variations) > 0)
                 <div class="grid space-x-2 grid-cols-3">

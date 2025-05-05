@@ -158,6 +158,31 @@
                             </a>
                         </li>
 
+                        <li>
+                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
+                                @if(request()->is('admin/master/state*')) bg-primary-200 dark:bg-gray-600 @endif"
+                                href="{{ route('admin.master.state.index') }}"
+                            >
+                                <div class="flex-shrink-0 w-4 h-4 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-120v-680h360l16 80h224v400H520l-16-80H280v280h-80Zm300-440Zm86 160h134v-240H510l-16-80H280v240h290l16 80Z"/></svg>
+                                </div>
+
+                                <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __('State') }}</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
+                                @if(request()->is('admin/master/city*')) bg-primary-200 dark:bg-gray-600 @endif"
+                                href="{{ route('admin.master.city.index') }}"
+                            >
+                                <div class="flex-shrink-0 w-4 h-4 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-120v-680h360l16 80h224v400H520l-16-80H280v280h-80Zm300-440Zm86 160h134v-240H510l-16-80H280v240h290l16 80Z"/></svg>
+                                </div>
+
+                                <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __('City') }}</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

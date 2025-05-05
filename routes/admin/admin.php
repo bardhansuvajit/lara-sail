@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Admin\Profile\ProfileController;
 use App\Http\Controllers\Admin\Password\PasswordController;
 use App\Http\Controllers\Admin\Country\CountryController;
+use App\Http\Controllers\Admin\State\StateController;
+use App\Http\Controllers\Admin\City\CityController;
 
 use App\Http\Controllers\Admin\Product\Listing\ProductListingController;
 use App\Http\Controllers\Admin\Product\Category\ProductCategoryController;
@@ -206,7 +208,34 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // master
         Route::prefix('master')->name('master.')->group(function() {
+            // country
             Route::prefix('country')->name('country.')->controller(CountryController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+                Route::post('/bulk', 'bulk')->name('bulk');
+                Route::post('/import', 'import')->name('import');
+                Route::get('/export/{type}', 'export')->name('export');
+            });
+
+            // state
+            Route::prefix('state')->name('state.')->controller(StateController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+                Route::post('/bulk', 'bulk')->name('bulk');
+                Route::post('/import', 'import')->name('import');
+                Route::get('/export/{type}', 'export')->name('export');
+            });
+
+            // city
+            Route::prefix('city')->name('city.')->controller(CityController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');

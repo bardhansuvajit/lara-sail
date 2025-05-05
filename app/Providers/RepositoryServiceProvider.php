@@ -25,6 +25,8 @@ use App\Interfaces\ProductVariationAttributeValueInterface;
 use App\Interfaces\ProductCategoryVariationAttributeInterface;
 use App\Interfaces\ProductVariationInterface;
 use App\Interfaces\ProductVariationCombinationInterface;
+use App\Interfaces\StateInterface;
+use App\Interfaces\CityInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -47,6 +49,8 @@ use App\Repositories\ProductVariationAttributeValueRepository;
 use App\Repositories\ProductCategoryVariationAttributeRepository;
 use App\Repositories\ProductVariationRepository;
 use App\Repositories\ProductVariationCombinationRepository;
+use App\Repositories\StateRepository;
+use App\Repositories\CityRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -76,6 +80,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ProductCategoryVariationAttributeInterface::class, ProductCategoryVariationAttributeRepository::class);
         $this->app->bind(ProductVariationInterface::class, ProductVariationRepository::class);
         $this->app->bind(ProductVariationCombinationInterface::class, ProductVariationCombinationRepository::class);
+        $this->app->bind(StateInterface::class, StateRepository::class);
+        $this->app->bind(CityInterface::class, CityRepository::class);
     }
 
     /**

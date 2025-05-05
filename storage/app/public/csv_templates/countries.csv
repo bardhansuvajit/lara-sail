@@ -1,0 +1,6 @@
+"short_name","name","phone_code","phone_no_digits","zip_code_format","currency_code","currency_symbol","continent","flag","language","time_zone","shipping_availability","cash_on_delivery_availability","status"
+"AF","Afghanistan","93","","","AFN","؋","Asia","","Pashto, Dari","Asia/Kabul","1","1",0
+"AL","Albania","355","","#####","ALL","Lek","Europe","","Albanian","Europe/Tirane","1","1",0
+"DZ","Algeria","213","","#####","DZD","د.ج","Africa","","Arabic","Africa/Algiers","1","1",0
+"AD","Andorra","376","","AD###","EUR","€","Europe","","Catalan","Europe/Andorra","1","1",0
+"AO","Angola","244","","","AOA","Kz","Africa","","Portuguese","Africa/Luanda","1","1",0

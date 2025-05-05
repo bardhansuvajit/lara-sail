@@ -527,4 +527,65 @@ class ProductVariationRepository implements ProductVariationInterface
             ];
         }
     }
+
+    public function groupedVariation(Int $id)
+    {
+        try {
+            $data = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue'])
+                ->where('product_id', $id)
+                ->get()
+                ->flatMap(function ($variation) {
+                    return $variation->combinations->map(function ($combo) use ($variation) {
+                        return [
+                            // Attribute details
+                            'attribute_id' => $combo->attribute->id,
+                            'attribute_title' => $combo->attribute->title,
+                            'attribute_slug' => $combo->attribute->slug,
+
+                            // Value details
+                            'value_id' => $combo->attribute_value_id,
+                            'value_title' => $combo->attributeValue->title,
+                            'value_slug' => $combo->attributeValue->slug,
+                        ];
+                    });
+                })
+                ->groupBy('attribute_id')
+                ->map(function ($group) {
+                    $firstItem = $group->first();
+
+                    return [
+                        'id' => $firstItem['attribute_id'],
+                        'title' => $firstItem['attribute_title'],
+                        'slug' => $firstItem['attribute_slug'],
+                        'values' => $group->unique('value_id')
+                            ->map(function ($item) {
+                                return [
+                                    'id' => $item['value_id'],
+                                    'title' => $item['value_title'],
+                                    'slug' => $item['value_slug'],
+                                ];
+                            })
+                            ->sortBy('title')
+                            ->values()
+                            ->toArray()
+                    ];
+                })
+                ->values()
+                ->toArray();
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Variation generated',
+                'data' => $data
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while positioning data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
 }

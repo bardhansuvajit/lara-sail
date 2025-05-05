@@ -1,8 +1,8 @@
 <x-admin-app-layout
     screen="md:w-full"
-    title="{{ __('Country') }}"
+    title="{{ __('City') }}"
     :breadcrumb="[
-        ['label' => 'Country']
+        ['label' => 'City']
     ]"
 >
 
@@ -11,7 +11,7 @@
         <div class="flex space-x-2 justify-end">
             <x-admin.button
                 element="a"
-                :href="route('admin.master.country.create')">
+                :href="route('admin.master.city.create')">
                 @slot('icon')
                     <svg fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" /></svg>
                 @endslot
@@ -27,8 +27,8 @@
                 id="importButton" 
                 x-on:click.prevent="
                     $dispatch('open-modal', 'import');
-                    $dispatch('set-model', 'Country');
-                    $dispatch('set-route', '{{ route('admin.master.country.import') }}');
+                    $dispatch('set-model', 'City');
+                    $dispatch('set-route', '{{ route('admin.master.city.import') }}');
                 ">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
@@ -45,7 +45,7 @@
                 id="exportButton" 
                 x-on:click.prevent="
                     $dispatch('open-modal', 'export');
-                    $dispatch('set-route', '{{ route('admin.master.country.export', 'csv') }}');
+                    $dispatch('set-route', '{{ route('admin.master.city.export', 'csv') }}');
                 ">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
@@ -141,7 +141,7 @@
                                         $dispatch('open-modal', 'confirm-bulk-action');
                                         $dispatch('data-desc', 'Are you sure you want to Delete selected data?');
                                         $dispatch('data-button-text', 'Yes, Delete');
-                                        $dispatch('set-route', '{{ route('admin.master.country.bulk') }}');
+                                        $dispatch('set-route', '{{ route('admin.master.city.bulk') }}');
                                         document.getElementById('bulkActionInput').value = 'delete';
                                     ">
                                     @slot('icon')
@@ -205,10 +205,10 @@
                         </th>
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Name</th>
-                        <th scope="col" class="px-2 py-1">Phone</th>
-                        <th scope="col" class="px-2 py-1">ZIP</th>
-                        <th scope="col" class="px-2 py-1">Currency</th>
-                        <th scope="col" class="px-2 py-1">Continent</th>
+                        <th scope="col" class="px-2 py-1">District</th>
+                        <th scope="col" class="px-2 py-1">State</th>
+                        <th scope="col" class="px-2 py-1">Country</th>
+                        <th scope="col" class="px-2 py-1">Postal Code</th>
                         <th scope="col" class="px-2 py-1">Language</th>
                         <th scope="col" class="px-2 py-1">Shipping/ COD</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
@@ -230,45 +230,22 @@
                                 <p class="text-xs">{{ $item->id }}</p>
                             </th>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <div class="flex space-x-2 items-center">
-                                    @if($item->flag) <div class="w-8 h-8 overflow-hidden flex">{!! $item->flag !!}</div> @endif
-                                    <div>
-                                        <p class="text-xs font-bold">{{ $item->name }}</p>
-                                        <p class="text-xs text-gray-500">
-                                            {{ $item->short_name }}
-                                        </p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td scope="row" class="px-2 py-1 text-gray-900">
-                                <p class="text-xs">
-                                    <span class="text-xs text-gray-400">Code</span>
-                                    <span class="text-gray-500">{{ $item->phone_code }}</span>
-                                </p>
-                                <p class="text-xs">
-                                    <span class="text-xs text-gray-400">Digits</span>
-                                    <span class="text-gray-500">{{ $item->phone_no_digits }}</span>
-                                </p>
+                                <p class="text-xs font-bold">{{ $item->name }}</p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
-                                <p class="text-xs">{{ $item->zip_code_format }}</p>
+                                <p class="text-xs">{{ $item->district }}</p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
-                                <p class="text-xs font-bold">{{ $item->currency_symbol }}</p>
-                                <p class="text-xs">
-                                    <span class="text-xs text-gray-400">Code</span>
-                                    <span class="">{{ $item->currency_code }}</span>
-                                </p>
+                                <p class="text-xs">{{ $item->state->name }}</p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
-                                <p class="text-xs">{{ $item->continent }}</p>
+                                <p class="text-xs">{{ $item->country->name }}</p>
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-500">
+                                <p class="text-xs">{{ $item->postal_code }}</p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <p class="text-xs">{{ $item->language }}</p>
-                                <p class="text-xs">
-                                    <span class="text-xs text-gray-400">Timezone</span>
-                                    <span class="">{{ $item->time_zone }}</span>
-                                </p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <p class="text-xs">
@@ -280,7 +257,7 @@
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">
                                     @livewire('toggle-status', [
-                                        'model' => 'Country',
+                                        'model' => 'City',
                                         'modelId' => $item->id,
                                     ])
 
@@ -316,7 +293,7 @@
                                     <x-admin.button-icon
                                         element="a"
                                         tag="secondary"
-                                        :href="route('admin.master.country.edit', $item->id)"
+                                        :href="route('admin.master.city.edit', $item->id)"
                                         title="Edit"
                                         class="border" >
                                         @slot('icon')
@@ -332,7 +309,7 @@
                                         x-on:click.prevent="
                                             $dispatch('open-modal', 'confirm-data-deletion'); 
                                             $dispatch('data-title', '{{ $item->title }}');
-                                            $dispatch('set-delete-route', '{{ route('admin.master.country.delete', $item->id) }}')" >
+                                            $dispatch('set-delete-route', '{{ route('admin.master.city.delete', $item->id) }}')" >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                                         @endslot
