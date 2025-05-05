@@ -20,6 +20,7 @@ return new class extends Migration
 
             // Variation identifiers
             $table->text('variation_identifier')->nullable()->comment('Auto-generated name like "red-small"');
+            $table->string('tag')->nullable()->comment('e.g., Extra 20% OFF');
             $table->string('sku')->unique()->nullable();
             $table->string('barcode')->unique()->nullable();
 
@@ -44,6 +45,9 @@ return new class extends Migration
 
             // Default
             $table->boolean('is_default')->default(0);
+
+            // Position
+            $table->integer('position')->default(1);
 
             // Status/ Timestamp
             $table->tinyInteger('status')->default(1);

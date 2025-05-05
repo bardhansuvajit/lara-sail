@@ -48,6 +48,7 @@ migrate-rollback: ## Database migrate rollback
 migrate-fresh: ## Fresh Database migrate
 	@./vendor/bin/sail php artisan migrate:fresh --seed
 	@./vendor/bin/sail php artisan db:seed --class=CountrySeeder
+	@./vendor/bin/sail php artisan db:seed --class=StateSeeder
 
 start: up npm-dev ## Start project
 

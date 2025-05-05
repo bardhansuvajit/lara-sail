@@ -140,6 +140,12 @@ class ProductVariationRepository implements ProductVariationInterface
             $data->weight_unit = !empty($array['weight_unit']) ? $array['weight_unit'] : 'g';
             $data->dimension_unit = !empty($array['dimension_unit']) ? $array['dimension_unit'] : 'cm';
             $data->is_default = !empty($array['is_default']) ? $array['is_default'] : 0;
+
+            // get max position for given attribute_id and type
+            $lastPosition = ProductVariation::where('product_id', $array['product_id'])
+            ->max('position');
+            $data->position = $lastPosition ? $lastPosition + 1 : 1;
+
             $data->status = !empty($array['status']) ? $array['status'] : 0;
             $data->save();
 
@@ -532,7 +538,11 @@ class ProductVariationRepository implements ProductVariationInterface
     {
         try {
             $data = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue'])
-                ->where('product_id', $id)
+                ->where([
+                    ['product_id', $id],
+                    ['status', 1]
+                ])
+                ->orderBy('position', 'asc')
                 ->get()
                 ->flatMap(function ($variation) {
                     return $variation->combinations->map(function ($combo) use ($variation) {
@@ -544,8 +554,8 @@ class ProductVariationRepository implements ProductVariationInterface
 
                             // Value details
                             'value_id' => $combo->attribute_value_id,
-                            'value_title' => $combo->attributeValue->title,
-                            'value_slug' => $combo->attributeValue->slug,
+                            'value_title' => $combo->attributeValue->title ?? 'N/A',
+                            'value_slug' => $combo->attributeValue->slug ?? 'n-a',
                         ];
                     });
                 })
@@ -573,12 +583,21 @@ class ProductVariationRepository implements ProductVariationInterface
                 ->values()
                 ->toArray();
 
-            return [
-                'code' => 200,
-                'status' => 'success',
-                'message' => 'Variation generated',
-                'data' => $data
-            ];
+            if (count($data) > 0) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Variations found',
+                    'data' => $data
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'Variation not found',
+                    'data' => []
+                ];
+            }
         } catch (\Exception $e) {
             return [
                 'code' => 500,

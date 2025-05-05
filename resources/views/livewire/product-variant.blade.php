@@ -1,7 +1,7 @@
 <div wire:key="product-variant-{{ $product_id }}">
     @if(!empty($existingVariations['raw']) && count($existingVariations['raw']) > 0)
         <div id="existingVariationsPanelDetailed" class="grid gap-4 mb-3 grid-cols-1">
-            <div>
+            <div class="flex justify-between">
                 <button 
                     type="button" 
                     class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500" 
@@ -15,150 +15,193 @@
                         Add more options like Colors and Size
                     </div>
                 </button>
+
+                <div>
+                    <button 
+                        type="button"
+                        class="text-xs inline-block text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-500" 
+                        id="variantsPositionToggleButton" 
+                    >
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"/></svg>
+                            </div>
+                            Change position
+                        </div>
+                    </button>
+                </div>
             </div>
 
             <div wire:key="existing-variations-{{ $product_id }}">
                 {{-- heading --}}
                 <div class="space-y-4">
                     <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg">
-                        <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <div class="divide-y divide-gray-200 dark:divide-gray-700" id="variant-sort-container">
                             @foreach($existingVariations['raw'] as $variationIndex => $variation)
-                                <div class="p-3 hover:bg-gray-50 {{ ($variationIndex % 2 == 0) ? 'dark:bg-gray-700/50' : 'dark:bg-gray-700/20' }} dark:hover:bg-gray-900/50 transition-colors">
-                                    <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
-                                        <div class="flex gap-4">
-                                            <div class="h-6">
-                                                @if (!empty($variation['images']) && count($variation['images']) > 0)
-                                                    <div class="flex items-center justify-center h-full">
-                                                        <img src="{{ Storage::url($variation['images'][0]->image_m) }}" alt="" class="max-w-full max-h-full">
-                                                    </div>
-                                                @else
-                                                    <div class="flex items-center justify-center h-8 w-8">
-                                                        {!!FD['brokenImage']!!}
-                                                    </div>
-                                                @endif
-                                            </div>
+                                <div class="p-3 hover:bg-gray-50 {{ ($variationIndex % 2 == 0) ? 'dark:bg-gray-700/50' : 'dark:bg-gray-700/20' }} dark:hover:bg-gray-900/50 transition-colors" 
+                                    wire:key="variation-{{ $variation['id'] }}" 
+                                    data-id="{{$variation['id']}}">
 
-                                            <div class="flex flex-wrap gap-1 mb-2">
-                                                @foreach($variation['combinations'] as $combo)
-                                                    <span class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700">
-                                                        {{ $combo['attribute_title'] }}: {{ $combo['value_title'] }}
-                                                    </span>
-                                                @endforeach
+                                    <div class="flex overflow-hidden gap-4">
+                                        <div class="w-10 transition-all duration-300 ease-in-out hidden position-selector">
+                                            <div class="handle cursor-grab h-full flex items-center justify-center">
+                                                <svg class="w-8 h-8 text-primary-500 dark:text-primary-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z"/></svg>
                                             </div>
                                         </div>
 
-                                        <div class="flex space-x-2 items-center justify-end">
-                                            @livewire('toggle-status', [
-                                                'model' => 'ProductVariation',
-                                                'modelId' => $variation['id'],
-                                            ])
+                                        <div class="flex-1 transition-all duration-300 ease-in-out">
+                                            <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+                                                <div class="flex gap-4">
+                                                    <div class="h-6">
+                                                        @if (!empty($variation['images']) && count($variation['images']) > 0)
+                                                            <div class="flex items-center justify-center h-full">
+                                                                <img src="{{ Storage::url($variation['images'][0]->image_m) }}" alt="" class="max-w-full max-h-full">
+                                                            </div>
+                                                        @else
+                                                            <div class="flex items-center justify-center h-8 w-8">
+                                                                {!!FD['brokenImage']!!}
+                                                            </div>
+                                                        @endif
+                                                    </div>
 
-                                            <x-admin.button-icon
-                                                element="a"
-                                                :href="route('admin.product.listing.variation.edit', $variation['id'])"
-                                                tag="secondary"
-                                                class="!w-6 !h-6 !p-0 border"
-                                                {{-- wire:click="editVariation({{ $variation['id'] }})" --}}
-                                                title="Edit"
-                                            >
-                                                @slot('icon')
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
-                                                @endslot
-                                            </x-admin.button-icon>
+                                                    <div class="flex flex-wrap gap-1 mb-2">
+                                                        @foreach($variation['combinations'] as $combo)
+                                                            <span class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700">
+                                                                {{ $combo['attribute_title'] }}: {{ $combo['value_title'] }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
 
-                                            <x-admin.button-icon
-                                                element="button"
-                                                type="button"
-                                                tag="danger"
-                                                class="!w-6 !h-6 !p-0"
-                                                x-on:click.prevent="
-                                                    $dispatch('open-modal', 'confirm-variation-deletion');
-                                                    $dispatch('set-variation-id', {{ $variation['id'] }})
-                                                    $dispatch('data-title', '{{ $variation['variation_identifier'] }}');
-                                                "
-                                                title="Delete"
-                                            >
-                                                @slot('icon')
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor">
-                                                        <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
-                                                    </svg>
-                                                @endslot
-                                            </x-admin.button-icon>
+                                                <div class="flex space-x-2 items-center justify-end">
+                                                    <div wire:key="toggle-wrapper-{{ $variation['id'] }}">
+                                                        @livewire('toggle-status', [
+                                                            'model' => 'ProductVariation',
+                                                            'modelId' => $variation['id'],
+                                                        ], key('toggle-'.$variation['id']))
+                                                    </div>
+
+                                                    <x-admin.button-icon
+                                                        element="a"
+                                                        :href="route('admin.product.listing.variation.edit', $variation['id'])"
+                                                        tag="secondary"
+                                                        class="!w-6 !h-6 !p-0 border"
+                                                        {{-- wire:click="editVariation({{ $variation['id'] }})" --}}
+                                                        title="Edit"
+                                                    >
+                                                        @slot('icon')
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+                                                        @endslot
+                                                    </x-admin.button-icon>
+
+                                                    <x-admin.button-icon
+                                                        element="button"
+                                                        type="button"
+                                                        tag="danger"
+                                                        class="!w-6 !h-6 !p-0"
+                                                        x-on:click.prevent="
+                                                            $dispatch('open-modal', 'confirm-variation-deletion');
+                                                            $dispatch('set-variation-id', {{ $variation['id'] }})
+                                                            $dispatch('data-title', '{{ $variation['variation_identifier'] }}');
+                                                        "
+                                                        title="Delete"
+                                                    >
+                                                        @slot('icon')
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor">
+                                                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                                                            </svg>
+                                                        @endslot
+                                                    </x-admin.button-icon>
+                                                </div>
+                                            </div>
+
+                                            <div class="grid gap-4 grid-cols-1 xl:grid-cols-3 2xl:grid-cols-4">
+                                                <div>
+                                                    <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                                                        Identifier
+                                                        <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">
+                                                            {{$variation['variation_identifier']}}
+                                                        </span>
+                                                    </p>
+                                                    <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                                                        SKU
+                                                        @if (!empty($variation['sku']))
+                                                            <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">
+                                                                {{$variation['sku']}}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-[10px] text-red-300 dark:text-red-200 font-bold">
+                                                                NA
+                                                            </span>
+                                                        @endif
+                                                    </p>
+                                                    <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                                                        Barcode
+                                                        @if (!empty($variation['barcode']))
+                                                            <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">
+                                                                {{$variation['barcode']}}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-[10px] text-red-300 dark:text-red-200 font-bold">
+                                                                NA
+                                                            </span>
+                                                        @endif
+                                                    </p>
+                                                </div>
+
+                                                <div>
+                                                    <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                                                        Track quantity
+                                                        @if ($variation['track_quantity'] == 1)
+                                                            <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">
+                                                                YES
+                                                            </span>
+                                                        @else
+                                                            <span class="text-[10px] text-red-300 dark:text-red-200 font-bold">
+                                                                NA
+                                                            </span>
+                                                        @endif
+                                                    </p>
+                                                    <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                                                        Stock quantity
+                                                        @if ($variation['stock_quantity'] > 0)
+                                                            <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">
+                                                                {{$variation['stock_quantity']}}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-[10px] text-red-300 dark:text-red-200 font-bold">
+                                                                NA
+                                                            </span>
+                                                        @endif
+                                                    </p>
+                                                    <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                                                        Continue selling when out of stock
+                                                        @if ($variation['allow_backorders'] == 1)
+                                                            <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">
+                                                                YES
+                                                            </span>
+                                                        @else
+                                                            <span class="text-[10px] text-red-300 dark:text-red-200 font-bold">
+                                                                NA
+                                                            </span>
+                                                        @endif
+                                                    </p>
+                                                </div>
+
+                                                <div>
+                                                    @if ((float) $variation['price_adjustment'] !== 0.0)
+                                                    <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                                                        Price Adjustment
+                                                        <span class="text-[10px] text-green-700 dark:text-green-200 font-bold">
+                                                            + {{ formatIndianMoney($variation['price_adjustment']) }}
+                                                        </span>
+                                                    </p>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="grid gap-4 grid-cols-1 xl:grid-cols-3 2xl:grid-cols-4">
-                                        <div>
-                                            <p class="text-[10px] text-gray-500 dark:text-gray-400">
-                                                Identifier
-                                                <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">
-                                                    {{$variation['variation_identifier']}}
-                                                </span>
-                                            </p>
-                                            <p class="text-[10px] text-gray-500 dark:text-gray-400">
-                                                SKU
-                                                @if (!empty($variation['sku']))
-                                                    <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">
-                                                        {{$variation['sku']}}
-                                                    </span>
-                                                @else
-                                                    <span class="text-[10px] text-red-300 dark:text-red-200 font-bold">
-                                                        NA
-                                                    </span>
-                                                @endif
-                                            </p>
-                                            <p class="text-[10px] text-gray-500 dark:text-gray-400">
-                                                Barcode
-                                                @if (!empty($variation['barcode']))
-                                                    <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">
-                                                        {{$variation['barcode']}}
-                                                    </span>
-                                                @else
-                                                    <span class="text-[10px] text-red-300 dark:text-red-200 font-bold">
-                                                        NA
-                                                    </span>
-                                                @endif
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p class="text-[10px] text-gray-500 dark:text-gray-400">
-                                                Track quantity
-                                                @if ($variation['track_quantity'] == 1)
-                                                    <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">
-                                                        YES
-                                                    </span>
-                                                @else
-                                                    <span class="text-[10px] text-red-300 dark:text-red-200 font-bold">
-                                                        NA
-                                                    </span>
-                                                @endif
-                                            </p>
-                                            <p class="text-[10px] text-gray-500 dark:text-gray-400">
-                                                Stock quantity
-                                                @if ($variation['stock_quantity'] > 0)
-                                                    <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">
-                                                        {{$variation['stock_quantity']}}
-                                                    </span>
-                                                @else
-                                                    <span class="text-[10px] text-red-300 dark:text-red-200 font-bold">
-                                                        NA
-                                                    </span>
-                                                @endif
-                                            </p>
-                                            <p class="text-[10px] text-gray-500 dark:text-gray-400">
-                                                Continue selling when out of stock
-                                                @if ($variation['allow_backorders'] == 1)
-                                                    <span class="text-[10px] text-gray-700 dark:text-gray-200 font-bold">
-                                                        YES
-                                                    </span>
-                                                @else
-                                                    <span class="text-[10px] text-red-300 dark:text-red-200 font-bold">
-                                                        NA
-                                                    </span>
-                                                @endif
-                                            </p>
-                                        </div>
-                                    </div>
                                 </div>
                             @endforeach
                         </div>
@@ -446,6 +489,8 @@
 
 </div>
 
+{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js"></script> --}}
+
 <script>
     // Store the original attribute order from the server
     const originalAttributeOrder = @json($variations->pluck('id'));
@@ -648,5 +693,23 @@
                 element.classList.add('hidden');
             });
         }
-    })
+    });
+
+    // variants drag & drop to set position
+    window.addEventListener('load', () => {
+        (function () {
+            const sortable = document.querySelector("#variant-sort-container");
+
+            new Sortable(sortable, {
+                handle: '.handle',
+                animation: 150,
+                dragClass: 'rounded-none!',
+                onEnd: function (evt) {
+                    const orderedIds = Array.from(sortable.children).map(el => el.dataset.id);
+                    // console.log(orderedIds);
+                    Livewire.dispatch('updateProductVariantsOrder', { ids: orderedIds });
+                }
+            });
+        })();
+    });
 </script>

@@ -5,6 +5,8 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\ProductVariationAttribute;
 use App\Models\ProductVariation;
+use Livewire\Attributes\On;
+use App\Interfaces\ProductVariationInterface;
 
 class ProductVariant extends Component
 {
@@ -14,13 +16,14 @@ class ProductVariant extends Component
     public string $search = '';
     public string $sortBy = 'position';
     public string $sortOrder = 'asc';
+    private ProductVariationInterface $productVariationRepository;
     public $existingVariations = [];
     // protected $listeners = ['variation-added' => 'loadExistingVariations'];
     protected $listeners = [
         'variation-added' => 'onVariationAdded'
     ];
 
-    public function mount($product_id, $category_id)
+    public function mount($product_id, $category_id, ProductVariationInterface $productVariationRepository)
     {
         $this->product_id = $product_id;
         $this->category_id = $category_id;
@@ -84,6 +87,7 @@ class ProductVariant extends Component
     {
         $rawVariations = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue', 'images'])
             ->where('product_id', $this->product_id)
+            ->orderBy('position', 'asc')
             ->get()
             ->map(function ($variation) {
                 return [
@@ -158,6 +162,35 @@ class ProductVariant extends Component
     {
         $this->loadExistingVariations();
         $this->loadVariations(); // refresh filtered variations
+    }
+
+    #[On('updateProductVariantsOrder')]
+    public function updateFeatureOrder(array $ids)
+    {
+        $productVariationRepository = app(ProductVariationInterface::class);
+        $positionResp = $productVariationRepository->position($ids);
+
+        if ($positionResp['code'] == 200) {
+            $this->dispatch('notificationSend', [
+                'variant' => 'success',
+                'title' => 'Position updated',
+                // 'message' => $this->productTitle . ' is removed'
+            ]);
+
+            $this->loadExistingVariations();
+
+            // Refresh the images collection with the new order
+            // $this->images = $productVariationRepository->list('', ['product_id' => $this->images->first()->product_id], 'all', 'position', 'asc')['data'];
+
+            // $this->images;
+
+            // $this->reloadProducts();
+        } else {
+            $this->dispatch('notificationSend', [
+                'variant' => 'warning',
+                'title' => $positionResp['message'],
+            ]);
+        }
     }
 
     public function render()

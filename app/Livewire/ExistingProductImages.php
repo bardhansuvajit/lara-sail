@@ -26,6 +26,12 @@ class ExistingProductImages extends Component
         $productImageRepository = app(ProductImageInterface::class);
         $resp = $productImageRepository->delete($imageId);
         $this->images = $this->images->reject(fn($image) => $image->id == $imageId);
+
+        $this->dispatch('notificationSend', [
+            'variant' => 'success',
+            'title' => 'Success!',
+            'message' => 'Image deleted successfully',
+        ]);
     }
 
     #[On('updateProductImageOrder')]

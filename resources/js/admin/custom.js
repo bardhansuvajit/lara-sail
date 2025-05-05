@@ -11,6 +11,7 @@ const costEl = document.getElementById('cost');
 const profitEl = document.getElementById('profit');
 const marginEl = document.getElementById('margin');
 const imagesPositionToggleButton = document.getElementById('imagesPositionToggleButton');
+const variantsPositionToggleButton = document.getElementById('variantsPositionToggleButton');
 const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const maxFileSize = 2000; // in kb
 const positionButton = document.getElementById('positionButton');
@@ -384,6 +385,18 @@ if (imagesPositionToggleButton) {
                 el.classList.remove('position-toggled');
                 el.querySelector('button').classList.remove('hidden');
                 el.querySelector('.handle').classList.add('hidden');
+            }
+        })
+    });
+}
+
+if (variantsPositionToggleButton) {
+    variantsPositionToggleButton.addEventListener('click', function () {
+        document.querySelectorAll('.position-selector').forEach(el => {
+            if (!el.classList.contains('hidden')) {
+                el.classList.add('hidden');
+            } else {
+                el.classList.remove('hidden');
             }
         })
     });

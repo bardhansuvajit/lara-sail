@@ -24,6 +24,12 @@ class ExistingProductReviewImages extends Component
         $productReviewImageRepository = app(ProductReviewImageInterface::class);
         $resp = $productReviewImageRepository->delete($imageId);
         $this->images = $this->images->reject(fn($image) => $image->id == $imageId);
+
+        $this->dispatch('notificationSend', [
+            'variant' => 'success',
+            'title' => 'Success!',
+            'message' => 'Image deleted successfully',
+        ]);
     }
 
     #[On('updateProductImageOrder')]
