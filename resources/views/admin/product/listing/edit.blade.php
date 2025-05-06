@@ -10,11 +10,11 @@
     <section class="grid grid-cols-6 lg:grid-cols-10 gap-4">
         {{-- <div class="col-span-2"></div> --}}
 
-        {{-- @if ($errors->any())
+        @if ($errors->any())
             @foreach ($errors->all() as $error)
                 <p class="text-red-600">{{ $error }}</p>
             @endforeach
-        @endif --}}
+        @endif
 
         <div class="col-span-6 lg:col-start-3">
             <div class="w-full mt-2">
@@ -405,7 +405,28 @@
             </div>
         </div>
 
-        {{-- <div class="col-span-2"></div> --}}
+        <div class="col-span-2">
+            <div class="w-full mt-2 px-10">
+                <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Status</h4>
+
+                <div>
+                    <x-admin.input-label for="status" :value="__('Status')" />
+                    <x-admin.input-select id="status" name="status" title="Select Parent" class="w-full" form="productForm">
+                        @slot('options')
+                            @foreach (developerSettings('product_status') as $statusVal)
+                                <x-admin.input-select-option 
+                                    value="{{ $statusVal->code }}" 
+                                    :selected="$statusVal->code == $data->status"
+                                > 
+                                    {{ $statusVal->title }} 
+                                </x-admin.input-select-option>
+                            @endforeach
+                        @endslot
+                    </x-admin.input-select>
+                    <x-admin.input-error :messages="$errors->get('status')" class="mt-2" />
+                </div>
+            </div>
+        </div>
     </section>
 
     @include('admin.includes.delete-confirm-modal')

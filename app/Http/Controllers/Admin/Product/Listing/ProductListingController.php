@@ -165,7 +165,7 @@ class ProductListingController
             'stock_quantity' => $request->stock_quantity ? (int) $request->stock_quantity : 0,
             'allow_backorders' => $request->allow_backorders ? (bool) $request->allow_backorders : false,
             'meta_title' => $request->meta_title ? $request->meta_title : null,
-            'meta_description' => $request->meta_description ? $request->meta_title : null,
+            'meta_description' => $request->meta_description ? $request->meta_description : null,
 
             'images' => $request->images ? $request->images : null
         ];
@@ -250,7 +250,9 @@ class ProductListingController
             'meta_description' => 'nullable|string|min:2',
 
             'images' => 'nullable|array',
-            'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array)
+            'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
+
+            'status' => 'required|integer|min:0',
         ], [
             'selling_price.regex' => 'The selling price accepts value upto 2 decimals.',
             'mrp.regex' => 'The selling price accepts value upto 2 decimals.',
@@ -302,9 +304,11 @@ class ProductListingController
             'stock_quantity' => $request->stock_quantity ? (int) $request->stock_quantity : 0,
             'allow_backorders' => $request->allow_backorders ? (bool) $request->allow_backorders : false,
             'meta_title' => $request->meta_title ? $request->meta_title : null,
-            'meta_description' => $request->meta_description ? $request->meta_title : null,
+            'meta_description' => $request->meta_description ? $request->meta_description : null,
 
-            'images' => $request->images ? $request->images : null
+            'images' => $request->images ? $request->images : null,
+
+            'status' => (int) $request->status ? $request->status : 0,
         ];
 
         // dd($productData);

@@ -39,11 +39,15 @@
                 <div class="w-full mt-5">
                     <div class="fixed z-[1] bottom-16 w-full -m-2 pt-3 px-2 pb-3 sm:static sm:bottom-0 sm:m-0 sm:p-0 {{FD['rounded']}} border sm:border-0 dark:sm:border-0 border-gray-200 bg-white sm:bg-transparent dark:sm:bg-transparent shadow-sm sm:shadow-none dark:sm:shadow-none dark:border-0 lg:dark:border-0 dark:bg-gray-800">
                         <div class="flex space-x-2">
-                            <button id="buy-now" class="flex w-full items-center justify-center {{FD['rounded']}} bg-gray-300 focus:bg-gray-400 px-5 py-2.5 {{FD['text']}} font-medium text-gray=800 hover:bg-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                            <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-gray-300 focus:bg-gray-400 px-5 py-2.5 {{FD['text']}} font-medium text-gray=800 hover:bg-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 add-to-cart" data-prod-id="{{$product->id}}" data-purchase-type="buy">
                                 Buy Now
                             </button>
 
-                            <button id="add-to-cart" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                            <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 add-to-cart" 
+                                data-prod-id="{{$product->id}}" 
+                                data-purchase-type="cart"
+                                data-variation-data="{{ json_encode($variation['data']) }}"
+                            >
                                 Add to Cart
                             </button>
                         </div>
@@ -124,7 +128,7 @@
 
                     {{-- variation --}}
                     @if ($variation['code'] == 200)
-                    <div class="space-y-2">
+                    <div class="space-y-2" id="variationTab">
                         @foreach ($variation['data'] as $attrIndex => $attribute)
                             <div>
                                 <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">{{ $attribute['title'] }}</h3>
@@ -328,28 +332,7 @@
 
     @push('scripts')
         <script>
-            // on select variation data, send into url parameter
-            function sendUrlParam(variationType, value) {
-                // Check if the URL already has a query string
-                const url = new URL(window.location.href);
-                const params = new URLSearchParams(url.search);
-
-                // Set the parameter
-                params.set('variation-'+variationType, value.toLowerCase());
-
-                // Update the URL without reloading the page
-                window.history.replaceState({}, '', `${url.pathname}?${params}`);
-            }
-
-            // Tab Switching
-            document.querySelectorAll('[data-tab]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('border-black'));
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-                    btn.classList.add('border-black');
-                    document.getElementById(btn.dataset.tab).classList.remove('hidden');
-                });
-            });
+            
         </script>
     @endpush
 </x-guest-layout>

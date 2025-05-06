@@ -135,6 +135,39 @@ return new class extends Migration
             'icons_classes' => 'w-3 h-3 text-green-600 dark:text-green-600'
         ]);
 
+        $product_status = json_encode([
+            [
+                'code' => 0,
+                'title' => 'Draft',
+                'slug' => 'draft'
+            ],
+            [
+                'code' => 1,
+                'title' => 'Active',
+                'slug' => 'active'
+            ],
+            [
+                'code' => 2,
+                'title' => 'Unavailable',
+                'slug' => 'unavailable'
+            ],
+            [
+                'code' => 3,
+                'title' => 'Archived',
+                'slug' => 'archived'
+            ],
+            [
+                'code' => 4,
+                'title' => 'Pending',
+                'slug' => 'pending'
+            ],
+            [
+                'code' => 5,
+                'title' => 'Limited',
+                'slug' => 'limited'
+            ]
+        ]);
+
         $data = [
             [
                 'category' => 'file_upload',
@@ -158,6 +191,12 @@ return new class extends Migration
                 'category' => 'product',
                 'key' => 'product_highlight_icons',
                 'value' => $product_highlight_icons,
+                'description' => '',
+            ],
+            [
+                'category' => 'product',
+                'key' => 'product_status',
+                'value' => $product_status,
                 'description' => '',
             ]
         ];

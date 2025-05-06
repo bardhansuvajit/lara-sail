@@ -1,4 +1,4 @@
-const urlParams = new URLSearchParams(window.location.search);
+const urlParams = getUrlParams();
 const navbar = document.getElementById('navbar');
 const darkModeToggleEl = document.getElementById('dark-mode');
 const orderSummaryCont = document.getElementById('order-summary-container');
@@ -8,6 +8,9 @@ const phoneNoEl = document.getElementById('phone_no');
 let lastScrollPosition = 0;
 
 // GLOBAL
+function getUrlParams() {
+    return new URLSearchParams(window.location.search);
+}
 
 // IP information
 async function checkIpInfo() {
@@ -370,3 +373,77 @@ const formatWholeNumberInput = (e) => {
 if (phoneNoEl) {
     phoneNoEl.addEventListener("input", formatWholeNumberInput);
 }
+
+// product detail
+// on select variation data, send into url parameter
+function sendUrlParam(variationType, value) {
+    // Check if the URL already has a query string
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+
+    // Set the parameter
+    params.set('variation-'+variationType, value.toLowerCase());
+
+    // Update the URL without reloading the page
+    window.history.replaceState({}, '', `${url.pathname}?${params}`);
+}
+
+// Tab Switching
+document.querySelectorAll('[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('border-black'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        btn.classList.add('border-black');
+        document.getElementById(btn.dataset.tab).classList.remove('hidden');
+    });
+});
+
+// add to cart
+document.querySelectorAll('.add-to-cart').forEach(cartBtn => {
+    cartBtn.addEventListener('click', () => {
+        const productId = cartBtn.dataset.prodId;
+        const variationData = JSON.parse(cartBtn.dataset.variationData);
+
+        // if variation exists
+        if (variationData.length > 0) {
+            console.log(variationData);
+            
+            let hasSelectedVariations = false;
+            const selectedVariations = {};
+            const urlParamsDynamic = getUrlParams();
+
+            urlParamsDynamic.forEach((value, paramName) => {
+                if (paramName.startsWith('variation-')) {
+                    selectedVariations[paramName] = value;
+                    hasSelectedVariations = true;
+                }
+            });
+
+            if (!hasSelectedVariations) {
+                // alert('Please select product variations before adding to cart.');
+                const variationTab = document.querySelector('#variationTab');
+                if (variationTab) {
+                    variationTab.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' // or 'start', 'nearest'
+                    });
+
+                    // variationTab.classList.add('animate-pulse', 'ring-2', 'ring-yellow-500', 'ring-offset-2');
+
+                    // // Remove animation after 2 seconds
+                    // setTimeout(() => {
+                    //     variationTab.classList.remove(
+                    //         'animate-pulse', 
+                    //         'ring-2', 
+                    //         'ring-yellow-500', 
+                    //         'ring-offset-2'
+                    //     );
+                    // }, 2000);
+                }
+                return;
+            }
+
+            console.log('Selected Variations:', selectedVariations);
+        }
+    });
+});

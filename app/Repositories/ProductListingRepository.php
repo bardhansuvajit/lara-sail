@@ -302,6 +302,7 @@ class ProductListingRepository implements ProductListingInterface
                 if (!empty($array['allow_backorders']))     $data['data']->allow_backorders = $array['allow_backorders'];
                 if (!empty($array['meta_title']))           $data['data']->meta_title = $array['meta_title'];
                 if (!empty($array['meta_description']))     $data['data']->meta_desc = $array['meta_description'];
+                if (!empty($array['status']))               $data['data']->status = $array['status'];
                 $data['data']->save();
 
                 // PRICING
