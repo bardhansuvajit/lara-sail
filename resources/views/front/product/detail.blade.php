@@ -330,9 +330,39 @@
         </div> --}}
     </div>
 
+
+    {{-- <div class="fixed bottom-8 left-0 right-0 flex justify-center z-50">
+        <div class="text-center py-4 lg:px-4 w-full max-w-screen-md mx-4 mb-4 rounded-t-lg">
+            <div class="p-2 bg-black items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex shadow" role="alert">
+                <span class="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">New</span>
+                <span class="font-semibold mr-2 text-left flex-auto">Get the coolest t-shirts</span>
+
+                <a href="" class="text-yellow-500 hover:text-yellow-600 font-bold me-1">Go to</a>
+
+                <button type="button" class="ms-auto me-1 text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1 inline-flex items-center justify-center h-4 w-4 dark:text-gray-500 dark:hover:text-white" aria-label="Close">
+                    <span class="sr-only">Close</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div> --}}
+
     @push('scripts')
         <script>
-            
+            // on select variation data, send into url parameter
+            function sendUrlParam(variationType, value) {
+                // Check if the URL already has a query string
+                const url = new URL(window.location.href);
+                const params = new URLSearchParams(url.search);
+
+                // Set the parameter
+                params.set('variation-'+variationType, value.toLowerCase());
+
+                // Update the URL without reloading the page
+                window.history.replaceState({}, '', `${url.pathname}?${params}`);
+            }
         </script>
     @endpush
 </x-guest-layout>

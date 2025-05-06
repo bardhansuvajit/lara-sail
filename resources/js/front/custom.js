@@ -12,6 +12,124 @@ function getUrlParams() {
     return new URLSearchParams(window.location.search);
 }
 
+// Notification elements
+let notificationElement = null;
+let notificationTimeout = null;
+
+// Create notification HTML
+function createNotification() {
+    if (notificationElement) return;
+
+    notificationElement = document.createElement('div');
+    notificationElement.innerHTML = `
+        <div class="fixed bottom-8 left-0 right-0 flex justify-center z-50 hidden" id="simple-notification">
+            <div class="text-center py-4 lg:px-4 w-full max-w-screen-md mx-4 mb-4 rounded-t-lg">
+                <div id="main-alert" class="p-2 bg-black items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex shadow" role="alert">
+                    <span id="notification-icon" class="w-4 h-4"></span>
+
+                    <span id="notification-badge" class="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-1 hidden"></span>
+                    <span id="notification-message" class="ms-2 text-sm font-semibold mr-2 text-left flex-auto"></span>
+
+                    <a id="notification-redirect" href="" class="text-sm text-yellow-500 hover:text-yellow-600 font-bold me-1"></a>
+
+                    <button id="notification-close" type="button" class="ms-auto me-1 rounded-lg focus:ring-2 focus:ring-gray-300 p-1 inline-flex items-center justify-center h-4 w-4 text-gray-100 hover:text-gray-400" aria-label="Close">
+                        <span class="sr-only">Close</span>
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(notificationElement);
+    document.getElementById('notification-close').addEventListener('click', hideNotification);
+}
+
+// Show notification
+function showNotification(message, options = {}) {
+    createNotification();
+
+    if (notificationTimeout) {
+        clearTimeout(notificationTimeout);
+        notificationTimeout = null;
+    }
+
+    // message
+    document.getElementById('notification-message').textContent = message;
+
+    // type
+    const alertDiv = document.getElementById('main-alert');
+    const iconHolder = document.getElementById('notification-icon');
+    if (options.type) {
+        if (options.type == "success") {
+            alertDiv.classList.remove('bg-black'); alertDiv.classList.add('bg-green-700'); alertDiv.classList.remove('bg-red-800');
+
+            iconHolder.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>`;
+        } else if (options.type == "error") {
+            alertDiv.classList.remove('bg-black'); alertDiv.classList.remove('bg-green-700'); alertDiv.classList.add('bg-red-800');
+
+            iconHolder.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M330-120 120-330v-300l210-210h300l210 210v300L630-120H330Zm36-190 114-114 114 114 56-56-114-114 114-114-56-56-114 114-114-114-56 56 114 114-114 114 56 56Zm-2 110h232l164-164v-232L596-760H364L200-596v232l164 164Zm116-280Z"/></svg>`;
+        } else {
+            alertDiv.classList.add('bg-black'); alertDiv.classList.remove('bg-green-700'); alertDiv.classList.remove('bg-red-800');
+
+            iconHolder.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-120q-33 0-56.5-23.5T400-200q0-33 23.5-56.5T480-280q33 0 56.5 23.5T560-200q0 33-23.5 56.5T480-120Zm-80-240v-480h160v480H400Z"/></svg>`;
+        }
+    }
+
+    // badge
+    const badge = document.getElementById('notification-badge');
+    if (options.badgeText) {
+        badge.classList.remove('hidden');
+        badge.textContent = options.badgeText;
+    } else {
+        badge.classList.add('hidden');
+    }
+
+    // redirect
+    const redirect = document.getElementById('notification-redirect');
+    if (options.redirectText && options.redirectLink) {
+        redirect.innerText = options.redirectText;
+        redirect.href = options.redirectLink;
+    } else {
+        redirect.innerText = "";
+        redirect.href = "";
+    }
+
+    document.getElementById('simple-notification').classList.remove('hidden');
+
+    // autohide
+    // if (options.autoHide) {
+        notificationTimeout = setTimeout(() => {
+        hideNotification();
+        }, options.duration || 5000000);
+    // }
+}
+
+// Hide notification
+function hideNotification() {
+    const notification = document.getElementById('simple-notification');
+    if (notification) {
+        notification.classList.add('hidden');
+    }
+    if (notificationTimeout) {
+        clearTimeout(notificationTimeout);
+        notificationTimeout = null;
+    }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', createNotification);
+
+// Example usage:
+// showNotification('Your message here', {
+//   badgeText: 'Alert',
+//   type: 'warning', // success/error/warning
+//   autoHide: true,
+//   duration: 3000
+// });
+
 // IP information
 async function checkIpInfo() {
     try {
@@ -375,19 +493,6 @@ if (phoneNoEl) {
 }
 
 // product detail
-// on select variation data, send into url parameter
-function sendUrlParam(variationType, value) {
-    // Check if the URL already has a query string
-    const url = new URL(window.location.href);
-    const params = new URLSearchParams(url.search);
-
-    // Set the parameter
-    params.set('variation-'+variationType, value.toLowerCase());
-
-    // Update the URL without reloading the page
-    window.history.replaceState({}, '', `${url.pathname}?${params}`);
-}
-
 // Tab Switching
 document.querySelectorAll('[data-tab]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -398,52 +503,88 @@ document.querySelectorAll('[data-tab]').forEach(btn => {
     });
 });
 
+function checkAllVariationsSelected(requiredVariations, selectedVariations) {
+    // Convert variation names to URL parameter format with null checks
+    const requiredParams = requiredVariations.map(v => {
+        const attrName = v.slug;
+        return `variation-${attrName.toLowerCase().replace(/ /g, '-')}`;
+    });
+
+    console.log('Required variations mapped:', requiredParams);
+
+    // Check if all required parameters exist in selected variations
+    return requiredParams.every(param => {
+        console.log('param>>', param);
+        Object.prototype.hasOwnProperty.call(selectedVariations, param)
+    });
+}
+
 // add to cart
 document.querySelectorAll('.add-to-cart').forEach(cartBtn => {
     cartBtn.addEventListener('click', () => {
         const productId = cartBtn.dataset.prodId;
-        const variationData = JSON.parse(cartBtn.dataset.variationData);
+        const variationData = JSON.parse(cartBtn.dataset.variationData || '[]');
+        const requiredVariations = variationData;
 
-        // if variation exists
         if (variationData.length > 0) {
-            console.log(variationData);
-            
-            let hasSelectedVariations = false;
             const selectedVariations = {};
-            const urlParamsDynamic = getUrlParams();
+            const urlParams = new URLSearchParams(window.location.search);
+            let hasSelectedVariations = false;
 
-            urlParamsDynamic.forEach((value, paramName) => {
+            // Get all selected variations from URL
+            urlParams.forEach((value, paramName) => {
                 if (paramName.startsWith('variation-')) {
                     selectedVariations[paramName] = value;
                     hasSelectedVariations = true;
                 }
             });
 
+            console.log('Required variations RAW:', requiredVariations);
+            console.log('Selected variations from URL:', selectedVariations);
+
+            // Case 1: No variations selected at all
             if (!hasSelectedVariations) {
-                // alert('Please select product variations before adding to cart.');
-                const variationTab = document.querySelector('#variationTab');
-                if (variationTab) {
-                    variationTab.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'center' // or 'start', 'nearest'
-                    });
-
-                    // variationTab.classList.add('animate-pulse', 'ring-2', 'ring-yellow-500', 'ring-offset-2');
-
-                    // // Remove animation after 2 seconds
-                    // setTimeout(() => {
-                    //     variationTab.classList.remove(
-                    //         'animate-pulse', 
-                    //         'ring-2', 
-                    //         'ring-yellow-500', 
-                    //         'ring-offset-2'
-                    //     );
-                    // }, 2000);
-                }
+                showNotification('Select Variants first', { type: 'warning' });
+                scrollToVariationTab();
                 return;
             }
 
-            console.log('Selected Variations:', selectedVariations);
+            // Case 2: Some but not all variations selected
+            if (!checkAllVariationsSelected(requiredVariations, selectedVariations)) {
+                const missingVariations = requiredVariations
+                    .filter(v => {
+                        
+                        const attrName = v?.title || '';
+                        return !selectedVariations.hasOwnProperty(`variation-${attrName.toLowerCase()}`);
+                    })
+                    .map(v => v?.title || 'Unknown');
+
+                showNotification(`Please also select: ${missingVariations.join(', ')}`, { 
+                    type: 'warning' 
+                });
+                scrollToVariationTab();
+                return;
+            }
+
+            // Case 3: All variations selected
+            showNotification('Adding to cart...', { type: 'success' });
+            console.log('All variations selected:', selectedVariations);
+            
+            // Proceed with add to cart logic here
+            
+        } else {
+            showNotification('no var!Adding to cart...', { type: 'success' });
+            // Proceed with add to cart for products with no variants
         }
     });
 });
+
+function scrollToVariationTab() {
+    const variationTab = document.querySelector('#variationTab');
+    if (variationTab) {
+        variationTab.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center'
+        });
+    }
+}
