@@ -74,6 +74,15 @@ class Product extends Model
         return $this->hasMany('App\Models\ProductReview', 'product_id', 'id');
     }
 
+    public function getFinalPriceAttribute()
+    {
+        return $this->pricings()
+            ->where('country_id', request()->input('country_id', session('country_id')))
+            ->orWhereNull('country_id')
+            ->first()
+            ?->selling_price ?? 0;
+    }
+
     public function updateRating()
     {
         $reviews = $this->reviews()->where('status', 1)->get();

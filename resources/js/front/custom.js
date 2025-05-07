@@ -542,10 +542,10 @@ document.querySelectorAll('.add-to-cart').forEach(cartBtn => {
             const productId = button.dataset.prodId;
             const quantity = parseInt(button.dataset.quantity || 1);
             const variationData = JSON.parse(button.dataset.variationData || '[]');
+            const selectedVariations = {};
 
             // Handle variations
             if (variationData.length > 0) {
-                const selectedVariations = {};
                 const urlParams = new URLSearchParams(window.location.search);
                 let hasSelectedVariations = false;
 
@@ -574,7 +574,7 @@ document.querySelectorAll('.add-to-cart').forEach(cartBtn => {
             }
 
             // Proceed with add to cart
-            await handleCartAction(productId, quantity, variationData);
+            await handleCartAction(productId, quantity, selectedVariations);
         } catch (error) {
             console.error('Add to cart error:', error);
             showNotification('Failed to add to cart. Please try again.', { type: 'error' });
@@ -583,68 +583,21 @@ document.querySelectorAll('.add-to-cart').forEach(cartBtn => {
             button.innerHTML = originalHtml;
             button.disabled = false;
         }
-
-        /*
-        const productId = cartBtn.dataset.prodId;
-        const quantity = parseInt(button.dataset.quantity || 1);
-        const variationData = JSON.parse(cartBtn.dataset.variationData || '[]');
-        const requiredVariations = variationData;
-
-        if (variationData.length > 0) {
-            const selectedVariations = {};
-            const urlParams = new URLSearchParams(window.location.search);
-            let hasSelectedVariations = false;
-
-            // Get all selected variations from URL
-            urlParams.forEach((value, paramName) => {
-                if (paramName.startsWith('variation-')) {
-                    selectedVariations[paramName] = value;
-                    hasSelectedVariations = true;
-                }
-            });
-
-            // Case 1: No variations selected at all
-            if (!hasSelectedVariations) {
-                showNotification('Select Variants first', { type: 'warning' });
-                scrollToVariationTab();
-                return;
-            }
-
-            // Case 2: Some but not all variations selected
-            if (!checkAllVariationsSelected(requiredVariations, selectedVariations)) {
-                const missingVariations = requiredVariations
-                    .filter(v => {
-                        const paramName = `variation-${v.slug.toLowerCase().replace(/ /g, '-')}`;
-                        return !selectedVariations.hasOwnProperty(paramName);
-                    })
-                    .map(v => v.title || 'Unknown');
-
-                showNotification(`Please also select: ${missingVariations.join(', ')}`, { 
-                    type: 'warning' 
-                });
-                scrollToVariationTab();
-                return;
-            }
-
-            // Case 3: All variations selected
-            addToCart(productId, quantity, variationData);
-
-        } else {
-            addToCart(productId, quantity, variationData);
-        }
-        */
     });
 });
 
-async function handleCartAction(productId, quantity, variations = []) {
+async function handleCartAction(productId, quantity, selectedVariations) {
     const formData = new FormData();
     formData.append('product_id', productId);
     formData.append('quantity', quantity);
 
     // Add variations to form data
-    Object.entries(variations).forEach(([key, value]) => {
-        formData.append(key, value);
-    });
+    if (Object.keys(selectedVariations).length) {
+        formData.append('variation', JSON.stringify(selectedVariations));
+    }
+    // Object.entries(selectedVariations).forEach(([key, value]) => {
+    //     formData.append(key, value);
+    // });
 
     try {
         const response = await fetch('/cart/store', {

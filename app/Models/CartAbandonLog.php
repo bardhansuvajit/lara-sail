@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class CartAbandonLog extends Model
 {
     use SoftDeletes;
+
+    protected $fillable = [
+        'cart_id','action','notes','status'
+    ];
 }

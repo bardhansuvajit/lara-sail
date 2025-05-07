@@ -40,7 +40,7 @@ return new class extends Migration
             // tax
             $table->decimal('tax_amount', 12, 4)->default(0);
             $table->string('tax_type', 30)->nullable()->comment('amount/ percent');
-            $table->text('tax_details');
+            $table->text('tax_details')->nullable();
 
             // Abandoned cart tracking
             $table->timestamp('last_activity_at')->default(DB::raw('CURRENT_TIMESTAMP'));
