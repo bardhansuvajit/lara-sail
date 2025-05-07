@@ -503,6 +503,16 @@ document.querySelectorAll('[data-tab]').forEach(btn => {
     });
 });
 
+function scrollToVariationTab() {
+    const variationTab = document.querySelector('#variationTab');
+    if (variationTab) {
+        variationTab.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center'
+        });
+    }
+}
+
 function checkAllVariationsSelected(requiredVariations, selectedVariations) {
     // Convert variation names to URL parameter format with null checks
     const requiredParams = requiredVariations.map(v => {
@@ -510,19 +520,73 @@ function checkAllVariationsSelected(requiredVariations, selectedVariations) {
         return `variation-${attrName.toLowerCase().replace(/ /g, '-')}`;
     });
 
-    console.log('Required variations mapped:', requiredParams);
-
     // Check if all required parameters exist in selected variations
     return requiredParams.every(param => {
-        console.log('param>>', param);
-        Object.prototype.hasOwnProperty.call(selectedVariations, param)
+        return Object.prototype.hasOwnProperty.call(selectedVariations, param);
+
     });
 }
 
 // add to cart
 document.querySelectorAll('.add-to-cart').forEach(cartBtn => {
-    cartBtn.addEventListener('click', () => {
+    cartBtn.addEventListener('click', async (e) => {
+
+        const button = e.currentTarget;
+        const originalHtml = button.innerHTML;
+
+        try {
+            // Set loading state
+            button.innerText = 'Loading...';
+            button.disabled = true;
+
+            const productId = button.dataset.prodId;
+            const quantity = parseInt(button.dataset.quantity || 1);
+            const variationData = JSON.parse(button.dataset.variationData || '[]');
+
+            // Handle variations
+            if (variationData.length > 0) {
+                const selectedVariations = {};
+                const urlParams = new URLSearchParams(window.location.search);
+                let hasSelectedVariations = false;
+
+                urlParams.forEach((value, paramName) => {
+                    if (paramName.startsWith('variation-')) {
+                        selectedVariations[paramName] = value;
+                        hasSelectedVariations = true;
+                    }
+                });
+
+                if (!hasSelectedVariations) {
+                    showNotification('Select variants first', { type: 'warning' });
+                    scrollToVariationTab();
+                    return;
+                }
+
+                if (!checkAllVariationsSelected(variationData, selectedVariations)) {
+                    const missing = variationData
+                        .filter(v => !selectedVariations[`variation-${v.slug.toLowerCase().replace(/ /g, '-')}`])
+                        .map(v => v.title);
+                    
+                    showNotification(`Missing selections: ${missing.join(', ')}`, { type: 'warning' });
+                    scrollToVariationTab();
+                    return;
+                }
+            }
+
+            // Proceed with add to cart
+            await handleCartAction(productId, quantity, variationData);
+        } catch (error) {
+            console.error('Add to cart error:', error);
+            showNotification('Failed to add to cart. Please try again.', { type: 'error' });
+        } finally {
+            // Reset button state
+            button.innerHTML = originalHtml;
+            button.disabled = false;
+        }
+
+        /*
         const productId = cartBtn.dataset.prodId;
+        const quantity = parseInt(button.dataset.quantity || 1);
         const variationData = JSON.parse(cartBtn.dataset.variationData || '[]');
         const requiredVariations = variationData;
 
@@ -539,9 +603,6 @@ document.querySelectorAll('.add-to-cart').forEach(cartBtn => {
                 }
             });
 
-            console.log('Required variations RAW:', requiredVariations);
-            console.log('Selected variations from URL:', selectedVariations);
-
             // Case 1: No variations selected at all
             if (!hasSelectedVariations) {
                 showNotification('Select Variants first', { type: 'warning' });
@@ -553,11 +614,10 @@ document.querySelectorAll('.add-to-cart').forEach(cartBtn => {
             if (!checkAllVariationsSelected(requiredVariations, selectedVariations)) {
                 const missingVariations = requiredVariations
                     .filter(v => {
-                        
-                        const attrName = v?.title || '';
-                        return !selectedVariations.hasOwnProperty(`variation-${attrName.toLowerCase()}`);
+                        const paramName = `variation-${v.slug.toLowerCase().replace(/ /g, '-')}`;
+                        return !selectedVariations.hasOwnProperty(paramName);
                     })
-                    .map(v => v?.title || 'Unknown');
+                    .map(v => v.title || 'Unknown');
 
                 showNotification(`Please also select: ${missingVariations.join(', ')}`, { 
                     type: 'warning' 
@@ -567,24 +627,51 @@ document.querySelectorAll('.add-to-cart').forEach(cartBtn => {
             }
 
             // Case 3: All variations selected
-            showNotification('Adding to cart...', { type: 'success' });
-            console.log('All variations selected:', selectedVariations);
-            
-            // Proceed with add to cart logic here
-            
+            addToCart(productId, quantity, variationData);
+
         } else {
-            showNotification('no var!Adding to cart...', { type: 'success' });
-            // Proceed with add to cart for products with no variants
+            addToCart(productId, quantity, variationData);
         }
+        */
     });
 });
 
-function scrollToVariationTab() {
-    const variationTab = document.querySelector('#variationTab');
-    if (variationTab) {
-        variationTab.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center'
+async function handleCartAction(productId, quantity, variations = []) {
+    const formData = new FormData();
+    formData.append('product_id', productId);
+    formData.append('quantity', quantity);
+
+    // Add variations to form data
+    Object.entries(variations).forEach(([key, value]) => {
+        formData.append(key, value);
+    });
+
+    try {
+        const response = await fetch('/cart/store', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: formData
         });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to add to cart');
+        }
+
+        showNotification('Item added to cart!', { type: 'success' });
+        updateCartCount(data.cart_count);
+
+    } catch (error) {
+        console.error('Cart action error:', error);
+        throw error; // Re-throw for outer catch
     }
+}
+
+function updateCartCount(count) {
+    const counters = document.querySelectorAll('.cart-count');
+    counters.forEach(el => el.textContent = count);
 }

@@ -22,8 +22,9 @@ Route::name('front.')->group(function () {
     });
 
     // cart
-    Route::name('cart.')->group(function() {
-        Route::get('/cart', [CartController::class, 'index'])->name('index');
+    Route::name('cart.')->prefix('cart')->group(function() {
+        Route::get('/', [CartController::class, 'index'])->name('index');
+        Route::post('/store', [CartController::class, 'store'])->name('store');
     });
 
     // checkout
