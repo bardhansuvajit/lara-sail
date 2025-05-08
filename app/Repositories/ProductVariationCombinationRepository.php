@@ -431,26 +431,34 @@ class ProductVariationCombinationRepository implements ProductVariationCombinati
         // dd($array);
 
         try {
-            $data = ProductVariationCombination::where([
+            $data = ProductVariationCombination::select('variation_id')
+            ->where([
                 ['product_id', $array['productId']],
                 ['attribute_id', $array['attrId']],
                 ['attribute_value_id', $array['valueId']]
             ])
-            ->with('variation.combinations')
-            ->first();
+            ->whereHas('variation', function($query) {
+                $query->whereNull('deleted_at');
+            })
+            ->with(['variation' => function($query) {
+                $query->whereNull('deleted_at')
+                      ->with('combinations');
+            }])
+            ->get()
+            ->flatMap(function($item) {
+                return $item->variation->combinations
+                    ->pluck('attribute_value_id');
+            })
+            ->unique()
+            ->values()
+            ->toArray();
 
-            // dd($data->variation_id);
-
-            if (!empty($data)) {
+            if (count($data) > 0) {
                 return [
                     'code' => 200,
                     'status' => 'success',
                     'message' => 'Data found',
-                    'data' => $data,
-                    'combination' => [
-                        'variation_id' => $data->variation_id,
-                        'values' => $data->variation->combinations,
-                    ]
+                    'data' => $data
                 ];
             } else {
                 return [

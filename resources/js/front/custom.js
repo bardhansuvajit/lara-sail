@@ -531,31 +531,35 @@ document.querySelectorAll('.attr-val-generate').forEach(btn => {
             const data = await response.json();
             if (response.ok) {
                 console.log(data);
-                const newData = data.combination.values;
-                console.log('newData>>', newData);
+                // const newData = data.combination.values;
+                // console.log('newData>>', newData);
 
-                const validValueIds = newData.map(item => item.attribute_value_id.toString());
-
-                document.querySelectorAll('.attr-val-generate').forEach(button => {
-                    const buttonValueId = button.dataset.valueId;
-                    
-                    // Disable if the button's value ID is not in the validValueIds array
-                    // button.disabled = !validValueIds.includes(buttonValueId);
-                    
-                    // Optional: Add/remove a class for styling
-                    const label = button.closest('label');
-                    if (label) {
-                        if (!validValueIds.includes(buttonValueId)) {
-                            label.classList.add('!opacity-50', '!cursor-not-allowed');
+                const validValueIds = data.data.map(id => id.toString());
+    
+                document.querySelectorAll('.attr-val-generate').forEach(input  => {
+                    const inputValueId = input.dataset.valueId;
+                    const label = input.nextElementSibling;
+        
+                    if (label && label.tagName === 'LABEL') {
+                        if (!validValueIds.includes(inputValueId)) {
+                            // Disable input and style label for unavailable options
+                            // input.disabled = true;
+                            label.classList.add('!opacity-50');
+                            
+                            if (input.checked) {
+                                input.checked = false;
+                            }
                         } else {
-                            label.classList.remove('!opacity-50', '!cursor-not-allowed');
+                            // Enable input and reset label styling for available options
+                            // input.disabled = false;
+                            label.classList.remove('!opacity-50');
                         }
                     }
                 });
 
-                // Keep the current button enabled
+                // Ensure the clicked button remains enabled
                 // btn.disabled = false;
-                btn.classList.remove('!opacity-50', '!cursor-not-allowed');
+                btn.classList.remove('!opacity-50');
 
             }
         } catch (error) {
