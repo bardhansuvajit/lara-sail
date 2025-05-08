@@ -11,11 +11,10 @@
         type="radio" 
         id="{{ $id }}" 
         name="{{ $name }}" 
-        value="{{ $value }}" 
-        class="hidden peer" 
-        @required($required) 
-        @checked($checked) 
-        {{ $attributes }} 
+        value="{{ $value }}"
+        {{ $attributes->merge(['class' => 'hidden peer']) }}
+        @required($required)
+        @checked($checked)
     />
 
     <label for="{{ $id }}" class="block h-full p-2 border-2 border-gray-200 dark:border-gray-700 cursor-pointer 

@@ -131,6 +131,8 @@ class ProductVariant extends Component
             'grouped' => $grouped
         ];
 
+        // dd($this->existingVariations);
+
         $this->dispatch('variations-updated');
 
         // dd($this->existingVariations);

@@ -493,6 +493,7 @@ if (phoneNoEl) {
 }
 
 // product detail
+/*
 // Tab Switching
 document.querySelectorAll('[data-tab]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -500,6 +501,67 @@ document.querySelectorAll('[data-tab]').forEach(btn => {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
         btn.classList.add('border-black');
         document.getElementById(btn.dataset.tab).classList.remove('hidden');
+    });
+});
+*/
+
+document.querySelectorAll('.attr-val-generate').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+        const btn = e.currentTarget;
+
+        const productId = btn.dataset.prodId;
+        const attrId = btn.dataset.attrId;
+        const valueId = btn.dataset.valueId;
+
+        try {
+            const response = await fetch('/api/variation/check', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    attrId: attrId,
+                    valueId: valueId
+                })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                console.log(data);
+                const newData = data.combination.values;
+                console.log('newData>>', newData);
+
+                const validValueIds = newData.map(item => item.attribute_value_id.toString());
+
+                document.querySelectorAll('.attr-val-generate').forEach(button => {
+                    const buttonValueId = button.dataset.valueId;
+                    
+                    // Disable if the button's value ID is not in the validValueIds array
+                    // button.disabled = !validValueIds.includes(buttonValueId);
+                    
+                    // Optional: Add/remove a class for styling
+                    const label = button.closest('label');
+                    if (label) {
+                        if (!validValueIds.includes(buttonValueId)) {
+                            label.classList.add('!opacity-50', '!cursor-not-allowed');
+                        } else {
+                            label.classList.remove('!opacity-50', '!cursor-not-allowed');
+                        }
+                    }
+                });
+
+                // Keep the current button enabled
+                // btn.disabled = false;
+                btn.classList.remove('!opacity-50', '!cursor-not-allowed');
+
+            }
+        } catch (error) {
+            console.error('Error fetching variation details: ', error);
+            showNotification('Error fetching variation details. Please try again.', { type: 'error' });
+        }
     });
 });
 
@@ -546,7 +608,7 @@ document.querySelectorAll('.add-to-cart').forEach(cartBtn => {
 
             // Handle variations
             if (variationData.length > 0) {
-                const urlParams = new URLSearchParams(window.location.search);
+                const urlParams = getUrlParams();
                 let hasSelectedVariations = false;
 
                 urlParams.forEach((value, paramName) => {

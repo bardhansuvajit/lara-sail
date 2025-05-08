@@ -89,6 +89,7 @@ class ProductVariationCombinationRepository implements ProductVariationCombinati
 
         try {
             $data = new ProductVariationCombination();
+            $data->product_id = $array['product_id'];
             $data->variation_id = $array['variation_id'];
             $data->attribute_id = !empty($array['attribute_id']) ? $array['attribute_id'] : null;
             $data->attribute_value_id = !empty($array['attribute_value_id']) ? $array['attribute_value_id'] : null;
@@ -415,6 +416,50 @@ class ProductVariationCombinationRepository implements ProductVariationCombinati
                 'status' => 'success',
                 'message' => 'Position updated'
             ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while positioning data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function combination(Array $array)
+    {
+        // dd($array);
+
+        try {
+            $data = ProductVariationCombination::where([
+                ['product_id', $array['productId']],
+                ['attribute_id', $array['attrId']],
+                ['attribute_value_id', $array['valueId']]
+            ])
+            ->with('variation.combinations')
+            ->first();
+
+            // dd($data->variation_id);
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                    'combination' => [
+                        'variation_id' => $data->variation_id,
+                        'values' => $data->variation->combinations,
+                    ]
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
         } catch (\Exception $e) {
             return [
                 'code' => 500,

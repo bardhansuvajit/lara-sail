@@ -39,7 +39,11 @@
                 <div class="w-full mt-5">
                     <div class="fixed z-[1] bottom-16 w-full -m-2 pt-3 px-2 pb-3 sm:static sm:bottom-0 sm:m-0 sm:p-0 {{FD['rounded']}} border sm:border-0 dark:sm:border-0 border-gray-200 bg-white sm:bg-transparent dark:sm:bg-transparent shadow-sm sm:shadow-none dark:sm:shadow-none dark:border-0 lg:dark:border-0 dark:bg-gray-800">
                         <div class="flex space-x-2">
-                            <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-gray-300 focus:bg-gray-400 px-5 py-2.5 {{FD['text']}} font-medium text-gray=800 hover:bg-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 add-to-cart" data-prod-id="{{$product->id}}" data-purchase-type="buy">
+                            <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-gray-300 focus:bg-gray-400 px-5 py-2.5 {{FD['text']}} font-medium text-gray=800 hover:bg-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 add-to-cart" 
+                                data-prod-id="{{$product->id}}" 
+                                data-purchase-type="buy"
+                                data-variation-data="{{ json_encode($variation['data']) }}"
+                            >
                                 Buy Now
                             </button>
 
@@ -129,6 +133,7 @@
                     {{-- variation --}}
                     @if ($variation['code'] == 200)
                     <div class="space-y-2" id="variationTab">
+                        {{-- {{ dd($variation['data']) }} --}}
                         @foreach ($variation['data'] as $attrIndex => $attribute)
                             <div>
                                 <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">{{ $attribute['title'] }}</h3>
@@ -140,7 +145,11 @@
                                             id="someId{{$attrIndex}}{{$valueIndex}}" 
                                             name="variation-{{ $attribute['slug'] }}" 
                                             value="{{ $value['slug'] }}" 
-                                            onclick="sendUrlParam('{{ $attribute['slug'] }}', '{{ $value['slug'] }}')"
+                                            class="attr-val-generate" 
+                                            data-prod-id="{{ $product->id }}" 
+                                            data-attr-id="{{ $attribute['id'] }}" 
+                                            data-value-id="{{ $value['id'] }}" 
+                                            {{-- onclick="sendUrlParam('{{ $attribute['slug'] }}', '{{ $value['slug'] }}')" --}}
                                         >
                                             <div class="text-center">
                                                 <div class="flex flex-col items-center gap-2">
@@ -351,6 +360,7 @@
 
     @push('scripts')
         <script>
+            /*
             // on select variation data, send into url parameter
             function sendUrlParam(variationType, value) {
                 // Check if the URL already has a query string
@@ -363,6 +373,7 @@
                 // Update the URL without reloading the page
                 window.history.replaceState({}, '', `${url.pathname}?${params}`);
             }
+            */
         </script>
     @endpush
 </x-guest-layout>

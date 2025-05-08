@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use App\Models\Country;
 
@@ -24,6 +25,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // set a device id in cookie
+        if (!isset($_COOKIE['device_id'])) {
+            setcookie('device_id', Str::uuid());
+        }
+
         $countries = collect();
 
         if (Schema::hasTable('countries')) {

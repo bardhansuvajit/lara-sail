@@ -33,7 +33,6 @@ class CartController extends Controller
         $cart = $this->getOrCreateCart();
 
         // Find product
-        // $product = Product::findOrFail($request->product_id);
         $product = Product::with(['pricings', 'variations' => function($query) {
             $query->with('product.pricings');
         }])->find($request->product_id);
@@ -43,6 +42,7 @@ class CartController extends Controller
         $productVariationId = null;
 
         if ($request->has('variation')) {
+            dd($request->variation);
             $variations = json_decode($request->variation, true);
             
             // Find matching product variation through combinations
@@ -119,14 +119,14 @@ class CartController extends Controller
 
     private function getOrCreateCart()
     {
-        if (auth()->check()) {
+        if (auth()->guard('web')->check()) {
             return Cart::firstOrCreate([
                 'user_id' => auth()->id()
             ]);
         }
 
         // For guests, use device ID
-        $deviceId = request()->cookie('device_id') ?? Str::uuid();
+        $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
 
         return Cart::firstOrCreate([
             'device_id' => $deviceId,

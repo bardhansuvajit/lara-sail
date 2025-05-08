@@ -154,6 +154,7 @@ class ProductVariationRepository implements ProductVariationInterface
 
                 foreach ($array['variations'] as $key => $variation) {
                     $this->productVariationCombinationRepository->store([
+                        'product_id' => $array['product_id'],
                         'variation_id' => $data->id,
                         'attribute_id' => $variation['attribute_id'],
                         'attribute_value_id' => $variation['attribute_value_id'],
