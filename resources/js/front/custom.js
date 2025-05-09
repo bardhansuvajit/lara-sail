@@ -512,6 +512,11 @@ document.querySelectorAll('.attr-val-generate').forEach(btn => {
         const productId = btn.dataset.prodId;
         const attrId = btn.dataset.attrId;
         const valueId = btn.dataset.valueId;
+        // const valueSlug = btn.value;
+        // const attrSlug = btn.name;
+
+        const url = new URL(window.location.href);
+        const params = new URLSearchParams(url.search);
 
         try {
             const response = await fetch('/api/variation/check', {
@@ -530,40 +535,44 @@ document.querySelectorAll('.attr-val-generate').forEach(btn => {
 
             const data = await response.json();
             if (response.ok) {
-                console.log(data);
-                // const newData = data.combination.values;
-                // console.log('newData>>', newData);
+                // Inside the response.ok check
 
                 const validValueIds = data.data.map(id => id.toString());
-    
-                document.querySelectorAll('.attr-val-generate').forEach(input  => {
+
+                document.querySelectorAll('.attr-val-generate').forEach(input => {
                     const inputValueId = input.dataset.valueId;
                     const label = input.nextElementSibling;
-        
+                    const inputAttrSlug = input.name;
+                    const inputValueSlug = input.value.toLowerCase();
+
                     if (label && label.tagName === 'LABEL') {
                         if (!validValueIds.includes(inputValueId)) {
                             // Disable input and style label for unavailable options
-                            // input.disabled = true;
-                            label.classList.add('!opacity-50');
-                            
+                            label.classList.add('opacity-50');
+
                             if (input.checked) {
                                 input.checked = false;
+                                // Remove the parameter from the URL
+                                params.delete(inputAttrSlug);
                             }
                         } else {
                             // Enable input and reset label styling for available options
-                            // input.disabled = false;
-                            label.classList.remove('!opacity-50');
+                            label.classList.remove('opacity-50');
                         }
+                    }
+
+                    // If the input is checked and is a valid value, set/update the parameter
+                    if (input.checked && validValueIds.includes(inputValueId)) {
+                        params.set(inputAttrSlug, inputValueSlug);
                     }
                 });
 
-                // Ensure the clicked button remains enabled
-                // btn.disabled = false;
-                btn.classList.remove('!opacity-50');
+                // Update the URL without reloading the page
+                window.history.replaceState({}, '', `${url.pathname}?${params}`);
 
             }
         } catch (error) {
-            console.error('Error fetching variation details: ', error);
+            // console.error('Error fetching variation details: ', error);
             showNotification('Error fetching variation details. Please try again.', { type: 'error' });
         }
     });
