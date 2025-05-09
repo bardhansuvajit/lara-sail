@@ -10,7 +10,7 @@ class CartItem extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'cart_id','product_id','product_variation_id','product_name','variation_attributes',
+        'cart_id','product_id','product_variation_id','product_title','variation_attributes',
         'sku','selling_price','mrp','quantity','total','is_available','availability_message',
         'options','custom_fields','status'
     ];

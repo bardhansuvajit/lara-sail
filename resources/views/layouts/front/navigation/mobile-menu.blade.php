@@ -42,7 +42,7 @@
                             @endif
 
                             <div class="absolute -top-2 -end-6 {{FD['text-1']}} bg-primary-600 text-gray-50 font-medium w-6 h-6 rounded-full px-1 py-[3px] text-center overflow-hidden">
-                                <div class="cart-count">99</div>
+                                <div class="cart-count"></div>
                             </div>
                         </div>
                     </span>

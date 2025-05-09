@@ -23,7 +23,7 @@ function createNotification() {
     notificationElement = document.createElement('div');
     notificationElement.innerHTML = `
         <div class="fixed bottom-8 left-0 right-0 flex justify-center z-50 hidden" id="simple-notification">
-            <div class="text-center py-4 lg:px-4 w-full max-w-screen-md mx-4 mb-4 rounded-t-lg">
+            <div class="text-center mb-4">
                 <div id="main-alert" class="p-2 bg-black items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex shadow" role="alert">
                     <span id="notification-icon" class="w-4 h-4"></span>
 
@@ -670,9 +670,6 @@ async function handleCartAction(productId, quantity, selectedVariations) {
     if (Object.keys(selectedVariations).length) {
         formData.append('variation', JSON.stringify(selectedVariations));
     }
-    // Object.entries(selectedVariations).forEach(([key, value]) => {
-    //     formData.append(key, value);
-    // });
 
     try {
         const response = await fetch('/cart/store', {
@@ -690,8 +687,9 @@ async function handleCartAction(productId, quantity, selectedVariations) {
             throw new Error(data.message || 'Failed to add to cart');
         }
 
-        showNotification('Item added to cart!', { type: 'success' });
+        showNotification(data.message, { type: data.status });
         updateCartCount(data.cart_count);
+        updateCartData(data.cart_data);
 
     } catch (error) {
         console.error('Cart action error:', error);
@@ -701,5 +699,54 @@ async function handleCartAction(productId, quantity, selectedVariations) {
 
 function updateCartCount(count) {
     const counters = document.querySelectorAll('.cart-count');
-    counters.forEach(el => el.textContent = count);
+    counters.forEach(el => el.textContent = count + (count == 1 ? ' item' : 'items'));
+}
+
+function updateCartData(data) {
+    let singleCartItem = ``;
+
+    data.forEach(item => {
+        singleCartItem += `
+        <div class="grid grid-cols-2 items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
+            <div class="flex items-center gap-2">
+                <a href="#" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
+                    <img class="h-auto max-h-full w-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-light.svg" alt="imac image">
+                </a>
+                <div class="w-full">
+                    <a href="#" class="block text-xs {{FD['text-0']}} text-gray-900 hover:underline dark:text-white">${item.product_title}</a>
+                    <p class="{{FD['text-0']}} text-gray-400">${item.variation_attributes}</p>
+                    <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-symbol">₹</span>1,299</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3">
+                <div class="relative flex items-center">
+                    <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
+                        <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"></path></svg>
+                    </button>
+
+                    <input type="text" class="w-8 flex-shrink-0 border-0 bg-transparent text-center {{FD['text']}} font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="2" required="">
+
+                    <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
+                        <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"></path></svg>
+                    </button>
+                </div>
+
+                <button type="button" class="text-red-600 hover:text-red-700 dark:text-red-600 dark:hover:text-red-700">
+                    <div class="h-4 w-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-168-88-88 224-224-224-224 88-88 224 224 224-224 88 88-224 224 224 224-88 88-224-224-224 224Z"/></svg>
+                    </div>
+                </button>
+
+            </div>
+        </div>
+        `;
+    });
+
+    document.querySelectorAll('.cart-products').forEach(cartProducts => {
+        cartProducts.innerHTML = singleCartItem;
+    });
+
+    // const counters = document.querySelectorAll('.cart-count');
+    // counters.forEach(el => el.textContent = count + (count == 1 ? ' item' : 'items'));
 }

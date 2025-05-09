@@ -30,6 +30,14 @@ class AppServiceProvider extends ServiceProvider
             setcookie('device_id', Str::uuid());
         }
 
+        // set currency in cookie
+        if (!isset($_COOKIE['currency'])) {
+            setcookie('currency', json_encode([
+                "country" => "IN",
+                "currency" => "INR"
+            ]));
+        }
+
         $countries = collect();
 
         if (Schema::hasTable('countries')) {

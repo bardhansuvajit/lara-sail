@@ -25,7 +25,7 @@ return new class extends Migration
 			$table->foreign('product_variation_id')->references('id')->on('product_variations')->onDelete('set null');
 
 			// Item details
-			$table->string('product_name');
+			$table->string('product_title');
 			$table->string('variation_attributes')->nullable(); // e.g. "Color: Red, Size: Large"
 			$table->string('sku');
 			$table->decimal('selling_price', 12, 2);

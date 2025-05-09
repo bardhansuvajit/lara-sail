@@ -129,6 +129,21 @@ if (!function_exists('developerSettings')) {
     }
 }
 
+if (!function_exists('countryCurrencyData')) {
+    function countryCurrencyData() {
+        if (isset($_COOKIE['currency'])) {
+            $currencyData = json_decode(urldecode($_COOKIE['currency']), true);
+        } else {
+            $currencyData = [
+                "country" => env('FAILSAFE_COUNTRY'),
+                "currency" => env('FAILSAFE_CURRENCY')
+            ];
+        }
+
+        return $currencyData;
+    }
+}
+
 if (!function_exists('applicationSettings')) {
     function applicationSettings(String $key) {
         $applicationSettingRepository = app(ApplicationSettingRepository::class);
