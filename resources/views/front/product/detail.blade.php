@@ -155,7 +155,7 @@
                                                 <div class="flex flex-col items-center gap-2">
                                                     <img src="https://placehold.co/40x40" class="rounded-full">
                                                     <div>
-                                                        <div class="{{FD['text']}} font-semibold">{{ $value['id'].' '.$value['title'] }}</div>
+                                                        <div class="{{FD['text']}} font-semibold">{{ $value['title'] }}</div>
                                                         <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
                                                     </div>
                                                 </div>

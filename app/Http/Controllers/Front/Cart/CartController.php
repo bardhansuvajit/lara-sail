@@ -39,7 +39,7 @@ class CartController extends Controller
         }])->find($request->product_id);
 
         // Product data
-        $sku = $product->sku;
+        $sku = $product->sku ? $product->sku : $product->slug;
 
         // Currency
         $currencyData = countryCurrencyData()['currency'];
@@ -78,6 +78,7 @@ class CartController extends Controller
             // dd($variationsUpdated);
 
             // Match variation combinations
+            /*
             $productVariation = ProductVariation::where('product_id', $request->product_id)
                 ->whereHas('combinations', function ($query) use ($variationsUpdated) {
                     $query->where(function ($q) use ($variationsUpdated) {
@@ -93,6 +94,27 @@ class CartController extends Controller
                         }
                     });
                 }, '=', count($variationsUpdated)) // Must match all variations
+                ->with('combinations')
+                ->first();
+            */
+            $productVariation = ProductVariation::where('product_id', $request->product_id)
+                ->whereHas('combinations', function ($query) use ($variationsUpdated) {
+                    $query->where(function ($q) use ($variationsUpdated) {
+                        foreach ($variationsUpdated as $attributeSlug => $valueSlug) {
+                            $q->orWhere(function ($subQuery) use ($attributeSlug, $valueSlug) {
+                                $subQuery->whereHas('attribute', function ($q) use ($attributeSlug) {
+                                    $q->where('slug', $attributeSlug);
+                                })
+                                ->whereHas('attributeValue', function ($q) use ($valueSlug) {
+                                    $q->where('slug', $valueSlug);
+                                });
+                            });
+                        }
+                    });
+                }, '=', count($variationsUpdated))
+                ->with(['combinations' => function($query) {
+                    $query->with(['attribute', 'attributeValue']);
+                }])
                 ->first();
 
             // dd(DB::getQueryLog());
@@ -102,7 +124,12 @@ class CartController extends Controller
             if ($productVariation) {
                 $productVariationId = $productVariation->id;
                 $variationData = $this->formatVariationData($productVariation);
-                $variationAttributes = implode(', ', array_values($variationsUpdated));
+                // $variationAttributes = implode(', ', array_values($variationsUpdated));
+                $variationTitles = [];
+                foreach ($productVariation->combinations as $combination) {
+                    $variationTitles[] = $combination->attributeValue->title;
+                }
+                $variationAttributes = implode(', ', $variationTitles);
 
                 // SKU
                 $sku = $productVariation->sku ? $productVariation->sku : $productVariation->variation_identifier;
@@ -175,8 +202,9 @@ class CartController extends Controller
             'code' => 200,
             'status' => 'success',
             'message' => 'Item added to cart.',
+            'cart_info' => $cart,
             'cart_count' => $cart->total_items,
-            'cart_data' => $cart->items
+            'cart_items' => $cart->items
         ]);
 
     }
@@ -194,7 +222,7 @@ class CartController extends Controller
     {
         if (auth()->guard('web')->check()) {
             return Cart::firstOrCreate([
-                'user_id' => auth()->id()
+                'user_id' => auth()->guard('web')->id()
             ]);
         }
 

@@ -53,7 +53,8 @@
                 @if (count($users) > 0)
                     <div class="px-2 py-1" 
                         wire:key="user-pagination-{{ $users->currentPage() }}"
-                        @click.stop >
+                        @click.stop 
+                    >
                         {{ $users->links(data: ['scrollTo' => false]) }}
                     </div>
                 @endif

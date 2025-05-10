@@ -31,7 +31,7 @@ return new class extends Migration
 			$table->decimal('selling_price', 12, 2);
 			$table->decimal('mrp', 12, 2)->default(0.00);
 			$table->unsignedInteger('quantity');
-			$table->decimal('total', 12, 4);
+			$table->decimal('total', 12, 2);
 
 			// Inventory tracking
 			$table->boolean('is_available')->default(1);

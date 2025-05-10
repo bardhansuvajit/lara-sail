@@ -24,21 +24,21 @@ return new class extends Migration
 
             // Cart totals
             $table->unsignedInteger('total_items')->default(0);     // SUM(quantity)
-            $table->decimal('sub_total', 12, 4)->default(0);        // SUM(price * quantity)
-            $table->decimal('total', 12, 4)->default(0);            // sub_total + adjustments
+            $table->decimal('sub_total', 12, 2)->default(0);        // SUM(price * quantity)
+            $table->decimal('total', 12, 2)->default(0);            // sub_total + adjustments
 
             // Discount information
             $table->unsignedBigInteger('coupon_code_id')->nullable();
             $table->string('coupon_code')->nullable();
-            $table->decimal('discount_amount', 12, 4)->default(0);
+            $table->decimal('discount_amount', 12, 2)->default(0);
             $table->string('discount_type', 30)->nullable()->comment('amount/ percent');
 
             // Shipping
             $table->unsignedBigInteger('shipping_method_id')->nullable();
-            $table->decimal('shipping_cost', 12, 4)->default(0);
+            $table->decimal('shipping_cost', 12, 2)->default(0);
 
             // tax
-            $table->decimal('tax_amount', 12, 4)->default(0);
+            $table->decimal('tax_amount', 12, 2)->default(0);
             $table->string('tax_type', 30)->nullable()->comment('amount/ percent');
             $table->text('tax_details')->nullable();
 

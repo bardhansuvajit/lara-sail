@@ -39,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         $countries = collect();
+        $cartData = collect();
 
         if (Schema::hasTable('countries')) {
             $countries = Cache::rememberForever('active_countries', function () {
@@ -46,6 +47,21 @@ class AppServiceProvider extends ServiceProvider
             });
         }
 
+        if (Schema::hasTable('carts')) {
+            if (auth()->guard('web')->check()) {
+                $cartData = \App\Models\Cart::where('user_id', auth()->guard('web')->id())
+                    ->with('items')
+                    ->first();
+            } else {
+                if (!empty($_COOKIE['device_id'])) {
+                    $cartData = \App\Models\Cart::where('device_id', $_COOKIE['device_id'])
+                        ->with('items')
+                        ->first();
+                }
+            }
+        }
+
         View::share('activeCountries', $countries);
+        View::share('cartData', $cartData);
     }
 }

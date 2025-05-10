@@ -345,23 +345,31 @@ if (!function_exists('formatIndianMoney')) {
         if (extension_loaded('intl')) {
             $formatter = new NumberFormatter('en_IN', NumberFormatter::DECIMAL);
             $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $decimalPlaces);
-            return $formatter->format($amount);
+            $formatted = $formatter->format($amount);
+
+            // Remove trailing ".00" or any ".X0"/".0X" if decimal part is zero
+            if (strpos($formatted, '.') !== false) {
+                $formatted = rtrim(rtrim($formatted, '0'), '.');
+            }
+
+            return $formatted;
         }
-        
+
         // Fallback for when intl extension is not available
         $amount = round((float) $amount, $decimalPlaces);
         $parts = explode('.', number_format($amount, $decimalPlaces, '.', ''));
-        
+
         $whole = $parts[0];
         $lastThree = substr($whole, -3);
         $otherNumbers = substr($whole, 0, -3);
-        
+
         $formatted = ($otherNumbers ? preg_replace("/\B(?=(\d{2})+(?!\d))/", ",", $otherNumbers) . ',' : '') . $lastThree;
-        
-        if ($decimalPlaces > 0 && !empty($parts[1])) {
-            $formatted .= '.' . $parts[1];
+
+        // Only add decimal if it's not zero
+        if ($decimalPlaces > 0 && !empty($parts[1]) && (int)$parts[1] !== 0) {
+            $formatted .= '.' . rtrim($parts[1], '0');
         }
-        
+
         return $formatted;
     }
 }

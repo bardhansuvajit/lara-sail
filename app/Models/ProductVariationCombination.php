@@ -10,7 +10,7 @@ class ProductVariationCombination extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'variation_id', 'attribute_id', 'attribute_value_id', 'status'
+        'product_id', 'variation_id', 'attribute_id', 'attribute_value_id', 'status'
     ];
 
     public function variation()

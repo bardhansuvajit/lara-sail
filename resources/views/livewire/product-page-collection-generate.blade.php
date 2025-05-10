@@ -89,7 +89,8 @@
                                 class="block w-full px-2 py-1 text-start text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out" 
                                 @click="setCollection('{{ $collection['id'] }}', @js($collection['title']))" 
                                 @click.stop
-                                href="javascript: void(0)">
+                                href="javascript: void(0)"
+                            >
                                 <div class="w-full flex items-center justify-between">
                                     <div class="flex items-center justify-between w-full">
                                         <div class="flex space-x-2 items-center">

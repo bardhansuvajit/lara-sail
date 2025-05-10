@@ -1,3 +1,9 @@
+// Frontend Design
+const FDtext0 = 'text-[10px]';
+const FDtext = 'text-xs';
+const FDtext1 = 'text-sm';
+const FDrounded = '';
+
 const urlParams = getUrlParams();
 const navbar = document.getElementById('navbar');
 const darkModeToggleEl = document.getElementById('dark-mode');
@@ -5,12 +11,37 @@ const orderSummaryCont = document.getElementById('order-summary-container');
 const orderSummaryBtn = document.getElementById('order-summary-toggle');
 const orderSummaryEl = document.getElementById('order-summary');
 const phoneNoEl = document.getElementById('phone_no');
+
 let lastScrollPosition = 0;
 
 // GLOBAL
 function getUrlParams() {
     return new URLSearchParams(window.location.search);
 }
+function formatIndianMoney(amount, decimalPlaces = 2) {
+    amount = parseFloat(amount).toFixed(decimalPlaces);
+    let [whole, fraction] = amount.split('.');
+
+    // Format the whole number part using Indian numbering format
+    let lastThree = whole.slice(-3);
+    let otherNumbers = whole.slice(0, -3);
+    let formattedWhole = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+    if (formattedWhole) {
+        formattedWhole += ',' + lastThree;
+    } else {
+        formattedWhole = lastThree;
+    }
+
+    // Only show decimal part if it's not zero
+    if (decimalPlaces > 0 && parseInt(fraction) !== 0) {
+        // Remove trailing zeros from fraction part (e.g., 50 -> 5)
+        fraction = fraction.replace(/0+$/, '');
+        return formattedWhole + '.' + fraction;
+    }
+
+    return formattedWhole;
+}
+
 
 // Notification elements
 let notificationElement = null;
@@ -689,7 +720,11 @@ async function handleCartAction(productId, quantity, selectedVariations) {
 
         showNotification(data.message, { type: data.status });
         updateCartCount(data.cart_count);
-        updateCartData(data.cart_data);
+        updateCartData(data.cart_info, data.cart_items);
+
+        setTimeout(() => {
+            document.querySelector('#cart-btn').click()
+        }, 100);
 
     } catch (error) {
         console.error('Cart action error:', error);
@@ -699,10 +734,73 @@ async function handleCartAction(productId, quantity, selectedVariations) {
 
 function updateCartCount(count) {
     const counters = document.querySelectorAll('.cart-count');
-    counters.forEach(el => el.textContent = count + (count == 1 ? ' item' : 'items'));
+    counters.forEach(el => el.textContent = count + (count == 1 ? ' item' : ' items'));
 }
 
-function updateCartData(data) {
+function updateCartData(info, data) {
+    const singleCartItem = data.map(item => `
+        <div class="grid grid-cols-2 items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
+            <div class="flex items-center gap-2">
+                <a href="#" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
+                    <img class="h-auto max-h-full w-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-light.svg" alt="${item.product_title}">
+                </a>
+                <div class="w-full">
+                    <a href="#" class="block text-xs ${FDtext0} text-gray-900 hover:underline dark:text-white">${item.product_title}</a>
+                    ${item.variation_attributes ? `<p class="${FDtext0} text-gray-400">${item.variation_attributes}</p>` : ''}
+                    <p class="mt-0.5 truncate ${FDtext} font-normal text-gray-500 dark:text-gray-300">
+                        <span class="currency-symbol">₹</span> ${formatIndianMoney(item.selling_price)}
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3">
+                <div class="relative flex items-center">
+                    <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
+                        <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"></path></svg>
+                    </button>
+
+                    <input type="text" class="w-8 p-0 flex-shrink-0 border-0 bg-transparent text-center ${FDtext} font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="${item.quantity}" required="">
+
+                    <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
+                        <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"></path></svg>
+                    </button>
+                </div>
+
+                <button type="button" class="text-red-600 hover:text-red-700 dark:text-red-600 dark:hover:text-red-700">
+                    <div class="h-4 w-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-168-88-88 224-224-224-224 88-88 224 224 224-224 88 88-224 224 224 224-88 88-224-224-224 224Z"/></svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+    `).join('');
+
+    const cartProductsElements = document.querySelectorAll('.cart-products');
+    const cartRedirectElement = document.querySelector('.cart-redirect');
+
+    // Update cart products
+    cartProductsElements.forEach(el => {
+        el.innerHTML = singleCartItem;
+    });
+
+    if (cartRedirectElement) {
+        cartRedirectElement.innerHTML = `
+        <div class="space-y-4 px-3 py-2 dark:border-gray-600">
+            <dl class="flex items-center justify-between">
+                <dt class="font-medium ${FDtext1} leading-tight dark:text-white">Total</dt>
+                <dd class="font-semibold ${FDtext1} leading-tight dark:text-white"><span class="currency-symbol">₹</span> ${formatIndianMoney(info.total)}</dd>
+            </dl>
+
+            <div class="flex space-x-2">
+                <a href="/cart" title="" class="inline-flex w-full items-center justify-center ${FDrounded} bg-primary-600 px-5 py-2.5 ${FDtext} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"> See your cart </a>
+
+                <a href="/checkout" title="" class="inline-flex w-full items-center justify-center ${FDrounded} bg-primary-600 px-5 py-2.5 ${FDtext} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"> Checkout </a>
+            </div>
+        </div>
+        `;
+    }
+
+    /*
     let singleCartItem = ``;
 
     data.forEach(item => {
@@ -713,21 +811,23 @@ function updateCartData(data) {
                     <img class="h-auto max-h-full w-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-light.svg" alt="imac image">
                 </a>
                 <div class="w-full">
-                    <a href="#" class="block text-xs {{FD['text-0']}} text-gray-900 hover:underline dark:text-white">${item.product_title}</a>
-                    <p class="{{FD['text-0']}} text-gray-400">${item.variation_attributes}</p>
-                    <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-400"><span class="currency-symbol">₹</span>1,299</p>
+                    <a href="#" class="block text-xs ${FDtext0} text-gray-900 hover:underline dark:text-white">${item.product_title}</a>
+                    <p class="${FDtext0} text-gray-400">${item.variation_attributes}</p>
+                    <p class="mt-0.5 truncate ${FDtext} font-normal text-gray-500 dark:text-gray-300">
+                        <span class="currency-symbol">₹</span> ${formatIndianMoney(item.selling_price)}
+                    </p>
                 </div>
             </div>
 
             <div class="flex items-center justify-end gap-3">
                 <div class="relative flex items-center">
-                    <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
+                    <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
                         <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"></path></svg>
                     </button>
 
-                    <input type="text" class="w-8 flex-shrink-0 border-0 bg-transparent text-center {{FD['text']}} font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="2" required="">
+                    <input type="text" class="w-8 p-0 flex-shrink-0 border-0 bg-transparent text-center ${FDtext} font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="${item.quantity}" required="">
 
-                    <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
+                    <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
                         <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"></path></svg>
                     </button>
                 </div>
@@ -747,6 +847,24 @@ function updateCartData(data) {
         cartProducts.innerHTML = singleCartItem;
     });
 
+    if (document.querySelector('.cart-redirect')) {
+        document.querySelector('.cart-redirect').innerHTML = `
+        <div class="space-y-4 px-3 py-2 dark:border-gray-600">
+            <dl class="flex items-center justify-between">
+                <dt class="font-medium ${FDtext1} leading-tight dark:text-white">Total</dt>
+                <dd class="font-semibold ${FDtext1} leading-tight dark:text-white"><span class="currency-symbol">₹</span> ${formatIndianMoney(info.total)}</dd>
+            </dl>
+
+            <div class="flex space-x-2">
+                <a href="/cart" title="" class="inline-flex w-full items-center justify-center ${FDrounded} bg-primary-600 px-5 py-2.5 ${FDtext} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"> See your cart </a>
+
+                <a href="/checkout" title="" class="inline-flex w-full items-center justify-center ${FDrounded} bg-primary-600 px-5 py-2.5 ${FDtext} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"> Checkout </a>
+            </div>
+        </div>
+        `;
+    }
+
     // const counters = document.querySelectorAll('.cart-count');
     // counters.forEach(el => el.textContent = count + (count == 1 ? ' item' : 'items'));
+    */
 }

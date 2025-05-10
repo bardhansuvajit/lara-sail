@@ -55,7 +55,8 @@
                 @if (count($variationAttributes) > 0)
                     <div class="px-2 py-1" 
                         wire:key="variation-attribute-pagination-{{ $variationAttributes->currentPage() }}"
-                        @click.stop >
+                        @click.stop 
+                    >
                         {{ $variationAttributes->links(data: ['scrollTo' => false]) }}
                     </div>
                 @endif

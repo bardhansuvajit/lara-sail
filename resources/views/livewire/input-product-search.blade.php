@@ -55,7 +55,8 @@
                 @if (count($products) > 0)
                     <div class="px-2 py-1" 
                         wire:key="product-pagination-{{ $products->currentPage() }}"
-                        @click.stop >
+                        @click.stop 
+                    >
                         {{ $products->links(data: ['scrollTo' => false]) }}
                     </div>
                 @endif
