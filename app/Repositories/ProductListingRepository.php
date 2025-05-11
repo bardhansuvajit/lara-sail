@@ -178,7 +178,13 @@ class ProductListingRepository implements ProductListingInterface
     public function getById(Int $id)
     {
         try {
-            $data = Product::find($id);
+            // $data = Product::find($id);
+
+            $data = Product::where('id', $id)
+                ->with(['pricings', 'variations' => function($query) {
+                    $query->with('product.pricings');
+                }])
+                ->first();
 
             if (!empty($data)) {
                 return [

@@ -15,6 +15,11 @@ class CartItem extends Model
         'options','custom_fields','status'
     ];
 
+    public function cart()
+    {
+        return $this->belongsTo('App\Models\Cart', 'cart_id', 'id');
+    }
+
     public function updateAvailabilityMessage()
     {
         $this->availability_message = $this->generateStockMessage();

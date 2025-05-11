@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('email')->unique();
+            $table->string('email')->nullable()->unique();
             $table->unsignedBigInteger('country_id')->default(1);
             $table->string('primary_phone_no')->unique();
             $table->unsignedBigInteger('gender_id')->default(1);

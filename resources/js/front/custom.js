@@ -53,12 +53,12 @@ function createNotification() {
 
     notificationElement = document.createElement('div');
     notificationElement.innerHTML = `
-        <div class="fixed bottom-8 left-0 right-0 flex justify-center z-50 hidden" id="simple-notification">
+        <div class="fixed bottom-8 left-0 right-0 justify-center z-50 hidden" id="simple-notification">
             <div class="text-center mb-4">
                 <div id="main-alert" class="p-2 bg-black items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex shadow" role="alert">
                     <span id="notification-icon" class="w-4 h-4"></span>
 
-                    <span id="notification-badge" class="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-1 hidden"></span>
+                    <span id="notification-badge" class="rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-1 hidden"></span>
                     <span id="notification-message" class="ms-2 text-sm font-semibold mr-2 text-left flex-auto"></span>
 
                     <a id="notification-redirect" href="" class="text-sm text-yellow-500 hover:text-yellow-600 font-bold me-1"></a>
@@ -112,6 +112,7 @@ function showNotification(message, options = {}) {
     // badge
     const badge = document.getElementById('notification-badge');
     if (options.badgeText) {
+        badge.classList.add('flex');
         badge.classList.remove('hidden');
         badge.textContent = options.badgeText;
     } else {
@@ -128,13 +129,14 @@ function showNotification(message, options = {}) {
         redirect.href = "";
     }
 
+    document.getElementById('simple-notification').classList.add('flex');
     document.getElementById('simple-notification').classList.remove('hidden');
 
     // autohide
     // if (options.autoHide) {
         notificationTimeout = setTimeout(() => {
         hideNotification();
-        }, options.duration || 5000000);
+        }, options.duration || 5000);
     // }
 }
 
@@ -565,6 +567,7 @@ document.querySelectorAll('.attr-val-generate').forEach(btn => {
             });
 
             const data = await response.json();
+
             if (response.ok) {
                 // Inside the response.ok check
 
@@ -632,6 +635,19 @@ function checkAllVariationsSelected(requiredVariations, selectedVariations) {
 
     });
 }
+
+async function cartDataFetch() {
+    try {
+        const reponse = await fetch('/cart/fetch');
+        const data = await reponse.json();
+        updateCartCount(data.cart_count);
+        updateCartData(data.cart_info, data.cart_items);
+    } catch (error) {
+        console.error('Cart action error:', error);
+    }
+}
+
+cartDataFetch();
 
 // add to cart
 document.querySelectorAll('.add-to-cart').forEach(cartBtn => {
@@ -719,6 +735,7 @@ async function handleCartAction(productId, quantity, selectedVariations) {
         }
 
         showNotification(data.message, { type: data.status });
+
         updateCartCount(data.cart_count);
         updateCartData(data.cart_info, data.cart_items);
 
@@ -727,6 +744,7 @@ async function handleCartAction(productId, quantity, selectedVariations) {
         }, 100);
 
     } catch (error) {
+        showNotification('Cart action error:', { type: 'error' });
         console.error('Cart action error:', error);
         throw error; // Re-throw for outer catch
     }
@@ -737,40 +755,68 @@ function updateCartCount(count) {
     counters.forEach(el => el.textContent = count + (count == 1 ? ' item' : ' items'));
 }
 
-function updateCartData(info, data) {
-    const singleCartItem = data.map(item => `
-        <div class="grid grid-cols-2 items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
-            <div class="flex items-center gap-2">
-                <a href="#" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
-                    <img class="h-auto max-h-full w-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-light.svg" alt="${item.product_title}">
-                </a>
-                <div class="w-full">
-                    <a href="#" class="block text-xs ${FDtext0} text-gray-900 hover:underline dark:text-white">${item.product_title}</a>
-                    ${item.variation_attributes ? `<p class="${FDtext0} text-gray-400">${item.variation_attributes}</p>` : ''}
-                    <p class="mt-0.5 truncate ${FDtext} font-normal text-gray-500 dark:text-gray-300">
-                        <span class="currency-symbol">₹</span> ${formatIndianMoney(item.selling_price)}
-                    </p>
+function updateCartData(cartInfo, cartItems) {
+    // console.log('cartInfo>>', cartInfo);
+    // console.log('cartItems>>', cartItems);
+
+    const singleCartItem = cartItems.map(item => `
+        <div class="grid grid-cols-3 items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
+            <div class="col-span-2">
+                <div class="flex items-center gap-2">
+                    <a href="#" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
+                        <img class="h-auto max-h-full w-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-light.svg" alt="${item.product_title}">
+                    </a>
+                    <div class="w-full">
+                        <a href="#" class="block text-xs ${FDtext0} text-gray-900 hover:underline dark:text-white">${item.product_title}</a>
+                        ${item.variation_attributes ? `<p class="${FDtext0} text-gray-400">${item.variation_attributes}</p>` : ''}
+                        <p class="mt-0.5 truncate ${FDtext} font-normal text-gray-500 dark:text-gray-300">
+                            <span class="currency-symbol">₹</span> ${formatIndianMoney(item.selling_price)}
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <div class="flex items-center justify-end gap-3">
-                <div class="relative flex items-center">
-                    <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
-                        <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"></path></svg>
-                    </button>
+            <div class="col-span-1">
+                <div class="flex items-center justify-end gap-3">
+                    <div class="relative flex items-center">
+                        <button 
+                            type="button" 
+                            class="cart-qty-update inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-300 dark:focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700" 
+                            data-id="${item.id}" 
+                            data-type="desc" 
+                            ${item.quantity == 1 ? 'disabled' : ''}
+                        >
+                            <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"></path></svg>
+                        </button>
 
-                    <input type="text" class="w-8 p-0 flex-shrink-0 border-0 bg-transparent text-center ${FDtext} font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="${item.quantity}" required="">
+                        <input type="text" class="w-8 p-0 flex-shrink-0 border-0 bg-transparent text-center ${FDtext} font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="${item.quantity}" required="">
 
-                    <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
-                        <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"></path></svg>
+                        <button 
+                            type="button" 
+                            class="cart-qty-update inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-300 dark:focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700" 
+                            data-id="${item.id}" 
+                            data-type="asc" 
+                        >
+                            <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"></path></svg>
+                        </button>
+                    </div>
+
+                    <button 
+                        type="button" 
+                        class="text-red-600 hover:text-red-700 dark:text-red-600 dark:hover:text-red-700" 
+                        data-id="${item.id}"
+                        data-title="${item.product_title}"
+                        data-attributes="${item.variation_attributes || ''}"
+                        data-price="${item.selling_price}"
+                        data-image="${item.image_m}"
+                        data-quantity="${item.quantity}"
+                        title="Remove from Cart"
+                    >
+                        <div class="h-4 w-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-168-88-88 224-224-224-224 88-88 224 224 224-224 88 88-224 224 224 224-88 88-224-224-224 224Z"/></svg>
+                        </div>
                     </button>
                 </div>
-
-                <button type="button" class="text-red-600 hover:text-red-700 dark:text-red-600 dark:hover:text-red-700">
-                    <div class="h-4 w-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-168-88-88 224-224-224-224 88-88 224 224 224-224 88 88-224 224 224 224-88 88-224-224-224 224Z"/></svg>
-                    </div>
-                </button>
             </div>
         </div>
     `).join('');
@@ -788,7 +834,7 @@ function updateCartData(info, data) {
         <div class="space-y-4 px-3 py-2 dark:border-gray-600">
             <dl class="flex items-center justify-between">
                 <dt class="font-medium ${FDtext1} leading-tight dark:text-white">Total</dt>
-                <dd class="font-semibold ${FDtext1} leading-tight dark:text-white"><span class="currency-symbol">₹</span> ${formatIndianMoney(info.total)}</dd>
+                <dd class="font-semibold ${FDtext1} leading-tight dark:text-white"><span class="currency-symbol">₹</span> ${formatIndianMoney(cartInfo.total)}</dd>
             </dl>
 
             <div class="flex space-x-2">
@@ -800,71 +846,66 @@ function updateCartData(info, data) {
         `;
     }
 
-    /*
-    let singleCartItem = ``;
+    bindCartQtyEvents();
+}
 
-    data.forEach(item => {
-        singleCartItem += `
-        <div class="grid grid-cols-2 items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
-            <div class="flex items-center gap-2">
-                <a href="#" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
-                    <img class="h-auto max-h-full w-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-light.svg" alt="imac image">
-                </a>
-                <div class="w-full">
-                    <a href="#" class="block text-xs ${FDtext0} text-gray-900 hover:underline dark:text-white">${item.product_title}</a>
-                    <p class="${FDtext0} text-gray-400">${item.variation_attributes}</p>
-                    <p class="mt-0.5 truncate ${FDtext} font-normal text-gray-500 dark:text-gray-300">
-                        <span class="currency-symbol">₹</span> ${formatIndianMoney(item.selling_price)}
-                    </p>
-                </div>
-            </div>
-
-            <div class="flex items-center justify-end gap-3">
-                <div class="relative flex items-center">
-                    <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
-                        <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"></path></svg>
-                    </button>
-
-                    <input type="text" class="w-8 p-0 flex-shrink-0 border-0 bg-transparent text-center ${FDtext} font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="${item.quantity}" required="">
-
-                    <button type="button" class="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700">
-                        <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"></path></svg>
-                    </button>
-                </div>
-
-                <button type="button" class="text-red-600 hover:text-red-700 dark:text-red-600 dark:hover:text-red-700">
-                    <div class="h-4 w-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-168-88-88 224-224-224-224 88-88 224 224 224-224 88 88-224 224 224 224-88 88-224-224-224 224Z"/></svg>
-                    </div>
-                </button>
-
-            </div>
-        </div>
-        `;
+// Cart Quantity Update
+function bindCartQtyEvents() {
+    document.querySelectorAll('.cart-qty-update').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const id = btn.dataset.id;
+            const type = btn.dataset.type;
+            updateCartQty(id, type);
+        });
     });
+}
 
-    document.querySelectorAll('.cart-products').forEach(cartProducts => {
-        cartProducts.innerHTML = singleCartItem;
+/*
+document.querySelectorAll('.cart-qty-update').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const id = btn.dataset.id;
+        const type = btn.dataset.type;
+
+        updateCartQty(id, type);
     });
+});
+*/
 
-    if (document.querySelector('.cart-redirect')) {
-        document.querySelector('.cart-redirect').innerHTML = `
-        <div class="space-y-4 px-3 py-2 dark:border-gray-600">
-            <dl class="flex items-center justify-between">
-                <dt class="font-medium ${FDtext1} leading-tight dark:text-white">Total</dt>
-                <dd class="font-semibold ${FDtext1} leading-tight dark:text-white"><span class="currency-symbol">₹</span> ${formatIndianMoney(info.total)}</dd>
-            </dl>
+async function updateCartQty(id, type) {
+    try {
+        const response = await fetch('/cart/qty/update', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: id,
+                type: type
+            })
+        });
 
-            <div class="flex space-x-2">
-                <a href="/cart" title="" class="inline-flex w-full items-center justify-center ${FDrounded} bg-primary-600 px-5 py-2.5 ${FDtext} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"> See your cart </a>
+        const data = await response.json();
 
-                <a href="/checkout" title="" class="inline-flex w-full items-center justify-center ${FDrounded} bg-primary-600 px-5 py-2.5 ${FDtext} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"> Checkout </a>
-            </div>
-        </div>
-        `;
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to add to cart');
+        }
+
+        showNotification(data.message, { type: data.status });
+
+        updateCartCount(data.cart_count);
+        updateCartData(data.cart_info, data.cart_items);
+
+        // setTimeout(() => {
+        //     document.querySelector('#cart-btn').click()
+        // }, 100);
+    } catch (error) {
+        showNotification('Cart update error', { type: 'error' });
+        console.error('Cart update error:', error);
+        throw error; // Re-throw for outer catch
     }
-
-    // const counters = document.querySelectorAll('.cart-count');
-    // counters.forEach(el => el.textContent = count + (count == 1 ? ' item' : 'items'));
-    */
 }

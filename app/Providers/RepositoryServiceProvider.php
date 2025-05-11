@@ -27,6 +27,8 @@ use App\Interfaces\ProductVariationInterface;
 use App\Interfaces\ProductVariationCombinationInterface;
 use App\Interfaces\StateInterface;
 use App\Interfaces\CityInterface;
+use App\Interfaces\CartInterface;
+use App\Interfaces\CartItemInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -51,6 +53,8 @@ use App\Repositories\ProductVariationRepository;
 use App\Repositories\ProductVariationCombinationRepository;
 use App\Repositories\StateRepository;
 use App\Repositories\CityRepository;
+use App\Repositories\CartRepository;
+use App\Repositories\CartItemRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -82,6 +86,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ProductVariationCombinationInterface::class, ProductVariationCombinationRepository::class);
         $this->app->bind(StateInterface::class, StateRepository::class);
         $this->app->bind(CityInterface::class, CityRepository::class);
+        $this->app->bind(CartInterface::class, CartRepository::class);
+        $this->app->bind(CartItemInterface::class, CartItemRepository::class);
     }
 
     /**

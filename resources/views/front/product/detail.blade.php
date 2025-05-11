@@ -262,10 +262,10 @@
 
 
                     {{-- short description --}}
-                    <p class="{{FD['text']}} text-gray-500">{{ $product->short_description }}</p>
+                    <p class="{{FD['text']}} text-gray-500">{!! nl2br($product->short_description) !!}</p>
 
                     {{-- long description --}}
-                    <p class="{{FD['text']}} text-gray-500">{{ $product->long_description }}</p>
+                    <p class="{{FD['text']}} text-gray-500">{!! nl2br($product->long_description) !!}</p>
 
 
                     <!-- Seller Info -->

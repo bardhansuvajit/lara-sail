@@ -19,7 +19,7 @@ class Cart extends Model
 
     public function items()
     {
-        return $this->hasMany('App\Models\CartItem', 'cart_id', 'id');
+        return $this->hasMany('App\Models\CartItem', 'cart_id', 'id')->orderBy('id', 'desc');
     }
 
     // mark abandon

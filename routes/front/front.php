@@ -24,7 +24,9 @@ Route::name('front.')->group(function () {
     // cart
     Route::name('cart.')->prefix('cart')->group(function() {
         Route::get('/', [CartController::class, 'index'])->name('index');
+        Route::get('/fetch', [CartController::class, 'fetch'])->name('fetch');
         Route::post('/store', [CartController::class, 'store'])->name('store');
+        Route::post('/qty/update', [CartController::class, 'qtyUpdate']);
     });
 
     // checkout
