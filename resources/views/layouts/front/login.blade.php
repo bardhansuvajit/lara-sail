@@ -32,7 +32,7 @@
 
     <div>
         @php
-            $selectedCountry = $_GET['phone_country_code'] ?? old('phone_country_code') ?? COUNTRY;
+            $selectedCountry = $_GET['phone_country_code'] ?? old('phone_country_code') ?? COUNTRY['country'];
         @endphp
 
         <x-front.input-label for="phone_no" :value="__('Phone number *')" />

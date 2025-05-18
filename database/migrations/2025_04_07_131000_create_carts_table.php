@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             // Currency information
-            $table->char('currency_code', 3)->default(FD['failSafeCurrency']);
+            $table->char('currency_code', 3)->default(COUNTRY['currency']);
 
             // Cart totals
             $table->unsignedInteger('total_items')->default(0);     // SUM(quantity)

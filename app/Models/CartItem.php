@@ -20,6 +20,11 @@ class CartItem extends Model
         return $this->belongsTo('App\Models\Cart', 'cart_id', 'id');
     }
 
+    public function product()
+    {
+        return $this->belongsTo('App\Models\Product', 'product_id', 'id');
+    }
+
     public function updateAvailabilityMessage()
     {
         $this->availability_message = $this->generateStockMessage();

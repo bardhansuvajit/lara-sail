@@ -138,7 +138,7 @@ class CartRepository implements CartInterface
     public function exists(Array $conditions)
     {
         try {
-            $data = Cart::with('items')->where($conditions)->first();
+            $data = Cart::with('items', 'savedItems')->where($conditions)->first();
 
             if (!empty($data)) {
                 return [

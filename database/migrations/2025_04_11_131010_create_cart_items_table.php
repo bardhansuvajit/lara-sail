@@ -35,9 +35,9 @@ return new class extends Migration
 			$table->text('product_url')->nullable();
 			$table->text('product_url_with_variation')->nullable();
 
-			$table->string('image_s')->nullable();
-            $table->string('image_m')->nullable();
-            $table->string('image_l')->nullable();
+			$table->text('image_s')->nullable();
+            $table->text('image_m')->nullable();
+            $table->text('image_l')->nullable();
 
 			// Inventory tracking
 			$table->boolean('is_available')->default(1);

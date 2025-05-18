@@ -64,7 +64,7 @@
                                                     @foreach ($activeCountries as $country)
                                                         <x-front.input-select-option 
                                                             value="{{$country->short_name}}" 
-                                                            :selected="old('phone_country_code') ? old('phone_country_code') : $country->short_name == COUNTRY"
+                                                            :selected="old('phone_country_code') ? old('phone_country_code') : $country->short_name == COUNTRY['country']"
                                                         >
                                                             {{ $country->name }} ({{ $country->phone_code }})
                                                         </x-front.input-select-option>
@@ -119,7 +119,7 @@
                                                     @foreach ($activeCountries as $country)
                                                         <x-front.input-select-option 
                                                             value="{{$country->short_name}}" 
-                                                            :selected="old('phone_country_code') ? old('phone_country_code') : $country->short_name == COUNTRY"
+                                                            :selected="old('phone_country_code') ? old('phone_country_code') : $country->short_name == COUNTRY['country']"
                                                         >
                                                             {{ $country->name }} ({{ $country->phone_code }})
                                                         </x-front.input-select-option>

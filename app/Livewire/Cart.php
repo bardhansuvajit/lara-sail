@@ -10,7 +10,8 @@ use Illuminate\Support\Str;
 
 class Cart extends Component
 {
-    public Collection $cart; 
+    public Collection $cart;
+    public Collection $savedItems;
     private CartInterface $cartRepository;
     private CartItemInterface $cartItemRepository;
 
@@ -23,6 +24,7 @@ class Cart extends Component
     public function getCartData()
     {
         $cartRepository = app(CartInterface::class);
+
         if (auth()->guard('web')->check()) {
             $cart = $cartRepository->exists([
                 'user_id' => auth()->guard('web')->id()
@@ -37,6 +39,7 @@ class Cart extends Component
 
         // $this->cart = collect($cart['data']->items);
         $this->cart = collect($cart['data']);
+        $this->savedItems = collect($cart['data']->savedItems);
     }
 
     public function updateQty($id, $type, $currentQty)
@@ -81,21 +84,88 @@ class Cart extends Component
 
     public function deleteItem($id)
     {
-        $cartItemRepository = app(CartItemInterface::class);
-        $resp = $cartItemRepository->delete($id);
+        try {
+            $cartRepository = app(CartInterface::class);
+            $cartItemRepository = app(CartItemInterface::class);
+            $resp = $cartItemRepository->delete($id);
 
-        $cart = $resp['cart'];
-        // Update cart totals
-        $cartResponse = $cartRepository->updateCartTotals($cart);
+            $cart = $resp['cart'];
+            // Update cart totals
+            $cartResponse = $cartRepository->updateCartTotals($cart);
 
-        if ($resp['code'] == 200) {
+            if ($resp['code'] == 200) {
+                $this->dispatch('show-notification', 
+                    'Cart updated successfully', ['type' => 'success']
+                );
+
+                $this->getCartData();
+                $this->dispatch('close-modal', 'confirm-livewire-cart-item-deletion');
+            } else {
+                $this->dispatch('show-notification', 
+                    'Cart action error', ['type' => 'error']
+                );
+            }
+        } catch (\Throwable $th) {
             $this->dispatch('show-notification', 
-                'Cart updated successfully', ['type' => 'success']
+                'Cart action error', ['type' => 'error']
             );
+        }
+    }
 
-            $this->getCartData();
-            $this->dispatch('close-modal', 'confirm-livewire-cart-item-deletion');
-        } else {
+    public function saveItemForLater($id)
+    {
+        try {
+            $cartRepository = app(CartInterface::class);
+            $cartItemRepository = app(CartItemInterface::class);
+            $resp = $cartItemRepository->saveForLater($id);
+
+            $cart = $resp['cart'];
+            // Update cart totals
+            $cartResponse = $cartRepository->updateCartTotals($cart);
+
+            if ($resp['code'] == 200) {
+                $this->dispatch('show-notification', 
+                    'Product saved for later', ['type' => 'success']
+                );
+
+                $this->getCartData();
+                $this->dispatch('close-modal', 'confirm-livewire-cart-item-save-for-later');
+            } else {
+                $this->dispatch('show-notification', 
+                    'Cart action error', ['type' => 'error']
+                );
+            }
+        } catch (\Throwable $th) {
+            $this->dispatch('show-notification', 
+                'Cart action error', ['type' => 'error']
+            );
+        }
+    }
+
+    public function moveItemToCart($id)
+    {
+        try {
+            $cartRepository = app(CartInterface::class);
+            $cartItemRepository = app(CartItemInterface::class);
+            $resp = $cartItemRepository->moveToCart($id);
+
+            $cart = $resp['cart'];
+            // Update cart totals
+            $cartResponse = $cartRepository->updateCartTotals($cart);
+
+            if ($resp['code'] == 200) {
+                $this->dispatch('show-notification', 
+                    'Product moved to cart', ['type' => 'success']
+                );
+
+                $this->getCartData();
+                $this->dispatch('close-modal', 'confirm-livewire-cart-item-save-for-later');
+            } else {
+                $this->dispatch('show-notification', 
+                    'Cart action error', ['type' => 'error']
+                );
+            }
+        } catch (\Throwable $th) {
             $this->dispatch('show-notification', 
                 'Cart action error', ['type' => 'error']
             );
