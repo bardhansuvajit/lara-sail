@@ -22,11 +22,13 @@ Route::name('front.')->group(function () {
     });
 
     // cart
-    Route::name('cart.')->prefix('cart')->group(function() {
-        Route::get('/', [CartController::class, 'index'])->name('index');
-        Route::get('/fetch', [CartController::class, 'fetch'])->name('fetch');
-        Route::post('/store', [CartController::class, 'store'])->name('store');
-        Route::post('/qty/update', [CartController::class, 'qtyUpdate']);
+    Route::name('cart.')->prefix('cart')->controller(CartController::class)->group(function() {
+        Route::get('/', 'index')->name('index');
+        Route::get('/fetch', 'fetch')->name('fetch');
+        Route::post('/store', 'store')->name('store');
+        Route::post('/qty/update', 'qtyUpdate')->name('qty.update');
+        Route::post('/update', 'update')->name('update');
+        Route::delete('/delete/{id}', 'delete')->name('delete');
     });
 
     // checkout

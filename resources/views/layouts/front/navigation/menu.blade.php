@@ -2,7 +2,7 @@
     <div class="max-w-screen-xl px-2 md:px-4 mx-auto 2xl:px-0">
         <div class="flex flex-wrap items-center justify-between gap-x-4 sm:gap-x-16 gap-y-4 md:gap-x-8 lg:flex-nowrap">
 
-            {{-- mobile hamburger menu --}}
+            {{-- Mobile hamburger menu --}}
             <div 
                 class="relative md:hidden" 
                 x-data=""
@@ -14,7 +14,7 @@
                 </button>
             </div>
 
-            {{-- main logo --}}
+            {{-- Main logo --}}
             <div class="flex-shrink-0 md:order-1">
                 <a href="{{ url('/') }}" title="" class="">
                     <img class="w-auto sm:flex h-6 sm:h-5 dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/logo-full.svg" alt="">
@@ -23,10 +23,12 @@
             </div>
 
             <div class="flex items-center justify-end md:order-3 lg:space-x-2">
-                {{-- cart --}}
-                @include('layouts.front.navigation.cart')
+                {{-- Cart --}}
+                @if (!request()->is('cart') && !request()->is('checkout'))
+                    @include('layouts.front.navigation.cart')
+                @endif
 
-                {{-- account --}}
+                {{-- Account --}}
                 @if (Auth::guard('web')->check())
                     @include('layouts.front.navigation.account')
                 @else
@@ -37,10 +39,10 @@
                 @endif
             </div>
 
-            {{-- search --}}
+            {{-- Search --}}
             @include('layouts.front.navigation.search')
 
-            {{-- mobile only sidebar --}}
+            {{-- Mobile only Sidebar --}}
             @include('layouts.front.navigation.sidebar')
 
         </div>

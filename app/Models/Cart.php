@@ -19,7 +19,12 @@ class Cart extends Model
 
     public function items()
     {
-        return $this->hasMany('App\Models\CartItem', 'cart_id', 'id')->orderBy('id', 'desc');
+        return $this->hasMany('App\Models\CartItem', 'cart_id', 'id')->where('is_saved_for_later', 0)->orderBy('id', 'desc');
+    }
+
+    public function savedItems()
+    {
+        return $this->hasMany('App\Models\CartItem', 'cart_id', 'id')->where('is_saved_for_later', 1)->orderBy('id', 'desc');
     }
 
     // mark abandon

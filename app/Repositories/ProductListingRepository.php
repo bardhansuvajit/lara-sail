@@ -181,7 +181,7 @@ class ProductListingRepository implements ProductListingInterface
             // $data = Product::find($id);
 
             $data = Product::where('id', $id)
-                ->with(['pricings', 'variations' => function($query) {
+                ->with(['pricings', 'activeImages', 'variations' => function($query) {
                     $query->with('product.pricings');
                 }])
                 ->first();

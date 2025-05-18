@@ -1,4 +1,4 @@
-<x-simple-guest
+<x-auth-layout
     screen="max-w-screen-xl"
     title="{{ __('Login') }}">
 
@@ -19,4 +19,4 @@
             </div>
         </div>
       </section>
-</x-simple-guest>
+</x-auth-layout>

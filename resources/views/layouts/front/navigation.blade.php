@@ -3,9 +3,12 @@
 
     @include('layouts.front.navigation.quick')
 
+    <!-- Logo, Search, Cart, Account -->
     @include('layouts.front.navigation.menu')
 
     @include('layouts.front.navigation.collections')
 
     @include('layouts.front.navigation.mobile-menu')
+
+    @include('layouts.front.includes.modals')
 </nav>

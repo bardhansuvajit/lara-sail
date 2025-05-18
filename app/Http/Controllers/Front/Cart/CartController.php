@@ -36,7 +36,7 @@ class CartController extends Controller
     public function fetch()
     {
         try {
-            // Insert/ Get data from Cart
+            // Get data from Cart
             if (auth()->guard('web')->check()) {
                 $cart = $this->cartRepository->exists([
                     'user_id' => auth()->guard('web')->id()
@@ -46,6 +46,16 @@ class CartController extends Controller
 
                 $cart = $this->cartRepository->exists([
                     'device_id' => $deviceId,
+                ]);
+            }
+
+            // dd($cart);
+
+            if ($cart['code'] != 200) {
+                return response()->json([
+                    'code' => $cart['code'],
+                    'status' => 'error',
+                    'message' => $cart['message'],
                 ]);
             }
 
@@ -81,7 +91,8 @@ class CartController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
-            'variation' => 'nullable|json'
+            'variation' => 'nullable|json',
+            'url_param' => 'nullable|string'
         ]);
 
         DB::beginTransaction();
@@ -108,6 +119,13 @@ class CartController extends Controller
             $product = $this->productListingRepository->getById($request->product_id)['data'];
             $sku = $product->sku ? $product->sku : $product->slug;
             $pricingData = $product->pricings;
+            $productImage = [
+                'image_s' => isset($product->activeImages[0]) ? $product->activeImages[0]->image_s : null,
+                'image_m' => isset($product->activeImages[0]) ? $product->activeImages[0]->image_m : null,
+                'image_l' => isset($product->activeImages[0]) ? $product->activeImages[0]->image_l : null
+            ];
+
+            // dd($productImage);
 
             // Currency/ Pricing
             $currencyData = countryCurrencyData()['currency'];
@@ -165,7 +183,7 @@ class CartController extends Controller
                     }, '=', count($variationsUpdated))
                     ->with(['combinations' => function($query) {
                         $query->with(['attribute', 'attributeValue']);
-                    }])
+                    }, 'activeImages'])
                     ->first();
 
                 // dd($productVariation);
@@ -186,9 +204,6 @@ class CartController extends Controller
                     // Selling Price
                     $sellingPriceAdjustment = $productVariation->price_adjustment;
                     $priceAdjustmentType = $productVariation->adjustment_type;
-                    // dd($productVariation->price_adjustment);
-
-                    // dd($sellingPriceAdjustment, $priceAdjustmentType);
 
                     if ($sellingPriceAdjustment > 0) {
                         // dd('inside');
@@ -197,6 +212,16 @@ class CartController extends Controller
                         } else {
                             $variationSellingPrice = $sellingPrice + ($sellingPrice * ($sellingPriceAdjustment / 100));
                         }
+                    }
+
+                    // Image
+                    if (isset($productVariation->activeImages) && count($productVariation->activeImages) > 0) {
+                        // dd($productVariation->activeImages);
+                        $productImage = [
+                            'image_s' => $productVariation->activeImages[0]->image_s,
+                            'image_m' => $productVariation->activeImages[0]->image_m,
+                            'image_l' => $productVariation->activeImages[0]->image_l
+                        ];
                     }
                 } else {
                     return response()->json([
@@ -222,9 +247,19 @@ class CartController extends Controller
                 $this->cartItemRepository->update([
                     'id' => $existingItem->id,
                     'quantity' => $existingItem->quantity + $request->quantity,
-                    'total' => ($existingItem->quantity + $request->quantity) * $existingItem->selling_price
+                    'total' => ($existingItem->quantity + $request->quantity) * $existingItem->selling_price,
+
+                    'image_s' => $productImage['image_s'] ? 'storage/'.$productImage['image_s'] : null,
+                    'image_m' => $productImage['image_m'] ? 'storage/'.$productImage['image_m'] : null,
+                    'image_l' => $productImage['image_l'] ? 'storage/'.$productImage['image_l'] : null
                 ]);
             } else {
+                $product_url_with_variation = null;
+
+                if (!empty($request->url_param)) {
+                    $product_url_with_variation = '/'.$product->slug.'?'.$request->url_param;
+                }
+
                 // Create new cart item
                 $cartItemResp = $this->cartItemRepository->store([
                     'cart_id' => $cart->id,
@@ -237,10 +272,16 @@ class CartController extends Controller
                     'mrp' => $productVariationId ? ($variationSellingPrice > $mrp ? 0 : $mrp) : $mrp,
                     'quantity' => $request->quantity,
                     'total' => $request->quantity * ($productVariationId ? $variationSellingPrice : $sellingPrice),
+                    'product_url' => '/'.$product->slug,
+                    'product_url_with_variation' => $product_url_with_variation,
                     'is_available' => 1,
                     'availability_message' => 'In stock',
                     'options' => null,
-                    'custom_fields' => null
+                    'custom_fields' => null,
+
+                    'image_s' => $productImage['image_s'] ? 'storage/'.$productImage['image_s'] : null,
+                    'image_m' => $productImage['image_m'] ? 'storage/'.$productImage['image_m'] : null,
+                    'image_l' => $productImage['image_l'] ? 'storage/'.$productImage['image_l'] : null
                 ]);
 
                 // dd($cartItemResp);
@@ -327,6 +368,48 @@ class CartController extends Controller
             ]);
             // throw $th;
         }
+    }
 
+    public function delete(Request $request, $id)
+    {
+        // dd($request->all(), $id);
+
+        try {
+            if ($request->action == "delete") {
+                $resp = $this->cartItemRepository->delete($id);
+                $message = 'Item removed from cart';
+            } else {
+                $resp = $this->cartItemRepository->saveForLater($id);
+                $message = 'Item saved for later';
+            }
+
+            $cart = $resp['cart'];
+
+            // Update cart totals
+            $cartResponse = $this->cartRepository->updateCartTotals($cart);
+
+            // dd($cartResponse);
+
+            return response()->json([
+                'code' => 200,
+                'status' => 'success',
+                'message' => $message,
+                'cart_info' => $cart,
+                'cart_count' => $cart->total_items,
+                'cart_items' => $cart->items
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating data.',
+                // 'message' => $e->getMessage(),
+                'error' => $e->getMessage(),
+            ]);
+            // throw $th;
+        }
     }
 }

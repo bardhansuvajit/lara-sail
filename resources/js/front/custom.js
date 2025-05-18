@@ -3,6 +3,7 @@ const FDtext0 = 'text-[10px]';
 const FDtext = 'text-xs';
 const FDtext1 = 'text-sm';
 const FDrounded = '';
+const FDBrokenImage = `<svg class="max-w-full max-h-full w-32 h-32 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M366.15-412.31h347.7L603.54-558.46l-98.16 123.08-63.53-75.39-75.7 98.46ZM324.62-280q-27.62 0-46.12-18.5Q260-317 260-344.62v-430.76q0-27.62 18.5-46.12Q297-840 324.62-840h430.76q27.62 0 46.12 18.5Q820-803 820-775.38v430.76q0 27.62-18.5 46.12Q783-280 755.38-280H324.62Zm0-40h430.76q9.24 0 16.93-7.69 7.69-7.69 7.69-16.93v-430.76q0-9.24-7.69-16.93-7.69-7.69-16.93-7.69H324.62q-9.24 0-16.93 7.69-7.69 7.69-7.69 16.93v430.76q0 9.24 7.69 16.93 7.69 7.69 16.93 7.69Zm-120 160q-27.62 0-46.12-18.5Q140-197 140-224.61v-470.77h40v470.77q0 9.23 7.69 16.92 7.69 7.69 16.93 7.69h470.76v40H204.62ZM300-800v480-480Z"/></svg>`;
 
 const urlParams = getUrlParams();
 const navbar = document.getElementById('navbar');
@@ -152,9 +153,6 @@ function hideNotification() {
     }
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', createNotification);
-
 // Example usage:
 // showNotification('Your message here', {
 //   badgeText: 'Alert',
@@ -162,6 +160,17 @@ document.addEventListener('DOMContentLoaded', createNotification);
 //   autoHide: true,
 //   duration: 3000
 // });
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', createNotification);
+// Livewire listener
+document.addEventListener('livewire:init', () => {
+    Livewire.on('show-notification', (data) => {
+        console.log(data);
+        
+        showNotification(data[0], data[1]);
+    });
+});
 
 // IP information
 async function checkIpInfo() {
@@ -638,10 +647,15 @@ function checkAllVariationsSelected(requiredVariations, selectedVariations) {
 
 async function cartDataFetch() {
     try {
-        const reponse = await fetch('/cart/fetch');
-        const data = await reponse.json();
-        updateCartCount(data.cart_count);
-        updateCartData(data.cart_info, data.cart_items);
+        const response = await fetch('/cart/fetch');
+        const data = await response.json();
+
+        if (data.code == 200) {
+            updateCartCount(data.cart_count);
+            updateCartData(data.cart_info, data.cart_items);
+        } else {
+            updateCartData('', []);
+        }
     } catch (error) {
         console.error('Cart action error:', error);
     }
@@ -709,9 +723,11 @@ document.querySelectorAll('.add-to-cart').forEach(cartBtn => {
 });
 
 async function handleCartAction(productId, quantity, selectedVariations) {
+    const urlParameter = getUrlParams();
     const formData = new FormData();
     formData.append('product_id', productId);
     formData.append('quantity', quantity);
+    formData.append('url_param', urlParameter);
 
     // Add variations to form data
     if (Object.keys(selectedVariations).length) {
@@ -744,7 +760,7 @@ async function handleCartAction(productId, quantity, selectedVariations) {
         }, 100);
 
     } catch (error) {
-        showNotification('Cart action error:', { type: 'error' });
+        showNotification('Cart action error', { type: 'error' });
         console.error('Cart action error:', error);
         throw error; // Re-throw for outer catch
     }
@@ -752,101 +768,127 @@ async function handleCartAction(productId, quantity, selectedVariations) {
 
 function updateCartCount(count) {
     const counters = document.querySelectorAll('.cart-count');
-    counters.forEach(el => el.textContent = count + (count == 1 ? ' item' : ' items'));
+    
+    if (count > 0) {
+        // counters.forEach(el => el.textContent = count + (count == 1 ? ' item' : ' items'));
+        counters.forEach(el => el.innerHTML = count + ` <span class='hidden md:inline-block'>${count == 1 ? 'item' : 'items'}</span>`);
+    } else {
+        counters.forEach(el => el.textContent = '');
+    }
 }
 
 function updateCartData(cartInfo, cartItems) {
     // console.log('cartInfo>>', cartInfo);
     // console.log('cartItems>>', cartItems);
 
-    const singleCartItem = cartItems.map(item => `
-        <div class="grid grid-cols-3 items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
-            <div class="col-span-2">
-                <div class="flex items-center gap-2">
-                    <a href="#" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
-                        <img class="h-auto max-h-full w-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-light.svg" alt="${item.product_title}">
-                    </a>
-                    <div class="w-full">
-                        <a href="#" class="block text-xs ${FDtext0} text-gray-900 hover:underline dark:text-white">${item.product_title}</a>
-                        ${item.variation_attributes ? `<p class="${FDtext0} text-gray-400">${item.variation_attributes}</p>` : ''}
-                        <p class="mt-0.5 truncate ${FDtext} font-normal text-gray-500 dark:text-gray-300">
-                            <span class="currency-symbol">₹</span> ${formatIndianMoney(item.selling_price)}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-span-1">
-                <div class="flex items-center justify-end gap-3">
-                    <div class="relative flex items-center">
-                        <button 
-                            type="button" 
-                            class="cart-qty-update inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-300 dark:focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700" 
-                            data-id="${item.id}" 
-                            data-type="desc" 
-                            ${item.quantity == 1 ? 'disabled' : ''}
-                        >
-                            <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"></path></svg>
-                        </button>
-
-                        <input type="text" class="w-8 p-0 flex-shrink-0 border-0 bg-transparent text-center ${FDtext} font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="${item.quantity}" required="">
-
-                        <button 
-                            type="button" 
-                            class="cart-qty-update inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-300 dark:focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700" 
-                            data-id="${item.id}" 
-                            data-type="asc" 
-                        >
-                            <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"></path></svg>
-                        </button>
-                    </div>
-
-                    <button 
-                        type="button" 
-                        class="text-red-600 hover:text-red-700 dark:text-red-600 dark:hover:text-red-700" 
-                        data-id="${item.id}"
-                        data-title="${item.product_title}"
-                        data-attributes="${item.variation_attributes || ''}"
-                        data-price="${item.selling_price}"
-                        data-image="${item.image_m}"
-                        data-quantity="${item.quantity}"
-                        title="Remove from Cart"
-                    >
-                        <div class="h-4 w-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-168-88-88 224-224-224-224 88-88 224 224 224-224 88 88-224 224 224 224-88 88-224-224-224 224Z"/></svg>
-                        </div>
-                    </button>
-                </div>
-            </div>
-        </div>
-    `).join('');
-
     const cartProductsElements = document.querySelectorAll('.cart-products');
     const cartRedirectElement = document.querySelector('.cart-redirect');
 
-    // Update cart products
-    cartProductsElements.forEach(el => {
-        el.innerHTML = singleCartItem;
-    });
+    if (cartItems.length > 0) {
+        const singleCartItem = cartItems.map(item => `
+            <div class="grid grid-cols-3 items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
+                <div class="col-span-2">
+                    <div class="flex items-center gap-3">
+                        <a href="${item.product_url_with_variation ? item.product_url_with_variation : item.product_url}" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
+                            ${item.image_s ? 
+                                `<img class="h-auto max-h-full w-full" src="${item.image_s}" alt="${item.product_title}">` :
+                                `${FDBrokenImage}`
+                            }
+                        </a>
+                        <div class="w-full">
+                            <a href="${item.product_url_with_variation ? item.product_url_with_variation : item.product_url}" class="block text-xs ${FDtext0} text-gray-900 hover:underline dark:text-white">${item.product_title}</a>
+                            ${item.variation_attributes ? `<p class="${FDtext0} text-gray-400">${item.variation_attributes}</p>` : ''}
+                            <p class="mt-0.5 truncate ${FDtext} font-normal text-gray-500 dark:text-gray-300">
+                                <span class="currency-symbol">₹</span> ${formatIndianMoney(item.selling_price)}
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-    if (cartRedirectElement) {
-        cartRedirectElement.innerHTML = `
-        <div class="space-y-4 px-3 py-2 dark:border-gray-600">
-            <dl class="flex items-center justify-between">
-                <dt class="font-medium ${FDtext1} leading-tight dark:text-white">Total</dt>
-                <dd class="font-semibold ${FDtext1} leading-tight dark:text-white"><span class="currency-symbol">₹</span> ${formatIndianMoney(cartInfo.total)}</dd>
-            </dl>
+                <div class="col-span-1">
+                    <div class="flex items-center justify-end gap-3">
+                        <div class="relative flex items-center">
+                            <button 
+                                type="button" 
+                                class="cart-qty-update inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-300 dark:focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700" 
+                                data-id="${item.id}" 
+                                data-type="desc" 
+                                ${item.quantity == 1 ? 'disabled' : ''}
+                            >
+                                <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"></path></svg>
+                            </button>
 
-            <div class="flex space-x-2">
-                <a href="/cart" title="" class="inline-flex w-full items-center justify-center ${FDrounded} bg-primary-600 px-5 py-2.5 ${FDtext} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"> See your cart </a>
+                            <input type="text" class="w-8 p-0 flex-shrink-0 border-0 bg-transparent text-center ${FDtext} font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="${item.quantity}" required="">
 
-                <a href="/checkout" title="" class="inline-flex w-full items-center justify-center ${FDrounded} bg-primary-600 px-5 py-2.5 ${FDtext} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"> Checkout </a>
+                            <button 
+                                type="button" 
+                                class="cart-qty-update inline-flex h-5 w-5 flex-shrink-0 items-center justify-center ${FDrounded} border border-gray-100 border-opacity-500 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-300 dark:focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 ring-gray-700" 
+                                data-id="${item.id}" 
+                                data-type="asc" 
+                            >
+                                <svg class="h-2.5 w-2.5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"></path></svg>
+                            </button>
+                        </div>
+
+                        <button 
+                            type="button" 
+                            class="remove-from-cart text-red-600 hover:text-red-700 dark:text-red-600 dark:hover:text-red-700" 
+                            data-id="${item.id}"
+                            data-title="${item.product_title}"
+                            data-attributes="${item.variation_attributes || ''}"
+                            data-price="${item.selling_price}"
+                            data-link="${item.product_url_with_variation ? item.product_url_with_variation : item.product_url}"
+                            data-image="${item.image_m ? item.image_m : 'not found'}"
+                            data-quantity="${item.quantity}"
+                            title="Remove from Cart"
+                        >
+                            <div class="h-4 w-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-168-88-88 224-224-224-224 88-88 224 224 224-224 88 88-224 224 224 224-88 88-224-224-224 224Z"/></svg>
+                            </div>
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
-        `;
-    }
+        `).join('');
 
-    bindCartQtyEvents();
+        // Update cart products
+        cartProductsElements.forEach(el => {
+            el.innerHTML = singleCartItem;
+        });
+
+        if (cartRedirectElement) {
+            cartRedirectElement.innerHTML = `
+            <div class="space-y-4 px-3 py-2 dark:border-gray-600">
+                <dl class="flex items-center justify-between">
+                    <dt class="font-medium ${FDtext1} leading-tight dark:text-white">Total</dt>
+                    <dd class="font-semibold ${FDtext1} leading-tight dark:text-white"><span class="currency-symbol">₹</span> ${formatIndianMoney(cartInfo.total)}</dd>
+                </dl>
+
+                <div class="flex space-x-2">
+                    <a href="/cart" title="" class="inline-flex w-full items-center justify-center ${FDrounded} bg-primary-600 px-5 py-2.5 ${FDtext} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"> See your cart </a>
+
+                    <a href="/checkout" title="" class="inline-flex w-full items-center justify-center ${FDrounded} bg-primary-600 px-5 py-2.5 ${FDtext} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"> Checkout </a>
+                </div>
+            </div>
+            `;
+        }
+
+        bindCartQtyEvents();
+        bindRemoveFromCartEvents();
+    } else {
+        cartProductsElements.forEach(el => {
+            el.innerHTML = `
+            <div class="p-4">
+                <img src="/storage/default/cart/undraw_successful-purchase_p2fz.svg" alt="empty-cart" class="w-full h-24">
+                <P class="text-xs mt-4 text-center">Your cart is empty!</P>
+            </div>
+            `;
+        });
+
+        if (cartRedirectElement) {
+            cartRedirectElement.textContent = '';
+        }
+    }
 }
 
 // Cart Quantity Update
@@ -861,18 +903,51 @@ function bindCartQtyEvents() {
     });
 }
 
-/*
-document.querySelectorAll('.cart-qty-update').forEach(btn => {
-    btn.addEventListener('click', function(e) {
-        e.preventDefault();
+// Remove from Cart
+function bindRemoveFromCartEvents() {
+    document.querySelectorAll('.remove-from-cart').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const id = btn.dataset.id;
+            const title = btn.dataset.title;
+            const attributes = btn.dataset.attributes;
+            const price = btn.dataset.price;
+            const link = btn.dataset.link;
+            const image = btn.dataset.image;
 
-        const id = btn.dataset.id;
-        const type = btn.dataset.type;
+            let imagePath = `<img class="h-auto max-h-full w-full" src="${image}" alt="${title}">`;
 
-        updateCartQty(id, type);
+            if (image == "not found") {
+                imagePath = FDBrokenImage;
+            }
+
+            const productData = `
+            <div class="items-center dark:border-gray-600">
+                <div class="flex items-center gap-4">
+                    <a href="${link}" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
+                        ${imagePath}
+                    </a>
+                    <div class="w-full">
+                        <a href="${link}" class="inline-block text-xs ${FDtext0} text-gray-900 hover:underline dark:text-white">${title}</a>
+                        ${attributes ? `<p class="${FDtext0} text-gray-400">${attributes}</p>` : ''}
+                        <p class="mt-0.5 truncate ${FDtext} font-normal text-gray-500 dark:text-gray-300">
+                            <span class="currency-symbol">₹</span> ${formatIndianMoney(price)}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            `;
+
+            document.querySelector('.delete-product-data').innerHTML = productData;
+
+            const deleteForm = document.querySelector('#delete-cart-item-form');
+            deleteForm.action = `/cart/delete/${id}`;
+
+            // Dispatch the open-modal event with the modal name as detail
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: 'confirm-cart-item-deletion' }));
+        });
     });
-});
-*/
+}
 
 async function updateCartQty(id, type) {
     try {
@@ -900,12 +975,67 @@ async function updateCartQty(id, type) {
         updateCartCount(data.cart_count);
         updateCartData(data.cart_info, data.cart_items);
 
+        if (window.Livewire) {
+            window.dispatchEvent(new CustomEvent('cart-updated'));
+            // setTimeout(() => Livewire.dispatch('getCartData'), 100);
+            // Livewire.dispatch('getCartData');
+            
+            // OR if you need to target a specific component
+            // Livewire.dispatchTo('cart-component-name', 'getCartData');
+        }
+
         // setTimeout(() => {
         //     document.querySelector('#cart-btn').click()
         // }, 100);
     } catch (error) {
-        showNotification('Cart update error', { type: 'error' });
-        console.error('Cart update error:', error);
+        showNotification('Cart action error', { type: 'error' });
+        console.error('Cart action error:', error);
         throw error; // Re-throw for outer catch
     }
+}
+
+if (document.querySelector('#delete-cart-item-form')) {
+    document.querySelector('#delete-cart-item-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const url = form.action;
+        const action = document.getElementById('cart-item-type').value;
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: action,
+                    _method: 'DELETE'
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to add to cart');
+            }
+
+            window.dispatchEvent(new CustomEvent('close-modal', { detail: 'confirm-cart-item-deletion' }));
+
+            showNotification(data.message, { type: data.status });
+
+            updateCartCount(data.cart_count);
+            updateCartData(data.cart_info, data.cart_items);
+
+            setTimeout(() => {
+                document.querySelector('#cart-btn').click()
+            }, 100);
+        } catch (error) {
+            showNotification('Cart action error', { type: 'error' });
+            console.error('Cart action error:', error);
+            throw error; // Re-throw for outer catch
+        }
+    });
 }

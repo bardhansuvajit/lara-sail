@@ -94,10 +94,16 @@ class CartItemRepository implements CartItemInterface
             $data->mrp = !empty($array['mrp']) ? $array['mrp'] : 0;
             $data->quantity = !empty($array['quantity']) ? $array['quantity'] : 1;
             $data->total = !empty($array['total']) ? $array['total'] : 0;
+            $data->product_url = !empty($array['product_url']) ? $array['product_url'] : null;
+            $data->product_url_with_variation = !empty($array['product_url_with_variation']) ? $array['product_url_with_variation'] : null;
             $data->is_available = !empty($array['is_available']) ? $array['is_available'] : 1;
             $data->availability_message = !empty($array['availability_message']) ? $array['availability_message'] : 'In stock';
             $data->options = !empty($array['options']) ? $array['options'] : null;
             $data->custom_fields = !empty($array['custom_fields']) ? $array['custom_fields'] : null;
+
+            $data->image_s = !empty($array['image_s']) ? $array['image_s'] : null;
+            $data->image_m = !empty($array['image_m']) ? $array['image_m'] : null;
+            $data->image_l = !empty($array['image_l']) ? $array['image_l'] : null;
             $data->save();
 
             return [
@@ -170,17 +176,9 @@ class CartItemRepository implements CartItemInterface
 
                 if (!empty($array['quantity']))         $data['data']->quantity = $array['quantity'];
                 if (!empty($array['total']))            $data['data']->total = $array['total'];
-
-                // $data['data']->title = $array['title'];
-                // $data['data']->slug = \Str::slug($array['title']);
-
-                // if (!empty($array['image'])) {
-                //     $uploadResp = fileUpload($array['image'], 'p-clt');
-
-                //     $data['data']->image_s = $uploadResp['smallThumbName'];
-                //     $data['data']->image_m = $uploadResp['mediumThumbName'];
-                //     $data['data']->image_l = $uploadResp['largeThumbName'];
-                // }
+                if (!empty($array['image_s']))          $data['data']->image_s = $array['image_s'];
+                if (!empty($array['image_m']))          $data['data']->image_m = $array['image_m'];
+                if (!empty($array['image_l']))          $data['data']->image_l = $array['image_l'];
 
                 $data['data']->save();
 
@@ -261,7 +259,7 @@ class CartItemRepository implements CartItemInterface
                 'status' => 'success',
                 'message' => 'Quantity updated successfully.',
                 'data' => $cartItem,
-                'cart' => $cartItem->cart, // Assuming a relationship exists
+                'cart' => $cartItem->cart
             ];
         } catch (\Exception $e) {
             return [
@@ -279,8 +277,12 @@ class CartItemRepository implements CartItemInterface
             $data = $this->getById($id);
 
             if ($data['code'] == 200) {
+                $cartItem = $data['data'];
+
+                // dd($cartItem);
+
                 // Handling trash
-                $this->trashRepository->store([
+                $trashData = $this->trashRepository->store([
                     'model' => 'CartItem',
                     'table_name' => 'cart_items',
                     'deleted_row_id' => $data['data']->id,
@@ -290,13 +292,16 @@ class CartItemRepository implements CartItemInterface
                     'status' => 'deleted',
                 ]);
 
+                // dd($trashData);
+
                 $data['data']->delete();
 
                 return [
                     'code' => 200,
                     'status' => 'success',
                     'message' => 'Data deleted',
-                    'data' => $data,
+                    'data' => $cartItem,
+                    'cart' => $cartItem->cart
                 ];
             } else {
                 return $data;
@@ -306,6 +311,74 @@ class CartItemRepository implements CartItemInterface
                 'code' => 500,
                 'status' => 'error',
                 'message' => 'An error occurred while deleting data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function saveForLater(Int $id)
+    {
+        try {
+            $data = $this->getById($id);
+
+            if ($data['code'] == 200) {
+                $cartItem = $data['data'];
+
+                // dd($cartItem);
+
+                // Update item
+                $cartItem->is_saved_for_later = 1;
+                $cartItem->save();
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data deleted',
+                    'data' => $cartItem,
+                    'cart' => $cartItem->cart
+                ];
+            } else {
+                return $data;
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function moveToCart(Int $id)
+    {
+        try {
+            $data = $this->getById($id);
+
+            if ($data['code'] == 200) {
+                $cartItem = $data['data'];
+
+                // dd($cartItem);
+
+                // Update item
+                $cartItem->is_saved_for_later = 0;
+                $cartItem->save();
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data deleted',
+                    'data' => $cartItem,
+                    'cart' => $cartItem->cart
+                ];
+            } else {
+                return $data;
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating data.',
                 'error' => $e->getMessage(),
             ];
         }

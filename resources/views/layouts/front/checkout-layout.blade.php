@@ -32,36 +32,51 @@
         <div class="antialiased bg-gray-100 dark:bg-gray-900">
 
             <!-- navigation -->
-            @include('layouts.front.navigation')
+            {{-- @include('layouts.front.navigation') --}}
+
+            <nav class="bg-white dark:bg-gray-800 antialiased fixed top-0 right-0 shadow w-full z-10 transition-all" id="navbar">
+                {{-- @include('layouts.front.navigation.alert') --}}
+            
+                {{-- @include('layouts.front.navigation.quick') --}}
+            
+                @include('layouts.front.navigation.menu')
+            
+                {{-- @include('layouts.front.navigation.collections') --}}
+            
+                @include('layouts.front.navigation.mobile-menu')
+            </nav>
 
             <div class="mx-auto {{$screen}}">
-                <div class="mt-36 sm:mt-44">
+                <div class="mt-24 sm:mt-10">
                     {{ $slot }}
                 </div>
             </div>
 
-            {{-- <main class="p-o md:p-4 md:ml-64 justify-center h-auto pt-10 md:pt-[4.3rem]">
-                <div class="flex flex-col justify-center items-center">
-                    <section class="bg-white w-full {!! $screen !!} py-8 md:px-4 rounded-lg antialiased dark:bg-gray-800 md:py-4">
-                        <div class="mx-auto px-4 2xl:px-0">
-
-                            <div class="flex space-x-2 mb-2 items-center">
-                                <h2 class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">{{ $title ?? 'Admin' }}</h2>
-                            </div>
-                            <div class="border-t border-gray-200 dark:border-gray-700"></div>
-
-                            {{ $slot }}
-                        </div>
-                    </section>
-
-                    <!-- footer -->
-                    @include('layouts.admin.footer')
-                </div>
-            </main> --}}
-        </div>
-
         <!-- footer -->
-        @include('layouts.front.footer')
+        {{-- @include('layouts.front.footer') --}}
+        
+
+        <footer class="bg-white shadow-sm m-0 dark:bg-gray-800 mb-16">
+            <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
+                <span class="{{FD['text']}} text-gray-500 sm:text-center dark:text-gray-400">© {{date('Y')}} <a href="https://flowbite.com/" class="hover:underline">Flowbite™</a>. All Rights Reserved.
+                </span>
+                <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+                    <li>
+                        <a href="#" class="{{FD['text-0']}} hover:underline me-4 md:me-6">About</a>
+                    </li>
+                    <li>
+                        <a href="#" class="{{FD['text-0']}} hover:underline me-4 md:me-6">Privacy Policy</a>
+                    </li>
+                    <li>
+                        <a href="#" class="{{FD['text-0']}} hover:underline me-4 md:me-6">Licensing</a>
+                    </li>
+                    <li>
+                        <a href="#" class="{{FD['text-0']}} hover:underline">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </footer>
+
 
         @include('layouts.admin.notification')
 

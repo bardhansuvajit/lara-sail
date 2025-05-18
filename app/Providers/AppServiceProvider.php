@@ -34,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
         if (!isset($_COOKIE['currency'])) {
             setcookie('currency', json_encode([
                 "country" => "IN",
+                "icon" => "₹",
                 "currency" => "INR"
             ]));
         }

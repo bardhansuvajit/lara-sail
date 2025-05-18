@@ -32,12 +32,19 @@ return new class extends Migration
 			$table->decimal('mrp', 12, 2)->default(0.00);
 			$table->unsignedInteger('quantity');
 			$table->decimal('total', 12, 2);
+			$table->text('product_url')->nullable();
+			$table->text('product_url_with_variation')->nullable();
+
+			$table->string('image_s')->nullable();
+            $table->string('image_m')->nullable();
+            $table->string('image_l')->nullable();
 
 			// Inventory tracking
 			$table->boolean('is_available')->default(1);
 			$table->text('availability_message')->nullable(); // e.g. In stock (10+ available)/ Only 2 left!/ Releases on 2024-09-01/ Available for in-store pickup only
 
 			// Custom options
+			$table->boolean('is_saved_for_later')->default(0); // 1 = saved for later
 			$table->json('options')->nullable(); // e.g. Product-Variant Specific
 			$table->json('custom_fields')->nullable(); // e.g. Business-Specific Data
 

@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class SimpleGuest extends Component
+class CartLayout extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class SimpleGuest extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('layouts.front.simple-guest');
+        return view('layouts.front.checkout-layout');
     }
 }
