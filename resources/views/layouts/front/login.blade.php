@@ -38,7 +38,7 @@
         <x-front.input-label for="phone_no" :value="__('Phone number *')" />
         <x-front.text-input-with-dropdown 
             id="phone_no" 
-            class="block w-auto" 
+            class="block w-auto digits-only" 
             type="tel" 
             name="phone_no" 
             :value="old('phone_no') ? old('phone_no') : $_GET['phone_no'] ?? ''" 
@@ -87,8 +87,15 @@
         <x-front.input-error :messages="$errors->get('password')" class="mt-2" />
     </div>
 
+    <div class="w-full">
+        <x-front.input-checkbox 
+            id="show-password"
+            label="Show password" />
+    </div>
+
     <div>
         <x-front.input-checkbox 
+            class="-mt-2"
             id="remember_me"
             name="remember" 
             :label="__('Remember me')"

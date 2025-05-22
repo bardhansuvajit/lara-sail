@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\Password\PasswordController;
 use App\Http\Controllers\Admin\Country\CountryController;
 use App\Http\Controllers\Admin\State\StateController;
 use App\Http\Controllers\Admin\City\CityController;
+use App\Http\Controllers\Admin\Application\ApplicationSettingsController;
 
 use App\Http\Controllers\Admin\Product\Listing\ProductListingController;
 use App\Http\Controllers\Admin\Product\Category\ProductCategoryController;
@@ -62,9 +63,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // application
         Route::prefix('application')->name('application.')->group(function() {
             Route::prefix('settings')->name('settings.')->controller(ApplicationSettingsController::class)->group(function() {
-                Route::get('/', 'index')->name('index');
-                Route::get('/edit', 'edit')->name('edit');
-                Route::post('/update', 'update')->name('update');
+                Route::get('/{model}', 'index')->name('index');
+                Route::get('/{model}/edit', 'edit')->name('edit');
+                Route::post('/{model}/update', 'update')->name('update');
             });
         });
 

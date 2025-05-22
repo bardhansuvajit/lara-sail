@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
 use Illuminate\Database\Eloquent\Collection;
+use App\Interfaces\CartSettingInterface;
 
 use App\Exports\CartsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -16,10 +17,12 @@ use Maatwebsite\Excel\Facades\Excel;
 class CartRepository implements CartInterface
 {
     private TrashInterface $trashRepository;
+    private CartSettingInterface $cartSettingRepository;
 
-    public function __construct(TrashInterface $trashRepository)
+    public function __construct(TrashInterface $trashRepository, CartSettingInterface $cartSettingRepository)
     {
         $this->trashRepository = $trashRepository;
+        $this->cartSettingRepository = $cartSettingRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
@@ -216,18 +219,38 @@ class CartRepository implements CartInterface
         // dd($cart->items()->sum('quantity'));
 
         try {
+            $itemsTotal = $cart->items()->sum('total');
+            $itemsQuantity = $cart->items()->sum('quantity');
+
+            $shippingCost = 0;
+
+            // Get applicable shipping rule
+            $cartSettingResp = $this->cartSettingRepository->list('', [], 'all', 'id', 'asc');
+            $cartSettings = $cartSettingResp['data'] ?? [];
+
+            foreach ($cartSettings as $cartSetting) {
+                if (
+                    $cartSetting->country == $cart->country &&
+                    $itemsTotal < $cartSetting->free_shipping_threshold
+                ) {
+                    $shippingCost = $cartSetting->shipping_charge;
+                    break;
+                }
+            }
+
             // Update cart totals
             $cart->update([
-                'total_items' => $cart->items()->sum('quantity'),
-                'sub_total' => $cart->items()->sum('total'),
-                'total' => $cart->items()->sum('total'), // Can be adjusted later for discounts, etc.
+                'total_items' => $itemsQuantity,
+                'sub_total' => $itemsTotal,
+                'shipping_cost' => $shippingCost,
+                'total' => $itemsTotal + $shippingCost,
                 'last_activity_at' => now(),
             ]);
 
             return [
                 'code' => 200,
                 'status' => 'success',
-                'message' => 'Changes have been saved',
+                'message' => 'Cart totals updated successfully.',
                 'data' => [
                     'cart' => $cart,
                     'items' => $cart->items
@@ -242,7 +265,6 @@ class CartRepository implements CartInterface
             ];
         }
     }
-
 
     public function delete(Int $id)
     {

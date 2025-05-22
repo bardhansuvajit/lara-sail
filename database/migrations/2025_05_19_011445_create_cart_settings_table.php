@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('cart_settings', function (Blueprint $table) {
             $table->id();
 
-            $table->string('country_short_name', 2)->unique();
-            $table->foreign('country_short_name')->references('short_name')->on('countries')->onDelete('cascade');
+            $table->string('country', 2)->unique();
+            $table->foreign('country')->references('short_name')->on('countries')->onDelete('cascade');
 
             $table->decimal('min_order_value', 10, 2)->default(0);
             $table->decimal('shipping_charge', 10, 2)->default(0);
@@ -24,7 +24,7 @@ return new class extends Migration
             // Tax settings
             $table->decimal('tax_rate', 5, 2)->default(0);
             $table->string('tax_name')->nullable();
-            $table->string('tax_type')->default('percentage');
+            $table->string('tax_type')->default('percentage')->comment('fixed, percentage');
             $table->boolean('tax_exclusive')->default(false);
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -80,7 +80,7 @@ return new class extends Migration
 
         $data = [
             [
-                'country_short_name' => 'IN',
+                'country' => 'IN',
                 'min_order_value' => 49,
                 'free_shipping_threshold' => 499,
                 'shipping_charge' => 99,
@@ -89,7 +89,7 @@ return new class extends Migration
                 'tax_type' => 'percentage'
             ],
             [
-                'country_short_name' => 'US',
+                'country' => 'US',
                 'min_order_value' => 1.99,
                 'free_shipping_threshold' => 7.99,
                 'shipping_charge' => 0.99,

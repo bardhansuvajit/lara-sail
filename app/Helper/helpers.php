@@ -139,8 +139,12 @@ if (!function_exists('countryCurrencyData')) {
         } else {
             $currencyData = [
                 "country" => env('FAILSAFE_COUNTRY'),
+                "countryFullName" => env('FAILSAFE_COUNTRY_FULL_NAME'),
                 "currency" => env('FAILSAFE_CURRENCY'),
                 "icon" => env('FAILSAFE_ICON'),
+                "phoneCode" => env('FAILSAFE_PHONE_CODE'),
+                "phoneNoDigits" => env('FAILSAFE_PHONE_NO_DIGITS'),
+                "postalCodeDigits" => env('FAILSAFE_POSTAL_CODE_DIGITS')
             ];
         }
 

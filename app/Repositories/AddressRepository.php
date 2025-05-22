@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\CartItemInterface;
-use App\Models\CartItem;
+use App\Interfaces\AddressInterface;
+use App\Models\UserAddress;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +12,7 @@ use App\Interfaces\TrashInterface;
 use App\Exports\CartItemsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class CartItemRepository implements CartItemInterface
+class AddressRepository implements AddressInterface
 {
     private TrashInterface $trashRepository;
 
@@ -25,7 +25,7 @@ class CartItemRepository implements CartItemInterface
     {
         try {
             DB::enableQueryLog();
-            $query = CartItem::query();
+            $query = UserAddress::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -83,28 +83,44 @@ class CartItemRepository implements CartItemInterface
     {
         // dd($array['image']);
         try {
-            $data = new CartItem();
-            $data->cart_id = $array['cart_id'];
-            $data->product_id = $array['product_id'];
-            $data->product_title = !empty($array['product_title']) ? $array['product_title'] : null;
-            $data->product_variation_id = !empty($array['product_variation_id']) ? $array['product_variation_id'] : null;
-            $data->variation_attributes = !empty($array['variation_attributes']) ? $array['variation_attributes'] : null;
-            $data->sku = !empty($array['sku']) ? $array['sku'] : null;
-            $data->selling_price = !empty($array['selling_price']) ? $array['selling_price'] : 0;
-            $data->mrp = !empty($array['mrp']) ? $array['mrp'] : 0;
-            $data->quantity = !empty($array['quantity']) ? $array['quantity'] : 1;
-            $data->total = !empty($array['total']) ? $array['total'] : 0;
-            $data->product_url = !empty($array['product_url']) ? $array['product_url'] : null;
-            $data->product_url_with_variation = !empty($array['product_url_with_variation']) ? $array['product_url_with_variation'] : null;
-            $data->is_available = !empty($array['is_available']) ? $array['is_available'] : 1;
-            $data->availability_message = !empty($array['availability_message']) ? $array['availability_message'] : 'In stock';
-            $data->options = !empty($array['options']) ? $array['options'] : null;
-            $data->custom_fields = !empty($array['custom_fields']) ? $array['custom_fields'] : null;
+            $data = new UserAddress();
+            $data->user_id = $array['user_id'];
+            $data->address_type = $array['address_type'];
+            $data->is_default = !empty($array['is_default']) ? $array['is_default'] : 0;
+            $data->first_name = !empty($array['first_name']) ? $array['first_name'] : null;
+            $data->last_name = !empty($array['last_name']) ? $array['last_name'] : null;
+            $data->company = !empty($array['company']) ? $array['company'] : null;
+            $data->address_line_1 = !empty($array['address_line_1']) ? $array['address_line_1'] : null;
+            $data->address_line_2 = !empty($array['address_line_2']) ? $array['address_line_2'] : null;
+            $data->city = !empty($array['city']) ? $array['city'] : null;
+            $data->state = !empty($array['state']) ? $array['state'] : null;
+            $data->postal_code = !empty($array['postal_code']) ? $array['postal_code'] : null;
+            $data->country_code = !empty($array['country_code']) ? $array['country_code'] : null;
+            $data->phone_no = !empty($array['phone_no']) ? $array['phone_no'] : null;
+            $data->email = !empty($array['email']) ? $array['email'] : null;
 
-            $data->image_s = !empty($array['image_s']) ? $array['image_s'] : null;
-            $data->image_m = !empty($array['image_m']) ? $array['image_m'] : null;
-            $data->image_l = !empty($array['image_l']) ? $array['image_l'] : null;
+            $data->landmark = !empty($array['landmark']) ? $array['landmark'] : null;
+            $data->additional_notes = !empty($array['additional_notes']) ? $array['additional_notes'] : null;
+            $data->alt_phone_no = !empty($array['alt_phone_no']) ? $array['alt_phone_no'] : null;
+
             $data->save();
+
+            // Change other addresses default to 0
+            if (!empty($array['is_default']) && $array['is_default'] == 1) {
+                $resp = $this->exists([
+                    'user_id' => $array['user_id'],
+                    'address_type' => $array['address_type'],
+                ]);
+
+                if ($resp['code'] == 200) {
+                    foreach ($resp['data'] as $key => $address) {
+                        if ($address->id != $data->id) {
+                            $address->is_default = 0;
+                            $address->save();
+                        }
+                    }
+                }
+            }
 
             return [
                 'code' => 200,
@@ -126,8 +142,38 @@ class CartItemRepository implements CartItemInterface
     public function getById(Int $id)
     {
         try {
-            $data = CartItem::with('cart')
+            $data = UserAddress::with('countryDetail', 'stateDetail')
             ->find($id);
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function exists(Array $conditions)
+    {
+        try {
+            $data = UserAddress::where($conditions)->get();
 
             if (!empty($data)) {
                 return [
@@ -202,93 +248,24 @@ class CartItemRepository implements CartItemInterface
         }
     }
 
-    public function qtyUpdate(Array $array)
-    {
-        try {
-            if (!isset($array['id']) || !isset($array['type'])) {
-                return [
-                    'code' => 400,
-                    'status' => 'error',
-                    'message' => 'Missing required parameters (id or type).',
-                ];
-            }
-
-            $response = $this->getById($array['id']);
-
-            if ($response['code'] != 200) {
-                return $response;
-            }
-
-            $cartItem = $response['data'];
-            $type = $array['type'];
-
-            // Validate quantity update type
-            if (!in_array($type, ['asc', 'desc'])) {
-                return [
-                    'code' => 400,
-                    'status' => 'error',
-                    'message' => 'Invalid update type. Must be "asc" or "desc".',
-                ];
-            }
-
-            // Calculate new quantity (ensure it doesn't go below 0)
-            if ($type == 'asc') {
-                $newQuantity = $cartItem->quantity + 1;
-            } else {
-                $newQuantity = $cartItem->quantity - 1;
-                
-                // Prevent going below minimum quantity (1)
-                if ($newQuantity < 1) {
-                    return [
-                        'code' => 400,
-                        'status' => 'error',
-                        'message' => 'Minimum cart quantity is 1',
-                        'data' => $cartItem, // Return current item data
-                    ];
-                }
-            }
-
-            // Update item
-            $cartItem->quantity = $newQuantity;
-            $cartItem->total = $newQuantity * $cartItem->selling_price;
-            $cartItem->save();
-
-            // Return success response with updated data
-            return [
-                'code' => 200,
-                'status' => 'success',
-                'message' => 'Quantity updated successfully.',
-                'data' => $cartItem,
-                'cart' => $cartItem->cart
-            ];
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while updating data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
     public function delete(Int $id)
     {
         try {
             $data = $this->getById($id);
 
             if ($data['code'] == 200) {
-                $cartItem = $data['data'];
+                $UserAddress = $data['data'];
 
-                // dd($cartItem);
+                // dd($UserAddress);
 
                 // Handling trash
                 $trashData = $this->trashRepository->store([
-                    'model' => 'CartItem',
-                    'table_name' => 'cart_items',
+                    'model' => 'UserAddress',
+                    'table_name' => 'user_addresses',
                     'deleted_row_id' => $data['data']->id,
                     'thumbnail' => $data['data']->image_s,
                     'title' => $data['data']->product_title,
-                    'description' => $data['data']->product_title.' & '. $data['data']->variation_attributes.' data deleted from cart items table',
+                    'description' => $data['data']->product_title.' & '. $data['data']->variation_attributes.' data deleted from user addresses table',
                     'status' => 'deleted',
                 ]);
 
@@ -300,8 +277,8 @@ class CartItemRepository implements CartItemInterface
                     'code' => 200,
                     'status' => 'success',
                     'message' => 'Data deleted',
-                    'data' => $cartItem,
-                    'cart' => $cartItem->cart
+                    'data' => $UserAddress,
+                    'cart' => $UserAddress->cart
                 ];
             } else {
                 return $data;
@@ -316,90 +293,21 @@ class CartItemRepository implements CartItemInterface
         }
     }
 
-    public function saveForLater(Int $id)
-    {
-        try {
-            $data = $this->getById($id);
-
-            if ($data['code'] == 200) {
-                $cartItem = $data['data'];
-
-                // dd($cartItem);
-
-                // Update item
-                $cartItem->is_saved_for_later = 1;
-                $cartItem->quantity = 1;
-                $cartItem->save();
-
-                return [
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data deleted',
-                    'data' => $cartItem,
-                    'cart' => $cartItem->cart
-                ];
-            } else {
-                return $data;
-            }
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while updating data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function moveToCart(Int $id)
-    {
-        try {
-            $data = $this->getById($id);
-
-            if ($data['code'] == 200) {
-                $cartItem = $data['data'];
-
-                // dd($cartItem);
-
-                // Update item
-                $cartItem->is_saved_for_later = 0;
-                $cartItem->save();
-
-                return [
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data deleted',
-                    'data' => $cartItem,
-                    'cart' => $cartItem->cart
-                ];
-            } else {
-                return $data;
-            }
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while updating data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
     public function bulkAction(Array $array)
     {
         try {
-            $data = CartItem::whereIn('id', $array['ids'])->get();
+            $data = UserAddress::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
 
                     // Handling trash
                     $this->trashRepository->store([
-                        'model' => 'CartItem',
-                        'table_name' => 'cart_items',
+                        'model' => 'UserAddress',
+                        'table_name' => 'user_addresses',
                         'deleted_row_id' => $item->id,
                         'thumbnail' => $item->image_s,
                         'title' => $item->title,
-                        'description' => $item->title.' data deleted from cart items table',
+                        'description' => $item->title.' data deleted from user addresses table',
                         'status' => 'deleted',
                     ]);
 
@@ -435,7 +343,7 @@ class CartItemRepository implements CartItemInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            // $processedCount = saveToDatabase($data, 'CartItem');
+            // $processedCount = saveToDatabase($data, 'UserAddress');
 
             // save into Database
             $processedCount = 0;
@@ -445,7 +353,7 @@ class CartItemRepository implements CartItemInterface
                     continue; // Skip rows without a title
                 }
 
-                CartItem::create([
+                UserAddress::create([
                     'title' => $item['title'] ? $item['title'] : null,
                     'slug' => !empty($item['title']) ? Str::slug($item['title']) : null,
                     'short_description' => !empty($item['short_description']) ? $item['short_description'] : null,
@@ -484,7 +392,7 @@ class CartItemRepository implements CartItemInterface
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
             if (count($data['data']) > 0) {
-                $fileName = "cart_items_export_" . date('Y-m-d') . '-' . time();
+                $fileName = "user_addresses_export_" . date('Y-m-d') . '-' . time();
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";
@@ -534,7 +442,7 @@ class CartItemRepository implements CartItemInterface
     {
         try {
             foreach ($ids as $index => $id) {
-                CartItem::where('id', $id)->update([
+                UserAddress::where('id', $id)->update([
                     'position' => $index + 1
                 ]);
             }

@@ -1,4 +1,4 @@
-<x-guest-layout
+<x-checkout-layout
     screen="max-w-screen-xl"
     title="{{ __('Checkout') }}">
 
@@ -6,165 +6,24 @@
         <div class="pt-4 sm:pt-6 px-2 sm:px-2 md:px-3 lg:px-4 xl:px-4 2xl:px-0">
             <h2 class="text-base font-semibold text-gray-900 dark:text-white sm:text-lg">Checkout</h2>
 
-            <div class="flex w-full items-center gap-3 sm:gap-4 {{FD['activeBgClass']}} px-2 sm:px-4 py-1 mt-2 sm:mt-4 font-light">
-                <div class="{{FD['iconClass']}} lg:w-6 lg:h-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M608-522 422-708q14-6 28.5-9t29.5-3q59 0 99.5 40.5T620-580q0 15-3 29.5t-9 28.5ZM234-276q51-39 114-61.5T480-360q18 0 34.5 1.5T549-354l-88-88q-47-6-80.5-39.5T341-562L227-676q-32 41-49.5 90.5T160-480q0 59 19.5 111t54.5 93Zm498-8q32-41 50-90.5T800-480q0-133-93.5-226.5T480-800q-56 0-105.5 18T284-732l448 448ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Z"/></svg>
-                </div>
-
-                <p class="{{FD['text']}}">
-                    You are not logged in right now.
-                    <a href="#" class="font-medium underline hover:no-underline block">Log in to continue further...</a>
-                </p>
-            </div>
+            <!-- ALERT -->
+            @include('front.checkout.includes.alert')
 
             <div class="mt-4 sm:mt-6 md:gap-6 lg:flex lg:items-start xl:gap-8">
                 {{-- left part --}}
                 <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl mb-8">
-                    <div class="space-y-6">
+                    <div class="space-y-2">
 
-                        {{-- single option --}}
-                        <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4">
-                            <form action="" method="POST">
-                                {{-- heading --}}
-                                <div class="space-y-4 flex items-center justify-between gap-2 sm:gap-6 sm:mb-2">
-                                    <div class="w-full min-w-0 flex-1 md:order-2">
-                                        <h2 class="flex space-x-2 items-center mb-1">
-                                            {{-- <div class="{{FD['iconClass']}}">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"/></svg>
-                                            </div> --}}
+                        <!-- ACCOUNT -->
+                        @include('front.checkout.includes.account')
 
-                                            <p class="text-lg leading-tight font-medium text-gray-900 hover:underline dark:text-gray-300">Account details</p>
-                                        </h2>
+                        @if (auth()->guard('web')->check())
+                            <!-- ADDRESS -->
+                            @include('front.checkout.includes.address')
 
-                                        <p class="{{FD['text-0']}} text-gray-500 dark:text-gray-400">here lies the product description. Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro laudantium aut officia ipsa reiciendis provident</p>
-                                    </div>
-                                </div>
-
-                                <div class="border-t dark:border-gray-700 my-5"></div>
-
-                                {{-- if not logged in/ account exists --}}
-                                <div class="w-full">
-                                    <div class="grid gap-4 mb-4 sm:grid-cols-2">
-                                        <div>
-                                            <x-front.input-label for="phone_no" :value="__('Phone number *')" />
-                                            <x-front.text-input-with-dropdown 
-                                                id="phone_no" 
-                                                class="block w-auto" 
-                                                type="tel" 
-                                                name="phone_no" 
-                                                :value="old('phone_no') ? old('phone_no') : ''" 
-                                                placeholder="Enter Phone Number" 
-                                                selectTitle="India (+91)" 
-                                                selectId="phone_country_code" 
-                                                selectName="phone_country_code" 
-                                                required=true 
-                                                focus
-                                            >
-                                                @slot('options')
-                                                    @foreach ($activeCountries as $country)
-                                                        <x-front.input-select-option 
-                                                            value="{{$country->short_name}}" 
-                                                            :selected="old('phone_country_code') ? old('phone_country_code') : $country->short_name == COUNTRY['country']"
-                                                        >
-                                                            {{ $country->name }} ({{ $country->phone_code }})
-                                                        </x-front.input-select-option>
-                                                    @endforeach
-                                                @endslot
-                                            </x-front.text-input-with-dropdown>
-                                            <x-front.input-error :messages="$errors->get('phone_no')" class="mt-2" />
-                                            <x-front.input-error :messages="$errors->get('phone_country_code')" class="mt-2" />
-                                        </div>
-
-                                        <div>
-                                            <x-front.input-label for="password" :value="__('Password *')" />
-                                            <x-front.text-input id="password" class="block w-full" type="text" name="password" placeholder="Enter Password" autofocus required />
-                                            <x-front.input-error :messages="$errors->get('password')" class="mt-2" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- if not logged in/ no account exists --}}
-                                {{-- <div class="w-full">
-                                    <div class="grid gap-4 mb-4 sm:grid-cols-2">
-                                        <div>
-                                            <x-front.input-label for="first_name" :value="__('First name *')" />
-                                            <x-front.text-input id="first_name" class="block w-full" type="text" name="first_name" placeholder="Enter First Name" maxlength="50" autofocus required />
-                                            <x-front.input-error :messages="$errors->get('first_name')" class="mt-2" />
-                                        </div>
-
-                                        <div>
-                                            <x-front.input-label for="last_name" :value="__('Last name *')" />
-                                            <x-front.text-input id="last_name" class="block w-full" type="text" name="last_name" placeholder="Enter Last Name" maxlength="50" required />
-                                            <x-front.input-error :messages="$errors->get('last_name')" class="mt-2" />
-                                        </div>
-                                    </div>
-
-                                    <div class="grid gap-4 mb-4 sm:grid-cols-2">
-                                        <div>
-                                            <x-front.input-label for="phone_no" :value="__('Phone number *')" />
-                                            <x-front.text-input-with-dropdown 
-                                                id="phone_no" 
-                                                class="block w-auto" 
-                                                type="tel" 
-                                                name="phone_no" 
-                                                :value="old('phone_no') ? old('phone_no') : ''" 
-                                                placeholder="Enter Phone Number" 
-                                                selectTitle="India (+91)" 
-                                                selectId="phone_country_code" 
-                                                selectName="phone_country_code" 
-                                                required=true 
-                                                focus
-                                            >
-                                                @slot('options')
-                                                    @foreach ($activeCountries as $country)
-                                                        <x-front.input-select-option 
-                                                            value="{{$country->short_name}}" 
-                                                            :selected="old('phone_country_code') ? old('phone_country_code') : $country->short_name == COUNTRY['country']"
-                                                        >
-                                                            {{ $country->name }} ({{ $country->phone_code }})
-                                                        </x-front.input-select-option>
-                                                    @endforeach
-                                                @endslot
-                                            </x-front.text-input-with-dropdown>
-                                            <x-front.input-error :messages="$errors->get('phone_no')" class="mt-2" />
-                                            <x-front.input-error :messages="$errors->get('phone_country_code')" class="mt-2" />
-                                        </div>
-
-                                        <div>
-                                            <x-front.input-label for="password" :value="__('Set password *')" />
-                                            <x-front.text-input id="password" class="block w-full" type="password" name="password" placeholder="Enter Password" required />
-                                            <x-front.input-error :messages="$errors->get('password')" class="mt-2" />
-                                        </div>
-                                    </div>
-
-                                    <div class="grid gap-4 mb-4 sm:grid-cols-2">
-                                        <div>
-                                            <x-front.input-label for="email" :value="__('Email')" />
-                                            <x-front.text-input id="email" class="block w-full" type="email" name="email" placeholder="Enter Email Address" />
-                                            <x-front.input-error :messages="$errors->get('email')" class="mt-2" />
-                                        </div>
-                                    </div>
-                                </div> --}}
-
-                                {{-- form buttons --}}
-                                <div class="fixed z-[1] sm:static bottom-16 sm:bottom-0 w-full -ml-[17px] -mb-[8px] sm:m-0 space-y-0 sm:space-y-4 {{FD['rounded']}} border sm:border-0 border-gray-200 bg-white px-2 py-3 sm:p-0 dark:border-0 dark:bg-gray-800">
-                                    <div class="w-full sm:w-max flex space-x-2 sm:space-x-4 mt-2 sm:mt-8">
-                                        <a href="{{ route('front.cart.index') }}" class="w-full sm:w-max flex space-x-4 items-center justify-center {{FD['rounded']}} bg-gray-300 focus:bg-gray-400 px-5 py-2.5 {{FD['text']}} font-medium text-gray=800 hover:bg-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
-                                            <div class="w-3 h-3 me-2 text-gray-600 dark:text-white">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-200 80-480l280-280 56 56-183 184h647v80H233l184 184-57 56Z"/></svg>
-                                            </div>
-
-                                            Back to Cart
-                                        </a>
-
-                                        <button type="submit" class="w-full sm:w-max flex items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                                            {{-- Login --}}
-                                            Create account
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                            <!-- PAYMENT -->
+                            @include('front.checkout.includes.payment')
+                        @endif
 
                     </div>
                 </div>
@@ -417,4 +276,4 @@
         </div>
     </section>
 
-</x-app-layout>
+</x-checkout-layout>

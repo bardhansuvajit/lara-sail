@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use App\Interfaces\CountryInterface;
 use App\Interfaces\UserInterface;
@@ -82,6 +83,9 @@ class AuthenticatedSessionController extends Controller
         // dd('here');
         $request->authenticate();
         $request->session()->regenerate();
+        if ($request->request_path == "checkout") {
+            return redirect()->back()->with('success', 'Account created Successfully.');
+        }
         return redirect()->intended(route('front.account.index', absolute: false));
         // return redirect()->intended(route('dashboard', absolute: false));
     }
@@ -96,6 +100,13 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+
+        // redirect
+        $referrer = request()->headers->get('referer');
+        if (Str::contains($referrer, 'checkout')) {
+            // The request came from a checkout page
+            return redirect()->route('front.checkout.index');
+        }
 
         return redirect('/');
     }

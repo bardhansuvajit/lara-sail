@@ -6,16 +6,19 @@ use Livewire\Component;
 use Illuminate\Support\Collection;
 use App\Interfaces\CartInterface;
 use App\Interfaces\CartItemInterface;
+use App\Interfaces\CartSettingInterface;
 use Illuminate\Support\Str;
 
 class Cart extends Component
 {
     public Collection $cart;
     public Collection $savedItems;
+    public Collection $cartSetting;
     private CartInterface $cartRepository;
     private CartItemInterface $cartItemRepository;
+    private CartSettingInterface $cartSettingRepository;
 
-    public function mount(CartInterface $cartRepository, CartItemInterface $cartItemRepository)
+    public function mount(CartInterface $cartRepository, CartItemInterface $cartItemRepository, CartSettingInterface $cartSettingRepository)
     {
         $this->itemData = [];
         $this->getCartData();
@@ -23,6 +26,16 @@ class Cart extends Component
 
     public function getCartData()
     {
+        // Get Cart Setting
+        $cartSettingRepository = app(CartSettingInterface::class);
+        $cartSettingData = $cartSettingRepository->exists([
+            'country' => COUNTRY['country']
+        ])['data'];
+        $this->cartSetting = collect($cartSettingData);
+
+        // dd($cartSettings);
+
+        // Get Cart Data
         $cartRepository = app(CartInterface::class);
 
         if (auth()->guard('web')->check()) {
@@ -37,9 +50,12 @@ class Cart extends Component
             ]);
         }
 
+        // dd($cart['data']);
+
         // $this->cart = collect($cart['data']->items);
-        $this->cart = collect($cart['data']);
-        $this->savedItems = collect($cart['data']->savedItems);
+        $this->cart = collect($cart['data'] ?? []);
+        $this->savedItems = collect($cart['data']->savedItems ?? []);
+        // $this->savedItems = count($cart['data']) > 0 ? collect($cart['data']->savedItems) : collect([]);
     }
 
     public function updateQty($id, $type, $currentQty)

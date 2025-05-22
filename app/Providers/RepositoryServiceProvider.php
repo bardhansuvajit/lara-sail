@@ -29,6 +29,8 @@ use App\Interfaces\StateInterface;
 use App\Interfaces\CityInterface;
 use App\Interfaces\CartInterface;
 use App\Interfaces\CartItemInterface;
+use App\Interfaces\CartSettingInterface;
+use App\Interfaces\AddressInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -55,6 +57,8 @@ use App\Repositories\StateRepository;
 use App\Repositories\CityRepository;
 use App\Repositories\CartRepository;
 use App\Repositories\CartItemRepository;
+use App\Repositories\CartSettingRepository;
+use App\Repositories\AddressRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -88,6 +92,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(CityInterface::class, CityRepository::class);
         $this->app->bind(CartInterface::class, CartRepository::class);
         $this->app->bind(CartItemInterface::class, CartItemRepository::class);
+        $this->app->bind(CartSettingInterface::class, CartSettingRepository::class);
+        $this->app->bind(AddressInterface::class, AddressRepository::class);
     }
 
     /**

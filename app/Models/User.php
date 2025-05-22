@@ -59,4 +59,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Models\Country', 'country_id', 'id');
     }
+
+    public function shippingAddresses()
+    {
+        return $this->hasMany('App\Models\UserAddress', 'user_id', 'id')->where('address_type', 'shipping')->orderBy('is_default', 'desc')->orderBy('id', 'desc');
+    }
+
+    public function billingAddresses()
+    {
+        return $this->hasMany('App\Models\UserAddress', 'user_id', 'id')->where('address_type', 'billing')->orderBy('is_default', 'desc')->orderBy('id', 'desc');
+    }
 }

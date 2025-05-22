@@ -11,7 +11,8 @@ const darkModeToggleEl = document.getElementById('dark-mode');
 const orderSummaryCont = document.getElementById('order-summary-container');
 const orderSummaryBtn = document.getElementById('order-summary-toggle');
 const orderSummaryEl = document.getElementById('order-summary');
-const phoneNoEl = document.getElementById('phone_no');
+// const phoneNoEl = document.getElementById('phone_no');
+const numberEl = document.querySelectorAll('.digits-only');
 
 let lastScrollPosition = 0;
 
@@ -530,8 +531,14 @@ const formatWholeNumberInput = (e) => {
     e.target.value = value;
 };
 
-if (phoneNoEl) {
-    phoneNoEl.addEventListener("input", formatWholeNumberInput);
+// if (phoneNoEl) {
+//     phoneNoEl.addEventListener("input", formatWholeNumberInput);
+// }
+
+if (numberEl) {
+    numberEl.forEach(el => {
+        el.addEventListener("input", formatWholeNumberInput);
+    });
 }
 
 // product detail

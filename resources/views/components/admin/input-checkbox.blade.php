@@ -13,7 +13,8 @@
     @if ($label == 'Show password')
         x-data="{
             togglePassword() {
-                const passwordFields = document.querySelectorAll('input[type=password], input[type=text]');
+                {{-- const passwordFields = document.querySelectorAll('input[type=password], input[type=text]'); --}}
+                const passwordFields = document.querySelectorAll('input[name*=password][type=password], input[name*=password][type=text]');
                 passwordFields.forEach(input => {
                     input.type = input.type === 'password' ? 'text' : 'password';
                 });

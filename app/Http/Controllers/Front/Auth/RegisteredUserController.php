@@ -71,6 +71,10 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        if ($request->request_path == "checkout") {
+            return redirect()->back()->with('success', 'Account created Successfully.');
+        }
+
         return redirect(route('front.account.index', absolute: false));
     }
 }

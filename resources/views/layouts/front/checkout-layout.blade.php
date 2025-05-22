@@ -47,7 +47,7 @@
             </nav>
 
             <div class="mx-auto {{$screen}}">
-                <div class="mt-24 sm:mt-10">
+                <div class="mt-12">
                     {{ $slot }}
                 </div>
             </div>

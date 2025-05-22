@@ -423,7 +423,7 @@
                                 </x-dropdown-link>
                             </li>
                             <li>
-                                <x-dropdown-link href="{{ route('admin.application.settings.index') }}">
+                                <x-dropdown-link href="{{ route('admin.application.settings.index', 'basic') }}">
                                     {{ __('Application settings') }}
                                 </x-dropdown-link>
                             </li>

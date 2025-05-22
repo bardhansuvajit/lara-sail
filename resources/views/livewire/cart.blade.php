@@ -1,38 +1,54 @@
 <div>
-    <div id="cart-alert" class="space-y-2">
-        <div class="flex w-full items-center gap-3 sm:gap-4 {{FD['activeBgClass']}} px-2 sm:px-4 py-1 mt-2 sm:mt-4 font-light">
-            <div class="{{FD['iconClass']}} lg:w-6 lg:h-6">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-160q-50 0-85-35t-35-85H60l18-80h113q17-19 40-29.5t49-10.5q26 0 49 10.5t40 29.5h167l84-360H262l17-80h441l-37 160h117l120 160-40 200h-80q0 50-35 85t-85 35q-50 0-85-35t-35-85H400q0 50-35 85t-85 35Zm357-280h193l4-21-74-99h-95l-28 120Zm-17-280-84 360 2-7 82-353ZM140-440v-120H40l140-200v120h100L140-440Zm140 200q17 0 28.5-11.5T320-280q0-17-11.5-28.5T280-320q-17 0-28.5 11.5T240-280q0 17 11.5 28.5T280-240Zm400 0q17 0 28.5-11.5T720-280q0-17-11.5-28.5T680-320q-17 0-28.5 11.5T640-280q0 17 11.5 28.5T680-240Z"/></svg>
-            </div>
+    <div id="cart-alert" class="space-y-4">
 
-            <div class="{{FD['text']}}">
-                <p>
-                    You are only 
-                    <span class="font-medium"><span class="currency-symbol">{{COUNTRY['icon']}}</span><span id="free-shipping-amount">99.99</span></span> 
-                    away from 
-                    <span class="font-medium">Free Shipping</span> 
-                </p>
-                <p>
-                    <a href="#" class="font-medium underline hover:no-underline inline-block">How do i get this ?</a>
-                </p>
-            </div>
-        </div>
+        {{-- Minimum cart Value to place Order --}}
+        @if (isset($cart['items']) && count($cart['items']) > 0)
+            @if ($cartSetting['min_order_value'] > $cart['total'])
+                <div class="border border-gray-200 {{FD['text']}} {{FD['rounded']}} px-2 sm:px-4 py-1 bg-orange-700 dark:bg-orange-700 dark:border-white/10 text-neutral-100 dark:text-neutral-100 mt-2 sm:mt-4" role="alert" tabindex="-1" aria-labelledby="hs-link-on-right-label">
+                    <div class="flex items-center">
+                        <div class="shrink-0">
+                            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                        </div>
+                        <div class="flex-1 md:flex md:justify-between ms-2">
+                            <p class="{{FD['text']}}">
+                                {!! __('You are only <span class="currency-symbol">:icon</span> :amount away from  <span class="font-medium">Placing an Order</span>', [
+                                    'icon' => COUNTRY['icon'],
+                                    'amount' => formatIndianMoney($cartSetting['min_order_value'] - $cart['total'])
+                                ]) !!}
+                            </p>
+                            <p class="{{FD['text']}} mt-3 md:mt-0 md:ms-6">
+                                <a class="text-neutral-100 hover:text-neutral-300 focus:outline-hidden focus:text-gray-500 font-medium whitespace-nowrap dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400" href="#">Details</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @endif
 
-        <div class="bg-gray-50 border border-gray-200 {{FD['text']}} text-gray-600 {{FD['rounded']}} px-2 sm:px-4 py-1 dark:bg-white/10 dark:border-white/10 dark:text-neutral-400" role="alert" tabindex="-1" aria-labelledby="hs-link-on-right-label">
-            <div class="flex items-center">
-                <div class="shrink-0">
-                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+            @if ($cartSetting['free_shipping_threshold'] > $cart['total'])
+                <div class="flex w-full items-center gap-3 sm:gap-4 {{FD['activeBgClass']}} px-2 sm:px-4 py-1 mt-2 sm:mt-4 font-light">
+                    <div class="{{FD['iconClass']}} lg:w-6 lg:h-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-160q-50 0-85-35t-35-85H60l18-80h113q17-19 40-29.5t49-10.5q26 0 49 10.5t40 29.5h167l84-360H262l17-80h441l-37 160h117l120 160-40 200h-80q0 50-35 85t-85 35q-50 0-85-35t-35-85H400q0 50-35 85t-85 35Zm357-280h193l4-21-74-99h-95l-28 120Zm-17-280-84 360 2-7 82-353ZM140-440v-120H40l140-200v120h100L140-440Zm140 200q17 0 28.5-11.5T320-280q0-17-11.5-28.5T280-320q-17 0-28.5 11.5T240-280q0 17 11.5 28.5T280-240Zm400 0q17 0 28.5-11.5T720-280q0-17-11.5-28.5T680-320q-17 0-28.5 11.5T640-280q0 17 11.5 28.5T680-240Z"/></svg>
+                    </div>
+
+                    <div>
+                        <p class="{{FD['text']}}">
+                            {!! __('You are only <span class="currency-symbol">:icon</span> :amount away from  <span class="font-medium">Free Shipping</span>', [
+                                'icon' => COUNTRY['icon'],
+                                'amount' => formatIndianMoney($cartSetting['free_shipping_threshold'] - $cart['total'])
+                            ]) !!}
+                            {{-- You are only 
+                            <span class="font-medium"><span class="currency-symbol">{{COUNTRY['icon']}}</span><span id="free-shipping-amount">99.99</span></span> 
+                            away from 
+                            <span class="font-medium">Free Shipping</span>  --}}
+                        </p>
+                        <p class="{{FD['text']}}">
+                            <a href="#" class="font-medium underline hover:no-underline inline-block">How do i get this ?</a>
+                        </p>
+                    </div>
                 </div>
-                <div class="flex-1 md:flex md:justify-between ms-2">
-                    <p class="{{FD['text']}}">
-                        A new software update is available. See what's new in version 3.0.7
-                    </p>
-                    <p class="{{FD['text']}} mt-3 md:mt-0 md:ms-6">
-                        <a class="text-gray-800 hover:text-gray-500 focus:outline-hidden focus:text-gray-500 font-medium whitespace-nowrap dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400" href="#">Details</a>
-                    </p>
-                </div>
-            </div>
-        </div>
+            @endif
+        @endif
+
     </div>
 
     <div class="mt-4 sm:mt-6 md:gap-6 lg:flex lg:items-start xl:gap-8">
@@ -252,30 +268,43 @@
                                         {{ $saved_item->product_title }}
                                     </p>
 
-                                    <p class="text-gray-500 dark:text-gray-400 {{FD['text-0']}} block">
+                                    <p class="text-gray-500 dark:text-gray-400 {{FD['text-0']}} block -mt-2">
                                         {{ $saved_item->variation_attributes }}
                                     </p>
 
-                                    @if (count($saved_item->product->pricings) > 0)
+                                    <div class="mt-2 flex items-center gap-2">
+                                        <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
+                                            <span class="currency-icon">{{COUNTRY['icon']}}</span> {{ formatIndianMoney($saved_item->selling_price) }}
+                                        </p>
+                                        @if ($saved_item->mrp != 0)
+                                            <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
+                                                <span class="currency-icon">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($saved_item->mrp) }}
+                                            </p>
+                                            <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
+                                                {{discountPercentageCalc($saved_item->selling_price, $saved_item->mrp)}}% off
+                                            </p>
+                                        @endif
+                                    </div>
+
+                                    {{-- @if (count($saved_item->product->pricings) > 0)
                                         @php
                                             $singlePricing = $saved_item->product->pricings[0];
                                         @endphp
-                                        {{-- @foreach ($saved_item->product->pricings as $singlePricing) --}}
-                                            <div class="mt-2 flex items-center gap-2">
-                                                <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
-                                                    <span class="currency-icon">{{$singlePricing->currency_symbol}}</span> {{ formatIndianMoney($singlePricing->selling_price) }}
+
+                                        <div class="mt-2 flex items-center gap-2">
+                                            <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
+                                                <span class="currency-icon">{{$singlePricing->currency_symbol}}</span> {{ formatIndianMoney($singlePricing->selling_price) }}
+                                            </p>
+                                            @if ($singlePricing->mrp != 0)
+                                                <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
+                                                    <span class="currency-icon">{{$singlePricing->currency_symbol}}</span>{{ formatIndianMoney($singlePricing->mrp) }}
                                                 </p>
-                                                @if ($singlePricing->mrp != 0)
-                                                    <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
-                                                        <span class="currency-icon">{{$singlePricing->currency_symbol}}</span>{{ formatIndianMoney($singlePricing->mrp) }}
-                                                    </p>
-                                                    <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
-                                                        {{$singlePricing->discount}}% off
-                                                    </p>
-                                                @endif
-                                            </div>
-                                        {{-- @endforeach --}}
-                                    @endif
+                                                <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
+                                                    {{$singlePricing->discount}}% off
+                                                </p>
+                                            @endif
+                                        </div>
+                                    @endif --}}
                                 </a>
 
                                 <div class="flex gap-2 mt-3">
@@ -412,7 +441,14 @@
                             </div>
                         </button>
 
-                        <a href="{{route('front.checkout.index')}}" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                        @if (isset($cart['items']) && count($cart['items']) > 0)
+                            @if ($cartSetting['min_order_value'] > $cart['total'])
+                                <a href="javascript: void(0)" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 opacity-75 cursor-no-drop">
+                            @else
+                                <a href="{{route('front.checkout.index')}}" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                            @endif
+                        @endif
+
                             Proceed to Checkout
                         </a>
                     </div>
@@ -441,7 +477,7 @@
                 <div class="text-center">
                     <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/promo-banner.jpg" class="bg-cover {{FD['rounded']}} w-full h-36 mb-4" alt="promo banner">
                         
-                    <span class="text-green-400 font-medium text-sm leading-5 py-0.5 px-2.5 bg-green-500 {{FD['rounded']}} items-center inline-flex mb-4 dark:bg-green-300 dark:text-green-800">
+                    <span class="text-green-100 font-medium text-sm leading-5 py-0.5 px-2.5 bg-green-500 {{FD['rounded']}} items-center inline-flex mb-4 dark:bg-green-300 dark:text-green-800">
                         <svg class="w-4 h-4 mr-1 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
                         Offer valid till today
                     </span>
@@ -464,136 +500,11 @@
         </div>
     </div>
 
-    <x-front.modal name="confirm-livewire-cart-item-save-for-later" maxWidth="sm" vertical="middle" focusable>
-        <div 
-            class="p-6" 
-            x-data="{ id: '', title: '', url: '', attributes: '', sellingPrice: '', mrp: '', imagePath: '' }" 
-            x-on:data-id.window="id = $event.detail"
-            x-on:data-title.window="title = $event.detail"
-            x-on:data-url.window="url = $event.detail" 
-            x-on:data-attributes.window="attributes = $event.detail" 
-            x-on:data-selling-price.window="sellingPrice = $event.detail" 
-            x-on:data-mrp.window="mrp = $event.detail" 
-            x-on:data-image-path.window="imagePath = $event.detail" 
-        >
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ __('Are you sure you want to save this item for later?') }}
-            </h2>
+    {{-- MODALS --}}
 
-            <div class="delete-product-data my-4">
-                <div class="items-center dark:border-gray-600">
-                    <div class="flex items-center gap-4">
-                        <a :href="url" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
-                            <template x-if="imagePath">
-                                <img :src="imagePath" :alt="title" class="h-full w-full object-cover" />
-                            </template>
-
-                            <template x-if="!imagePath">
-                                <div class="h-full w-full flex items-center justify-center">
-                                    {!! FD['brokenImageFront'] !!}
-                                </div>
-                            </template>
-                        </a>
-                        <div class="w-full">
-                            <a :href="url" class="inline-block text-xs {{FD['text-0']}} text-gray-900 hover:underline dark:text-white" x-text="title"></a>
-                            <p class="{{FD['text-0']}} text-gray-400" x-text="attributes"></p>
-                            <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-300">
-                                <span class="currency-symbol">{{COUNTRY['icon']}}</span> <span x-text="sellingPrice"></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-6 flex gap-2 justify-end">
-                <x-admin.button
-                    element="button"
-                    type="button"
-                    tag="secondary"
-                    title="Cancel"
-                    class="border"
-                    x-on:click="$dispatch('close')"
-                >
-                    {{ __('Cancel') }}
-                </x-admin.button>
-
-                <x-admin.button
-                    element="button"
-                    type="button"
-                    tag="success"
-                    title="Delete"
-                    x-on:click="$wire.saveItemForLater(id)"
-                >
-                    {{ __('Yes, Save for later') }}
-                </x-admin.button>
-            </div>
-        </div>
-    </x-front.modal>
-
-    <x-front.modal name="confirm-livewire-cart-item-deletion" maxWidth="sm" vertical="middle" focusable>
-        <div 
-            class="p-6" 
-            x-data="{ id: '', title: '', url: '', attributes: '', sellingPrice: '', mrp: '', imagePath: '' }" 
-            x-on:data-id.window="id = $event.detail"
-            x-on:data-title.window="title = $event.detail"
-            x-on:data-url.window="url = $event.detail" 
-            x-on:data-attributes.window="attributes = $event.detail" 
-            x-on:data-selling-price.window="sellingPrice = $event.detail" 
-            x-on:data-mrp.window="mrp = $event.detail" 
-            x-on:data-image-path.window="imagePath = $event.detail" 
-        >
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ __('Are you sure you want to remove this item?') }}
-            </h2>
-
-            <div class="delete-product-data my-4">
-                <div class="items-center dark:border-gray-600">
-                    <div class="flex items-center gap-4">
-                        <a :href="url" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
-                            <template x-if="imagePath">
-                                <img :src="imagePath" :alt="title" class="h-full w-full object-cover" />
-                            </template>
-
-                            <template x-if="!imagePath">
-                                <div class="h-full w-full flex items-center justify-center">
-                                    {!! FD['brokenImageFront'] !!}
-                                </div>
-                            </template>
-                        </a>
-                        <div class="w-full">
-                            <a :href="url" class="inline-block text-xs {{FD['text-0']}} text-gray-900 hover:underline dark:text-white" x-text="title"></a>
-                            <p class="{{FD['text-0']}} text-gray-400" x-text="attributes"></p>
-                            <p class="mt-0.5 truncate {{FD['text']}} font-normal text-gray-500 dark:text-gray-300">
-                                <span class="currency-symbol">{{COUNTRY['icon']}}</span> <span x-text="sellingPrice"></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-6 flex gap-2 justify-end">
-                <x-admin.button
-                    element="button"
-                    type="button"
-                    tag="secondary"
-                    title="Cancel"
-                    class="border"
-                    x-on:click="$dispatch('close')"
-                >
-                    {{ __('Cancel') }}
-                </x-admin.button>
-
-                <x-admin.button
-                    element="button"
-                    type="button"
-                    tag="danger"
-                    title="Delete"
-                    x-on:click="$wire.deleteItem(id)"
-                >
-                    {{ __('Yes, Remove') }}
-                </x-admin.button>
-            </div>
-        </div>
-    </x-front.modal>
+    <!-- SAVE FOR LATER -->
+    @include('layouts.front.includes.cart-item-save-for-later-confirm-modal-LIVEWIRE')
+    <!-- DELETE CONFIRM -->
+    @include('layouts.front.includes.cart-item-delete-confirm-modal-LIVEWIRE')
 
 </div>

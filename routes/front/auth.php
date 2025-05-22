@@ -12,6 +12,7 @@ use App\Http\Controllers\Front\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Front\Auth\RegisteredUserController;
 use App\Http\Controllers\Front\Auth\VerifyEmailController;
 use App\Http\Controllers\Front\Account\AccountController;
+use App\Http\Controllers\Front\Address\AddressController;
 
 Route::name('front.')->group(function () {
     Route::middleware('guest')->group(function () {
@@ -19,7 +20,7 @@ Route::name('front.')->group(function () {
         Route::post('register', [RegisteredUserController::class, 'store']);
 
         Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
-        Route::post('login', [AuthenticatedSessionController::class, 'store']);
+        Route::post('login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
 
         Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
         Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
@@ -48,6 +49,12 @@ Route::name('front.')->group(function () {
             Route::get('/edit', [AccountController::class, 'edit'])->name('edit');
             Route::post('/update', [AccountController::class, 'update'])->name('update');
             Route::post('/update/optional', [AccountController::class, 'updateOptional'])->name('update.optional');
+        });
+
+        // address
+        Route::prefix('address')->name('address.')->group(function() {
+            Route::post('/store', [AddressController::class, 'store'])->name('store');
+            Route::delete('/delete/{id}', [AddressController::class, 'delete'])->name('delete');
         });
     });
 });
