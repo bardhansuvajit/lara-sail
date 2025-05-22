@@ -31,8 +31,11 @@
                 {{-- right part - cart items & order summary --}}
                 <div class="mx-auto mt-6 mb-8 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
 
+                    <!-- CART -->
+                    @livewire('cart-checkout')
+
                     {{-- cart items --}}
-                    <div class="mx-auto divide-y-2 overflow-hidden {{FD['rounded']}} bg-white antialiased dark:divide-gray-600 dark:bg-gray-800 border border-gray-200 dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 shadow-sm">
+                    <!-- <div class="mx-auto divide-y-2 overflow-hidden {{FD['rounded']}} bg-white antialiased dark:divide-gray-600 dark:bg-gray-800 border border-gray-200 dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 shadow-sm">
                         <div class="p-4">
                             <dl class="flex items-center gap-2">
                                 <dt class="font-medium {{FD['text-1']}} leading-tight dark:text-white">Your shopping cart</dt>
@@ -208,11 +211,10 @@
 
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     {{-- order summary --}}
-                    <div class="w-full space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
-                    {{-- <div class="fixed z-1 sm:static bottom-16 sm:bottom-0 w-full -m-2 sm:m-0 space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-6 shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800"> --}}
+                    <!-- <div class="w-full space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
                         <div id="order-summary" class="hidden lg:block">
                             <p class="{{FD['text-1']}} font-semibold text-gray-900 dark:text-white mb-2">Order summary</p>
 
@@ -269,7 +271,7 @@
                                 Back to Cart
                             </a>
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>

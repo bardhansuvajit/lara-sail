@@ -66,7 +66,7 @@ class CartRepository implements CartInterface
                     'data' => $data,
                 ];
             }
-    
+
             return [
                 'code' => 404,
                 'status' => 'failure',
@@ -181,6 +181,9 @@ class CartRepository implements CartInterface
                         $data['data']->quantity -= 1;
                     }
                 }
+
+                if (isset($array['user_id']))       $data['data']->user_id = $array['user_id'];
+                
 
                 // $data['data']->title = $array['title'];
                 // $data['data']->slug = \Str::slug($array['title']);

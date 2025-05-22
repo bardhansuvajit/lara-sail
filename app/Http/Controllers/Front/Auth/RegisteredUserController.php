@@ -12,14 +12,17 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use App\Interfaces\CountryInterface;
+use App\Interfaces\CartInterface;
 
 class RegisteredUserController extends Controller
 {
     private CountryInterface $countryRepository;
+    private CartInterface $cartRepository;
 
-    public function __construct(CountryInterface $countryRepository)
+    public function __construct(CountryInterface $countryRepository, CartInterface $cartRepository)
     {
         $this->countryRepository = $countryRepository;
+        $this->cartRepository = $cartRepository;
     }
 
     /**
@@ -57,15 +60,34 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'string', 'min:2', 'max:50', Rules\Password::defaults()],
         ]);
 
+        // Add User
         $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'country_id' => $countryData['data']->id,
             'primary_phone_no' => $request->phone_no,
-            'email' => $request->email,
+            'email' => $request->email ? null,
             'password' => Hash::make($request->password),
             'gender_id' => 4
         ]);
+
+        // Update Cart data
+        if (!empty($_COOKIE['device_id'])) {
+            $deviceId = $_COOKIE['device_id'];
+            $cartData = $this->cartRepository->exists([
+                'device_id' => $deviceId
+            ]);
+
+            // If there are products in cart
+            if ($cartData['code'] == 200) {
+                $cartData = $cartData['data'];
+
+                $cartResp = $this->cartRepository->update([
+                    'id' => $cartData->id,
+                    'user_id' => $user->id
+                ]);
+            }
+        }
 
         event(new Registered($user));
 

@@ -11,16 +11,19 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 use App\Interfaces\CountryInterface;
 use App\Interfaces\UserInterface;
+use App\Interfaces\CartInterface;
 
 class AuthenticatedSessionController extends Controller
 {
     private CountryInterface $countryRepository;
     private UserInterface $userRepository;
+    private CartInterface $cartRepository;
 
-    public function __construct(CountryInterface $countryRepository, UserInterface $userRepository)
+    public function __construct(CountryInterface $countryRepository, UserInterface $userRepository, CartInterface $cartRepository)
     {
         $this->countryRepository = $countryRepository;
         $this->userRepository = $userRepository;
+        $this->cartRepository = $cartRepository;    
     }
 
     /**
@@ -83,8 +86,27 @@ class AuthenticatedSessionController extends Controller
         // dd('here');
         $request->authenticate();
         $request->session()->regenerate();
+
+        // Update Cart data
+        if (!empty($_COOKIE['device_id'])) {
+            $deviceId = $_COOKIE['device_id'];
+            $cartData = $this->cartRepository->exists([
+                'device_id' => $deviceId
+            ]);
+
+            // If there are products in cart
+            if ($cartData['code'] == 200) {
+                $cartData = $cartData['data'];
+
+                $cartResp = $this->cartRepository->update([
+                    'id' => $cartData->id,
+                    'user_id' => auth()->guard('web')->user()->id
+                ]);
+            }
+        }
+
         if ($request->request_path == "checkout") {
-            return redirect()->back()->with('success', 'Account created Successfully.');
+            return redirect()->back()->with('success', 'Logged-in Successfully.');
         }
         return redirect()->intended(route('front.account.index', absolute: false));
         // return redirect()->intended(route('dashboard', absolute: false));

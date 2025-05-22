@@ -803,7 +803,7 @@ function updateCartData(cartInfo, cartItems) {
                             }
                         </a>
                         <div class="w-full">
-                            <a href="${item.product_url_with_variation ? item.product_url_with_variation : item.product_url}" class="block text-xs ${FDtext0} text-gray-900 hover:underline dark:text-white">${item.product_title}</a>
+                            <a href="${item.product_url_with_variation ? item.product_url_with_variation : item.product_url}" class="inline-block text-xs ${FDtext0} text-gray-900 hover:underline dark:text-white">${item.product_title}</a>
                             ${item.variation_attributes ? `<p class="${FDtext0} text-gray-400">${item.variation_attributes}</p>` : ''}
                             <p class="mt-0.5 truncate ${FDtext} font-normal text-gray-500 dark:text-gray-300">
                                 <span class="currency-symbol">₹</span> ${formatIndianMoney(item.selling_price)}

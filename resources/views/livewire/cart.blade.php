@@ -17,7 +17,7 @@
                                 ]) !!}
                             </p>
                             <p class="{{FD['text']}} mt-3 md:mt-0 md:ms-6">
-                                <a class="text-neutral-100 hover:text-neutral-300 focus:outline-hidden focus:text-gray-500 font-medium whitespace-nowrap dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400" href="#">Details</a>
+                                <a class="text-neutral-100 hover:text-neutral-300 focus:outline-hidden focus:text-gray-500 font-medium whitespace-nowrap dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400" href="javascript: void(0)" x-data="" x-on:click="$dispatch('open-modal', 'minimum-cart-order');">Details</a>
                             </p>
                         </div>
                     </div>
@@ -42,7 +42,7 @@
                             <span class="font-medium">Free Shipping</span>  --}}
                         </p>
                         <p class="{{FD['text']}}">
-                            <a href="#" class="font-medium underline hover:no-underline inline-block">How do i get this ?</a>
+                            <a href="javascript: void(0)" class="font-medium underline hover:no-underline inline-block" x-data="" x-on:click="$dispatch('open-modal', 'shipping-value');">How do i get this ?</a>
                         </p>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
         {{-- left part - cart products --}}
         <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
             {{-- cart products --}}
-            <div id="cart-products" class="space-y-6">
+            <div id="cart-products" class="space-y-6 mb-4">
 
                 @if (isset($cart['items']) && count($cart['items']) > 0)
                     @foreach ($cart['items'] as $item)
@@ -455,7 +455,7 @@
 
                     <div class="items-center justify-center gap-2 hidden lg:flex">
                         <span class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400"> or </span>
-                        <a href="#" class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
+                        <a href="{{ route('front.collection.index') }}" class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
                             Continue Shopping
                             <svg class="{{FD['iconClass']}}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" /></svg>
                         </a>
@@ -502,9 +502,16 @@
 
     {{-- MODALS --}}
 
-    <!-- SAVE FOR LATER -->
-    @include('layouts.front.includes.cart-item-save-for-later-confirm-modal-LIVEWIRE')
+    <!-- MINIMUM CART ORDER VALUE -->
+    @include('layouts.front.includes.minimum-cart-order-modal-LIVEWIRE')
+
+    <!-- HSIPPING VALLUE THRESHOLD -->
+    @include('layouts.front.includes.shipping-value-threshold-modal-LIVEWIRE')
+
     <!-- DELETE CONFIRM -->
     @include('layouts.front.includes.cart-item-delete-confirm-modal-LIVEWIRE')
+
+    <!-- SAVE FOR LATER -->
+    @include('layouts.front.includes.cart-item-save-for-later-confirm-modal-LIVEWIRE')
 
 </div>

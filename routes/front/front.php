@@ -21,6 +21,11 @@ Route::name('front.')->group(function () {
         Route::get('/category', [CategoryController::class, 'index'])->name('index');
     });
 
+    // collection
+    Route::name('collection.')->group(function() {
+        Route::get('/collection', [CategoryController::class, 'index'])->name('index');
+    });
+
     // cart
     Route::name('cart.')->prefix('cart')->controller(CartController::class)->group(function() {
         Route::get('/', 'index')->name('index');

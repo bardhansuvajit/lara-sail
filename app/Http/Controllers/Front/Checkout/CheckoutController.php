@@ -5,25 +5,48 @@ namespace App\Http\Controllers\Front\Checkout;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Interfaces\CountryInterface;
 use App\Interfaces\UserInterface;
 use App\Interfaces\StateInterface;
+use App\Interfaces\CartInterface;
 
 class CheckoutController extends Controller
 {
     private CountryInterface $countryRepository;
     private UserInterface $userRepository;
     private StateInterface $stateRepository;
+    private CartInterface $cartRepository;
 
-    public function __construct(CountryInterface $countryRepository, UserInterface $userRepository, StateInterface $stateRepository)
+    public function __construct(CountryInterface $countryRepository, UserInterface $userRepository, StateInterface $stateRepository, CartInterface $cartRepository)
     {
         $this->countryRepository = $countryRepository;
         $this->userRepository = $userRepository;
         $this->stateRepository = $stateRepository;
+        $this->cartRepository = $cartRepository;
     }
 
-    public function index(Request $request): View
+    public function index(Request $request): View|RedirectResponse
     {
+        // Check if there is product in cart
+        if (auth()->guard('web')->check()) {
+            $cart = $this->cartRepository->exists([
+                'user_id' => auth()->guard('web')->id()
+            ]);
+        } else {
+            if (isset($_COOKIE['device_id'])) {
+                $deviceId = $_COOKIE['device_id'];
+                $cart = $this->cartRepository->exists([
+                    'device_id' => $deviceId,
+                ]);
+            } else {
+                return redirect()->route('front.cart.index');
+            }
+        }
+
+        // dd($cart['data']->items);
+
+
         // When User is LOGGED IN
         if (auth()->guard('web')->check()) {
             $shippingAddresses = auth()->guard('web')->user()->shippingAddresses;
@@ -41,7 +64,6 @@ class CheckoutController extends Controller
         }
         // When User is NOT LOGGED IN
         else {
-
             // When phone_no is SENT in URL
             if (!empty($_GET['phone_no'])) {
                 $phoneNo = $_GET['phone_no'];
@@ -78,7 +100,6 @@ class CheckoutController extends Controller
                         'countryId' => $countryId
                     ]);
                 }
-
             }
             // When phone_no is NOT SENT in URL
             else {

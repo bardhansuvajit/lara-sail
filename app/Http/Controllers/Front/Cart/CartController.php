@@ -98,15 +98,15 @@ class CartController extends Controller
         DB::beginTransaction();
 
         try {
+            $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
+
             // Insert/ Get data from Cart
             if (auth()->guard('web')->check()) {
                 $cart = $this->cartRepository->store([
-                    'device_id' => null,
+                    'device_id' => $deviceId,
                     'user_id' => auth()->guard('web')->id()
                 ]);
             } else {
-                $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
-
                 $cart = $this->cartRepository->store([
                     'device_id' => $deviceId,
                     'user_id' => null

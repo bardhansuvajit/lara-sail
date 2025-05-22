@@ -119,10 +119,10 @@
 
                     <div x-show="expanded" x-collapse>
                         <div class="pt-3" x-show="type === 'Delivery'">
-                            @include('front.account.address.includes.create', ['type' => 'Delivery'])
+                            @include('front.account.address.includes.create', ['type' => 'shipping'])
                         </div>
                         <div class="pt-3" x-show="type === 'Billing'">
-                            @include('front.account.address.includes.create', ['type' => 'Billing'])
+                            @include('front.account.address.includes.create', ['type' => 'billing'])
                         </div>
                     </div>
                 </div>
@@ -131,7 +131,7 @@
         @else
             <div class="border-t dark:border-gray-700 my-5"></div>
 
-            @include('front.account.address.includes.create', ['type' => 'Delivery'])
+            @include('front.account.address.includes.create', ['type' => 'shipping'])
         @endif
     @endif
 
