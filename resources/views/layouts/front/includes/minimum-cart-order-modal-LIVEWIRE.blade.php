@@ -1,4 +1,9 @@
-<x-front.modal name="minimum-cart-order" maxWidth="sm" vertical="middle">
+<x-front.modal 
+    name="minimum-cart-order" 
+    maxWidth="sm" 
+    vertical="middle"
+    :show="($cartSetting['min_order_value'] > $cart['total']) && (request()->query('minimum-cart-value-alert') == true)"
+>
     <div class="p-6">
         <div class="max-w-sm border-gray-200 rounded-lg shadow-sm text-center">
             <div class="w-32 m-auto">

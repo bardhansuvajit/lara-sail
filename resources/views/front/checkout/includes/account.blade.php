@@ -8,7 +8,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"/></svg>
                 </div>
 
-                <p class="text-sm md:text-base leading-tight font-medium text-gray-900 hover:underline dark:text-gray-300">{{ __('Account') }}</p>
+                <p class="{{FD['text-1']}} md:text-base leading-tight font-medium text-gray-900 hover:underline dark:text-gray-300">{{ __('Account') }}</p>
             </h2>
 
             {{-- When AUTH FOUND --}}
@@ -26,7 +26,7 @@
                         <p class="{{FD['text']}} text-gray-500 dark:text-gray-400">
                             Not {{$user->first_name}}? 
                             <form method="POST" action="{{ route('front.logout') }}" class="inline-flex">@csrf
-                                <button type="submit" class="{{FD['text']}} italic text-primary-300 inline">
+                                <button type="submit" class="{{FD['text']}} italic text-primary-500 dark:text-primary-300 inline">
                                     Sign Out
                                 </button>
                             </form>
@@ -35,7 +35,7 @@
                     </div>
                 </div>
             @else
-                <p class="{{FD['text-0']}} text-gray-500 dark:text-gray-400">here lies the product description. Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro laudantium aut officia ipsa reiciendis provident</p>
+                <p class="{{FD['text-0']}} text-gray-500 dark:text-gray-400">{!! __('Sign in to receive order updates, save your address, and complete your purchase. Don&apos;t have an account? It&apos;s quick and easy to sign up.') !!}</p>
             @endif
         </div>
     </div>
@@ -116,8 +116,8 @@
                         label="Show password" />
                 </div>
 
-                <div>
-                    <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p>
+                {{-- <div>
+                    <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p> --}}
                 </div>
             </div>
             @endif
@@ -160,7 +160,7 @@
 
                     <div>
                         <x-front.input-label for="email" :value="__('Email')" />
-                        <x-front.text-input id="email" class="block w-full" type="email" name="email" :value="old('email')" placeholder="Enter Email Address" autocomplete="username" />
+                        <x-front.text-input id="email" class="block w-full" type="email" name="email" :value="old('email')" placeholder="Enter Email Address" autocomplete="username" maxlength="80" />
                         <x-front.input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
                 </div>
@@ -178,12 +178,12 @@
                         id="show-password"
                         label="Show password" />
                 </div>
-
-                <div>
-                    <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p>
-                </div>
             </div>
             @endif
+
+            <div>
+                <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p>
+            </div>
 
             {{-- form buttons --}}
             <div class="fixed z-[1] sm:static bottom-16 sm:bottom-0 w-full -ml-[17px] -mb-[8px] sm:m-0 space-y-0 sm:space-y-4 {{FD['rounded']}} border sm:border-0 border-gray-200 bg-white px-2 py-3 sm:p-0 dark:border-0 dark:bg-gray-800">

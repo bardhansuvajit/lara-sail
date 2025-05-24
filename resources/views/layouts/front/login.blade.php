@@ -1,116 +1,151 @@
 <form 
-    class="space-y-4 md:space-y-4" 
-    @if (isset($type) && $type == 'register')
-        action="{{route('front.register')}}" method="post"
-    @elseif (isset($type) && $type == 'login')
-        action="" method="post"
+    @if ($formType == "register") 
+        action="{{route('front.register')}}" method="post" 
+    @elseif ($formType == "login") 
+        action="{{route('front.login.store')}}" method="post" 
     @else
-        action=""
+        action="" method="get"
     @endif
 >
-    @if (isset($type) && ($type == 'register' || $type == 'login'))
+    @if ($formType == "register" || $formType == "login")
         @csrf
     @endif
 
-    {{-- REGISTER STARTS --}}
-    @if (isset($type) && $type == 'register')
-    <div class="grid gap-4 mb-4 sm:grid-cols-2">
-        <div>
-            <x-front.input-label for="first_name" :value="__('First name *')" />
-            <x-front.text-input id="first_name" class="block w-full" type="text" name="first_name" placeholder="Enter First Name" maxlength="50" value="{{old('first_name')}}" :autofocus="$focus === 'first_name'" required />
-            <x-front.input-error :messages="$errors->get('first_name')" class="mt-2" />
-        </div>
-
-        <div>
-            <x-front.input-label for="last_name" :value="__('Last name *')" />
-            <x-front.text-input id="last_name" class="block w-full" type="text" name="last_name" placeholder="Enter Last Name" maxlength="50" value="{{old('last_name')}}" required />
-            <x-front.input-error :messages="$errors->get('last_name')" class="mt-2" />
-        </div>
-    </div>
-    @endif
-    {{-- REGISTER ENDS --}}
-
-    <div>
-        @php
-            $selectedCountry = $_GET['phone_country_code'] ?? old('phone_country_code') ?? COUNTRY['country'];
-        @endphp
-
-        <x-front.input-label for="phone_no" :value="__('Phone number *')" />
-        <x-front.text-input-with-dropdown 
-            id="phone_no" 
-            class="block w-auto digits-only" 
-            type="tel" 
-            name="phone_no" 
-            :value="old('phone_no') ? old('phone_no') : $_GET['phone_no'] ?? ''" 
-            placeholder="Enter Phone Number" 
-            selectTitle="India (+91)" 
-            selectId="phone_country_code" 
-            selectName="phone_country_code" 
-            required=true 
-            :focus="$focus === 'phone_no'"
-            {{-- focus --}}
-            {{-- @if (!isset($type))
-                focus
-            @endif --}}
-        >
-            @slot('options')
-                @foreach ($activeCountries as $countryIndex => $country)
-                    <x-front.input-select-option 
-                        value="{{$country->short_name}}" 
-                        :selected="$selectedCountry == $country->short_name"
-                    >
-                        {{ $country->name }} ({{ $country->phone_code }})
-                    </x-front.input-select-option>
-                @endforeach
-            @endslot
-        </x-front.text-input-with-dropdown>
-        <x-front.input-error :messages="$errors->get('phone_no')" class="mt-2" />
-        <x-front.input-error :messages="$errors->get('phone_country_code')" class="mt-2" />
-    </div>
-
-    {{-- LOGIN & REGISTER STARTS --}}
-    @if (isset($type) && ($type == 'login' || $type == 'register'))
-
-    {{-- REGISTER EMAIL STARTS --}}
-    @if ($type == 'register')
-    <div>
-        <x-front.input-label for="email" :value="__('Email')" />
-        <x-front.text-input id="email" class="block w-full" type="email" name="email" placeholder="Enter Email Address" value="{{old('email')}}" />
-        <x-front.input-error :messages="$errors->get('email')" class="mt-2" />
-    </div>
-    @endif
-    {{-- REGISTER EMAIL ENDS --}}
-
-    <div>
-        <x-front.input-label for="password" :value="__('Password *')" />
-        <x-front.text-input id="password" class="block w-full" type="password" name="password" placeholder="Enter Password" :autofocus="$focus === 'password'" required />
-        <x-front.input-error :messages="$errors->get('password')" class="mt-2" />
-    </div>
-
+    {{-- NOT LOGGED IN --}}
+    @if ($formType == "default")
     <div class="w-full">
-        <x-front.input-checkbox 
-            id="show-password"
-            label="Show password" />
-    </div>
+        <div class="grid gap-4 mb-4 sm:grid-cols-1">
+            <div>
+                <x-front.input-label for="phone_no" :value="__('Phone number *')" />
+                <x-front.text-input-with-text 
+                    placeholder="Enter Phone Number" 
+                    id="phone_no" 
+                    class="digits-only" 
+                    type="tel" 
+                    name="phone_no" 
+                    :value="old('phone_no') ? old('phone_no') : $_GET['phone_no'] ?? ''" 
 
-    <div>
-        <x-front.input-checkbox 
-            class="-mt-2"
-            id="remember_me"
-            name="remember" 
-            :label="__('Remember me')"
-            checked />
+                    text="{{COUNTRY['countryFullName']}} ({{COUNTRY['phoneCode']}})"
+                    textPosition="start" 
+                    :focus="$focus === 'phone_no'"
+                >
+                </x-front.text-input-with-text>
+                <x-front.input-error :messages="$errors->get('phone_no')" class="mt-2" />
+            </div>
+        </div>
     </div>
     @endif
-    {{-- LOGIN & REGISTER ENDS --}}
+
+    {{-- NOT LOGGED IN + ACCOUNT EXISTS --}}
+    @if ($formType == "login")
+    <div class="w-full">
+        <div class="grid gap-4 mb-4 sm:grid-cols-1">
+            <div>
+                <x-front.input-label for="phone_no" :value="__('Phone number *')" />
+                <x-front.text-input-with-text 
+                    placeholder="Enter Phone Number" 
+                    id="phone_no" 
+                    class="digits-only" 
+                    type="tel" 
+                    name="phone_no" 
+                    :value="old('phone_no') ? old('phone_no') : $_GET['phone_no'] ?? ''" 
+
+                    text="{{COUNTRY['countryFullName']}} ({{COUNTRY['phoneCode']}})"
+                    textPosition="start" 
+                >
+                </x-front.text-input-with-text>
+                <x-front.input-error :messages="$errors->get('phone_no')" class="mt-2" />
+            </div>
+
+            <div>
+                <x-front.input-label for="password" :value="__('Password *')" />
+                <x-front.text-input id="password" class="block w-full" type="password" name="password" placeholder="Enter Password" maxlength="75" autocomplete="new-password" autofocus required />
+                <x-front.input-error :messages="$errors->get('password')" class="mt-2" />
+            </div>
+        </div>
+
+        <div class="mb-2">
+            <x-front.input-checkbox 
+                id="show-password"
+                label="Show password" />
+        </div>
+    </div>
+    @endif
+
+    {{-- NOT LOGGED IN + NO ACCOUNT EXISTS/ REGISTER --}}
+    @if ($formType == "register")
+    <div class="w-full">
+        <div class="grid gap-4 mb-4 sm:grid-cols-2">
+            <div>
+                <x-front.input-label for="first_name" :value="__('First name *')" />
+                <x-front.text-input id="first_name" class="block w-full" type="text" name="first_name" :value="old('first_name')" placeholder="Enter First Name" maxlength="50" autofocus required />
+                <x-front.input-error :messages="$errors->get('first_name')" class="mt-2" />
+            </div>
+
+            <div>
+                <x-front.input-label for="last_name" :value="__('Last name *')" />
+                <x-front.text-input id="last_name" class="block w-full" type="text" name="last_name" :value="old('last_name')" placeholder="Enter Last Name" maxlength="50" required />
+                <x-front.input-error :messages="$errors->get('last_name')" class="mt-2" />
+            </div>
+        </div>
+
+        <div class="grid gap-4 mb-4 sm:grid-cols-2">
+            <div>
+                <x-front.input-label for="phone_no" :value="__('Phone number *')" />
+                <x-front.text-input-with-text 
+                    placeholder="Enter Phone Number" 
+                    id="phone_no" 
+                    class="digits-only" 
+                    type="tel" 
+                    name="phone_no" 
+                    :value="old('phone_no') ? old('phone_no') : $_GET['phone_no'] ?? ''" 
+
+                    text="{{COUNTRY['countryFullName']}} ({{COUNTRY['phoneCode']}})"
+                    textPosition="start" 
+                    :focus="$focus === 'phone_no'"
+                >
+                </x-front.text-input-with-text>
+                <x-front.input-error :messages="$errors->get('phone_no')" class="mt-2" />
+            </div>
+
+            <div>
+                <x-front.input-label for="email" :value="__('Email')" />
+                <x-front.text-input id="email" class="block w-full" type="email" name="email" :value="old('email')" placeholder="Enter Email Address" autocomplete="username" maxlength="80" />
+                <x-front.input-error :messages="$errors->get('email')" class="mt-2" />
+            </div>
+        </div>
+
+        <div class="grid gap-4 mb-4 sm:grid-cols-2">
+            <div>
+                <x-front.input-label for="password" :value="__('Set password *')" />
+                <x-front.text-input id="password" class="block w-full" type="password" name="password" placeholder="Enter Password" maxlength="75" autocomplete="new-password" required />
+                <x-front.input-error :messages="$errors->get('password')" class="mt-2" />
+            </div>
+        </div>
+
+        <div class="mb-2">
+            <x-front.input-checkbox 
+                id="show-password"
+                label="Show password" />
+        </div>
+    </div>
+    @endif
 
     <div>
         <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p>
     </div>
 
-    <div>
-        <button type="submit" class="w-full flex items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-            Continue
-        </button>
-    </div>
+    {{-- form buttons --}}
+    {{-- <div class="fixed z-[1] sm:static bottom-16 sm:bottom-0 w-full -ml-[17px] -mb-[8px] sm:m-0 space-y-0 sm:space-y-4 {{FD['rounded']}} border sm:border-0 border-gray-200 bg-white px-2 py-3 sm:p-0 dark:border-0 dark:bg-gray-800"> --}}
+        {{-- <div class="w-full sm:w-max flex space-x-2 sm:space-x-4 mt-2 sm:mt-8"> --}}
+        <div class="w-full mt-5">
+            <button type="submit" class="w-full sm:w-max flex items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                {{-- Login --}}
+                {{ $buttonText }}
+            </button>
+        </div>
+    {{-- </div> --}}
+
+    <input type="hidden" name="phone_country_code" value="{{COUNTRY['country']}}"> <!-- returns 'IN' -->
+    <input type="hidden" name="request_path" value="{{request()->path()}}"> <!-- returns 'checkout' -->
 </form>

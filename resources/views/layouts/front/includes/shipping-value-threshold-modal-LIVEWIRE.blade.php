@@ -1,4 +1,9 @@
-<x-front.modal name="shipping-value" maxWidth="sm" vertical="middle" show>
+<x-front.modal 
+    name="shipping-value" 
+    maxWidth="sm" 
+    vertical="middle" 
+    :show="($cartSetting['free_shipping_threshold'] > $cart['total']) && (request()->query('free-shipping-alert') == true)"
+>
     <div class="p-6">
         <div class="max-w-sm border-gray-200 rounded-lg shadow-sm text-center">
             <div class="w-32 m-auto">

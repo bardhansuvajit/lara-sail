@@ -50,6 +50,9 @@ class CartCheckout extends Component
             ]);
         }
 
+        // Update cart totals
+        $cartUpdateResp = $cartRepository->updateCartTotals($cart['data']);
+        // dd($cartUpdateResp);
         // dd($cart['data']);
 
         // $this->cart = collect($cart['data']->items);

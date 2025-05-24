@@ -60,28 +60,37 @@
                 @if (isset($cart['items']) && count($cart['items']) > 0)
                     @foreach ($cart['items'] as $item)
 
-                        <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-3">
-                            <div class="space-y-4 flex items-center justify-between gap-2 sm:gap-4 sm:mb-2">
-                                <a href="{{ $item['product_url_with_variation'] ? $item['product_url_with_variation'] : $item['product_url'] }}" class="flex aspect-[1/1] h-16 md:h-24 flex-shrink-0 items-center">
-                                    @if (!empty($item['image_s']))
-                                        <img class="h-auto max-h-full w-full" src="{{$item['image_s']}}" alt="{{$item['product_title']}}" />
-                                    @else
-                                        {!! FD['brokenImageFront'] !!}
-                                    @endif
-                                </a>
+                        <div class="p-2 md:p-3 {{FD['rounded']}} border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                            <div class="space-y-2">
+                                {{-- IMAGE && TITLE && DESCRIPTION --}}
+                                <div class="flex gap-4 justify-start">
+                                    <div class="basis-1/12 flex-shrink-0">
+                                        <a 
+                                            href="{{ $item['product_url_with_variation'] ? $item['product_url_with_variation'] : $item['product_url'] }}" 
+                                            class="flex aspect-[1/1] h-12 md:h-16 flex-shrink-0 items-center"
+                                        >
+                                            @if (!empty($item['image_s']))
+                                                <img class="h-auto max-h-full w-full" src="{{$item['image_s']}}" alt="{{$item['product_title']}}" />
+                                            @else
+                                                {!! FD['brokenImageFront'] !!}
+                                            @endif
+                                        </a>
+                                    </div>
+                                    <div class="flex-1">
+                                        <a href="{{ $item['product_url_with_variation'] ? $item['product_url_with_variation'] : $item['product_url'] }}" class="inline-block {{FD['text']}} leading-tight font-medium text-gray-900 hover:underline dark:text-gray-300 mb-1 sm:mb-2">
+                                            {{$item['product_title']}}
+                                        </a>
 
-                                <div class="w-full min-w-0 flex-1 md:order-2">
-                                    <a href="{{ $item['product_url_with_variation'] ? $item['product_url_with_variation'] : $item['product_url'] }}" class="inline-block {{FD['text']}} leading-tight font-medium text-gray-900 hover:underline dark:text-gray-300 mb-1 sm:mb-2">
-                                        {{$item['product_title']}}
-                                    </a>
+                                        @if (!empty($item['variation_attributes']))
+                                            <p class="{{FD['text-0']}} text-gray-500 dark:text-gray-400">{{$item['variation_attributes']}}</p>
+                                        @endif
 
-                                    @if (!empty($item['variation_attributes']))
-                                        <p class="{{FD['text-0']}} text-gray-500 dark:text-gray-400">{{$item['variation_attributes']}}</p>
-                                    @endif
-
-                                    <p class="{{FD['text-0']}} text-green-500 dark:text-green-400 mt-1">{{$item['availability_message']}}</p>
-
-                                    <div class="flex space-x-4 items-center mt-3">
+                                        <p class="{{FD['text-0']}} {{FD['activeClass']}} mt-1">{{$item['availability_message']}}</p>
+                                    </div>
+                                </div>
+                                {{-- QUANTITY && PRICING --}}
+                                <div>
+                                    <div class="flex space-x-4 items-center">
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center">
                                                 <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
@@ -100,107 +109,127 @@
                                             </div>
                                         </div>
 
-                                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-gray-50"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{formatIndianMoney($item['selling_price'])}}</p>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            {{-- UPSELL --}}
-                            {{-- <div class="grid grid-cols-2 md:grid-cols-4 gap-2 border-t dark:border-gray-700 mt-2 py-2">
-                                <div class="col-span-2 md:col-span-4">
-                                    <h5 class="{{FD['text']}} flex space-x-2 items-center">
-                                        {{ __('Bought together') }}
-                                        <div class="{{FD['iconClass']}}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>
-                                        </div>
-                                    </h5>
-                                </div>
-
-                                <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
-                                    <a href="#">
-                                        <div class="h-20 w-full mb-2">
-                                            <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
-                                        </div>
-
-                                        <div class="absolute top-0 right-0 w-full h-8 p-1 overflow-hidden">
-                                            <div class="flex justify-between items-center">
-                                                <div class="w-10 h-5 flex space-x-1 items-center bg-gray-50 px-1 border">
-                                                    <p class="{{FD['text-0']}} text-gray-900 font-bold">3.9</p>
-                                                    <div class="{{FD['iconClass']}} text-yellow-400 flex items-center">
-                                                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z"></path></svg>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <p class="font-semibold text-gray-900 hover:underline dark:text-gray-400 {{FD['text-0']}} block mb-2">
-                                            Apple iMac 27", 1TB HDD, Retina 5K Display, M3 Max some more texts to add here so that i can check it
+                                        <p class="{{FD['text-0']}} md:text-xs font-bold text-gray-900 dark:text-gray-50">
+                                            <span class="currency-symbol">{{COUNTRY['icon']}}</span>
+                                            {{formatIndianMoney($item['selling_price'])}}
                                         </p>
 
-                                        <p class="{{FD['text-0']}} dark:text-gray-500">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, nihil vel veritatis, laborum dolore</p>
+                                        <p class="{{FD['text-0']}} md:text-xs font-bold text-gray-400 dark:text-gray-400 line-through">
+                                            <span class="currency-symbol">{{COUNTRY['icon']}}</span>
+                                            {{formatIndianMoney($item['mrp'])}}
+                                        </p>
 
-                                        <div class="my-2 flex items-center gap-2">
-                                            <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
-                                                <span class="currency-symbol">{{COUNTRY['icon']}}</span>1,09,699
-                                            </p>
-                                            <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
-                                                <span class="currency-symbol">{{COUNTRY['icon']}}</span>17,699
-                                            </p>
-                                            <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
-                                                40% off
-                                            </p>
+                                        <p class="{{FD['text-0']}} md:text-xs font-black leading-tight {{FD['activeClass']}}">
+                                            {{discountPercentageCalc($item['selling_price'], $item['mrp'])}}% off
+                                        </p>
+                                    </div>
+                                </div>
+                                {{-- UPSELL --}}
+                                {{-- <div>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 border-t dark:border-gray-700 mt-2 py-2">
+                                        <div class="col-span-2 md:col-span-4">
+                                            <h5 class="{{FD['text']}} flex space-x-2 items-center">
+                                                {{ __('Bought together') }}
+                                                <div class="{{FD['iconClass']}}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>
+                                                </div>
+                                            </h5>
                                         </div>
 
-                                        <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
-                                            Add item
-                                        </button>
-                                    </a>
+                                        <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
+                                            <a href="#">
+                                                <div class="h-20 w-full mb-2">
+                                                    <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
+                                                </div>
+
+                                                <div class="absolute top-0 right-0 w-full h-8 p-1 overflow-hidden">
+                                                    <div class="flex justify-between items-center">
+                                                        <div class="w-10 h-5 flex space-x-1 items-center bg-gray-50 px-1 border">
+                                                            <p class="{{FD['text-0']}} text-gray-900 font-bold">3.9</p>
+                                                            <div class="{{FD['iconClass']}} text-yellow-400 flex items-center">
+                                                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z"></path></svg>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <p class="font-semibold text-gray-900 hover:underline dark:text-gray-400 {{FD['text-0']}} block mb-2">
+                                                    Apple iMac 27", 1TB HDD, Retina 5K Display, M3 Max some more texts to add here so that i can check it
+                                                </p>
+
+                                                <p class="{{FD['text-0']}} dark:text-gray-500">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, nihil vel veritatis, laborum dolore</p>
+
+                                                <div class="my-2 flex items-center gap-2">
+                                                    <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
+                                                        <span class="currency-symbol">{{COUNTRY['icon']}}</span>1,09,699
+                                                    </p>
+                                                    <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
+                                                        <span class="currency-symbol">{{COUNTRY['icon']}}</span>17,699
+                                                    </p>
+                                                    <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
+                                                        40% off
+                                                    </p>
+                                                </div>
+
+                                                <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
+                                                    Add item
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div> --}}
+                                {{-- DIVIDER --}}
+                                <div>
+                                    <div class="border-t dark:border-gray-700"></div>
                                 </div>
-                            </div> --}}
+                                {{-- SAVE for LATER && REMOVE --}}
+                                <div>
+                                    <div class="flex items-center gap-4 pt-1">
+                                        <button 
+                                            type="button" 
+                                            class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-600 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
+                                            x-data=""
+                                            x-on:click="
+                                                $dispatch('open-modal', 'confirm-livewire-cart-item-save-for-later'); 
+                                                $dispatch('data-id', @js($item['id']));
+                                                $dispatch('data-title', @js($item['product_title']));
+                                                $dispatch('data-url', @js($item['product_url_with_variation'] ? $item['product_url_with_variation'] : $item['product_url']));
+                                                $dispatch('data-attributes', @js($item['variation_attributes']));
+                                                $dispatch('data-selling-price', @js(formatIndianMoney($item['selling_price'])));
+                                                $dispatch('data-mrp', @js(formatIndianMoney($item['mrp'])));
+                                                $dispatch('data-discount', @js(discountPercentageCalc($item['selling_price'], $item['mrp'])));
+                                                $dispatch('data-image-path', @js($item['image_s']));
+                                            "
+                                        >
+                                            <div class="{{FD['iconClass']}}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-120v-640q0-33 23.5-56.5T280-840h240v80H280v518l200-86 200 86v-278h80v400L480-240 200-120Zm80-640h240-240Zm400 160v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg>
+                                            </div>
+                                            Save for later
+                                        </button>
 
-                            <div class="flex items-center gap-4 mt-2 pt-2 sm:pt-4 border-t dark:border-gray-700">
-                                <button 
-                                    type="button" 
-                                    class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-600 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
-                                    x-data=""
-                                    x-on:click="
-                                        $dispatch('open-modal', 'confirm-livewire-cart-item-save-for-later'); 
-                                        $dispatch('data-id', @js($item['id']));
-                                        $dispatch('data-title', @js($item['product_title']));
-                                        $dispatch('data-url', @js($item['product_url_with_variation'] ? $item['product_url_with_variation'] : $item['product_url']));
-                                        $dispatch('data-attributes', @js($item['variation_attributes']));
-                                        $dispatch('data-selling-price', @js(formatIndianMoney($item['selling_price'])));
-                                        $dispatch('data-mrp', @js(formatIndianMoney($item['mrp'])));
-                                        $dispatch('data-image-path', @js($item['image_s']));
-                                    "
-                                >
-                                    <div class="{{FD['iconClass']}}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-120v-640q0-33 23.5-56.5T280-840h240v80H280v518l200-86 200 86v-278h80v400L480-240 200-120Zm80-640h240-240Zm400 160v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg>
+                                        <button 
+                                            type="button" 
+                                            class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-red-500 hover:text-red-700 hover:underline dark:text-red-600 dark:hover:text-red-700"
+                                            x-data=""
+                                            x-on:click="
+                                                $dispatch('open-modal', 'confirm-livewire-cart-item-deletion'); 
+                                                $dispatch('data-id', @js($item['id']));
+                                                $dispatch('data-title', @js($item['product_title']));
+                                                $dispatch('data-url', @js($item['product_url_with_variation'] ? $item['product_url_with_variation'] : $item['product_url']));
+                                                $dispatch('data-attributes', @js($item['variation_attributes']));
+                                                $dispatch('data-selling-price', @js(formatIndianMoney($item['selling_price'])));
+                                                $dispatch('data-mrp', @js(formatIndianMoney($item['mrp'])));
+                                                $dispatch('data-discount', @js(discountPercentageCalc($item['selling_price'], $item['mrp'])));
+                                                $dispatch('data-image-path', @js($item['image_s']));
+                                            "
+                                        >
+                                            <div class="{{FD['iconClass']}}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                                            </div>
+                                            Remove
+                                        </button>
                                     </div>
-                                    Save for later
-                                </button>
-
-                                <button 
-                                    type="button" 
-                                    class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-red-500 hover:text-red-700 hover:underline dark:text-red-600 dark:hover:text-red-700"
-                                    x-data=""
-                                    x-on:click="
-                                        $dispatch('open-modal', 'confirm-livewire-cart-item-deletion'); 
-                                        $dispatch('data-id', @js($item['id']));
-                                        $dispatch('data-title', @js($item['product_title']));
-                                        $dispatch('data-url', @js($item['product_url_with_variation'] ? $item['product_url_with_variation'] : $item['product_url']));
-                                        $dispatch('data-attributes', @js($item['variation_attributes']));
-                                        $dispatch('data-selling-price', @js(formatIndianMoney($item['selling_price'])));
-                                        $dispatch('data-mrp', @js(formatIndianMoney($item['mrp'])));
-                                        $dispatch('data-image-path', @js($item['image_s']));
-                                    "
-                                >
-                                    <div class="{{FD['iconClass']}}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                                    </div>
-                                    Remove
-                                </button>
+                                </div>
                             </div>
                         </div>
 
@@ -390,88 +419,208 @@
         <div id="order-summary-container" class="mx-auto mt-6 mb-4 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full sticky top-36">
 
             @if (isset($cart['items']) && count($cart['items']) > 0)
-                <div class="fixed z-1 sm:static bottom-16 sm:bottom-0 w-full -m-2 sm:m-0 space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
-                    <div id="order-summary" class="hidden lg:block">
-                        <p class="{{FD['text-1']}} font-semibold text-gray-900 dark:text-white mb-2">Order summary</p>
+                @include('livewire.includes.order-summary')
+            @endif
 
-                        <div class="space-y-2">
-                            <dl class="flex items-center justify-between gap-4">
-                                <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Original price
-                                </dt>
-                                <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['sub_total']) }}</dd>
-                            </dl>
+            <div class="w-full space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
+                <div class="text-center">
+                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/promo-banner.jpg" class="bg-cover {{FD['rounded']}} w-full h-24 mb-4" alt="promo banner">
+                        
+                    <span class="text-green-100 font-medium text-sm leading-5 py-0.5 px-2.5 bg-green-500 {{FD['rounded']}} items-center inline-flex mb-4 dark:bg-green-300 dark:text-green-800">
+                        <svg class="w-4 h-4 mr-1 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
+                        Offer valid till today
+                    </span>
 
-                            <dl class="flex items-center justify-between gap-4">
-                                <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Savings</dt>
-                                <dd class="{{FD['text']}} font-medium text-green-600">-<span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['discount_amount']) }}</dd>
-                            </dl>
+                    <h3 class="text-gray-700 dark:text-gray-200 text-xl font-medium mb-1">20% Off All Gaming Gear</h3>
 
-                            <dl class="flex items-center justify-between gap-4">
-                                <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Shipping</dt>
-                                <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['shipping_cost']) }}</dd>
-                            </dl>
+                    <p class="{{FD['text']}} dark:text-gray-500 mb-4">Simply enter your email to unlock this deal and stay in the loop for future promotions.</p>
 
-                            <dl class="flex items-center justify-between gap-4">
-                                <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Tax</dt>
-                                <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['tax_amount']) }}</dd>
-                            </dl>
+                    <a href="{{ route('front.collection.index') }}" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                        Go to Collection
+                    </a>
+                </div>
+            </div>
 
-                            <dl class="flex items-center justify-between gap-4">
-                                <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Coupon Discount</dt>
-                                <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white">
-                                    <button class="{{FD['activeClass']}}">Apply Coupon</button>
-                                </dd>
-                            </dl>
-                        </div>
+            {{-- <div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="w-full max-w-sm bg-white border border-gray-200 {{FD['rounded']}} shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                        <a href="#">
+                            <img class="p-2 {{FD['rounded']}}" src="https://flowbite.com/docs/images/products/apple-watch.png" alt="product image" />
+                        </a>
+                        <div class="p-1">
+                            <a href="#">
+                                <h5 class="{{FD['text-0']}} font-medium tracking-tight text-gray-900 dark:text-white">Priority Shipping</h5>
+                            </a>
 
-                        <div class="border-t border-gray-200 dark:border-gray-700 mt-4 pb-3 sm:pb-0"></div>
-                    </div>
+                            <p class="{{FD['text-0']}} dark:text-gray-500 line-clamp-2">Get in 1-2 days</p>
 
-                    <dl class="flex items-center justify-between gap-4 border-0 dark:border-gray-700 pb-2 sm:pb-0">
-                        <dt class="{{FD['text']}} font-bold text-gray-900 dark:text-white">Total</dt>
-                        <dd class="{{FD['text']}} font-bold text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['total']) }}</dd>
-                    </dl>
-
-                    <div class="flex space-x-2 lg:space-x-0">
-                        <button id="order-summary-toggle" class="flex lg:hidden w-full items-center justify-center {{FD['rounded']}} bg-gray-300 focus:bg-gray-400 px-5 py-2.5 {{FD['text']}} font-medium text-gray=800 hover:bg-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
-                            Order summary
-
-                            <div class="w-3 h-3 ms-1 text-gray-600 dark:text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-80 240-320l57-57 183 183 183-183 57 57L480-80ZM298-584l-58-56 240-240 240 240-58 56-182-182-182 182Z"/></svg>
+                            <div class="my-2 flex items-center gap-2">
+                                <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
+                                    <span class="currency-symbol">{{COUNTRY['icon']}}</span>1,09,699
+                                </p>
                             </div>
-                        </button>
+                            <div class="my-2 flex items-center gap-2">
+                                <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
+                                    <span class="currency-symbol">{{COUNTRY['icon']}}</span>17,699
+                                </p>
+                                <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
+                                    40% off
+                                </p>
+                            </div>
 
-                        @if (isset($cart['items']) && count($cart['items']) > 0)
-                            @if ($cartSetting['min_order_value'] > $cart['total'])
-                                <a href="javascript: void(0)" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 opacity-75 cursor-no-drop">
-                            @else
-                                <a href="{{route('front.checkout.index')}}" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                            @endif
-                        @endif
+                            <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                    <div class="w-full max-w-sm bg-white border border-gray-200 {{FD['rounded']}} shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                        <a href="#">
+                            <img class="p-2 {{FD['rounded']}}" src="https://flowbite.com/docs/images/products/apple-watch.png" alt="product image" />
+                        </a>
+                        <div class="p-1">
+                            <a href="#">
+                                <h5 class="{{FD['text-0']}} font-medium tracking-tight text-gray-900 dark:text-white">Priority Shipping</h5>
+                            </a>
 
-                            Proceed to Checkout
+                            <p class="{{FD['text-0']}} dark:text-gray-500 line-clamp-2">Get in 1-2 days</p>
+
+                            <div class="my-2 flex items-center gap-2">
+                                <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
+                                    <span class="currency-symbol">{{COUNTRY['icon']}}</span>1,09,699
+                                </p>
+                            </div>
+                            <div class="my-2 flex items-center gap-2">
+                                <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
+                                    <span class="currency-symbol">{{COUNTRY['icon']}}</span>17,699
+                                </p>
+                                <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
+                                    40% off
+                                </p>
+                            </div>
+
+                            <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                    <div class="w-full max-w-sm bg-white border border-gray-200 {{FD['rounded']}} shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                        <a href="#">
+                            <img class="p-2 {{FD['rounded']}}" src="https://flowbite.com/docs/images/products/apple-watch.png" alt="product image" />
+                        </a>
+                        <div class="p-1">
+                            <a href="#">
+                                <h5 class="{{FD['text-0']}} font-medium tracking-tight text-gray-900 dark:text-white">Priority Shipping</h5>
+                            </a>
+
+                            <p class="{{FD['text-0']}} dark:text-gray-500 line-clamp-2">Get in 1-2 days</p>
+
+                            <div class="my-2 flex items-center gap-2">
+                                <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
+                                    <span class="currency-symbol">{{COUNTRY['icon']}}</span>1,09,699
+                                </p>
+                            </div>
+                            <div class="my-2 flex items-center gap-2">
+                                <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
+                                    <span class="currency-symbol">{{COUNTRY['icon']}}</span>17,699
+                                </p>
+                                <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
+                                    40% off
+                                </p>
+                            </div>
+
+                            <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
+                        <a href="#">
+                            <div class="h-20 w-full mb-2">
+                                <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
+                            </div>
+
+                            <div class="absolute top-0 right-0 w-full h-8 p-1 overflow-hidden">
+                                <div class="flex justify-between items-center">
+                                    <div class="w-10 h-5 flex space-x-1 items-center bg-gray-50 px-1 border">
+                                        <p class="{{FD['text-0']}} text-gray-900 font-bold">3.9</p>
+                                        <div class="{{FD['iconClass']}} text-yellow-400 flex items-center">
+                                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="font-semibold text-gray-900 hover:underline dark:text-gray-400 {{FD['text-0']}} mb-2 line-clamp-2" target="_blank">
+                                Apple iMac 27", 1TB HDD, Retina 5K Display, M3 Max some more texts to add here so that i can check it
+                            </p>
+
+                            <p class="{{FD['text-0']}} dark:text-gray-500 line-clamp-2">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, nihil vel veritatis, laborum dolore</p>
+
+                            <div class="my-2 flex items-center gap-2">
+                                <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
+                                    <span class="currency-symbol">{{COUNTRY['icon']}}</span>1,09,699
+                                </p>
+                                <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
+                                    <span class="currency-symbol">{{COUNTRY['icon']}}</span>17,699
+                                </p>
+                                <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
+                                    40% off
+                                </p>
+                            </div>
+
+                            <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
+                                Add to Cart
+                            </button>
                         </a>
                     </div>
 
-                    <div class="items-center justify-center gap-2 hidden lg:flex">
-                        <span class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400"> or </span>
-                        <a href="{{ route('front.collection.index') }}" class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
-                            Continue Shopping
-                            <svg class="{{FD['iconClass']}}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" /></svg>
+                    <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
+                        <a href="#">
+                            <div class="h-20 w-full mb-2">
+                                <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
+                            </div>
+
+                            <div class="absolute top-0 right-0 w-full h-8 p-1 overflow-hidden">
+                                <div class="flex justify-between items-center">
+                                    <div class="w-10 h-5 flex space-x-1 items-center bg-gray-50 px-1 border">
+                                        <p class="{{FD['text-0']}} text-gray-900 font-bold">3.9</p>
+                                        <div class="{{FD['iconClass']}} text-yellow-400 flex items-center">
+                                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="font-semibold text-gray-900 hover:underline dark:text-gray-400 {{FD['text-0']}} mb-2 line-clamp-2" target="_blank">
+                                Apple iMac 27", 1TB HDD, Retina 5K Display, M3 Max some more texts to add here so that i can check it
+                            </p>
+
+                            <p class="{{FD['text-0']}} dark:text-gray-500 line-clamp-2">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, nihil vel veritatis, laborum dolore</p>
+
+                            <div class="my-2 flex items-center gap-2">
+                                <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
+                                    <span class="currency-symbol">{{COUNTRY['icon']}}</span>1,09,699
+                                </p>
+                                <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
+                                    <span class="currency-symbol">{{COUNTRY['icon']}}</span>17,699
+                                </p>
+                                <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
+                                    40% off
+                                </p>
+                            </div>
+
+                            <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
+                                Add to Cart
+                            </button>
                         </a>
                     </div>
                 </div>
-
-                {{-- <div class="space-y-4 {{FD['rounded']}} border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
-                    <form class="space-y-4">
-                        <div>
-                            <label for="voucher" class="mb-2 block {{FD['text']}} font-medium text-gray-900 dark:text-white"> Do you have a Promo code or voucher? </label>
-                            <input type="text" id="voucher" class="block w-full {{FD['rounded']}} border border-gray-300 bg-gray-50 p-2.5 {{FD['text']}} text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Enter here..." required />
-                        </div>
-                        <button type="submit" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Apply Code</button>
-                    </form>
-                </div> --}}
-            @endif
+            </div>
 
             <div class="w-full space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
                 <div class="text-center">
@@ -493,25 +642,28 @@
                     >
                         Add to Cart
                     </button>
-
                 </div>
-            </div>
+            </div> --}}
 
         </div>
     </div>
 
     {{-- MODALS --}}
+    @if (isset($cart['items']) && count($cart['items']) > 0)
+        <!-- MINIMUM CART ORDER VALUE -->
+        @include('layouts.front.includes.minimum-cart-order-modal-LIVEWIRE')
 
-    <!-- MINIMUM CART ORDER VALUE -->
-    @include('layouts.front.includes.minimum-cart-order-modal-LIVEWIRE')
+        <!-- SHIPPING VALLUE THRESHOLD -->
+        @include('layouts.front.includes.shipping-value-threshold-modal-LIVEWIRE')
 
-    <!-- HSIPPING VALLUE THRESHOLD -->
-    @include('layouts.front.includes.shipping-value-threshold-modal-LIVEWIRE')
+        <!-- DELETE CONFIRM -->
+        @include('layouts.front.includes.cart-item-delete-confirm-modal-LIVEWIRE')
 
-    <!-- DELETE CONFIRM -->
-    @include('layouts.front.includes.cart-item-delete-confirm-modal-LIVEWIRE')
+        <!-- SAVE FOR LATER -->
+        @include('layouts.front.includes.cart-item-save-for-later-confirm-modal-LIVEWIRE')
 
-    <!-- SAVE FOR LATER -->
-    @include('layouts.front.includes.cart-item-save-for-later-confirm-modal-LIVEWIRE')
+        <!-- COUPONS -->
+        @include('layouts.front.includes.coupons-sidebar')
+    @endif
 
 </div>

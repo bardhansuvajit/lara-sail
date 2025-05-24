@@ -66,7 +66,7 @@ class RegisteredUserController extends Controller
             'last_name' => $request->last_name,
             'country_id' => $countryData['data']->id,
             'primary_phone_no' => $request->phone_no,
-            'email' => $request->email ? null,
+            'email' => $request->email ?? null,
             'password' => Hash::make($request->password),
             'gender_id' => 4
         ]);

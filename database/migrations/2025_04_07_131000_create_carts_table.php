@@ -25,6 +25,7 @@ return new class extends Migration
 
             // Cart totals
             $table->unsignedInteger('total_items')->default(0);     // SUM(quantity)
+            $table->decimal('mrp', 12, 2)->default(0);              // SUM(mrp * quantity)
             $table->decimal('sub_total', 12, 2)->default(0);        // SUM(price * quantity)
             $table->decimal('total', 12, 2)->default(0);            // sub_total + adjustments
 

@@ -10,6 +10,7 @@ use App\Interfaces\CountryInterface;
 use App\Interfaces\UserInterface;
 use App\Interfaces\StateInterface;
 use App\Interfaces\CartInterface;
+use App\Interfaces\CartSettingInterface;
 
 class CheckoutController extends Controller
 {
@@ -17,13 +18,20 @@ class CheckoutController extends Controller
     private UserInterface $userRepository;
     private StateInterface $stateRepository;
     private CartInterface $cartRepository;
+    private CartSettingInterface $cartSettingRepository;
 
-    public function __construct(CountryInterface $countryRepository, UserInterface $userRepository, StateInterface $stateRepository, CartInterface $cartRepository)
+    public function __construct(
+        CountryInterface $countryRepository, 
+        UserInterface $userRepository, 
+        StateInterface $stateRepository, 
+        CartInterface $cartRepository, 
+        CartSettingInterface $cartSettingRepository)
     {
         $this->countryRepository = $countryRepository;
         $this->userRepository = $userRepository;
         $this->stateRepository = $stateRepository;
         $this->cartRepository = $cartRepository;
+        $this->cartSettingRepository = $cartSettingRepository;
     }
 
     public function index(Request $request): View|RedirectResponse
@@ -33,6 +41,12 @@ class CheckoutController extends Controller
             $cart = $this->cartRepository->exists([
                 'user_id' => auth()->guard('web')->id()
             ]);
+
+            // If NO ITEMS in Cart
+            if ($cart['code'] == 404) {
+                return redirect()->route('front.cart.index');
+            }
+
         } else {
             if (isset($_COOKIE['device_id'])) {
                 $deviceId = $_COOKIE['device_id'];
@@ -44,7 +58,16 @@ class CheckoutController extends Controller
             }
         }
 
-        // dd($cart['data']->items);
+        // Check for MINIMUM ORDER VALUE
+        $totalCartValue = $cart['data']->total;
+        $cartSettingData = $this->cartSettingRepository->exists([
+            'country' => COUNTRY['country']
+        ])['data'];
+
+        if ($cartSettingData->min_order_value > $totalCartValue) {
+            return redirect()->route('front.cart.index', ['minimum-cart-value-alert' => 'true']);
+        }
+
 
 
         // When User is LOGGED IN
@@ -59,7 +82,17 @@ class CheckoutController extends Controller
                 'user' => auth()->guard('web')->user(),
                 'states' => $states,
                 'shippingAddresses' => $shippingAddresses,
-                'billingAddresses' => $billingAddresses
+                'billingAddresses' => $billingAddresses,
+                'paymentData' => [
+                    'codEnable' => $cartSettingData->cod_enable,
+                    'codTitle' => $cartSettingData->cod_title,
+                    'codCharge' => $cartSettingData->cod_charge,
+                    'codDiscount' => $cartSettingData->cod_discount,
+
+                    'prepaidEnable' => $cartSettingData->prepaid_enable,
+                    'prepaidCharge' => $cartSettingData->prepaid_charge,
+                    'prepaidDiscount' => $cartSettingData->prepaid_discount
+                ]
             ]);
         }
         // When User is NOT LOGGED IN

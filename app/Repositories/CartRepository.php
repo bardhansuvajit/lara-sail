@@ -224,6 +224,9 @@ class CartRepository implements CartInterface
         try {
             $itemsTotal = $cart->items()->sum('total');
             $itemsQuantity = $cart->items()->sum('quantity');
+            $totalMrp = $cart->items->sum(function ($item) {
+                return $item->mrp * $item->quantity;
+            });
 
             $shippingCost = 0;
 
@@ -232,6 +235,7 @@ class CartRepository implements CartInterface
             $cartSettings = $cartSettingResp['data'] ?? [];
 
             foreach ($cartSettings as $cartSetting) {
+                // dd($cartSetting->country, $cart->country);
                 if (
                     $cartSetting->country == $cart->country &&
                     $itemsTotal < $cartSetting->free_shipping_threshold
@@ -241,9 +245,12 @@ class CartRepository implements CartInterface
                 }
             }
 
+            // dd($shippingCost);
+
             // Update cart totals
             $cart->update([
                 'total_items' => $itemsQuantity,
+                'mrp' => $totalMrp,
                 'sub_total' => $itemsTotal,
                 'shipping_cost' => $shippingCost,
                 'total' => $itemsTotal + $shippingCost,

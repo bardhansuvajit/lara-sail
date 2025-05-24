@@ -27,6 +27,17 @@ return new class extends Migration
             $table->string('tax_type')->default('percentage')->comment('fixed, percentage');
             $table->boolean('tax_exclusive')->default(false);
 
+            // COD settings
+            $table->boolean('cod_enable')->default(true);
+            $table->string('cod_title', 50)->default('Cash on Delivery')->comment('Cash on Delivery|Pay on Delivery');
+            $table->decimal('cod_charge', 10, 2)->default(0);
+            $table->decimal('cod_discount', 10, 2)->default(0);
+
+            // Prepaid settings
+            $table->boolean('prepaid_enable')->default(true);
+            $table->decimal('prepaid_charge', 10, 2)->default(0);
+            $table->decimal('prepaid_discount', 10, 2)->default(0);
+
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });
@@ -82,20 +93,26 @@ return new class extends Migration
             [
                 'country' => 'IN',
                 'min_order_value' => 49,
-                'free_shipping_threshold' => 499,
                 'shipping_charge' => 99,
+                'free_shipping_threshold' => 499,
                 'tax_rate' => 18,
                 'tax_name' => 'GST',
-                'tax_type' => 'percentage'
+                'tax_type' => 'percentage',
+
+                'cod_charge' => 99.99,
+                'prepaid_discount' => 50,
             ],
             [
                 'country' => 'US',
                 'min_order_value' => 1.99,
-                'free_shipping_threshold' => 7.99,
                 'shipping_charge' => 0.99,
+                'free_shipping_threshold' => 7.99,
                 'tax_rate' => 19,
                 'tax_name' => 'VAT',
-                'tax_type' => 'fixed'
+                'tax_type' => 'fixed',
+
+                'cod_charge' => 9.99,
+                'prepaid_discount' => 9.99
             ]
         ];
 

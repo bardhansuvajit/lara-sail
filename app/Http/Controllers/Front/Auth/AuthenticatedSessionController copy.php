@@ -32,54 +32,6 @@ class AuthenticatedSessionController extends Controller
     public function create(Request $request): View
     {
         // dd('hh');
-        // When phone_no is SENT in URL
-        if (!empty($_GET['phone_no'])) {
-            $phoneNo = $_GET['phone_no'];
-
-            $phoneNumberDigits = 10;
-            $countryShortName = COUNTRY['country'];
-            $countryData = $this->countryRepository->getByShortName($countryShortName);
-            $countryId = $countryData['data']->id;
-            $phoneNumberDigits = $countryData['data']->phone_no_digits;
-
-            $request->validate([
-                'phone_no' => 'required|integer|digits:'.$phoneNumberDigits,
-            ]);
-
-            // CHECK IF USER EXISTS
-            $userData = $this->userRepository->getByCountryPrimaryPhone($countryId, $phoneNo);
-
-            // dd($userData);
-
-            // IF USER FOUND
-            if ($userData['code'] == 200) {
-                return view('front.auth.login', [
-                    'focus' => 'password',
-                    'buttonText' => 'Continue',
-                    'formType' => 'login',
-                ]);
-            }
-            // IF USER NOT FOUND
-            else {
-                return view('front.auth.login', [
-                    'focus' => 'first_name',
-                    'buttonText' => 'Create Account',
-                    'formType' => 'register',
-                    'countryId' => $countryId
-                ]);
-            }
-        }
-        // When phone_no is NOT SENT in URL
-        else {
-            return view('front.auth.login', [
-                'focus' => 'phone_no',
-                'buttonText' => 'Continue',
-                'formType' => 'default'
-            ]);
-        }
-
-
-        /*
         // active countries
         $countries_filters = [
             'status' => 1,
@@ -124,7 +76,6 @@ class AuthenticatedSessionController extends Controller
             'activeCountries' => $activeCountries['data'],
             'focus' => 'phone_no'
         ]);
-        */
     }
 
     /**
@@ -176,7 +127,7 @@ class AuthenticatedSessionController extends Controller
         $referrer = request()->headers->get('referer');
         if (Str::contains($referrer, 'checkout')) {
             // The request came from a checkout page
-            return redirect()->route('front.auth.login');
+            return redirect()->route('front.checkout.index');
         }
 
         return redirect('/');

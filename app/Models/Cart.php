@@ -10,7 +10,7 @@ class Cart extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'device_id','user_id','currency_code','total_items','sub_total','total',
+        'device_id','user_id','country','currency_code','total_items','mrp','sub_total','total',
         'coupon_code_id','coupon_code','discount_amount','discount_type','shipping_method_id',
         'shipping_cost','tax_amount','tax_type','tax_details','last_activity_at',
         'abandoned_at','is_abandoned','reminder_count','converted_to_order_at',
