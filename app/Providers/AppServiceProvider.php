@@ -52,6 +52,8 @@ class AppServiceProvider extends ServiceProvider
             });
         }
 
+        // dd($countries);
+
         if (Schema::hasTable('carts')) {
             if (auth()->guard('web')->check()) {
                 $cartData = \App\Models\Cart::where('user_id', auth()->guard('web')->id())

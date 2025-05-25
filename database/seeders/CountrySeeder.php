@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class CountrySeeder extends Seeder
 {
@@ -3200,5 +3201,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
         ]);
+
+        Cache::forget('active_countries');
     }
 }

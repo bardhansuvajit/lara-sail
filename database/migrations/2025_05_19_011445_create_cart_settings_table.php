@@ -38,7 +38,6 @@ return new class extends Migration
             $table->boolean('prepaid_enable')->default(true);
             $table->decimal('prepaid_charge', 10, 2)->default(0);
             $table->decimal('prepaid_discount', 10, 2)->default(0);
-            
 
             // Payment method
             $table->enum('default_payment_method', ['cod', 'prepay'])->default('cod');
@@ -48,53 +47,8 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });
 
-        $data1 = [
-            'minimum_cart_value_to_place_order' => json_encode([
-                [
-                    'country' => 'IN',
-                    'value' => '49',
-                ],
-                [
-                    'country' => 'US',
-                    'value' => '1.99',
-                ],
-            ]),
-            'free_shipping_on_minimum_cart_value' => json_encode([
-                [
-                    'country' => 'IN',
-                    'value' => '499',
-                ],
-                [
-                    'country' => 'US',
-                    'value' => '7.99',
-                ],
-            ]),
-            'average_shipping_charge' => json_encode([
-                [
-                    'country' => 'IN',
-                    'value' => '99',
-                ],
-                [
-                    'country' => 'US',
-                    'value' => '0.99',
-                ],
-            ]),
-            'tax_rate' => json_encode([
-                [
-                    'country' => 'IN',
-                    'value' => '18',
-                    'type' => 'percentage',
-                    'name' => 'GST',
-                ],
-                [
-                    'country' => 'US',
-                    'value' => '19',
-                    'type' => 'fixed',
-                    'name' => 'VAT',
-                ],
-            ])
-        ];
-
+        /*
+        // DATA ADEED WITH SEEDER
         $data = [
             [
                 'country' => 'IN',
@@ -117,6 +71,7 @@ return new class extends Migration
         ];
 
         DB::table('cart_settings')->insert($data);
+        */
     }
 
     /**
