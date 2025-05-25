@@ -22,7 +22,7 @@
     @if ( count($shippingAddresses) > 0 )
         <div class="w-full mt-4">
             @foreach ($shippingAddresses as $address)
-                <x-front.radio-input-button id="addressId{{$address->id}}" name="shipping_address" value="{{$address->id}}" :checked="$address->is_default == 1" labelClass="mb-2">
+                <x-front.radio-input-button id="addressId{{$address->id}}" name="shipping_address" value="{{$address->id}}" :checked="$address->is_default == 1" class="shipping-address" labelClass="mb-2">
                     <div class="{{FD['rounded']}} shadow-sm dark:border-gray-700">
                         <div class="flex justify-between">
                             <div>
@@ -57,7 +57,7 @@
                 <p class="{{FD['text']}} text-gray-500 dark:text-gray-400 mt-4 mb-3">{{ __('Billing Address') }}</p>
 
                 @foreach ($billingAddresses as $billing_address)
-                    <x-front.radio-input-button id="addressId{{$billing_address->id}}" name="billing_address" value="{{$billing_address->id}}" :checked="$billing_address->is_default == 1" labelClass="mb-2">
+                    <x-front.radio-input-button id="addressId{{$billing_address->id}}" name="billing_address" value="{{$billing_address->id}}" :checked="$billing_address->is_default == 1" class="billing-address" labelClass="mb-2">
                         <div class="{{FD['rounded']}} shadow-sm dark:border-gray-700">
                             <div class="flex justify-between">
                                 <div>

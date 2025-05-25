@@ -31,6 +31,7 @@ use App\Interfaces\CartInterface;
 use App\Interfaces\CartItemInterface;
 use App\Interfaces\CartSettingInterface;
 use App\Interfaces\AddressInterface;
+use App\Interfaces\PaymentMethodInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -59,6 +60,7 @@ use App\Repositories\CartRepository;
 use App\Repositories\CartItemRepository;
 use App\Repositories\CartSettingRepository;
 use App\Repositories\AddressRepository;
+use App\Repositories\PaymentMethodRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -94,6 +96,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(CartItemInterface::class, CartItemRepository::class);
         $this->app->bind(CartSettingInterface::class, CartSettingRepository::class);
         $this->app->bind(AddressInterface::class, AddressRepository::class);
+        $this->app->bind(PaymentMethodInterface::class, PaymentMethodRepository::class);
     }
 
     /**

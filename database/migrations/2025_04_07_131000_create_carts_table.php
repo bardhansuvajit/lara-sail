@@ -39,10 +39,16 @@ return new class extends Migration
             $table->unsignedBigInteger('shipping_method_id')->nullable();
             $table->decimal('shipping_cost', 12, 2)->default(0);
 
-            // tax
+            // Tax
             $table->decimal('tax_amount', 12, 2)->default(0);
             $table->string('tax_type', 30)->nullable()->comment('amount/ percent');
             $table->text('tax_details')->nullable();
+
+            // Payment Method
+            $table->integer('payment_method_id')->nullable();
+            $table->string('payment_method_title', 20)->nullable();
+            $table->decimal('payment_method_charge', 12, 2)->default(0);
+            $table->decimal('payment_method_discount', 12, 2)->default(0);
 
             // Abandoned cart tracking
             $table->timestamp('last_activity_at')->default(DB::raw('CURRENT_TIMESTAMP'));

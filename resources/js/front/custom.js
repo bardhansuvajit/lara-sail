@@ -13,6 +13,16 @@ const orderSummaryBtn = document.getElementById('order-summary-toggle');
 const orderSummaryEl = document.getElementById('order-summary');
 // const phoneNoEl = document.getElementById('phone_no');
 const numberEl = document.querySelectorAll('.digits-only');
+const shippingAddresses = document.querySelectorAll('.shipping-address');
+const billingAddresses = document.querySelectorAll('.billing-address');
+const selectedShipAddrEl = document.querySelector('input[name=shipping_address_id]');
+const selectedBillAddrEl = document.querySelector('input[name=billing_address_id]');
+
+// const prePayEl = document.getElementById('online_payment');
+// const codEl = document.getElementById('pay_on_delivery');
+// const totalAmountShowEl = document.getElementById('total-amount-show');
+// const totalAmountEl = document.getElementById('total-amount');
+const paymentMethodEl = document.querySelectorAll(`[id^=paymentMethod]`);
 
 let lastScrollPosition = 0;
 
@@ -1046,3 +1056,108 @@ if (document.querySelector('#delete-cart-item-form')) {
         }
     });
 }
+
+// CHECKOUT PAGE
+// Shipping Address
+if (selectedShipAddrEl && shippingAddresses.length > 0) {
+    shippingAddresses.forEach(el => {
+        if (el.checked) {
+            selectedShipAddrEl.value = el.value;
+        }
+
+        el.addEventListener('change', () => {
+            if (el.checked) {
+                selectedShipAddrEl.value = el.value;
+            }
+        });
+    })
+}
+// Billing Address
+if (selectedBillAddrEl && billingAddresses.length > 0) {
+    billingAddresses.forEach(el => {
+        if (el.checked) {
+            selectedBillAddrEl.value = el.value;
+        }
+
+        el.addEventListener('change', () => {
+            if (el.checked) {
+                selectedBillAddrEl.value = el.value;
+            }
+        });
+    })
+}
+
+// Payment Mode selection
+/*
+function updatePaymentMode(mode, charge, discount) {
+    console.log('mode>>', mode);
+    console.log('charge>>', charge);
+    console.log('discount>>', discount);
+    
+    charge = parseFloat(charge);
+    discount = parseFloat(discount);
+
+    if (charge > 0) {
+        // Heading
+        if (document.getElementById('payment-method-summary-text'))
+            document.getElementById('payment-method-summary-text').innerText = 'Payment method Charge';
+        // Amount
+        if (document.getElementById('payment-method-summary-amount'))
+            document.getElementById('payment-method-summary-amount').innerText = charge;
+        // Icon
+        if (document.getElementById('payment-method-summary-icon'))
+            document.getElementById('payment-method-summary-icon').innerText = '';
+        // Color
+        if (document.getElementById('payment-method-summary-highlight'))
+            document.getElementById('payment-method-summary-highlight').classList.remove('text-green-600');
+
+        // Total Amount
+        if (totalAmountShowEl && totalAmountEl) {
+            let totalAmount = totalAmountEl.innerText;
+            const newAmount = parseFloat(totalAmount) + charge;
+            totalAmountShowEl.innerText = formatIndianMoney(newAmount);
+        }
+    } else if (discount > 0) {
+        // Heading
+        if (document.getElementById('payment-method-summary-text'))
+            document.getElementById('payment-method-summary-text').innerText = 'Payment method Discount';
+        // Amount
+        if (document.getElementById('payment-method-summary-amount'))
+            document.getElementById('payment-method-summary-amount').innerText = discount;
+        // Icon
+        if (document.getElementById('payment-method-summary-icon'))
+            document.getElementById('payment-method-summary-icon').innerText = '-';
+        // Color
+        if (document.getElementById('payment-method-summary-highlight'))
+            document.getElementById('payment-method-summary-highlight').classList.add('text-green-600');
+
+        // Total Amount
+        if (totalAmountShowEl && totalAmountEl) {
+            let totalAmount = totalAmountEl.innerText;
+            const newAmount = parseFloat(totalAmount) - discount;
+            totalAmountShowEl.innerText = formatIndianMoney(newAmount);
+        }
+    }
+}
+
+if (paymentMethodEl) {
+    paymentMethodEl.forEach(el => {
+        el.addEventListener('change', () => {
+            updatePaymentMode('cod', el.dataset.charge, el.dataset.discount);
+        });
+    })
+}
+
+// if (prePayEl.checked) {
+//     updatePaymentMode('prePaid', prePayEl.dataset.charge, prePayEl.dataset.discount);
+// } else if (codEl.checked) {
+//     updatePaymentMode('cod', codEl.dataset.charge, codEl.dataset.discount);
+// }
+
+// prePayEl.addEventListener('change', () => {
+//     updatePaymentMode('prePaid', prePayEl.dataset.charge, prePayEl.dataset.discount);
+// });
+// codEl.addEventListener('change', () => {
+//     updatePaymentMode('cod', codEl.dataset.charge, codEl.dataset.discount);
+// });
+*/

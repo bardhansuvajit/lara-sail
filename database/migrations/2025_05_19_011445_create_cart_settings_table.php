@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('tax_type')->default('percentage')->comment('fixed, percentage');
             $table->boolean('tax_exclusive')->default(false);
 
+            /*
             // COD settings
             $table->boolean('cod_enable')->default(true);
             $table->string('cod_title', 50)->default('Cash on Delivery')->comment('Cash on Delivery|Pay on Delivery');
@@ -37,6 +38,11 @@ return new class extends Migration
             $table->boolean('prepaid_enable')->default(true);
             $table->decimal('prepaid_charge', 10, 2)->default(0);
             $table->decimal('prepaid_discount', 10, 2)->default(0);
+            
+
+            // Payment method
+            $table->enum('default_payment_method', ['cod', 'prepay'])->default('cod');
+            */
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
@@ -97,10 +103,7 @@ return new class extends Migration
                 'free_shipping_threshold' => 499,
                 'tax_rate' => 18,
                 'tax_name' => 'GST',
-                'tax_type' => 'percentage',
-
-                'cod_charge' => 99.99,
-                'prepaid_discount' => 50,
+                'tax_type' => 'percentage'
             ],
             [
                 'country' => 'US',
@@ -109,10 +112,7 @@ return new class extends Migration
                 'free_shipping_threshold' => 7.99,
                 'tax_rate' => 19,
                 'tax_name' => 'VAT',
-                'tax_type' => 'fixed',
-
-                'cod_charge' => 9.99,
-                'prepaid_discount' => 9.99
+                'tax_type' => 'fixed'
             ]
         ];
 

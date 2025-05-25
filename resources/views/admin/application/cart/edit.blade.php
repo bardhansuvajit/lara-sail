@@ -16,8 +16,11 @@
 
                     {{-- {{ $item }} --}}
 
-                    <div class="">
-                        <p class="text-xl font-semibold text-gray-900 dark:text-white">{{ $item->countryDetails->name }} {{ $item->countryDetails->currency_symbol }}</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8">
+                            {!! $item->countryDetails->flag !!}
+                        </div>
+                        <p class="text-xl font-semibold text-gray-900 dark:text-white">{{ $item->countryDetails->name }}</p>
                     </div>
 
                     <div class="grid grid-cols-4 gap-4">
@@ -32,7 +35,7 @@
                         <div class="col-span-1">
                             <div>
                                 <x-admin.input-label for="shipping_charge" :value="__('Shipping Charge *')" />
-                                <x-admin.text-input id="shipping_charge" class="block w-full" type="text" name="shipping_charge[]" :value="old('shipping_charge') ? old('shipping_charge') : $item->shipping_charge" placeholder="Enter Shipping Charge" autofocus required />
+                                <x-admin.text-input id="shipping_charge" class="block w-full" type="text" name="shipping_charge[]" :value="old('shipping_charge') ? old('shipping_charge') : $item->shipping_charge" placeholder="Enter Shipping Charge" required />
                                 <x-admin.input-error :messages="$errors->get('shipping_charge')" class="mt-2" />
                             </div>
                         </div>
@@ -40,7 +43,7 @@
                         <div class="col-span-1">
                             <div>
                                 <x-admin.input-label for="free_shipping_threshold" :value="__('Free Shipping Threshold *')" />
-                                <x-admin.text-input id="free_shipping_threshold" class="block w-full" type="text" name="free_shipping_threshold[]" :value="old('free_shipping_threshold') ? old('free_shipping_threshold') : $item->free_shipping_threshold" placeholder="Enter Free Shipping Threshold" autofocus required />
+                                <x-admin.text-input id="free_shipping_threshold" class="block w-full" type="text" name="free_shipping_threshold[]" :value="old('free_shipping_threshold') ? old('free_shipping_threshold') : $item->free_shipping_threshold" placeholder="Enter Free Shipping Threshold" required />
                                 <x-admin.input-error :messages="$errors->get('free_shipping_threshold')" class="mt-2" />
                             </div>
                         </div>
@@ -50,7 +53,7 @@
                         <div class="col-span-1">
                             <div>
                                 <x-admin.input-label for="tax_name" :value="__('TAX Name *')" />
-                                <x-admin.text-input id="tax_name" class="block w-full" type="text" name="tax_name[]" :value="old('tax_name') ? old('tax_name') : $item->tax_name" placeholder="Enter TAX Name" autofocus required />
+                                <x-admin.text-input id="tax_name" class="block w-full" type="text" name="tax_name[]" :value="old('tax_name') ? old('tax_name') : $item->tax_name" placeholder="Enter TAX Name" required />
                                 <x-admin.input-error :messages="$errors->get('tax_name')" class="mt-2" />
                             </div>
                         </div>
@@ -58,7 +61,7 @@
                         <div class="col-span-1">
                             <div>
                                 <x-admin.input-label for="tax_rate" :value="__('TAX Rate *')" />
-                                <x-admin.text-input id="tax_rate" class="block w-full" type="text" name="tax_rate[]" :value="old('tax_rate') ? old('tax_rate') : $item->tax_rate" placeholder="Enter TAX Rate" autofocus required />
+                                <x-admin.text-input id="tax_rate" class="block w-full" type="text" name="tax_rate[]" :value="old('tax_rate') ? old('tax_rate') : $item->tax_rate" placeholder="Enter TAX Rate" required />
                                 <x-admin.input-error :messages="$errors->get('tax_rate')" class="mt-2" />
                             </div>
                         </div>
@@ -76,7 +79,7 @@
                                         <x-admin.input-select-option value="percentage" :selected="$item->tax_type == 'percentage'"> Percentage </x-admin.input-select-option>
                                     @endslot
                                 </x-admin.input-select>
-                                <x-admin.input-error :messages="$errors->get('tax_name')" class="mt-2" />
+                                <x-admin.input-error :messages="$errors->get('tax_type')" class="mt-2" />
                             </div>
                         </div>
 
@@ -93,7 +96,7 @@
                                         <x-admin.input-select-option value="1" :selected="$item->tax_exclusive == 1"> YES </x-admin.input-select-option>
                                     @endslot
                                 </x-admin.input-select>
-                                <x-admin.input-error :messages="$errors->get('tax_name')" class="mt-2" />
+                                <x-admin.input-error :messages="$errors->get('tax_exclusive')" class="mt-2" />
                             </div>
                             {{-- <p class="text-xs  text-gray-500 dark:text-gray-400">TAX Exclusive ?</p>
                             <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ ($item->tax_exclusive == 0) ? 'NO' : 'YES' }}</p> --}}
@@ -109,6 +112,8 @@
 
                 <div class="col-span-4">
                     <div class="flex space-x-2 mt-2">
+                        <input type="hidden" name="type" value="cart">
+
                         <x-admin.button
                             type="submit"
                             class="w-40"

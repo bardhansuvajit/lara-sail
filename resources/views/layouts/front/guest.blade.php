@@ -63,7 +63,13 @@
         <!-- footer -->
         @include('layouts.front.footer')
 
+        <!-- Quick Cart -->
+        @if (!request()->is('cart') && !request()->is('checkout'))
+            @include('layouts.front.includes.cart-item-delete-confirm-modal')
+        @endif
+
         @include('layouts.admin.notification')
+        @include('layouts.front.includes.full-page-loader')
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {

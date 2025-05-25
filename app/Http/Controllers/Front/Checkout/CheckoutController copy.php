@@ -84,14 +84,14 @@ class CheckoutController extends Controller
             $states = $statesData['data'];
 
             // Find Payment Methods
-            // $payment_methods = $this->paymentMethodRepository->list('', ['status' => 1, 'country_code' => $country], 'all', 'position', 'asc')['data'];
+            $payment_methods = $this->paymentMethodRepository->list('', ['status' => 1, 'country_code' => $country], 'all', 'position', 'asc')['data'];
 
             return view('front.checkout.index', [
                 'user' => auth()->guard('web')->user(),
                 'states' => $states,
                 'shippingAddresses' => $shippingAddresses,
                 'billingAddresses' => $billingAddresses,
-                // 'paymentMethods' => $payment_methods,
+                'paymentMethods' => $payment_methods,
             ]);
         }
         // When User is NOT LOGGED IN

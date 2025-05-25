@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
 use Illuminate\Database\Eloquent\Collection;
 use App\Interfaces\CartSettingInterface;
+use App\Interfaces\PaymentMethodInterface;
 
 use App\Exports\CartsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -18,11 +19,17 @@ class CartRepository implements CartInterface
 {
     private TrashInterface $trashRepository;
     private CartSettingInterface $cartSettingRepository;
+    private PaymentMethodInterface $paymentMethodRepository;
 
-    public function __construct(TrashInterface $trashRepository, CartSettingInterface $cartSettingRepository)
+    public function __construct(
+        TrashInterface $trashRepository, 
+        CartSettingInterface $cartSettingRepository, 
+        PaymentMethodInterface $paymentMethodRepository
+    )
     {
         $this->trashRepository = $trashRepository;
         $this->cartSettingRepository = $cartSettingRepository;
+        $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
@@ -217,6 +224,7 @@ class CartRepository implements CartInterface
         }
     }
 
+    /*
     public function updateCartTotals($cart)
     {
         // dd($cart->items()->sum('quantity'));
@@ -230,7 +238,7 @@ class CartRepository implements CartInterface
 
             $shippingCost = 0;
 
-            // Get applicable shipping rule
+            // Calculate SHIPPING Cost
             $cartSettingResp = $this->cartSettingRepository->list('', [], 'all', 'id', 'asc');
             $cartSettings = $cartSettingResp['data'] ?? [];
 
@@ -246,6 +254,51 @@ class CartRepository implements CartInterface
             }
 
             // dd($shippingCost);
+            $grandTotal = $itemsTotal + $shippingCost;
+
+            // Calculate PAYMENT METHOD Cost
+            $paymentMethodCost = $paymentMethodCharge = $paymentMethodDiscount = 0;
+            $paymentMethodTitle = null;
+
+            $paymentMethodData = $this->paymentMethodRepository->list('', ['status' => 1, 'country_code' => COUNTRY['country']], 'all', 'position', 'asc')['data'][0];
+            // If CHARGE
+            if ($paymentMethodData->charge_amount > 0) {
+                $paymentMethodTitle = $paymentMethodData->charge_title;
+                $c_amount = $paymentMethodData->charge_amount;
+                $c_type = $paymentMethodData->charge_type;
+
+                if ($c_type == 'fixed') {
+                    $paymentCharge = $c_amount;
+                    $totalAfterCharge = $itemsTotal + $paymentCharge;
+                } else if ($c_type == 'percentage') {
+                    $paymentCharge = ($itemsTotal * $c_amount) / 100;
+                    $totalAfterCharge = $itemsTotal + $paymentCharge;
+                }
+
+                $paymentMethodCharge = $paymentCharge;
+                $paymentMethodDiscount = 0;
+                $grandTotal = $totalAfterCharge + $shippingCost;
+            }
+            // If DISCOUNT
+            elseif ($paymentMethodData->discount_amount > 0) {
+                $paymentMethodTitle = $paymentMethodData->discount_title;
+                $d_amount = $paymentMethodData->discount_amount;
+                $d_type = $paymentMethodData->discount_type;
+
+                if ($d_type == 'fixed') {
+                    // dd('fixed');
+                    $paymentCharge = $d_amount;
+                    $totalAfterCharge = $itemsTotal - $paymentCharge;
+                } else if ($d_type == 'percentage') {
+                    $paymentCharge = ($itemsTotal * $d_amount) / 100;
+                    $totalAfterCharge = $itemsTotal - $paymentCharge;
+                }
+
+                $paymentMethodDiscount = $paymentCharge;
+                $paymentMethodCharge = 0;
+                $grandTotal = $totalAfterCharge + $shippingCost;
+            }
+            // dd($paymentMethodData);
 
             // Update cart totals
             $cart->update([
@@ -253,7 +306,12 @@ class CartRepository implements CartInterface
                 'mrp' => $totalMrp,
                 'sub_total' => $itemsTotal,
                 'shipping_cost' => $shippingCost,
-                'total' => $itemsTotal + $shippingCost,
+
+                'payment_method' => $paymentMethodTitle,
+                'payment_method_charge' => $paymentMethodCharge,
+                'payment_method_discount' => $paymentMethodDiscount,
+
+                'total' => $grandTotal,
                 'last_activity_at' => now(),
             ]);
 
@@ -274,6 +332,127 @@ class CartRepository implements CartInterface
                 'error' => $e->getMessage(),
             ];
         }
+    }
+    */
+
+    public function updateCartTotals($cart)
+    {
+        try {
+            // Calculate item totals
+            $itemsTotal = $cart->items()->sum('total');
+            $itemsQuantity = $cart->items()->sum('quantity');
+            $totalMrp = $cart->items->sum(fn($item) => $item->mrp * $item->quantity);
+
+            // Calculate shipping cost
+            $shippingCost = $this->calculateShippingCost($cart, $itemsTotal);
+
+            // Calculate payment method adjustments
+            $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $shippingCost);
+
+            // Update cart totals
+            $cart->update([
+                'total_items' => $itemsQuantity,
+                'mrp' => $totalMrp,
+                'sub_total' => $itemsTotal,
+                'shipping_cost' => $shippingCost,
+                'payment_method_id' => $paymentDetails['id'],
+                'payment_method_title' => $paymentDetails['title'],
+                'payment_method_charge' => $paymentDetails['charge'],
+                'payment_method_discount' => $paymentDetails['discount'],
+                'total' => $paymentDetails['grandTotal'],
+                'last_activity_at' => now(),
+            ]);
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Cart totals updated successfully.',
+                'data' => [
+                    'cart' => $cart,
+                    'items' => $cart->items
+                ],
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating the cart totals.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    protected function calculateShippingCost($cart, $itemsTotal): float
+    {
+        $cartSettingResp = $this->cartSettingRepository->list('', [], 'all', 'id', 'asc');
+        $cartSettings = $cartSettingResp['data'] ?? [];
+
+        foreach ($cartSettings as $cartSetting) {
+            if ($cartSetting->country === $cart->country 
+                && $itemsTotal < $cartSetting->free_shipping_threshold) {
+                return (float) $cartSetting->shipping_charge;
+            }
+        }
+
+        return 0.0;
+    }
+
+    protected function calculatePaymentMethodAdjustments(float $itemsTotal, float $shippingCost): array
+    {
+        $paymentMethodData = $this->paymentMethodRepository->list('', [
+            'status' => 1, 
+            'country_code' => COUNTRY['country']
+        ], 'all', 'position', 'asc')['data'][0] ?? null;
+
+        if (!$paymentMethodData) {
+            return [
+                'id' => null,
+                'title' => null,
+                'charge' => 0,
+                'discount' => 0,
+                'grandTotal' => $itemsTotal + $shippingCost
+            ];
+        }
+
+        $adjustment = 0;
+        $id = null;
+        $title = null;
+        $isCharge = false;
+
+        if ($paymentMethodData->charge_amount > 0) {
+            $adjustment = $this->calculateAdjustment(
+                $itemsTotal,
+                $paymentMethodData->charge_amount,
+                $paymentMethodData->charge_type
+            );
+            $id = $paymentMethodData->id;
+            $title = $paymentMethodData->charge_title;
+            $isCharge = true;
+        } elseif ($paymentMethodData->discount_amount > 0) {
+            $adjustment = $this->calculateAdjustment(
+                $itemsTotal,
+                $paymentMethodData->discount_amount,
+                $paymentMethodData->discount_type
+            );
+            $id = $paymentMethodData->id;
+            $title = $paymentMethodData->discount_title;
+            $isCharge = false;
+        }
+
+        return [
+            'id' => $id,
+            'title' => $title,
+            'charge' => $isCharge ? $adjustment : 0,
+            'discount' => $isCharge ? 0 : $adjustment,
+            'grandTotal' => $itemsTotal + ($isCharge ? $adjustment : -$adjustment) + $shippingCost
+        ];
+    }
+
+    protected function calculateAdjustment(float $amount, float $adjustmentValue, string $type): float
+    {
+        return $type === 'fixed' 
+            ? $adjustmentValue 
+            : ($amount * $adjustmentValue) / 100;
     }
 
     public function delete(Int $id)

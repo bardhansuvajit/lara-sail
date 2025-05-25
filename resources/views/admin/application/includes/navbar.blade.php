@@ -8,6 +8,9 @@
                 <li>
                     <a href="{{ route('admin.application.settings.index', 'cart') }}" class="px-4 py-3 inline-block text-gray-900 dark:text-white hover:underline {{ request()->is('admin/application/settings/cart*') ? 'bg-gray-100 dark:bg-gray-700' : '' }}">Cart</a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.application.settings.index', 'payment') }}" class="px-4 py-3 inline-block text-gray-900 dark:text-white hover:underline {{ request()->is('admin/application/settings/payment*') ? 'bg-gray-100 dark:bg-gray-700' : '' }}">Payment</a>
+                </li>
             </ul>
         </div>
     </div>

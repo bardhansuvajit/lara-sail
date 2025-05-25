@@ -22,7 +22,10 @@
                             @include('front.checkout.includes.address')
 
                             <!-- PAYMENT -->
-                            @include('front.checkout.includes.payment')
+                            @livewire('payment-method', [
+                                'shippingAddrExistCount' => count($shippingAddresses)
+                            ])
+                            {{-- @include('front.checkout.includes.payment') --}}
                         @endif
 
                     </div>

@@ -67,15 +67,56 @@
         </div>
     </div>
 
-    {{-- {{dd($cartSetting)}} --}}
-
     <div id="order-summary-container" class="">
-        @include('livewire.includes.order-summary')
+        <div class="w-full space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
+            <div id="order-summary" class="hidden lg:block">
+                <p class="{{FD['text-1']}} font-semibold text-gray-900 dark:text-white mb-2">Order summary</p>
+
+                <div class="space-y-2">
+                    <dl class="flex items-center justify-between gap-4">
+                        <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Original price
+                        </dt>
+                        <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['sub_total']) }}</dd>
+                    </dl>
+
+                    <dl class="flex items-center justify-between gap-4">
+                        <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Savings</dt>
+                        <dd class="{{FD['text']}} font-medium text-green-600">-<span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['discount_amount']) }}</dd>
+                    </dl>
+
+                    <dl class="flex items-center justify-between gap-4">
+                        <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Shipping</dt>
+                        <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['shipping_cost']) }}</dd>
+                    </dl>
+
+                    <dl class="flex items-center justify-between gap-4">
+                        <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Tax</dt>
+                        <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['tax_amount']) }}</dd>
+                    </dl>
+
+                    <dl class="flex items-center justify-between gap-4">
+                        <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Coupon Discount</dt>
+                        <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white">
+                            <button class="{{FD['activeClass']}}">Apply Coupon</button>
+                        </dd>
+                    </dl>
+                </div>
+
+                <div class="border-t border-gray-200 dark:border-gray-700 mt-4 pb-3 sm:pb-0"></div>
+            </div>
+
+            <dl class="flex items-center justify-between gap-4 border-0 dark:border-gray-700 pb-2 sm:pb-0">
+                <dt class="{{FD['text']}} font-bold text-gray-900 dark:text-white">Total</dt>
+                <dd class="{{FD['text']}} font-bold text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['total']) }}</dd>
+            </dl>
+
+            <div class="items-center justify-center gap-2 hidden lg:flex">
+                <a href="{{ route('front.cart.index') }}" class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
+                    <svg class="{{FD['iconClass']}}" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-200 80-480l280-280 56 56-183 184h647v80H233l184 184-57 56Z"/></svg>
+                    Back to Cart
+                </a>
+            </div>
+
+        </div>
     </div>
-
-
-    {{-- MODALS --}}
-    <!-- COUPONS -->
-    @include('layouts.front.includes.coupons-sidebar')
-
 </div>

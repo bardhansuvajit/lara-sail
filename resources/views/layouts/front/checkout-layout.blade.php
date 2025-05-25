@@ -54,7 +54,6 @@
 
         <!-- footer -->
         {{-- @include('layouts.front.footer') --}}
-        
 
         <footer class="bg-white shadow-sm m-0 dark:bg-gray-800 mb-16">
             <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
@@ -77,8 +76,13 @@
             </div>
         </footer>
 
+        <!-- Quick Cart -->
+        @if (!request()->is('cart') && !request()->is('checkout'))
+            @include('layouts.front.includes.cart-item-delete-confirm-modal')
+        @endif
 
         @include('layouts.admin.notification')
+        @include('layouts.front.includes.full-page-loader')
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {

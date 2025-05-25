@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 
 class Cart extends Component
 {
+    public String $page;
     public Collection $cart;
     public Collection $savedItems;
     public Collection $cartSetting;
@@ -18,18 +19,25 @@ class Cart extends Component
     private CartItemInterface $cartItemRepository;
     private CartSettingInterface $cartSettingRepository;
 
-    public function mount(CartInterface $cartRepository, CartItemInterface $cartItemRepository, CartSettingInterface $cartSettingRepository)
+    public function mount(
+        CartInterface $cartRepository, 
+        CartItemInterface $cartItemRepository, 
+        CartSettingInterface $cartSettingRepository
+    )
     {
+        $this->page = 'cart';
         $this->itemData = [];
         $this->getCartData();
     }
 
     public function getCartData()
     {
+        $country = COUNTRY['country'];
+
         // Get Cart Setting
         $cartSettingRepository = app(CartSettingInterface::class);
         $cartSettingData = $cartSettingRepository->exists([
-            'country' => COUNTRY['country']
+            'country' => $country
         ])['data'];
         $this->cartSetting = collect($cartSettingData);
 
@@ -50,8 +58,10 @@ class Cart extends Component
             ]);
         }
 
-        // Update cart totals
-        $cartUpdateResp = $cartRepository->updateCartTotals($cart['data']);
+        // Update cart totals, if cart data exists
+        if (!empty($cart['data'])) {
+            $cartUpdateResp = $cartRepository->updateCartTotals($cart['data']);
+        }
         // dd($cartUpdateResp);
         // dd($cart['data']);
 

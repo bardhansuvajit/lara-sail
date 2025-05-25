@@ -25,41 +25,52 @@
 
                     <div class="grid grid-cols-4">
                         <div class="col-span-1">
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Minimum Order value</p>
-                            <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $currencySymbol }}{{ formatIndianMoney($item->min_order_value) }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Method</p>
+                            <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $item->method }}</p>
                         </div>
 
                         <div class="col-span-1">
-                            <p class="text-xs  text-gray-500 dark:text-gray-400">Shipping Charge</p>
-                            <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $currencySymbol }}{{ formatIndianMoney($item->shipping_charge) }}</p>
+                            <p class="text-xs  text-gray-500 dark:text-gray-400">Title</p>
+                            <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $item->title }}</p>
                         </div>
 
-                        <div class="col-span-1">
-                            <p class="text-xs  text-gray-500 dark:text-gray-400">Free Shipping Threshold</p>
-                            <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $currencySymbol }}{{ formatIndianMoney($item->free_shipping_threshold) }}</p>
+                        <div class="col-span-2">
+                            <p class="text-xs  text-gray-500 dark:text-gray-400">Description</p>
+                            <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $item->description }}</p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-4">
                         <div class="col-span-1">
-                            <p class="text-xs text-gray-500 dark:text-gray-400">TAX</p>
-                            <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $item->tax_name }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Charge Title</p>
+                            <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $item->charge_title }}</p>
                         </div>
 
                         <div class="col-span-1">
-                            <p class="text-xs  text-gray-500 dark:text-gray-400">TAX Rate</p>
+                            <p class="text-xs  text-gray-500 dark:text-gray-400">Amount</p>
                             <p class="text-xs font-semibold text-gray-900 dark:text-white">
-                                @if ($item->tax_type == "fixed")
-                                    +{{ $currencySymbol }}{{ $item->tax_rate }}
+                                @if ($item->charge_type == "fixed")
+                                    +{{ $currencySymbol }}{{ $item->charge_amount }}
                                 @else
-                                    {{ $item->tax_rate }}%
+                                    {{ $item->charge_amount }}%
                                 @endif
                             </p>
                         </div>
 
                         <div class="col-span-1">
-                            <p class="text-xs  text-gray-500 dark:text-gray-400">TAX Exclusive ?</p>
-                            <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ ($item->tax_exclusive == 0) ? 'NO' : 'YES' }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Discount Title</p>
+                            <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $item->discount_title }}</p>
+                        </div>
+
+                        <div class="col-span-1">
+                            <p class="text-xs  text-gray-500 dark:text-gray-400">Amount</p>
+                            <p class="text-xs font-semibold text-gray-900 dark:text-white">
+                                @if ($item->discount_type == "fixed")
+                                    +{{ $currencySymbol }}{{ $item->discount_amount }}
+                                @else
+                                    {{ $item->discount_amount }}%
+                                @endif
+                            </p>
                         </div>
                     </div>
 
@@ -76,7 +87,7 @@
                             element="a"
                             tag="secondary"
                             class="w-40"
-                            :href="route('admin.application.settings.edit', 'cart')">
+                            :href="route('admin.application.settings.edit', 'payment')">
                             @slot('icon')
                                 <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"></path></svg>
                             @endslot

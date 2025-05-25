@@ -74,15 +74,10 @@
                             text="{{COUNTRY['countryFullName']}} ({{COUNTRY['phoneCode']}})"
                             textPosition="start" 
                             :focus="$focus === 'phone_no'"
-                            required
                         >
                         </x-front.text-input-with-text>
                         <x-front.input-error :messages="$errors->get('phone_no')" class="mt-2" />
                     </div>
-                </div>
-
-                <div>
-                    <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p>
                 </div>
             </div>
             @endif
@@ -121,8 +116,8 @@
                         label="Show password" />
                 </div>
 
-                <div>
-                    <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p>
+                {{-- <div>
+                    <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p> --}}
                 </div>
             </div>
             @endif
@@ -183,12 +178,12 @@
                         id="show-password"
                         label="Show password" />
                 </div>
-
-                <div>
-                    <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p>
-                </div>
             </div>
             @endif
+
+            {{-- <div>
+                <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p>
+            </div> --}}
 
             {{-- form buttons --}}
             <div class="fixed z-[1] sm:static bottom-16 sm:bottom-0 w-full -ml-[17px] -mb-[8px] sm:m-0 space-y-0 sm:space-y-4 {{FD['rounded']}} border sm:border-0 border-gray-200 bg-white px-2 py-3 sm:p-0 dark:border-0 dark:bg-gray-800">
@@ -208,7 +203,6 @@
                 </div>
             </div>
 
-            <input type="hidden" name="remember" value="on">
             <input type="hidden" name="phone_country_code" value="{{COUNTRY['country']}}"> <!-- returns 'IN' -->
             <input type="hidden" name="request_path" value="{{request()->path()}}"> <!-- returns 'checkout' -->
         </form>

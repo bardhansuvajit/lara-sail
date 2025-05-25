@@ -24,6 +24,24 @@
                 <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['tax_amount']) }}</dd>
             </dl>
 
+            {{-- Payment method Charge/ Discount --}}
+            @if ( ($cart['payment_method_charge'] > 0))
+                <dl class="flex items-center justify-between gap-4">
+                    <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400" id="payment-method-summary-text">Payment method Charge</dt>
+                    <dd class="{{FD['text']}} font-medium" id="payment-method-summary-highlight">
+                        <span id="payment-method-summary-icon"></span><span class="currency-symbol">{{COUNTRY['icon']}}</span><span id="payment-method-summary-amount">{{formatIndianMoney($cart['payment_method_charge'])}}</span>
+                    </dd>
+                </dl>
+            @elseif ( $cart['payment_method_discount'] > 0 )
+                <dl class="flex items-center justify-between gap-4">
+                    <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400" id="payment-method-summary-text">Payment method Discount</dt>
+                    <dd class="{{FD['text']}} font-medium text-green-600" id="payment-method-summary-highlight">
+                        -<span id="payment-method-summary-icon"></span><span class="currency-symbol">{{COUNTRY['icon']}}</span><span id="payment-method-summary-amount">{{formatIndianMoney($cart['payment_method_discount'])}}</span>
+                    </dd>
+                </dl>
+            @endif
+            {{-- Payment method Charge/ Discount --}}
+
             <dl class="flex items-center justify-between gap-4">
                 <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Coupon Discount</dt>
                 <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white">
@@ -43,7 +61,10 @@
 
     <dl class="flex items-center justify-between gap-4 border-0 dark:border-gray-700 pb-2 sm:pb-0">
         <dt class="{{FD['text']}} font-bold text-gray-900 dark:text-white">Total</dt>
-        <dd class="{{FD['text']}} font-bold text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['total']) }}</dd>
+        <dd class="{{FD['text']}} font-bold text-gray-900 dark:text-white">
+            <span class="currency-symbol">{{COUNTRY['icon']}}</span><span id="total-amount-show">{{ formatIndianMoney($cart['total']) }}</span>
+            <span id="total-amount" class="hidden">{{ $cart['total'] }}</span>
+        </dd>
     </dl>
 
     <div class="flex space-x-2 lg:space-x-0">
@@ -55,7 +76,7 @@
             </div>
         </button>
 
-        @if (request()->is('cart'))
+        @if ($page == 'cart')
             @if (isset($cart['items']) && count($cart['items']) > 0)
                 @if ($cartSetting['min_order_value'] > $cart['total'])
                     <a href="javascript: void(0)" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 opacity-75 cursor-no-drop">
@@ -69,7 +90,7 @@
         @endif
     </div>
 
-    @if (request()->is('cart'))
+    @if ($page == 'cart')
         <div class="items-center justify-center gap-2 hidden lg:flex">
             <span class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400"> or </span>
             <a href="{{ route('front.collection.index') }}" class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
@@ -79,7 +100,7 @@
         </div>
     @endif
 
-    @if (request()->is('checkout'))
+    @if ($page == 'checkout')
         <div class="items-center justify-center gap-2 hidden lg:flex">
             <a href="{{ route('front.cart.index') }}" class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
                 <svg class="{{FD['iconClass']}}" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-200 80-480l280-280 56 56-183 184h647v80H233l184 184-57 56Z"/></svg>
