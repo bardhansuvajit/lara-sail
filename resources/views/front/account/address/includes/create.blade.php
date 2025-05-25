@@ -7,13 +7,13 @@
         <div class="grid gap-4 mb-4 grid-cols-1 sm:grid-cols-3">
             <div>
                 <x-front.input-label for="{{$type}}_first_name" :value="__('First Name *')" />
-                <x-front.text-input id="{{$type}}_first_name" class="block w-full" type="text" name="first_name" placeholder="Enter First Name" :value="old('first_name') ? old('first_name') : auth()->guard('web')->user()->first_name ?? ''" maxlength="100" autocomplete="new-first_name" required />
+                <x-front.text-input id="{{$type}}_first_name" class="block w-full" type="text" name="first_name" placeholder="Enter First Name" :value="old('first_name') ? old('first_name') : auth()->guard('web')->user()->first_name ?? ''" maxlength="100" autocomplete="given-name" required />
                 <x-front.input-error :messages="$errors->get('first_name')" class="mt-2" />
             </div>
 
             <div>
                 <x-front.input-label for="{{$type}}_last_name" :value="__('Last Name *')" />
-                <x-front.text-input id="{{$type}}_last_name" class="block w-full" type="text" name="last_name" placeholder="Enter Last Name" maxlength="100" autocomplete="new-last_name" :value="old('last_name') ? old('last_name') : auth()->guard('web')->user()->last_name ?? ''" required />
+                <x-front.text-input id="{{$type}}_last_name" class="block w-full" type="text" name="last_name" placeholder="Enter Last Name" maxlength="100" autocomplete="family-name" :value="old('last_name') ? old('last_name') : auth()->guard('web')->user()->last_name ?? ''" required />
                 <x-front.input-error :messages="$errors->get('last_name')" class="mt-2" />
             </div>
         </div>
@@ -27,6 +27,7 @@
                     class="digits-only" 
                     type="tel" 
                     name="phone_no" 
+                    autocomplete="tel-national"
                     :value="old('phone_no') ? old('phone_no') : auth()->guard('web')->user()->primary_phone_no ?? ''" 
 
                     text="{{COUNTRY['countryFullName']}} ({{COUNTRY['phoneCode']}})"
@@ -38,7 +39,7 @@
 
             <div>
                 <x-front.input-label for="{{$type}}_email" :value="__('Email')" />
-                <x-front.text-input id="{{$type}}_email" class="block w-full" type="email" name="email" :value="old('email') ? old('email') : auth()->guard('web')->user()->email ?? ''" placeholder="Enter Email Address" autocomplete="username" maxlength="70" />
+                <x-front.text-input id="{{$type}}_email" class="block w-full" type="email" name="email" :value="old('email') ? old('email') : auth()->guard('web')->user()->email ?? ''" placeholder="Enter Email Address" autocomplete="email" maxlength="70" />
                 <x-front.input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
         </div>
@@ -46,7 +47,7 @@
         <div class="grid gap-4 mb-4 grid-cols-1 sm:grid-cols-3">
             <div class="col-span-2">
                 <x-front.input-label for="{{$type}}_address_line_1" :value="__('Flat, House no, Building, Company, Apartment *')" />
-                <x-front.text-input id="{{$type}}_address_line_1" class="block w-full" type="text" name="address_line_1" :value="old('address_line_1')" placeholder="Enter Flat, House no, Building, Company, Apartment" maxlength="200" autocomplete="new-address_line_1" autofocus required />
+                <x-front.text-input id="{{$type}}_address_line_1" class="block w-full" type="text" name="address_line_1" :value="old('address_line_1')" placeholder="Enter Flat, House no, Building, Company, Apartment" maxlength="200" autocomplete="address-line1" autofocus required />
                 <x-front.input-error :messages="$errors->get('address_line_1')" class="mt-2" />
             </div>
         </div>
@@ -54,7 +55,7 @@
         <div class="grid gap-4 mb-4 grid-cols-1 sm:grid-cols-3">
             <div class="col-span-2">
                 <x-front.input-label for="{{$type}}_address_line_2" :value="__('Area, Street, Sector, Village')" />
-                <x-front.text-input id="{{$type}}_address_line_2" class="block w-full" type="text" name="address_line_2" :value="old('address_line_2')" placeholder="Enter Area, Street, Sector, Village" maxlength="200" autocomplete="new-address_line_2" />
+                <x-front.text-input id="{{$type}}_address_line_2" class="block w-full" type="text" name="address_line_2" :value="old('address_line_2')" placeholder="Enter Area, Street, Sector, Village" maxlength="200" autocomplete="address-line2" />
                 <x-front.input-error :messages="$errors->get('address_line_2')" class="mt-2" />
             </div>
         </div>
@@ -62,13 +63,13 @@
         <div class="grid gap-4 mb-4 grid-cols-1 sm:grid-cols-3">
             <div>
                 <x-front.input-label for="{{$type}}_postal_code" :value="__('Postal Code *')" />
-                <x-front.text-input id="{{$type}}_postal_code" class="block w-full digits-only" type="tel" name="postal_code" :value="old('postal_code')" placeholder="Enter Postal Code" maxlength="{{COUNTRY['postalCodeDigits']}}" required />
+                <x-front.text-input id="{{$type}}_postal_code" class="block w-full digits-only" type="tel" name="postal_code" :value="old('postal_code')" placeholder="Enter Postal Code" maxlength="{{COUNTRY['postalCodeDigits']}}" autocomplete="postal-code" required />
                 <x-front.input-error :messages="$errors->get('postal_code')" class="mt-2" />
             </div>
 
             <div>
                 <x-front.input-label for="{{$type}}_city" :value="__('Town/ City *')" />
-                <x-front.text-input id="{{$type}}_city" class="block w-full" type="text" name="city" :value="old('city')" placeholder="Enter Town/ City" maxlength="50" autocomplete="new-city" required />
+                <x-front.text-input id="{{$type}}_city" class="block w-full" type="text" name="city" :value="old('city')" placeholder="Enter Town/ City" maxlength="50" autocomplete="address-level2" required />
                 <x-front.input-error :messages="$errors->get('city')" class="mt-2" />
             </div>
 
