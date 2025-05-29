@@ -20,6 +20,7 @@ first-build: ## Initial build after clone
 	@./vendor/bin/sail php artisan migrate:fresh --seed
 	@./vendor/bin/sail npm install
 	@./vendor/bin/sail npm run dev
+	@./vendor/bin/sail php artisan storage:link
 
 build: ## Start all containers
 	@./vendor/bin/sail build --no-cache
@@ -68,3 +69,5 @@ optimize: ## Cache all
 optimize-clear: ## Clear all cache
 	@./vendor/bin/sail php artisan optimize:clear
 
+file-permission: ## Give permrission to folders inside
+	sudo chmod -R 777 storage

@@ -18,6 +18,7 @@ class CartCheckout extends Component
     private CartInterface $cartRepository;
     private CartItemInterface $cartItemRepository;
     private CartSettingInterface $cartSettingRepository;
+    protected $listeners = ['updateCartData' => 'getCartDataWOPaymentMethodUpdate'];
 
     public function mount(
         CartInterface $cartRepository, 
@@ -69,6 +70,43 @@ class CartCheckout extends Component
         $this->cart = collect($cart['data'] ?? []);
         $this->savedItems = collect($cart['data']->savedItems ?? []);
         // $this->savedItems = count($cart['data']) > 0 ? collect($cart['data']->savedItems) : collect([]);
+    }
+
+    public function getCartDataWOPaymentMethodUpdate()
+    {
+        $country = COUNTRY['country'];
+
+        // Get Cart Setting
+        $cartSettingRepository = app(CartSettingInterface::class);
+        $cartSettingData = $cartSettingRepository->exists([
+            'country' => $country
+        ])['data'];
+        $this->cartSetting = collect($cartSettingData);
+
+        // dd($cartSetting);
+
+        // Get Cart Data
+        $cartRepository = app(CartInterface::class);
+
+        if (auth()->guard('web')->check()) {
+            $cart = $cartRepository->exists([
+                'user_id' => auth()->guard('web')->id()
+            ]);
+        } else {
+            $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
+
+            $cart = $cartRepository->exists([
+                'device_id' => $deviceId,
+            ]);
+        }
+
+        // Update cart totals, if cart data exists
+        // if (!empty($cart['data'])) {
+        //     $cartUpdateResp = $cartRepository->updateCartTotals($cart['data']);
+        // }
+
+        $this->cart = collect($cart['data'] ?? []);
+        $this->savedItems = collect($cart['data']->savedItems ?? []);
     }
 
     public function updateQty($id, $type, $currentQty)

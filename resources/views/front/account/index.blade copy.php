@@ -9,7 +9,7 @@
                     <svg class="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
                 </div>
 
-                {{-- <img class="h-14 w-14 rounded-lg object-contain" src="{{ Storage::url(Auth::guard('web')->user()->profile_picture) }}" alt="Helene avatar" /> --}}
+                {{-- <img class="h-14 w-14 rounded-lg object-contain" src="{{ Storage::url(Auth::guard('web')->user()->profile_picture) }}" alt="" /> --}}
             <div>
             {{-- <span class="mb-2 inline-block rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300"> PRO Account </span> --}}
             <h2 class="flex items-center text-sm font-bold leading-none text-gray-900 dark:text-white mb-2">

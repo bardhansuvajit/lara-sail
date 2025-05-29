@@ -24,19 +24,25 @@
             <div class="w-full mt-4">
 
                 <div class="flex flex-col space-y-4">
-                    <div class="flex space-x-4">
+                    {{-- <div class="flex space-x-4"> --}}
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @foreach ($paymentMethods as $methodIndex => $method)
-                            <div>
+                            {{-- {{$methodIndex}} --}}
+                            <div x-data="{ methodIndex: {{ $methodIndex }} }">
                                 <label class="flex items-start gap-3 p-3 border-2 border-gray-300 dark:border-gray-700/50 {{FD['rounded']}} cursor-pointer has-[:checked]:bg-gray-100 has-[:checked]:dark:bg-gray-600 has-[:checked]:border-gray-900 has-[:checked]:dark:border-gray-100">
                                     <input 
                                         type="radio" 
                                         id="paymentMethod{{ $methodIndex }}" 
                                         name="payment_method" 
-                                        value="{{ $method->method }}" 
+                                        value="{{ $method->id }}" 
                                         data-charge="{{$method->charge_amount}}" 
                                         data-discount="{{$method->discount_amount}}" 
                                         class="hidden md:inline-block mt-1 accent-primary-600 dark:accent-red-500" 
-                                        {{ ($methodIndex == 0) ? 'checked' : '' }}
+                                        wire:model.lazy="selectedMethod"
+                                        x-bind:checked="methodIndex == 0"
+                                        {{-- @if($methodIndex === 0) checked @endif --}}
+                                        {{-- :checked="$methodIndex == 0" --}}
+                                        {{-- {{ ($methodIndex == 0) ? 'checked' : '' }} --}}
                                     />
 
                                     <div class="flex flex-col {{FD['text-1']}} text-gray-700">
@@ -65,58 +71,6 @@
                                 </label>
                             </div>
                         @endforeach
-
-                        {{-- @if ($paymentData['prepaidEnable'] == 1)
-                            <div>
-                                <label class="flex items-start gap-3 p-3 border-2 border-gray-300 dark:border-gray-700/50 {{FD['rounded']}} cursor-pointer has-[:checked]:bg-gray-100 has-[:checked]:dark:bg-gray-600 has-[:checked]:border-gray-900 has-[:checked]:dark:border-gray-100">
-                                    <input 
-                                        type="radio" 
-                                        id="online_payment" 
-                                        name="payment_method" 
-                                        value="online" 
-                                        data-charge="{{$paymentData['prepaidCharge']}}" 
-                                        data-discount="{{$paymentData['prepaidDiscount']}}" 
-                                        class="hidden md:inline-block mt-1 accent-primary-600 dark:accent-red-500" {{ ($paymentData['defaultPaymentMethod'] == "prepay") ? 'checked' : '' }} />
-
-                                    <div class="flex flex-col {{FD['text-1']}} text-gray-700">
-                                        <span class="font-medium text-gray-900 dark:text-gray-300">Online Payment</span>
-                                        <span class="{{FD['text']}} text-gray-500 dark:text-gray-400">Pay securely using UPI, cards, or wallets</span>
-
-                                        @if ($paymentData['prepaidCharge'] > 0)
-                                            <div class="mt-1 text-neutral-700 dark:text-neutral-300 {{FD['text']}}">+ {{COUNTRY['icon']}}{{$paymentData['prepaidDiscount']}} on Online Payment</div>
-                                        @elseif ($paymentData['prepaidDiscount'] > 0)
-                                            <div class="mt-1 text-green-600 dark:text-green-500 {{FD['text']}}">- {{COUNTRY['icon']}}{{$paymentData['prepaidDiscount']}} Discount on Online Payment</div>
-                                        @endif
-                                    </div>
-                                </label>
-                            </div>
-                        @endif
-
-                        @if ($paymentData['codEnable'] == 1)
-                            <div>
-                                <label class="flex items-start gap-3 p-3 border-2 border-gray-300 dark:border-gray-700/50 {{FD['rounded']}} cursor-pointer has-[:checked]:bg-gray-100 has-[:checked]:dark:bg-gray-600 has-[:checked]:border-gray-900 has-[:checked]:dark:border-gray-100">
-                                    <input 
-                                        type="radio" 
-                                        id="pay_on_delivery" 
-                                        name="payment_method" 
-                                        value="cod" 
-                                        data-charge="{{$paymentData['codCharge']}}" 
-                                        data-discount="{{$paymentData['codDiscount']}}" 
-                                        class="hidden md:inline-block mt-1 accent-primary-600 dark:accent-red-500" {{ ($paymentData['defaultPaymentMethod'] == "cod") ? 'checked' : '' }} />
-
-                                    <div class="flex flex-col {{FD['text-1']}} text-gray-700">
-                                        <span class="font-medium text-gray-900 dark:text-gray-300">{{ $paymentData['codTitle'] }}</span>
-                                        <span class="{{FD['text']}} text-gray-500 dark:text-gray-400">Pay in cash when your order arrives</span>
-
-                                        @if ($paymentData['codCharge'] > 0)
-                                            <div class="mt-1 text-neutral-700 dark:text-neutral-300 {{FD['text']}}">+ {{COUNTRY['icon']}}{{$paymentData['codCharge']}} COD Handling Fee</div>
-                                        @elseif ($paymentData['codDiscount'] > 0)
-                                            <div class="mt-1 text-green-600 dark:text-green-500 {{FD['text']}}">- {{COUNTRY['icon']}}{{$paymentData['codDiscount']}} Discount on {{ $paymentData['codTitle'] }}</div>
-                                        @endif
-                                    </div>
-                                </label>
-                            </div>
-                        @endif --}}
                     </div>
 
                     <div>

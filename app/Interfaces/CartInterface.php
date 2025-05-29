@@ -12,6 +12,7 @@ interface CartInterface
     public function exists(Array $conditions);
     public function update(Array $array);
     public function updateCartTotals($cart);
+    public function updatePaymentMethod(Int $id, Int $cartId);
     public function delete(Int $id);
     public function bulkAction(Array $array);
     public function import(UploadedFile $file);

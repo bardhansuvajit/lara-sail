@@ -1,0 +1,8 @@
+# Inside the Sail container:
+./vendor/bin/sail bash
+
+# Then run:
+chmod -R 775 storage
+chmod -R 775 bootstrap/cache
+chown -R www-data:www-data storage
+chown -R www-data:www-data bootstrap/cache

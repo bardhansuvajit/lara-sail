@@ -382,6 +382,104 @@ class CartRepository implements CartInterface
         }
     }
 
+    public function updatePaymentMethod(int $id, Int $cartId)
+    {
+        try {
+            $cart = $this->getById($cartId);
+
+            if (!$cart) {
+                return [
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'Cart not found.',
+                ];
+            }
+
+            $cart = $cart['data'];
+
+            // Get current cart values
+            $itemsTotal = $cart->sub_total;
+            $shippingCost = $cart->shipping_cost;
+
+            // Get payment method details
+            $paymentMethod = $this->paymentMethodRepository->getById($id);
+
+            if (!$paymentMethod['code'] == 200 || $paymentMethod['data']->status != 1) {
+                return [
+                    'code' => 400,
+                    'status' => 'error',
+                    'message' => 'Invalid or inactive payment method.',
+                ];
+            }
+
+            // Calculate payment method adjustments
+            $paymentDetails = $this->calculatePaymentAdjustments(
+                $itemsTotal, 
+                $shippingCost, 
+                $paymentMethod['data']
+            );
+
+            // Update cart with new payment method details
+            $cart->update([
+                'payment_method_id' => $paymentMethod['data']->id,
+                'payment_method_title' => $paymentDetails['title'],
+                'payment_method_charge' => $paymentDetails['charge'],
+                'payment_method_discount' => $paymentDetails['discount'],
+                'total' => $paymentDetails['grandTotal'],
+                'last_activity_at' => now(),
+            ]);
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Payment method updated successfully.',
+                'data' => [
+                    'cart' => $cart,
+                    'payment_details' => $paymentDetails
+                ],
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating payment method.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    protected function calculatePaymentAdjustments(float $itemsTotal, float $shippingCost, object $paymentMethod): array
+    {
+        $adjustment = 0;
+        $title = null;
+        $isCharge = false;
+
+        if ($paymentMethod->charge_amount > 0) {
+            $adjustment = $this->calculateAdjustment(
+                $itemsTotal,
+                $paymentMethod->charge_amount,
+                $paymentMethod->charge_type
+            );
+            $title = $paymentMethod->charge_title;
+            $isCharge = true;
+        } elseif ($paymentMethod->discount_amount > 0) {
+            $adjustment = $this->calculateAdjustment(
+                $itemsTotal,
+                $paymentMethod->discount_amount,
+                $paymentMethod->discount_type
+            );
+            $title = $paymentMethod->discount_title;
+            $isCharge = false;
+        }
+
+        return [
+            'title' => $title,
+            'charge' => $isCharge ? $adjustment : 0,
+            'discount' => $isCharge ? 0 : $adjustment,
+            'grandTotal' => $itemsTotal + ($isCharge ? $adjustment : -$adjustment) + $shippingCost
+        ];
+    }
+
     protected function calculateShippingCost($cart, $itemsTotal): float
     {
         $cartSettingResp = $this->cartSettingRepository->list('', [], 'all', 'id', 'asc');
