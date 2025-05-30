@@ -7,7 +7,20 @@ use Illuminate\Support\Str;
 use App\Repositories\DeveloperSettingRepository;
 use App\Repositories\ApplicationSettingRepository;
 
-// frontend design classes array
+// Country & Pricing
+define("FAILSAFE", [
+    'country' => 'IN',
+    'country_full_name' => 'India',
+
+    'currency_code' => 'INR',
+    'currency_icon' => '₹',
+
+    'phone_code' => '+91',
+    'phone_no_digits' => '10',
+    'postal_code_digits' => '6',
+]);
+
+// Frontend design classes array
 define("FD", [
     'rounded'           => '',
     'text-0'            => 'text-[10px]',
@@ -138,13 +151,13 @@ if (!function_exists('countryCurrencyData')) {
             $currencyData = json_decode(urldecode($_COOKIE['currency']), true);
         } else {
             $currencyData = [
-                "country" => env('FAILSAFE_COUNTRY'),
-                "countryFullName" => env('FAILSAFE_COUNTRY_FULL_NAME'),
-                "currency" => env('FAILSAFE_CURRENCY'),
-                "icon" => env('FAILSAFE_ICON'),
-                "phoneCode" => env('FAILSAFE_PHONE_CODE'),
-                "phoneNoDigits" => env('FAILSAFE_PHONE_NO_DIGITS'),
-                "postalCodeDigits" => env('FAILSAFE_POSTAL_CODE_DIGITS')
+                "country" => FAILSAFE['country'],
+                "countryFullName" => FAILSAFE['country_full_name'],
+                "currency" => FAILSAFE['currency_code'],
+                "icon" => FAILSAFE['currency_icon'],
+                "phoneCode" => FAILSAFE['phone_code'],
+                "phoneNoDigits" => FAILSAFE['phone_no_digits'],
+                "postalCodeDigits" => FAILSAFE['postal_code_digits'],
             ];
         }
 

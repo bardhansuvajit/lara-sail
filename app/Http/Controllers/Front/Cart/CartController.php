@@ -113,6 +113,8 @@ class CartController extends Controller
                 ]);
             }
 
+            // dd($cart);
+
             $cart = $cart['data'];
 
             // Product data fetch

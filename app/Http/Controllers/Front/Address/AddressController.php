@@ -43,7 +43,7 @@ class AddressController extends Controller
             'postal_code' => 'required|string|digits:'.COUNTRY['postalCodeDigits'],
             'country_code' => 'required|string|max:2|exists:countries,short_name',
             'phone_no' => 'required|integer|digits:'.COUNTRY['phoneNoDigits'],
-            'email' => 'required|email|min:2|max:80',
+            'email' => 'nullable|email|min:2|max:80',
             'landmark' => 'nullable|string|min:1|max:200',
             'additional_notes' => 'nullable|string|min:1|max:50',
             'alt_phone_no' => 'nullable|integer|digits:'.COUNTRY['phoneNoDigits'],
@@ -67,8 +67,7 @@ class AddressController extends Controller
             'landmark' => $request->landmark,
             'additional_notes' => $request->additional_notes,
             'alt_phone_no' => $request->alt_phone_no,
-
-            'user_id' => auth()->guard('web')->user()->id
+            // 'user_id' => auth()->guard('web')->user()->id
         ]);
 
         return redirect()->back()->with($resp['status'], $resp['message']);

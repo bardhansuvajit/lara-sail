@@ -25,8 +25,8 @@ return new class extends Migration
             $table->string('phone_no');
 
             // Currency information
-            $table->string('country', 2)->default(env('FAILSAFE_COUNTRY'));
-            $table->char('currency_code', 3)->default(env('FAILSAFE_CURRENCY'));
+            $table->string('country', 2)->default(FAILSAFE['country']);
+            $table->char('currency_code', 3)->default(FAILSAFE['currency_code']);
 
             // Order totals
             $table->unsignedInteger('total_items');

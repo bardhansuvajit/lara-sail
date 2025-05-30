@@ -58,6 +58,11 @@ class CheckoutController extends Controller
                 $cart = $this->cartRepository->exists([
                     'device_id' => $deviceId,
                 ]);
+
+                // If NO ITEMS in Cart
+                if ($cart['code'] == 404) {
+                    return redirect()->route('front.cart.index');
+                }
             } else {
                 return redirect()->route('front.cart.index');
             }

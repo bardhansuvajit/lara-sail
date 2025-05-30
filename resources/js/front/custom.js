@@ -17,6 +17,7 @@ const shippingAddresses = document.querySelectorAll('.shipping-address');
 const billingAddresses = document.querySelectorAll('.billing-address');
 const selectedShipAddrEl = document.querySelector('input[name=shipping_address_id]');
 const selectedBillAddrEl = document.querySelector('input[name=billing_address_id]');
+const placeOrderForm = document.getElementById('place-order-form');
 
 // const prePayEl = document.getElementById('online_payment');
 // const codEl = document.getElementById('pay_on_delivery');
@@ -795,8 +796,8 @@ function updateCartCount(count) {
 }
 
 function updateCartData(cartInfo, cartItems) {
-    // console.log('cartInfo>>', cartInfo);
-    // console.log('cartItems>>', cartItems);
+    console.log('cartInfo>>', cartInfo);
+    console.log('cartItems>>', cartItems);
 
     const cartProductsElements = document.querySelectorAll('.cart-products');
     const cartRedirectElement = document.querySelector('.cart-redirect');
@@ -1161,3 +1162,10 @@ if (paymentMethodEl) {
 //     updatePaymentMode('cod', codEl.dataset.charge, codEl.dataset.discount);
 // });
 */
+
+// Payment method
+if (placeOrderForm) {
+    placeOrderForm.addEventListener('submit', function () {
+        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'full-page-loader' }));
+    });
+}
