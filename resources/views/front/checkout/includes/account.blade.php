@@ -21,7 +21,7 @@
                             {{$user->primary_phone_no}}
                         </p>
                     </div>
-                    
+
                     <div class="flex">
                         <p class="{{FD['text']}} text-gray-500 dark:text-gray-400">
                             Not {{$user->first_name}}? 
@@ -73,6 +73,7 @@
 
                             text="{{COUNTRY['countryFullName']}} ({{COUNTRY['phoneCode']}})"
                             textPosition="start" 
+                            autocomplete="tel-national"
                             :focus="$focus === 'phone_no'"
                             required
                         >
@@ -103,6 +104,7 @@
 
                             text="{{COUNTRY['countryFullName']}} ({{COUNTRY['phoneCode']}})"
                             textPosition="start" 
+                            autocomplete="tel-national"
                         >
                         </x-front.text-input-with-text>
                         <x-front.input-error :messages="$errors->get('phone_no')" class="mt-2" />

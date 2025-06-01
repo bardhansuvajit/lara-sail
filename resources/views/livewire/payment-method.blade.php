@@ -23,7 +23,7 @@
         @if ( $shippingAddrExistCount > 0 )
             <div class="w-full mt-4">
 
-                <form action="" method="post" id="place-order-form">@csrf
+                <form action="{{ route('front.order.store') }}" method="post" id="place-order-form">@csrf
                     <div class="flex flex-col space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             @foreach ($paymentMethods as $methodIndex => $method)
@@ -76,7 +76,6 @@
                         <div>
                             <input type="hidden" name="shipping_address_id" value="">
                             <input type="hidden" name="billing_address_id" value="0">
-                            <input type="hidden" name="payment_type" value="prepaid">
 
                             <button type="submit" class="flex w-full md:w-40 items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                 Place Order

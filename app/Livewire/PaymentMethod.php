@@ -35,7 +35,7 @@ class PaymentMethod extends Component
 
     public function updatedselectedMethod($id)
     {
-        // $this->dispatch('open-modal', name: 'full-page-loader');
+        $this->dispatch('showFullPageLoader');
 
         // Get Cart Data
         $cartRepository = app(CartInterface::class);
@@ -50,6 +50,7 @@ class PaymentMethod extends Component
             );
             // dd($updtResp);
             $this->dispatch('updateCartData');
+            $this->dispatch('hideFullPageLoader');
             // dd($paymentData);
         }
     }

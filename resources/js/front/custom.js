@@ -175,13 +175,24 @@ function hideNotification() {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', createNotification);
-// Livewire listener
+// Livewire listeners
 document.addEventListener('livewire:init', () => {
     Livewire.on('show-notification', (data) => {
-        console.log(data);
-        
+        // console.log(data);
         showNotification(data[0], data[1]);
     });
+    Livewire.on('showFullPageLoader', () => {
+        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'full-page-loader' }));
+    });
+    Livewire.on('hideFullPageLoader', () => {
+        setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('close-modal', { detail: 'full-page-loader' }));
+        }, 200);
+    });
+});
+
+window.addEventListener('show-notification', (event) => {
+    showNotification(event.detail.message, event.detail.options);
 });
 
 // IP information
@@ -796,8 +807,8 @@ function updateCartCount(count) {
 }
 
 function updateCartData(cartInfo, cartItems) {
-    console.log('cartInfo>>', cartInfo);
-    console.log('cartItems>>', cartItems);
+    // console.log('cartInfo>>', cartInfo);
+    // console.log('cartItems>>', cartItems);
 
     const cartProductsElements = document.querySelectorAll('.cart-products');
     const cartRedirectElement = document.querySelector('.cart-redirect');

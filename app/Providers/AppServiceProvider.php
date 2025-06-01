@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use App\Models\Country;
 
+use App\Services\OrderNumberService;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -17,7 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(OrderNumberService::class, function () {
+            return new OrderNumberService();
+        });
     }
 
     /**

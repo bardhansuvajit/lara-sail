@@ -176,7 +176,7 @@ class AuthenticatedSessionController extends Controller
         $referrer = request()->headers->get('referer');
         if (Str::contains($referrer, 'checkout')) {
             // The request came from a checkout page
-            return redirect()->route('front.auth.login');
+            return redirect()->route('front.checkout.index');
         }
 
         return redirect('/');

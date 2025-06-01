@@ -27,6 +27,7 @@
 
                     text="{{COUNTRY['countryFullName']}} ({{COUNTRY['phoneCode']}})"
                     textPosition="start" 
+                    autocomplete="tel-national"
                     :focus="$focus === 'phone_no'"
                 >
                 </x-front.text-input-with-text>
@@ -52,6 +53,7 @@
 
                     text="{{COUNTRY['countryFullName']}} ({{COUNTRY['phoneCode']}})"
                     textPosition="start" 
+                    autocomplete="tel-national"
                 >
                 </x-front.text-input-with-text>
                 <x-front.input-error :messages="$errors->get('phone_no')" class="mt-2" />
@@ -78,13 +80,13 @@
         <div class="grid gap-4 mb-4 sm:grid-cols-2">
             <div>
                 <x-front.input-label for="first_name" :value="__('First name *')" />
-                <x-front.text-input id="first_name" class="block w-full" type="text" name="first_name" :value="old('first_name')" placeholder="Enter First Name" maxlength="50" autofocus required />
+                <x-front.text-input id="first_name" class="block w-full" type="text" name="first_name" :value="old('first_name')" placeholder="Enter First Name" maxlength="50" autocomplete="given-name" autofocus required />
                 <x-front.input-error :messages="$errors->get('first_name')" class="mt-2" />
             </div>
 
             <div>
                 <x-front.input-label for="last_name" :value="__('Last name *')" />
-                <x-front.text-input id="last_name" class="block w-full" type="text" name="last_name" :value="old('last_name')" placeholder="Enter Last Name" maxlength="50" required />
+                <x-front.text-input id="last_name" class="block w-full" type="text" name="last_name" :value="old('last_name')" placeholder="Enter Last Name" maxlength="50" autocomplete="family-name" required />
                 <x-front.input-error :messages="$errors->get('last_name')" class="mt-2" />
             </div>
         </div>
@@ -102,6 +104,7 @@
 
                     text="{{COUNTRY['countryFullName']}} ({{COUNTRY['phoneCode']}})"
                     textPosition="start" 
+                    autocomplete="tel-national"
                     :focus="$focus === 'phone_no'"
                 >
                 </x-front.text-input-with-text>
@@ -110,7 +113,7 @@
 
             <div>
                 <x-front.input-label for="email" :value="__('Email')" />
-                <x-front.text-input id="email" class="block w-full" type="email" name="email" :value="old('email')" placeholder="Enter Email Address" autocomplete="username" maxlength="80" />
+                <x-front.text-input id="email" class="block w-full" type="email" name="email" :value="old('email')" placeholder="Enter Email Address" autocomplete="email" maxlength="80" />
                 <x-front.input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
         </div>

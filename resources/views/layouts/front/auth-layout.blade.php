@@ -78,40 +78,27 @@
         </footer>
 
 
-        @include('layouts.admin.notification')
+        {{-- @include('layouts.admin.notification') --}}
+        @include('layouts.front.includes.full-page-loader')
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                function showNotification(variant, title, message) {
-                    setTimeout(() => {
-                        window.dispatchEvent(new CustomEvent('notify', {
-                            detail: { variant: variant, title: title, message: message }
-                        }));
-                    }, 100);
+                function dispatchNotification(message, options) {
+                    window.dispatchEvent(new CustomEvent('show-notification', {
+                        detail: { message, options }
+                    }));
                 }
 
-                window.addEventListener('notificationSend', event => {
-                    // console.log(event.detail[0]);
-
-                    window.dispatchEvent(new CustomEvent('notify', {
-                        detail: {
-                            variant: event.detail[0].variant,
-                            title: event.detail[0].title,
-                            message: event.detail[0].message
-                        }
-                    }));
-                });
-
                 @if(Session::has('success'))
-                    showNotification('success', 'Success!', '{{ Session::get("success") }}');
+                    dispatchNotification('{{ Session::get("success") }}', { type: 'success' });
                 @endif
 
                 @if(Session::has('failure'))
-                    showNotification('warning', 'Action Needed!', '{{ Session::get("failure") }}');
+                    dispatchNotification('{{ Session::get("failure") }}', { type: 'warning' });
                 @endif
 
                 @if(Session::has('error'))
-                    showNotification('danger', 'Oops!', '{{ Session::get("error") }}');
+                    dispatchNotification('{{ Session::get("error") }}', { type: 'error' });
                 @endif
             });
         </script>

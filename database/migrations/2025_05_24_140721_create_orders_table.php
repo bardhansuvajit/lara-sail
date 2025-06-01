@@ -56,7 +56,10 @@ return new class extends Migration
             $table->text('tax_details')->nullable();
 
             // Payment information
-            $table->string('payment_method');
+            $table->integer('payment_method_id')->nullable();
+            $table->string('payment_method_title', 20)->nullable();
+            $table->decimal('payment_method_charge', 12, 2)->default(0);
+            $table->decimal('payment_method_discount', 12, 2)->default(0);
             $table->string('payment_status')->default('pending');
             $table->string('transaction_id')->nullable();
             $table->text('payment_details')->nullable();

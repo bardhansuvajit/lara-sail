@@ -11,9 +11,9 @@ use App\Interfaces\ProductListingInterface;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use App\Models\Product;
+// use App\Models\Product;
 use App\Models\ProductVariation;
-use App\Models\Cart;
+// use App\Models\Cart;
 
 class CartController extends Controller
 {

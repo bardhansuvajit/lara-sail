@@ -9,6 +9,7 @@ use App\Http\Controllers\Front\Cart\CartController;
 use App\Http\Controllers\Front\Checkout\CheckoutController;
 use App\Http\Controllers\Front\Profile\LoginController;
 use App\Http\Controllers\Front\Product\ProductController;
+use App\Http\Controllers\Front\Order\OrderController;
 
 Route::name('front.')->group(function () {
     // home
@@ -39,6 +40,12 @@ Route::name('front.')->group(function () {
     // checkout
     Route::name('checkout.')->group(function() {
         Route::get('/checkout', [CheckoutController::class, 'index'])->name('index');
+    });
+
+    // order
+    Route::name('order.')->prefix('order')->controller(OrderController::class)->group(function() {
+        Route::post('/store', 'store')->name('store');
+        Route::get('/thankyou', 'thankyou')->name('thankyou');
     });
 
     // pages
