@@ -83,4 +83,9 @@ class Order extends Model
     {
         return $this->belongsTo('App\Models\Country', 'country', 'short_name');
     }
+
+    public function paymentMethod()
+    {
+        return $this->belongsTo('App\Models\PaymentMethod', 'payment_method_id', 'id');
+    }
 }

@@ -13,10 +13,6 @@ const orderSummaryBtn = document.getElementById('order-summary-toggle');
 const orderSummaryEl = document.getElementById('order-summary');
 // const phoneNoEl = document.getElementById('phone_no');
 const numberEl = document.querySelectorAll('.digits-only');
-const shippingAddresses = document.querySelectorAll('.shipping-address');
-const billingAddresses = document.querySelectorAll('.billing-address');
-const selectedShipAddrEl = document.querySelector('input[name=shipping_address_id]');
-const selectedBillAddrEl = document.querySelector('input[name=billing_address_id]');
 const placeOrderForm = document.getElementById('place-order-form');
 
 // const prePayEl = document.getElementById('online_payment');
@@ -1067,36 +1063,6 @@ if (document.querySelector('#delete-cart-item-form')) {
             throw error; // Re-throw for outer catch
         }
     });
-}
-
-// CHECKOUT PAGE
-// Shipping Address
-if (selectedShipAddrEl && shippingAddresses.length > 0) {
-    shippingAddresses.forEach(el => {
-        if (el.checked) {
-            selectedShipAddrEl.value = el.value;
-        }
-
-        el.addEventListener('change', () => {
-            if (el.checked) {
-                selectedShipAddrEl.value = el.value;
-            }
-        });
-    })
-}
-// Billing Address
-if (selectedBillAddrEl && billingAddresses.length > 0) {
-    billingAddresses.forEach(el => {
-        if (el.checked) {
-            selectedBillAddrEl.value = el.value;
-        }
-
-        el.addEventListener('change', () => {
-            if (el.checked) {
-                selectedBillAddrEl.value = el.value;
-            }
-        });
-    })
 }
 
 // Payment Mode selection

@@ -9,6 +9,19 @@
             <!-- ALERT -->
             @include('front.checkout.includes.alert')
 
+            here
+
+            @if ($errors->any())
+                <div class="text-red-600 mb-4">
+                    <ul class="list-disc list-inside text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+
             <div class="mt-4 sm:mt-6 md:gap-6 lg:flex lg:items-start xl:gap-8">
                 {{-- left part --}}
                 <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl mb-8">
