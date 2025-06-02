@@ -102,6 +102,8 @@ class OrderRepository implements OrderInterface
     public function store(Array $array)
     {
         // dd($array['image']);
+        DB::beginTransaction();
+
         try {
             // Generate Order Number
             $orderNumber = $this->orderNumberService->generate($array['email'], $array['user_first_name'], $array['user_last_name']);
@@ -151,27 +153,28 @@ class OrderRepository implements OrderInterface
             foreach ($array['cart_items'] as $key => $cartItem) {
                 $cartItemResp = $this->orderItemRepository->store([
                     'order_id' => $data->id,
-                    'product_id' => $request->product_id,
-                    'product_title' => $product->title,
-                    'product_sku' => $sku,
-                    'product_variation_id' => $productVariationId,
-                    'variation_attributes' => $variationAttributes,
-                    'selling_price' => $variationSellingPrice,
-                    'mrp' => $productVariationId ? ($variationSellingPrice > $mrp ? 0 : $mrp) : $mrp,
-                    'quantity' => $request->quantity,
-                    'total' => $request->quantity * ($productVariationId ? $variationSellingPrice : $sellingPrice),
-                    'product_url' => '/'.$product->slug,
-                    'product_url_with_variation' => $product_url_with_variation,
-                    'is_available' => 1,
-                    'availability_message' => 'In stock',
-                    'options' => null,
-                    'custom_fields' => null,
+                    'product_id' => $cartItem->product_id,
+                    'product_variation_id' => $cartItem->product_variation_id,
+                    'product_title' => $cartItem->product_title,
+                    'variation_attributes' => $cartItem->variation_attributes,
+                    'product_sku' => $cartItem->sku,
+                    'product_url' => $cartItem->product_url,
+                    'product_url_with_variation' => $cartItem->product_url_with_variation,
 
-                    'image_s' => $productImage['image_s'] ? 'storage/'.$productImage['image_s'] : null,
-                    'image_m' => $productImage['image_m'] ? 'storage/'.$productImage['image_m'] : null,
-                    'image_l' => $productImage['image_l'] ? 'storage/'.$productImage['image_l'] : null
+                    'image_s' => $cartItem->image_s,
+                    'image_m' => $cartItem->image_m,
+                    'image_l' => $cartItem->image_l,
+
+                    'selling_price' => $cartItem->selling_price,
+                    'mrp' => $cartItem->mrp,
+                    'quantity' => $cartItem->quantity,
+                    'total' => $cartItem->total,
+
+                    'cart_availability_message' => $cartItem->availability_message,
                 ]);
             }
+
+            DB::commit();
 
             return [
                 'code' => 200,
@@ -180,6 +183,8 @@ class OrderRepository implements OrderInterface
                 'data' => $data,
             ];
         } catch (\Exception $e) {
+            DB::rollback();
+
             return [
                 'code' => 500,
                 'status' => 'error',
@@ -193,7 +198,7 @@ class OrderRepository implements OrderInterface
     public function getById(Int $id)
     {
         try {
-            $data = Order::find($id);
+            $data = Order::with('items')->find($id);
 
             if (!empty($data)) {
                 return [

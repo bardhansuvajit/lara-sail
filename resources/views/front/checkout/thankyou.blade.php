@@ -2,12 +2,9 @@
     screen="max-w-screen-xl"
     title="{{ __('Thank you') }}">
 
-    <!-- Thank You Section -->
     <section class="bg-gray-50 dark:bg-gray-900 min-h-screen py-5 px-2 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
-            <!-- Success Card -->
             <div class="bg-white dark:bg-gray-800 {{FD['rounded']}} shadow-md overflow-hidden transition-all duration-300 transform hover:shadow-lg">
-            <!-- Header with Confetti -->
             <div class="bg-green-500 px-6 py-6 text-center relative overflow-hidden">
                 <!-- Confetti Container -->
                 <div class="confetti-container absolute inset-0 overflow-hidden">
@@ -54,11 +51,9 @@
                     <div class="confetti"></div>
                     <div class="confetti"></div>
                 </div>
-                
-                <!-- Checkmark with Confetti Background -->
+
                 <div class="relative z-10">
                     <div class="mx-auto flex items-center justify-center h-10 w-10 rounded-full bg-green-100 mb-3">
-                        <!-- Checkmark animation -->
                         <svg class="h-5 w-5 text-green-600 animate-check" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
@@ -66,108 +61,140 @@
                     <h1 class="{{FD['text-1']}} font-bold text-white">Thank You For Your Order!</h1>
                     <p class="mt-1 {{FD['text']}} text-green-100">Your order has been placed successfully</p>
 
-                    <!-- Order Number -->
                     <div class="mt-4 text-center {{FD['text']}} text-white">
-                        Order #W08643805 &middot; Placed on June 15, 2023
+                        Order #{{$order->order_number}} &middot; Placed on {{ $order->created_at->format('F d, Y') }}
                     </div>
                 </div>
             </div>
 
-            <!-- Rest of the content remains the same as previous version -->
             <div class="px-2 py-3 md:px-5 md:py-6">
-                <!-- Order Summary -->
                 <div class="mb-6">
-                <h2 class="{{FD['text-1']}} font-medium text-gray-900 dark:text-white mb-3">Order Summary</h2>
-                <div class="border border-gray-200 dark:border-gray-700 {{FD['rounded']}} divide-y divide-gray-200 dark:divide-gray-700">
-                    <!-- Order Items -->
-                    <div class="p-3">
-                        {{-- <h3 class="{{FD['text']}} font-medium text-gray-900 dark:text-white mb-5">Items</h3> --}}
-                        <div class="flex flex-wrap space-x-8">
-                            <!-- Item 1 -->
-                            <div class="flex flex-col space-y-2 items-center">
-                                <img src="https://placehold.co/100x100" alt="Premium T-Shirt" class="w-[60px] h-[60px] object-cover rounded border border-gray-200 dark:border-gray-600">
+                    <h2 class="{{FD['text-1']}} font-medium text-gray-900 dark:text-white mb-3">Order Summary</h2>
+                    <div class="border border-gray-200 dark:border-gray-700 {{FD['rounded']}} divide-y divide-gray-200 dark:divide-gray-700">
+                        <div class="p-3">
+                            <div class="flex flex-wrap space-x-8">
+                                @foreach ($order->items as $item)
+                                    <div class="flex flex-col space-y-2 items-center">
+                                        <img src="https://placehold.co/100x100" alt="Premium T-Shirt" class="w-[60px] h-[60px] object-cover rounded border border-gray-200 dark:border-gray-600">
 
-                                <div class="flex-1 min-w-0">
-                                    <p class="{{FD['text']}} font-medium text-gray-900 dark:text-white truncate">Premium T-Shirt</p>
-                                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-400">Size: M, Color: Black</p>
-                                    <div class="flex space-x-2 mt-0.5">
-                                        <p class="{{FD['text']}} font-medium text-gray-900 dark:text-white">$39.98</p>
-                                        <p class="{{FD['text']}} text-gray-500 dark:text-gray-400">x1</p>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="{{FD['text']}} font-medium text-gray-900 dark:text-white truncate">{{ $item->product_title }}</p>
+                                            @if (!empty($item->variation_attributes))
+                                                <p class="{{FD['text']}} text-gray-600 dark:text-gray-400">{{ $item->variation_attributes }}</p>
+                                            @endif
+                                            <div class="flex space-x-2 mt-0.5">
+                                                <p class="{{FD['text']}} font-medium text-gray-900 dark:text-white">
+                                                    <span class="currency-icon">{{$order->currency_symbol}}</span>
+                                                    {{ formatIndianMoney($item->selling_price) }}
+                                                </p>
+                                                <p class="{{FD['text']}} text-gray-500 dark:text-gray-400">x{{ $item->quantity }}</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                @endforeach
                             </div>
-                            
-                            <!-- Item 2 -->
-                            <div class="flex flex-col space-y-2 items-center">
-                                <img src="https://placehold.co/100x100" alt="Wireless Headphones" class="w-[60px] h-[60px] object-cover rounded border border-gray-200 dark:border-gray-600">
+                        </div>
 
-                                <div class="flex-1 min-w-0">
-                                    <p class="{{FD['text']}} font-medium text-gray-900 dark:text-white truncate">Wireless Headphones</p>
-                                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-400">Color: White</p>
-                                    <div class="flex space-x-2 mt-0.5">
-                                        <p class="{{FD['text']}} font-medium text-gray-900 dark:text-white">$39.98</p>
-                                        <p class="{{FD['text']}} text-gray-500 dark:text-gray-400">x1</p>
-                                    </div>
+                        <div class="p-3">
+                            <div class="flex justify-between py-1">
+                                <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Original price</p>
+                                <p class="{{FD['text']}} text-gray-900 dark:text-white">
+                                    <span class="currency-icon">{{$order->currency_symbol}}</span>{{ formatIndianMoney($order->mrp) }}
+                                </p>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Savings</p>
+                                <p class="{{FD['text']}} text-green-600">
+                                    <span class="currency-icon">{{$order->currency_symbol}}</span>{{ formatIndianMoney($order->mrp - $order->sub_total) }}
+                                </p>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Sub-Total</p>
+                                <p class="{{FD['text']}} text-gray-900 dark:text-white">
+                                    <span class="currency-icon">{{$order->currency_symbol}}</span>{{ formatIndianMoney($order->sub_total) }}
+                                </p>
+                            </div>
+
+                            @if ($order->shipping_cost > 0)
+                                <div class="flex justify-between py-1">
+                                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Shipping</p>
+                                    <p class="{{FD['text']}} text-gray-900 dark:text-white">
+                                        <span class="currency-icon">{{$order->currency_symbol}}</span>{{ formatIndianMoney($order->shipping_cost) }}
+                                    </p>
                                 </div>
+                            @endif
+
+                            @if ($order->tax_amount > 0)
+                                <div class="flex justify-between py-1">
+                                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Tax</p>
+                                    <p class="{{FD['text']}} text-gray-900 dark:text-white">
+                                        <span class="currency-icon">{{$order->currency_symbol}}</span>{{ formatIndianMoney($order->tax_amount) }}
+                                    </p>
+                                </div>
+                            @endif
+
+                            @if ($order->payment_method_charge > 0)
+                                <div class="flex justify-between py-1">
+                                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Payment method Charge</p>
+                                    <p class="{{FD['text']}} text-gray-900 dark:text-white">
+                                        <span class="currency-icon">{{$order->currency_symbol}}</span>{{ formatIndianMoney($order->payment_method_charge) }}
+                                    </p>
+                                </div>
+                            @elseif ($order->payment_method_discount > 0)
+                                <div class="flex justify-between py-1">
+                                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Payment method Discount</p>
+                                    <p class="{{FD['text']}} text-gray-900 dark:text-white">
+                                        <span class="currency-icon">{{$order->currency_symbol}}</span>{{ formatIndianMoney($order->payment_method_discount) }}
+                                    </p>
+                                </div>
+                            @endif
+
+                            <div class="flex justify-between py-1 border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
+                                <p class="{{FD['text']}} font-medium text-gray-900 dark:text-white">Total</p>
+                                <p class="{{FD['text']}} font-bold text-gray-900 dark:text-white">
+                                    <span class="currency-icon">{{$order->currency_symbol}}</span>{{ formatIndianMoney($order->total) }}
+                                </p>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Order Totals -->
-                    <div class="p-3">
-                    <div class="flex justify-between py-1">
-                        <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Subtotal</p>
-                        <p class="{{FD['text']}} text-gray-900 dark:text-white">$169.97</p>
-                    </div>
-                    <div class="flex justify-between py-1">
-                        <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Shipping</p>
-                        <p class="{{FD['text']}} text-gray-900 dark:text-white">$5.99</p>
-                    </div>
-                    <div class="flex justify-between py-1">
-                        <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Tax</p>
-                        <p class="{{FD['text']}} text-gray-900 dark:text-white">$12.35</p>
-                    </div>
-                    <div class="flex justify-between py-1 border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
-                        <p class="{{FD['text']}} font-medium text-gray-900 dark:text-white">Total</p>
-                        <p class="{{FD['text']}} font-bold text-gray-900 dark:text-white">$188.31</p>
-                    </div>
-                    </div>
-                </div>
                 </div>
 
-                <!-- User & Payment Details -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
-                <!-- User Details -->
-                <div>
-                    <h2 class="{{FD['text-1']}} font-medium text-gray-900 dark:text-white mb-3">Customer Information</h2>
-                    <div class="bg-gray-50 dark:bg-gray-700 p-3 {{FD['rounded']}}">
-                    <p class="{{FD['text']}} text-gray-900 dark:text-white font-medium">John Doe</p>
-                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">john@example.com</p>
-                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-300 mt-1">123 Main St</p>
-                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Apt 4B</p>
-                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">New York, NY 10001</p>
-                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">United States</p>
-                    </div>
-                </div>
+                    <div>
+                        <h2 class="{{FD['text-1']}} font-medium text-gray-900 dark:text-white mb-3">Customer Information</h2>
+                        <div class="bg-gray-50 dark:bg-gray-700 p-3 {{FD['rounded']}}">
+                            <p class="{{FD['text']}} text-gray-900 dark:text-white font-medium">{{$order->user->first_name}} {{$order->user->last_name}}</p>
+                            <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">{{$order->email}}</p>
+                            <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">{{$order->phone_no}}</p>
 
-                <!-- Payment Details -->
-                <div>
-                    <h2 class="{{FD['text-1']}} font-medium text-gray-900 dark:text-white mb-3">Payment Method</h2>
-                    <div class="bg-gray-50 dark:bg-gray-700 p-3 {{FD['rounded']}}">
-                    <div class="flex items-center">
-                        <div class="bg-white p-1 rounded mr-2">
-                        <svg class="h-5 w-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12S6.2 22.5 12 22.5 22.5 17.8 22.5 12 17.8 1.5 12 1.5zM9 16.5v-9l7.5 4.5L9 16.5z"/>
-                        </svg>
-                        </div>
-                        <div>
-                        <p class="{{FD['text']}} text-gray-900 dark:text-white font-medium">Visa ending in 4242</p>
-                        <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Expires 12/2025</p>
+                            <div class="flex items-center mt-3">
+                                @if ($order->countryDetail->flag)
+                                    <div class="inline-flex justify-center h-4 mr-2">
+                                        {!! $order->countryDetail->flag !!}
+                                    </div>
+                                @endif
+                                <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">{{ $order->countryDetail->name }}</p>
+                            </div>
                         </div>
                     </div>
-                    <p class="mt-2 {{FD['text']}} text-gray-600 dark:text-gray-300">Billing address matches shipping address</p>
+
+                    <div>
+                        <h2 class="{{FD['text-1']}} font-medium text-gray-900 dark:text-white mb-3">Payment Details</h2>
+                        <div class="bg-gray-50 dark:bg-gray-700 p-3 {{FD['rounded']}}">
+                        <div class="flex items-center">
+                            <div class="bg-white p-1 rounded mr-2">
+                            <svg class="h-5 w-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12S6.2 22.5 12 22.5 22.5 17.8 22.5 12 17.8 1.5 12 1.5zM9 16.5v-9l7.5 4.5L9 16.5z"/>
+                            </svg>
+                            </div>
+                            <div>
+                            <p class="{{FD['text']}} text-gray-900 dark:text-white font-medium">Visa ending in 4242</p>
+                            <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Expires 12/2025</p>
+                            </div>
+                        </div>
+                        <p class="mt-2 {{FD['text']}} text-gray-600 dark:text-gray-300">Billing address matches shipping address</p>
+                        </div>
                     </div>
-                </div>
                 </div>
 
                 <!-- Invoice & Actions -->

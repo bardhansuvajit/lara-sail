@@ -25,7 +25,7 @@ return new class extends Migration
 			$table->foreign('product_variation_id')->references('id')->on('product_variations')->onDelete('set null');
             $table->string('product_title');
 			$table->string('variation_attributes')->nullable(); // e.g. "Color: Red, Size: Large"
-            $table->string('sku');
+            $table->string('product_sku');
 			$table->text('product_url')->nullable();
 			$table->text('product_url_with_variation')->nullable();
 
@@ -54,6 +54,7 @@ return new class extends Migration
             // Metadata
             $table->text('custom_fields')->nullable();
 
+            $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
 

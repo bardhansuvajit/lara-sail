@@ -73,4 +73,14 @@ class Order extends Model
     {
         return $this->hasMany('App\Models\OrderItem', 'order_id', 'id')->orderBy('id', 'desc');
     }
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'user_id', 'id');
+    }
+
+    public function countryDetail()
+    {
+        return $this->belongsTo('App\Models\Country', 'country', 'short_name');
+    }
 }

@@ -27,6 +27,7 @@ return new class extends Migration
             // Currency information
             $table->string('country', 2)->default(FAILSAFE['country']);
             $table->char('currency_code', 3)->default(FAILSAFE['currency_code']);
+            $table->string('currency_symbol', 20)->default(FAILSAFE['currency_icon']);
 
             // Order totals
             $table->unsignedInteger('total_items');

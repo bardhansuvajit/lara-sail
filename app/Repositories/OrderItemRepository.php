@@ -86,24 +86,31 @@ class OrderItemRepository implements OrderItemInterface
             $data = new OrderItem();
             $data->order_id = $array['order_id'];
             $data->product_id = $array['product_id'];
-            $data->product_title = !empty($array['product_title']) ? $array['product_title'] : null;
             $data->product_variation_id = !empty($array['product_variation_id']) ? $array['product_variation_id'] : null;
+            $data->product_title = !empty($array['product_title']) ? $array['product_title'] : null;
             $data->variation_attributes = !empty($array['variation_attributes']) ? $array['variation_attributes'] : null;
-            $data->sku = !empty($array['sku']) ? $array['sku'] : null;
-            $data->selling_price = !empty($array['selling_price']) ? $array['selling_price'] : 0;
-            $data->mrp = !empty($array['mrp']) ? $array['mrp'] : 0;
-            $data->quantity = !empty($array['quantity']) ? $array['quantity'] : 1;
-            $data->total = !empty($array['total']) ? $array['total'] : 0;
+            $data->product_sku = !empty($array['product_sku']) ? $array['product_sku'] : null;
             $data->product_url = !empty($array['product_url']) ? $array['product_url'] : null;
             $data->product_url_with_variation = !empty($array['product_url_with_variation']) ? $array['product_url_with_variation'] : null;
-            $data->is_available = !empty($array['is_available']) ? $array['is_available'] : 1;
-            $data->availability_message = !empty($array['availability_message']) ? $array['availability_message'] : 'In stock';
-            $data->options = !empty($array['options']) ? $array['options'] : null;
-            $data->custom_fields = !empty($array['custom_fields']) ? $array['custom_fields'] : null;
 
             $data->image_s = !empty($array['image_s']) ? $array['image_s'] : null;
             $data->image_m = !empty($array['image_m']) ? $array['image_m'] : null;
             $data->image_l = !empty($array['image_l']) ? $array['image_l'] : null;
+
+            $data->selling_price = !empty($array['selling_price']) ? $array['selling_price'] : 0;
+            $data->mrp = !empty($array['mrp']) ? $array['mrp'] : 0;
+            $data->quantity = !empty($array['quantity']) ? $array['quantity'] : 1;
+            $data->total = !empty($array['total']) ? $array['total'] : 0;
+
+            $data->tax_amount = !empty($array['tax_amount']) ? $array['tax_amount'] : 0;
+            $data->tax_type = !empty($array['tax_type']) ? $array['tax_type'] : 0;
+            $data->tax_details = !empty($array['tax_details']) ? $array['tax_details'] : 0;
+
+            $data->cart_availability_message = !empty($array['cart_availability_message']) ? $array['cart_availability_message'] : 'In stock';
+            $data->status = !empty($array['status']) ? $array['status'] : 'Pending';
+            $data->status_notes = !empty($array['status_notes']) ? $array['status_notes'] : null;
+            $data->custom_fields = !empty($array['custom_fields']) ? $array['custom_fields'] : null;
+
             $data->save();
 
             return [

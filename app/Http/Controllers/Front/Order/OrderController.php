@@ -147,8 +147,8 @@ class OrderController extends Controller
             // Store order ID in session for thank you page access control
             $request->session()->put('last_order_id', $orderResponse['data']->id);
 
-            return redirect()->route('front.order.thankyou')
-                ->with('success', 'Order placed successfully!');
+            return redirect()->route('front.order.thankyou', ['orderId' => $orderResponse['data']->id])->with('success', 'Order placed successfully!');
+            return redirect()->route('front.order.thankyou')->with('success', 'Order placed successfully!');
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -165,18 +165,20 @@ class OrderController extends Controller
 
     public function thankyou(Request $request): View|RedirectResponse
     {
-
-        return view('front.checkout.thankyou');
+        $orderResponse = $this->orderRepository->getById($_GET['orderId']);
+        return view('front.checkout.thankyou', [
+            'order' => $orderResponse['data']
+        ]);
 
         if (!$request->session()->has('last_order_id')) {
             return redirect()->route('front.home.index')->with('error', 'Invalid access to thank you page.');
         }
 
         $orderId = $request->session()->pull('last_order_id');
-        
+
         // Optionally fetch order details to display
         $orderResponse = $this->orderRepository->getById($orderId);
-        
+
         if ($orderResponse['code'] != 200) {
             return redirect()->route('front.home.index')->with('error', 'Order not found.');
         }
