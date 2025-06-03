@@ -2,41 +2,30 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\CartInterface;
-use App\Models\Cart;
+use App\Interfaces\ShippingMethodInterface;
+use App\Models\ShippingMethod;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
-use Illuminate\Database\Eloquent\Collection;
-use App\Interfaces\CartSettingInterface;
-use App\Interfaces\PaymentMethodInterface;
 
-use App\Exports\CartsExport;
+use App\Exports\ShippingMethodsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class CartRepository implements CartInterface
+class ShippingMethodRepository implements ShippingMethodInterface
 {
     private TrashInterface $trashRepository;
-    private CartSettingInterface $cartSettingRepository;
-    private PaymentMethodInterface $paymentMethodRepository;
 
-    public function __construct(
-        TrashInterface $trashRepository, 
-        CartSettingInterface $cartSettingRepository, 
-        PaymentMethodInterface $paymentMethodRepository
-    )
+    public function __construct(TrashInterface $trashRepository)
     {
         $this->trashRepository = $trashRepository;
-        $this->cartSettingRepository = $cartSettingRepository;
-        $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
-            $query = Cart::query();
+            $query = ShippingMethod::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -73,7 +62,7 @@ class CartRepository implements CartInterface
                     'data' => $data,
                 ];
             }
-
+    
             return [
                 'code' => 404,
                 'status' => 'failure',
@@ -92,11 +81,30 @@ class CartRepository implements CartInterface
 
     public function store(Array $array)
     {
+        // dd($array['image']);
         try {
-            $data = Cart::firstOrCreate([
-                'device_id' => !empty($array['device_id']) ? $array['device_id'] : null,
-                'user_id' => !empty($array['user_id']) ? $array['user_id'] : null
-            ]);
+            $data = new ShippingMethod();
+            $data->cart_id = $array['cart_id'];
+            $data->product_id = $array['product_id'];
+            $data->product_title = !empty($array['product_title']) ? $array['product_title'] : null;
+            $data->product_variation_id = !empty($array['product_variation_id']) ? $array['product_variation_id'] : null;
+            $data->variation_attributes = !empty($array['variation_attributes']) ? $array['variation_attributes'] : null;
+            $data->sku = !empty($array['sku']) ? $array['sku'] : null;
+            $data->selling_price = !empty($array['selling_price']) ? $array['selling_price'] : 0;
+            $data->mrp = !empty($array['mrp']) ? $array['mrp'] : 0;
+            $data->quantity = !empty($array['quantity']) ? $array['quantity'] : 1;
+            $data->total = !empty($array['total']) ? $array['total'] : 0;
+            $data->product_url = !empty($array['product_url']) ? $array['product_url'] : null;
+            $data->product_url_with_variation = !empty($array['product_url_with_variation']) ? $array['product_url_with_variation'] : null;
+            $data->is_available = !empty($array['is_available']) ? $array['is_available'] : 1;
+            $data->availability_message = !empty($array['availability_message']) ? $array['availability_message'] : 'In stock';
+            $data->options = !empty($array['options']) ? $array['options'] : null;
+            $data->custom_fields = !empty($array['custom_fields']) ? $array['custom_fields'] : null;
+
+            $data->image_s = !empty($array['image_s']) ? $array['image_s'] : null;
+            $data->image_m = !empty($array['image_m']) ? $array['image_m'] : null;
+            $data->image_l = !empty($array['image_l']) ? $array['image_l'] : null;
+            $data->save();
 
             return [
                 'code' => 200,
@@ -118,7 +126,8 @@ class CartRepository implements CartInterface
     public function getById(Int $id)
     {
         try {
-            $data = Cart::find($id);
+            $data = ShippingMethod::with('cart')
+            ->find($id);
 
             if (!empty($data)) {
                 return [
@@ -148,7 +157,7 @@ class CartRepository implements CartInterface
     public function exists(Array $conditions)
     {
         try {
-            $data = Cart::with('items', 'savedItems')->where($conditions)->first();
+            $data = ShippingMethod::where($conditions)->get();
 
             if (!empty($data)) {
                 return [
@@ -184,24 +193,22 @@ class CartRepository implements CartInterface
                 if (isset($array['type'])) {
                     if ($array['type'] == "asc") {
                         $data['data']->quantity += 1;
-                    } else {
+                    } elseif ($array['type'] == "desc") {
                         $data['data']->quantity -= 1;
+                    } else {
+                        return [
+                            'code' => 500,
+                            'status' => 'error',
+                            'message' => 'An error occurred while updating data.'
+                        ];
                     }
                 }
 
-                if (isset($array['user_id']))       $data['data']->user_id = $array['user_id'];
-                
-
-                // $data['data']->title = $array['title'];
-                // $data['data']->slug = \Str::slug($array['title']);
-
-                // if (!empty($array['image'])) {
-                //     $uploadResp = fileUpload($array['image'], 'p-clt');
-
-                //     $data['data']->image_s = $uploadResp['smallThumbName'];
-                //     $data['data']->image_m = $uploadResp['mediumThumbName'];
-                //     $data['data']->image_l = $uploadResp['largeThumbName'];
-                // }
+                if (!empty($array['quantity']))         $data['data']->quantity = $array['quantity'];
+                if (!empty($array['total']))            $data['data']->total = $array['total'];
+                if (!empty($array['image_s']))          $data['data']->image_s = $array['image_s'];
+                if (!empty($array['image_m']))          $data['data']->image_m = $array['image_m'];
+                if (!empty($array['image_l']))          $data['data']->image_l = $array['image_l'];
 
                 $data['data']->save();
 
@@ -210,6 +217,7 @@ class CartRepository implements CartInterface
                     'status' => 'success',
                     'message' => 'Changes have been saved',
                     'data' => $data,
+                    'cart' => $data['data']->cart,
                 ];
             } else {
                 return $data;
@@ -224,235 +232,73 @@ class CartRepository implements CartInterface
         }
     }
 
-    public function updateCartTotals($cart)
+    public function qtyUpdate(Array $array)
     {
         try {
-            // Calculate item totals
-            $itemsTotal = $cart->items()->sum('total');
-            $itemsQuantity = $cart->items()->sum('quantity');
-
-            // $totalMrp = 0;
-            // foreach ($cart->items as $itemKey => $itemValue) {
-            //     $price = $itemValue->mrp;
-            //     if ($price == 0) $price = $itemValue->selling_price;
-            //     $totalPrice = $price * $itemValue->quantity;
-            //     $totalMrp += $totalPrice;
-            // }
-
-            $totalMrp = $cart->items->sum(function ($item) {
-                $price = $item->mrp > 0 ? $item->mrp : $item->selling_price;
-                return $price * $item->quantity;
-            });
-
-
-            // Calculate shipping cost
-            $shippingCost = $this->calculateShippingCost($cart, $itemsTotal);
-
-            // Calculate payment method adjustments
-            $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $shippingCost);
-
-            // Update cart totals
-            $cart->update([
-                'total_items' => $itemsQuantity,
-                'mrp' => $totalMrp,
-                'sub_total' => $itemsTotal,
-                'shipping_cost' => $shippingCost,
-                'payment_method_id' => $paymentDetails['id'],
-                'payment_method_title' => $paymentDetails['title'],
-                'payment_method_charge' => $paymentDetails['charge'],
-                'payment_method_discount' => $paymentDetails['discount'],
-                'total' => $paymentDetails['grandTotal'],
-                'last_activity_at' => now(),
-            ]);
-
-            return [
-                'code' => 200,
-                'status' => 'success',
-                'message' => 'Cart totals updated successfully.',
-                'data' => [
-                    'cart' => $cart,
-                    'items' => $cart->items
-                ],
-            ];
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while updating the cart totals.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function updatePaymentMethod(int $id, Int $cartId)
-    {
-        try {
-            $cart = $this->getById($cartId);
-
-            if (!$cart) {
-                return [
-                    'code' => 404,
-                    'status' => 'error',
-                    'message' => 'Cart not found.',
-                ];
-            }
-
-            $cart = $cart['data'];
-
-            // Get current cart values
-            $itemsTotal = $cart->sub_total;
-            $shippingCost = $cart->shipping_cost;
-
-            // Get payment method details
-            $paymentMethod = $this->paymentMethodRepository->getById($id);
-
-            if (!$paymentMethod['code'] == 200 || $paymentMethod['data']->status != 1) {
+            if (!isset($array['id']) || !isset($array['type'])) {
                 return [
                     'code' => 400,
                     'status' => 'error',
-                    'message' => 'Invalid or inactive payment method.',
+                    'message' => 'Missing required parameters (id or type).',
                 ];
             }
 
-            // Calculate payment method adjustments
-            $paymentDetails = $this->calculatePaymentAdjustments(
-                $itemsTotal, 
-                $shippingCost, 
-                $paymentMethod['data']
-            );
+            $response = $this->getById($array['id']);
 
-            // Update cart with new payment method details
-            $cart->update([
-                'payment_method_id' => $paymentMethod['data']->id,
-                'payment_method_title' => $paymentDetails['title'],
-                'payment_method_charge' => $paymentDetails['charge'],
-                'payment_method_discount' => $paymentDetails['discount'],
-                'total' => $paymentDetails['grandTotal'],
-                'last_activity_at' => now(),
-            ]);
+            if ($response['code'] != 200) {
+                return $response;
+            }
 
+            $cartItem = $response['data'];
+            $type = $array['type'];
+
+            // Validate quantity update type
+            if (!in_array($type, ['asc', 'desc'])) {
+                return [
+                    'code' => 400,
+                    'status' => 'error',
+                    'message' => 'Invalid update type. Must be "asc" or "desc".',
+                ];
+            }
+
+            // Calculate new quantity (ensure it doesn't go below 0)
+            if ($type == 'asc') {
+                $newQuantity = $cartItem->quantity + 1;
+            } else {
+                $newQuantity = $cartItem->quantity - 1;
+                
+                // Prevent going below minimum quantity (1)
+                if ($newQuantity < 1) {
+                    return [
+                        'code' => 400,
+                        'status' => 'error',
+                        'message' => 'Minimum cart quantity is 1',
+                        'data' => $cartItem, // Return current item data
+                    ];
+                }
+            }
+
+            // Update item
+            $cartItem->quantity = $newQuantity;
+            $cartItem->total = $newQuantity * $cartItem->selling_price;
+            $cartItem->save();
+
+            // Return success response with updated data
             return [
                 'code' => 200,
                 'status' => 'success',
-                'message' => 'Payment method updated successfully.',
-                'data' => [
-                    'cart' => $cart,
-                    'payment_details' => $paymentDetails
-                ],
+                'message' => 'Quantity updated successfully.',
+                'data' => $cartItem,
+                'cart' => $cartItem->cart
             ];
         } catch (\Exception $e) {
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => 'An error occurred while updating payment method.',
+                'message' => 'An error occurred while updating data.',
                 'error' => $e->getMessage(),
             ];
         }
-    }
-
-    protected function calculatePaymentAdjustments(float $itemsTotal, float $shippingCost, object $paymentMethod): array
-    {
-        $adjustment = 0;
-        $title = null;
-        $isCharge = false;
-
-        if ($paymentMethod->charge_amount > 0) {
-            $adjustment = $this->calculateAdjustment(
-                $itemsTotal,
-                $paymentMethod->charge_amount,
-                $paymentMethod->charge_type
-            );
-            $title = $paymentMethod->charge_title;
-            $isCharge = true;
-        } elseif ($paymentMethod->discount_amount > 0) {
-            $adjustment = $this->calculateAdjustment(
-                $itemsTotal,
-                $paymentMethod->discount_amount,
-                $paymentMethod->discount_type
-            );
-            $title = $paymentMethod->discount_title;
-            $isCharge = false;
-        }
-
-        return [
-            'title' => $title,
-            'charge' => $isCharge ? $adjustment : 0,
-            'discount' => $isCharge ? 0 : $adjustment,
-            'grandTotal' => $itemsTotal + ($isCharge ? $adjustment : -$adjustment) + $shippingCost
-        ];
-    }
-
-    protected function calculateShippingCost($cart, $itemsTotal): float
-    {
-        $cartSettingResp = $this->cartSettingRepository->list('', [], 'all', 'id', 'asc');
-        $cartSettings = $cartSettingResp['data'] ?? [];
-
-        foreach ($cartSettings as $cartSetting) {
-            if ($cartSetting->country === $cart->country 
-                && $itemsTotal < $cartSetting->free_shipping_threshold) {
-                return (float) $cartSetting->shipping_charge;
-            }
-        }
-
-        return 0.0;
-    }
-
-    protected function calculatePaymentMethodAdjustments(float $itemsTotal, float $shippingCost): array
-    {
-        $paymentMethodData = $this->paymentMethodRepository->list('', [
-            'status' => 1, 
-            'country_code' => COUNTRY['country']
-        ], 'all', 'position', 'asc')['data'][0] ?? null;
-
-        if (!$paymentMethodData) {
-            return [
-                'id' => null,
-                'title' => null,
-                'charge' => 0,
-                'discount' => 0,
-                'grandTotal' => $itemsTotal + $shippingCost
-            ];
-        }
-
-        $adjustment = 0;
-        $id = null;
-        $title = null;
-        $isCharge = false;
-
-        if ($paymentMethodData->charge_amount > 0) {
-            $adjustment = $this->calculateAdjustment(
-                $itemsTotal,
-                $paymentMethodData->charge_amount,
-                $paymentMethodData->charge_type
-            );
-            $id = $paymentMethodData->id;
-            $title = $paymentMethodData->charge_title;
-            $isCharge = true;
-        } elseif ($paymentMethodData->discount_amount > 0) {
-            $adjustment = $this->calculateAdjustment(
-                $itemsTotal,
-                $paymentMethodData->discount_amount,
-                $paymentMethodData->discount_type
-            );
-            $id = $paymentMethodData->id;
-            $title = $paymentMethodData->discount_title;
-            $isCharge = false;
-        }
-
-        return [
-            'id' => $id,
-            'title' => $title,
-            'charge' => $isCharge ? $adjustment : 0,
-            'discount' => $isCharge ? 0 : $adjustment,
-            'grandTotal' => $itemsTotal + ($isCharge ? $adjustment : -$adjustment) + $shippingCost
-        ];
-    }
-
-    protected function calculateAdjustment(float $amount, float $adjustmentValue, string $type): float
-    {
-        return $type === 'fixed' 
-            ? $adjustmentValue 
-            : ($amount * $adjustmentValue) / 100;
     }
 
     public function delete(Int $id)
@@ -461,16 +307,22 @@ class CartRepository implements CartInterface
             $data = $this->getById($id);
 
             if ($data['code'] == 200) {
+                $cartItem = $data['data'];
+
+                // dd($cartItem);
+
                 // Handling trash
-                $this->trashRepository->store([
-                    'model' => 'Cart',
-                    'table_name' => 'carts',
+                $trashData = $this->trashRepository->store([
+                    'model' => 'ShippingMethod',
+                    'table_name' => 'cart_items',
                     'deleted_row_id' => $data['data']->id,
                     'thumbnail' => $data['data']->image_s,
                     'title' => $data['data']->product_title,
-                    'description' => $data['data']->product_title.' & '. $data['data']->variation_attributes.' data deleted from carts table',
+                    'description' => $data['data']->product_title.' & '. $data['data']->variation_attributes.' data deleted from cart items table',
                     'status' => 'deleted',
                 ]);
+
+                // dd($trashData);
 
                 $data['data']->delete();
 
@@ -478,7 +330,8 @@ class CartRepository implements CartInterface
                     'code' => 200,
                     'status' => 'success',
                     'message' => 'Data deleted',
-                    'data' => $data,
+                    'data' => $cartItem,
+                    'cart' => $cartItem->cart
                 ];
             } else {
                 return $data;
@@ -493,21 +346,90 @@ class CartRepository implements CartInterface
         }
     }
 
+    public function saveForLater(Int $id)
+    {
+        try {
+            $data = $this->getById($id);
+
+            if ($data['code'] == 200) {
+                $cartItem = $data['data'];
+
+                // dd($cartItem);
+
+                // Update item
+                $cartItem->is_saved_for_later = 1;
+                $cartItem->quantity = 1;
+                $cartItem->save();
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data deleted',
+                    'data' => $cartItem,
+                    'cart' => $cartItem->cart
+                ];
+            } else {
+                return $data;
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function moveToCart(Int $id)
+    {
+        try {
+            $data = $this->getById($id);
+
+            if ($data['code'] == 200) {
+                $cartItem = $data['data'];
+
+                // dd($cartItem);
+
+                // Update item
+                $cartItem->is_saved_for_later = 0;
+                $cartItem->save();
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data deleted',
+                    'data' => $cartItem,
+                    'cart' => $cartItem->cart
+                ];
+            } else {
+                return $data;
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
     public function bulkAction(Array $array)
     {
         try {
-            $data = Cart::whereIn('id', $array['ids'])->get();
+            $data = ShippingMethod::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
 
                     // Handling trash
                     $this->trashRepository->store([
-                        'model' => 'Cart',
-                        'table_name' => 'carts',
+                        'model' => 'ShippingMethod',
+                        'table_name' => 'cart_items',
                         'deleted_row_id' => $item->id,
                         'thumbnail' => $item->image_s,
                         'title' => $item->title,
-                        'description' => $item->title.' data deleted from carts table',
+                        'description' => $item->title.' data deleted from cart items table',
                         'status' => 'deleted',
                     ]);
 
@@ -543,7 +465,7 @@ class CartRepository implements CartInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            // $processedCount = saveToDatabase($data, 'Cart');
+            // $processedCount = saveToDatabase($data, 'ShippingMethod');
 
             // save into Database
             $processedCount = 0;
@@ -553,7 +475,7 @@ class CartRepository implements CartInterface
                     continue; // Skip rows without a title
                 }
 
-                Cart::create([
+                ShippingMethod::create([
                     'title' => $item['title'] ? $item['title'] : null,
                     'slug' => !empty($item['title']) ? Str::slug($item['title']) : null,
                     'short_description' => !empty($item['short_description']) ? $item['short_description'] : null,
@@ -592,23 +514,23 @@ class CartRepository implements CartInterface
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
             if (count($data['data']) > 0) {
-                $fileName = "carts_export_" . date('Y-m-d') . '-' . time();
+                $fileName = "cart_items_export_" . date('Y-m-d') . '-' . time();
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";
-                    return Excel::download(new CartsExport($data['data']), $fileName.$fileExtension);
+                    return Excel::download(new ShippingMethodsExport($data['data']), $fileName.$fileExtension);
                 }
                 elseif ($type == 'csv') {
                     $fileExtension = ".csv";
-                    return Excel::download(new CartsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
+                    return Excel::download(new ShippingMethodsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
                 }
                 elseif ($type == 'html') {
                     $fileExtension = ".html";
-                    return Excel::download(new CartsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
+                    return Excel::download(new ShippingMethodsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
                 }
                 elseif ($type == 'pdf') {
                     $fileExtension = ".pdf";
-                    return Excel::download(new CartsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
+                    return Excel::download(new ShippingMethodsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
                 }
                 else {
                     return [
@@ -642,7 +564,7 @@ class CartRepository implements CartInterface
     {
         try {
             foreach ($ids as $index => $id) {
-                Cart::where('id', $id)->update([
+                ShippingMethod::where('id', $id)->update([
                     'position' => $index + 1
                 ]);
             }

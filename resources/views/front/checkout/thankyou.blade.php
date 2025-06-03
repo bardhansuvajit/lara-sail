@@ -54,10 +54,9 @@
 
                 <div class="relative z-10">
                     <div class="mx-auto flex items-center justify-center h-10 w-10 rounded-full bg-green-100 mb-3">
-                        <svg class="h-5 w-5 text-green-600 animate-check" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
+                        <svg class="h-5 w-5 text-green-600 animate-check" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                     </div>
+
                     <h1 class="{{FD['text-1']}} font-bold text-white">Thank You For Your Order!</h1>
                     <p class="mt-1 {{FD['text']}} text-green-100">Your order has been placed successfully</p>
 
@@ -105,7 +104,7 @@
                             <div class="flex justify-between py-1">
                                 <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Savings</p>
                                 <p class="{{FD['text']}} text-green-600">
-                                    <span class="currency-icon">{{$order->currency_symbol}}</span>{{ formatIndianMoney($order->mrp - $order->sub_total) }}
+                                    -<span class="currency-icon">{{$order->currency_symbol}}</span>{{ formatIndianMoney($order->mrp - $order->sub_total) }}
                                 </p>
                             </div>
                             <div class="flex justify-between py-1">
@@ -143,8 +142,8 @@
                             @elseif ($order->payment_method_discount > 0)
                                 <div class="flex justify-between py-1">
                                     <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Payment method Discount</p>
-                                    <p class="{{FD['text']}} text-gray-900 dark:text-white">
-                                        <span class="currency-icon">{{$order->currency_symbol}}</span>{{ formatIndianMoney($order->payment_method_discount) }}
+                                    <p class="{{FD['text']}} text-green-600">
+                                        -<span class="currency-icon">{{$order->currency_symbol}}</span>{{ formatIndianMoney($order->payment_method_discount) }}
                                     </p>
                                 </div>
                             @endif
@@ -225,6 +224,10 @@
                                 </p>
                             @endif
 
+                            @if (empty($order->billing_address))
+                                <p class="mt-2 {{FD['text-0']}} text-gray-600 dark:text-gray-300">Billing address is same as shipping address.</p>
+                            @endif
+
                         </div>
                     </div>
 
@@ -279,27 +282,29 @@
                     </div>
                 </div>
 
-                <!-- Invoice & Actions -->
                 <div>
                     <h2 class="{{FD['text-1']}} font-medium text-gray-900 dark:text-white mb-3">Next Steps</h2>
                     <div class="space-y-2">
-                        <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">We've sent your order confirmation to <span class="font-medium text-gray-900 dark:text-white">john@example.com</span>.</p>
+                        @if ($order->email)
+                            <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">We've sent your order confirmation to <span class="font-medium text-gray-900 dark:text-white">{{ $order->email }}</span>.</p>
+                        @endif
+
                         <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Your order will ship within 2 business days.</p>
-                        
+
                         <div class="flex flex-col sm:flex-row gap-2 pt-3">
-                        <button class="px-3 py-1.5 {{FD['text']}} bg-indigo-600 hover:bg-indigo-700 text-white {{FD['rounded']}} transition-colors duration-300">
-                            Download Invoice (PDF)
-                        </button>
-                        <button class="px-3 py-1.5 {{FD['text']}} border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 {{FD['rounded']}} transition-colors duration-300">
-                            Track Your Order
-                        </button>
-                        <button class="px-3 py-1.5 {{FD['text']}} text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 {{FD['rounded']}} transition-colors duration-300">
-                            Continue Shopping
-                        </button>
+                            <button class="px-3 py-1.5 {{FD['text']}} bg-indigo-600 hover:bg-indigo-700 text-white {{FD['rounded']}} transition-colors duration-300">
+                                Download Invoice (PDF)
+                            </button>
+                            <button class="px-3 py-1.5 {{FD['text']}} border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 {{FD['rounded']}} transition-colors duration-300">
+                                Track Your Order
+                            </button>
+                            <button class="px-3 py-1.5 {{FD['text']}} text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 {{FD['rounded']}} transition-colors duration-300">
+                                Continue Shopping
+                            </button>
                         </div>
                     </div>
-                    </div>
                 </div>
+
             </div>
 
         </div>
@@ -312,12 +317,12 @@
         }
         @keyframes check {
             from {
-            stroke-dashoffset: 26;
-            stroke-dasharray: 26;
+                stroke-dashoffset: 26;
+                stroke-dasharray: 26;
             }
             to {
-            stroke-dashoffset: 0;
-            stroke-dasharray: 26;
+                stroke-dashoffset: 0;
+                stroke-dasharray: 26;
             }
         }
 
@@ -325,7 +330,7 @@
         .confetti-container {
             pointer-events: none;
         }
-        
+
         .confetti {
             position: absolute;
             width: 8px;
@@ -334,7 +339,7 @@
             opacity: 0;
             animation: confetti 3s ease-in-out infinite;
         }
-        
+
         /* Original 10 pieces with specific colors */
         .confetti:nth-child(1) { background-color: #f0f; left: 10%; animation-delay: 0; }
         .confetti:nth-child(2) { background-color: #0ff; left: 20%; animation-delay: 0.5s; }
@@ -346,7 +351,7 @@
         .confetti:nth-child(8) { background-color: #0ff; left: 80%; animation-delay: 1s; }
         .confetti:nth-child(9) { background-color: #ff0; left: 90%; animation-delay: 1.5s; }
         .confetti:nth-child(10) { background-color: #f00; left: 100%; animation-delay: 2s; }
-        
+
         /* Additional 30 pieces with random colors and positions */
         .confetti:nth-child(11) { background-color: #ff8c00; left: 5%; animation-delay: 0.2s; }
         .confetti:nth-child(12) { background-color: #4b0082; left: 15%; animation-delay: 0.7s; }
@@ -378,23 +383,23 @@
         .confetti:nth-child(38) { background-color: #98fb98; left: 82%; animation-delay: 1.35s; }
         .confetti:nth-child(39) { background-color: #ffb6c1; left: 92%; animation-delay: 1.85s; }
         .confetti:nth-child(40) { background-color: #6495ed; left: 2%; animation-delay: 2.35s; }
-        
+
         @keyframes confetti {
             0% {
-            opacity: 0;
-            transform: translateY(0) rotate(0deg);
+                opacity: 0;
+                transform: translateY(0) rotate(0deg);
             }
             10% {
-            opacity: 1;
+                opacity: 1;
             }
             100% {
-            opacity: 0;
-            transform: translateY(200px) rotate(360deg);
+                opacity: 0;
+                transform: translateY(200px) rotate(360deg);
             }
         }
     </style>
-    
-</x-app-layout>
+
+</x-guest-layout>
 
 @push('scripts')
     <script>

@@ -9,20 +9,26 @@
                 <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['mrp']) }}</dd>
             </dl>
 
-            <dl class="flex items-center justify-between gap-4">
-                <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Savings</dt>
-                <dd class="{{FD['text']}} font-medium text-green-600">-<span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['mrp'] - $cart['sub_total']) }}</dd>
-            </dl>
+            @if ($cart['mrp'] - $cart['sub_total'] != 0)
+                <dl class="flex items-center justify-between gap-4">
+                    <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Savings</dt>
+                    <dd class="{{FD['text']}} font-medium text-green-600">-<span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['mrp'] - $cart['sub_total']) }}</dd>
+                </dl>
+            @endif
 
-            <dl class="flex items-center justify-between gap-4">
-                <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Shipping</dt>
-                <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['shipping_cost']) }}</dd>
-            </dl>
+            @if ( ($cart['shipping_cost'] > 0))
+                <dl class="flex items-center justify-between gap-4">
+                    <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Shipping</dt>
+                    <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['shipping_cost']) }}</dd>
+                </dl>
+            @endif
 
-            <dl class="flex items-center justify-between gap-4">
-                <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Tax</dt>
-                <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['tax_amount']) }}</dd>
-            </dl>
+            @if ( ($cart['tax_amount'] > 0))
+                <dl class="flex items-center justify-between gap-4">
+                    <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Tax</dt>
+                    <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white"><span class="currency-symbol">{{COUNTRY['icon']}}</span>{{ formatIndianMoney($cart['tax_amount']) }}</dd>
+                </dl>
+            @endif
 
             {{-- Payment method Charge/ Discount --}}
             @if ( ($cart['payment_method_charge'] > 0))

@@ -23,7 +23,7 @@
         @if ( $shippingAddrExistCount > 0 )
             <div class="w-full mt-4">
 
-                <form action="{{ route('front.order.store') }}" method="post" id="place-order-form">@csrf
+                {{-- <form action="{{ route('front.order.store') }}" method="post" id="place-order-form">@csrf --}}
                     <div class="flex flex-col space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             @foreach ($paymentMethods as $methodIndex => $method)
@@ -40,9 +40,6 @@
                                             class="hidden md:inline-block mt-1 accent-primary-600 dark:accent-red-500" 
                                             wire:model.lazy="selectedMethod"
                                             x-bind:checked="methodIndex == 0"
-                                            {{-- @if($methodIndex === 0) checked @endif --}}
-                                            {{-- :checked="$methodIndex == 0" --}}
-                                            {{-- {{ ($methodIndex == 0) ? 'checked' : '' }} --}}
                                         />
 
                                         <div class="flex flex-col {{FD['text-1']}} text-gray-700">
@@ -74,15 +71,15 @@
                         </div>
 
                         <div>
-                            <input type="hidden" name="shipping_address_id" value="">
-                            <input type="hidden" name="billing_address_id" value="0">
+                            {{-- <input type="hidden" name="shipping_address_id" value=""> --}}
+                            {{-- <input type="hidden" name="billing_address_id" value="0"> --}}
 
                             <button type="submit" class="flex w-full md:w-40 items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                 Place Order
                             </button>
                         </div>
                     </div>
-                </form>
+                {{-- </form> --}}
 
             </div>
         @endif
@@ -90,6 +87,7 @@
 </div>
 
 <script>
+    /*
     const selectedShipAddrEl = document.querySelector('input[name=shipping_address_id]');
     const selectedBillAddrEl = document.querySelector('input[name=billing_address_id]');
     const shippingAddresses = document.querySelectorAll('.shipping-address');
@@ -123,4 +121,5 @@
             });
         })
     }
+    */
 </script>

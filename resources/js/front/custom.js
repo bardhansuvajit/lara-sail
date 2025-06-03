@@ -1065,6 +1065,41 @@ if (document.querySelector('#delete-cart-item-form')) {
     });
 }
 
+// CHECKOUT PAGE
+const selectedShipAddrEl = document.querySelector('input[name=shipping_address_id]');
+const selectedBillAddrEl = document.querySelector('input[name=billing_address_id]');
+const shippingAddresses = document.querySelectorAll('.shipping-address');
+const billingAddresses = document.querySelectorAll('.billing-address');
+
+// Shipping Address
+if (selectedShipAddrEl && shippingAddresses.length > 0) {
+    shippingAddresses.forEach(el => {
+        if (el.checked) {
+            selectedShipAddrEl.value = el.value;
+        }
+
+        el.addEventListener('change', () => {
+            if (el.checked) {
+                selectedShipAddrEl.value = el.value;
+            }
+        });
+    })
+}
+// Billing Address
+if (selectedBillAddrEl && billingAddresses.length > 0) {
+    billingAddresses.forEach(el => {
+        if (el.checked) {
+            selectedBillAddrEl.value = el.value;
+        }
+
+        el.addEventListener('change', () => {
+            if (el.checked) {
+                selectedBillAddrEl.value = el.value;
+            }
+        });
+    })
+}
+
 // Payment Mode selection
 /*
 function updatePaymentMode(mode, charge, discount) {

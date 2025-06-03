@@ -34,6 +34,7 @@ use App\Interfaces\AddressInterface;
 use App\Interfaces\PaymentMethodInterface;
 use App\Interfaces\OrderInterface;
 use App\Interfaces\OrderItemInterface;
+use App\Interfaces\ShippingMethodInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -65,6 +66,7 @@ use App\Repositories\AddressRepository;
 use App\Repositories\PaymentMethodRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\OrderItemRepository;
+use App\Repositories\ShippingMethodRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -103,6 +105,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(PaymentMethodInterface::class, PaymentMethodRepository::class);
         $this->app->bind(OrderInterface::class, OrderRepository::class);
         $this->app->bind(OrderItemInterface::class, OrderItemRepository::class);
+        $this->app->bind(ShippingMethodInterface::class, ShippingMethodRepository::class);
     }
 
     /**

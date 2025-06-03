@@ -36,7 +36,7 @@ return new class extends Migration
             $table->string('discount_type', 30)->nullable()->comment('amount/ percent');
 
             // Shipping
-            $table->unsignedBigInteger('shipping_method_id')->nullable();
+            $table->unsignedBigInteger('shipping_method_id')->default(1);
             $table->decimal('shipping_cost', 12, 2)->default(0);
 
             // Tax

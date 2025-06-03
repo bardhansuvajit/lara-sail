@@ -114,14 +114,16 @@
                                             {{formatIndianMoney($item['selling_price'])}}
                                         </p>
 
-                                        <p class="{{FD['text-0']}} md:text-xs font-bold text-gray-400 dark:text-gray-400 line-through">
-                                            <span class="currency-symbol">{{COUNTRY['icon']}}</span>
-                                            {{formatIndianMoney($item['mrp'])}}
-                                        </p>
+                                        @if ($item['mrp'] > 0)
+                                            <p class="{{FD['text-0']}} md:text-xs font-bold text-gray-400 dark:text-gray-400 line-through">
+                                                <span class="currency-symbol">{{COUNTRY['icon']}}</span>
+                                                {{formatIndianMoney($item['mrp'])}}
+                                            </p>
 
-                                        <p class="{{FD['text-0']}} md:text-xs font-black leading-tight {{FD['activeClass']}}">
-                                            {{discountPercentageCalc($item['selling_price'], $item['mrp'])}}% off
-                                        </p>
+                                            <p class="{{FD['text-0']}} md:text-xs font-black leading-tight {{FD['activeClass']}}">
+                                                {{discountPercentageCalc($item['selling_price'], $item['mrp'])}}% off
+                                            </p>
+                                        @endif
                                     </div>
                                 </div>
                                 {{-- UPSELL --}}
@@ -420,6 +422,34 @@
 
             @if (isset($cart['items']) && count($cart['items']) > 0)
                 @include('livewire.includes.order-summary')
+
+                <div>
+                    <div class="grid grid-cols-3 gap-2">
+                        @foreach ($shippingMethods as $shipMethod)
+                            <x-front.radio-input-button id="shipMethod{{$shipMethod->id}}" name="shipping_address_id" value="{{$shipMethod->id}}" :checked="$cart['shipping_method_id'] == $shipMethod->id">
+                                <div class="w-full max-w-sm">
+                                    <div class="w-10 h-10">{!! $shipMethod->icon !!}</div>
+
+                                    <div class="p-1">
+                                        <h5 class="{{FD['text-0']}} font-medium tracking-tight text-gray-900 dark:text-white">{{$shipMethod->title}}</h5>
+
+                                        <p class="{{FD['text-0']}} dark:text-gray-400 line-clamp-2">{{$shipMethod->subtitle}}</p>
+
+                                        <div class="mt-2 flex items-center gap-2">
+                                            <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
+                                                @if ($shipMethod->cost == 0)
+                                                    FREE
+                                                @else
+                                                    <span class="currency-symbol">{{COUNTRY['icon']}}</span>{{formatIndianMoney($shipMethod->cost)}}
+                                                @endif
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </x-front.radio-input-button>
+                        @endforeach
+                    </div>
+                </div>
             @endif
 
             <div class="w-full space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">

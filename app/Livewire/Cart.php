@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use App\Interfaces\CartInterface;
 use App\Interfaces\CartItemInterface;
 use App\Interfaces\CartSettingInterface;
+use App\Interfaces\ShippingMethodInterface;
 use Illuminate\Support\Str;
 
 class Cart extends Component
@@ -14,15 +15,18 @@ class Cart extends Component
     public String $page;
     public Collection $cart;
     public Collection $savedItems;
+    public Collection $shippingMethods;
     public Collection $cartSetting;
     private CartInterface $cartRepository;
     private CartItemInterface $cartItemRepository;
     private CartSettingInterface $cartSettingRepository;
+    private ShippingMethodInterface $shippingMethodRepository;
 
     public function mount(
         CartInterface $cartRepository, 
         CartItemInterface $cartItemRepository, 
-        CartSettingInterface $cartSettingRepository
+        CartSettingInterface $cartSettingRepository,
+        ShippingMethodInterface $shippingMethodRepository
     )
     {
         $this->page = 'cart';
@@ -65,9 +69,19 @@ class Cart extends Component
         // dd($cartUpdateResp);
         // dd($cart['data']);
 
+        // $shippingMethodRepository = app(ShippingMethodInterface::class);
+        // dd($shippingMethodRepository->exists([
+        //     'country_code' => $country
+        // ]));
+
+        // Get Shipping Methods
+        $shippingMethodRepository = app(ShippingMethodInterface::class);
+        $shippingMethods = $shippingMethodRepository->list('', ['country_code' => $country], 'all', 'position', 'asc')['data'];
+
         // $this->cart = collect($cart['data']->items);
         $this->cart = collect($cart['data'] ?? []);
         $this->savedItems = collect($cart['data']->savedItems ?? []);
+        $this->shippingMethods = collect($shippingMethods ?? []);
         // $this->savedItems = count($cart['data']) > 0 ? collect($cart['data']->savedItems) : collect([]);
     }
 
