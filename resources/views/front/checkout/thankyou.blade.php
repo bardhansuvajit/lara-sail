@@ -74,7 +74,14 @@
                             <div class="flex flex-wrap space-x-8">
                                 @foreach ($order->items as $item)
                                     <div class="flex flex-col space-y-2 items-center">
-                                        <img src="https://placehold.co/100x100" alt="Premium T-Shirt" class="w-[60px] h-[60px] object-cover rounded border border-gray-200 dark:border-gray-600">
+                                        {{-- <img src="https://placehold.co/100x100" alt="Premium T-Shirt" class="w-[60px] h-[60px] object-cover rounded border border-gray-200 dark:border-gray-600"> --}}
+                                        <div class="h-[60px] object-cover">
+                                            @if (!empty($item->image_s))
+                                                <img class="h-auto max-h-full w-full" src="{{$item->image_s}}" alt="{{$item->product_title}}" />
+                                            @else
+                                                {!! FD['brokenImageFront'] !!}
+                                            @endif
+                                        </div>
 
                                         <div class="flex-1 min-w-0">
                                             <p class="{{FD['text']}} font-medium text-gray-900 dark:text-white truncate">{{ $item->product_title }}</p>
@@ -174,6 +181,7 @@
                                 @endif
                                 <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">{{ $order->countryDetail->name }}</p>
                             </div>
+
                         </div>
                     </div>
 
@@ -185,11 +193,11 @@
                                     <svg class="h-5 w-5 text-gray-700" fill="currentColor"  xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3"><path d="M713.82-61.54q-85.69 0-145.02-59.07-59.34-59.06-59.34-143.54 0-84.93 59.34-144.66 59.33-59.73 145.02-59.73 84.18 0 143.41 59.69 59.23 59.69 59.23 144.72 0 84.51-59.23 143.55Q798-61.54 713.82-61.54ZM145.39-225.39V-539.23-518.08v-216.53V-225.39Zm0-391.76h669.22v-105.16q0-4.61-3.84-8.46-3.85-3.84-8.46-3.84H157.69q-4.61 0-8.46 3.84-3.84 3.85-3.84 8.46v105.16ZM157.69-180q-23.53 0-40.61-17.08T100-237.69v-484.62q0-23.53 17.08-40.61T157.69-780h644.62q23.53 0 40.61 17.08T860-722.31v190.46q0 13.23-10.92 19.43-10.93 6.19-22.54-.04-26.51-12.99-56.22-19.88-29.71-6.89-61.63-6.89-31.84 0-62.46 6.92-30.61 6.92-58.15 19.92H145.39v274.7q0 4.61 3.84 8.46 3.85 3.84 8.46 3.84h269.77q9.67 0 16.18 6.57t6.51 16.31q0 9.74-6.51 16.12-6.51 6.39-16.18 6.39H157.69Zm566.77-87.31v-108.38q0-6.99-4.93-12.03-4.93-5.05-11.76-5.05-7.23 0-12.46 5.23t-5.23 12.46v109.39q0 5.6 2 10.6 2 5.01 5.61 9.63l79.39 80.61q5.33 5.23 12.51 5.43 7.18.19 12.41-5.43 5.61-5.23 5.61-12.21 0-6.99-5.61-12.71l-77.54-77.54Z"/></svg>
                                 </div>
                                 <div>
-                                    <p class="{{FD['text']}} text-gray-900 dark:text-white font-medium">{{$order->paymentMethod->title}}</p>
-                                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Get Ready to Pay When It Arrives</p>
+                                    <p class="{{FD['text']}} text-gray-900 dark:text-white font-medium">{!!$order->paymentMethod->title!!}</p>
+                                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">{!!$order->paymentMethod->after_order_title!!}</p>
                                 </div>
                             </div>
-                            <p class="mt-2 {{FD['text-0']}} text-gray-600 dark:text-gray-300">You&apos;ve chosen to pay on delivery—please ensure the payment is available when your package arrives. Need help? We&apos;re just a message away.</p>
+                            <p class="mt-2 {{FD['text-0']}} text-gray-600 dark:text-gray-300">{{$order->paymentMethod->after_order_description}}</p>
                         </div>
                     </div>
                 </div>
@@ -274,7 +282,9 @@
                                 </div>
                                 <div>
                                     <p class="{{FD['text']}} text-gray-900 dark:text-white font-medium">We Got Your Order</p>
-                                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Estimated Delivery: [June 5, 2025]</p>
+                                    <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">
+                                        Estimated Delivery by {{ $order->created_at->addDays($order->shippingMethod->max_delivery_day)->format('l, F d, Y') }}
+                                    </p>
                                 </div>
                             </div>
                             <p class="mt-2 {{FD['text-0']}} text-gray-600 dark:text-gray-300">Your order will be shipped within the next 24-48 hours. Once dispatched, we&apos;ll send you a tracking link.</p>

@@ -88,4 +88,9 @@ class Order extends Model
     {
         return $this->belongsTo('App\Models\PaymentMethod', 'payment_method_id', 'id');
     }
+
+    public function shippingMethod()
+    {
+        return $this->belongsTo('App\Models\ShippingMethod', 'shipping_method_id', 'id');
+    }
 }

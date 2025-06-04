@@ -80,6 +80,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(PasswordInterface::class, PasswordRepository::class);
         $this->app->bind(ProfileInterface::class, ProfileRepository::class);
         $this->app->bind(DeveloperSettingInterface::class, DeveloperSettingRepository::class);
+        $this->app->bind(ApplicationSettingInterface::class, ApplicationSettingRepository::class);
         $this->app->bind(ApplicationInterface::class, ApplicationRepository::class);
         $this->app->bind(CountryInterface::class, CountryRepository::class);
         $this->app->bind(TrashInterface::class, TrashRepository::class);

@@ -18,6 +18,10 @@ return new class extends Migration
             $table->string('title', 100); // Display name
             $table->text('description')->nullable();
 
+            // After Order texts
+            $table->text('after_order_title')->nullable();
+            $table->text('after_order_description')->nullable();
+
             // Charge
             $table->string('charge_title', 100);
             $table->decimal('charge_amount', 10, 2)->default(0);
@@ -44,6 +48,10 @@ return new class extends Migration
                 'method' => 'cod',
                 'title' => 'Pay on Delivery',
                 'description' => 'Pay when you receive your order',
+
+                'after_order_title' => 'Get Ready to Pay When It Arrives.',
+                'after_order_description' => 'You&apos;ve chosen to pay on delivery—please ensure the payment is available when your package arrives. Need help? We&apos;re just a message away.',
+
                 'charge_title' => 'COD Handling Fee',
                 'charge_amount' => 99.99,
                 'charge_type' => 'fixed',
@@ -58,6 +66,10 @@ return new class extends Migration
                 'method' => 'prepaid',
                 'title' => 'Online Payment',
                 'description' => 'Pay securely using UPI, cards, or wallets',
+
+                'after_order_title' => 'We&apos;re processing your order and will update you shortly.',
+                'after_order_description' => 'Thank you for shopping with us. You can view your invoice and track your order from your account.',
+
                 'charge_title' => 'No Fee',
                 'charge_amount' => 0,
                 'charge_type' => 'fixed',
@@ -72,6 +84,10 @@ return new class extends Migration
                 'method' => 'card',
                 'title' => 'Credit Card',
                 'description' => 'Visa, Mastercard, American Express',
+
+                'after_order_title' => 'Everything looks good. Just sit tight while we get your items ready.',
+                'after_order_description' => 'You&apos;ve chosen to pay on delivery—please ensure the payment is available when your package arrives. Need help? We&apos;re just a message away.',
+
                 'charge_title' => 'Processing Fee',
                 'charge_amount' => 2.9,
                 'charge_type' => 'percentage',
@@ -86,6 +102,10 @@ return new class extends Migration
                 'method' => 'paypal',
                 'title' => 'PayPal',
                 'description' => 'Secure PayPal payment',
+
+                'after_order_title' => 'Your transaction is complete and your order is being prepared.',
+                'after_order_description' => 'Thank you for shopping with us. You can view your invoice and track your order from your account.',
+
                 'charge_title' => 'Service Fee',
                 'charge_amount' => 1.5,
                 'charge_type' => 'percentage',

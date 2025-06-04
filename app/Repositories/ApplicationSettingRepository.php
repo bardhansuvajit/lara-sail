@@ -17,7 +17,7 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
     {
         try {
             DB::enableQueryLog();
-            $query = ProductCategory::query();
+            $query = ApplicationSetting::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -73,7 +73,7 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
 
     public function store(Array $array)
     {
-        $data = new ProductCategory();
+        $data = new ApplicationSetting();
         $data->title = $array['title'];
         $data->slug = Str::slug($array['title']);
         $data->parent_id = $array['parent_id'];
@@ -91,9 +91,9 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
     public function getById(Int $id)
     {
         try {
-            if ($guard == 'Admin') {
-                $data = DeveloperSetting::find($id);
-            }
+            // if ($guard == 'Admin') {
+                $data = ApplicationSetting::find($id);
+            // }
 
             if (!empty($data)) {
                 return [
@@ -152,14 +152,14 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
 
     public function update(Array $array)
     {
+        // dd($array);
         try {
             $data = $this->getById($array['id']);
 
+            // dd($data);
+
             if ($data['code'] == 200) {
-                $data['data']->title = $array['title'];
-                $data['data']->slug = \Str::slug($array['title']);
-                $data['data']->parent_id = $array['parent_id'];
-                $data['data']->level = $array['level'];
+                $data['data']->value = $array['value'];
                 $data['data']->save();
 
                 return [

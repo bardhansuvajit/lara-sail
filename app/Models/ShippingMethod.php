@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ShippingMethod extends Model
 {
-    protected $fillable = ['method', 'title', 'subtitle', 'description'];
+    protected $fillable = ['method', 'title', 'subtitle', 'description', 'icon', 'cost', 'max_delivery_day'];
 
     public function countryDetails()
     {

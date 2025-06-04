@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin\Application;
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Interfaces\ApplicationSettingInterface;
+use App\Interfaces\DeveloperSettingInterface;
 use App\Interfaces\CartSettingInterface;
 use App\Interfaces\PaymentMethodInterface;
 use App\Interfaces\ShippingMethodInterface;
@@ -11,16 +13,22 @@ use Illuminate\Support\Facades\Validator;
 
 class ApplicationSettingsController
 {
+    private ApplicationSettingInterface $applicationSettingRepository;
+    private DeveloperSettingInterface $developerSettingRepository;
     private CartSettingInterface $cartSettingRepository;
     private PaymentMethodInterface $paymentMethodRepository;
     private ShippingMethodInterface $shippingMethodRepository;
 
     public function __construct(
+        ApplicationSettingInterface $applicationSettingRepository,
+        DeveloperSettingInterface $developerSettingRepository,
         CartSettingInterface $cartSettingRepository, 
         PaymentMethodInterface $paymentMethodRepository,
         ShippingMethodInterface $shippingMethodRepository
     )
     {
+        $this->applicationSettingRepository = $applicationSettingRepository;
+        $this->developerSettingRepository = $developerSettingRepository;
         $this->cartSettingRepository = $cartSettingRepository;
         $this->paymentMethodRepository = $paymentMethodRepository;
         $this->shippingMethodRepository = $shippingMethodRepository;
@@ -32,7 +40,11 @@ class ApplicationSettingsController
     public function index($model): View
     {
         if ($model == "basic") {
-            return view('admin.application.basic.index');
+            $resp = $this->applicationSettingRepository->list('', [], 'all', 'id', 'asc');
+
+            return view('admin.application.basic.index', [
+                'data' => $resp['data'],
+            ]);
         } elseif ($model == "cart") {
             $resp = $this->cartSettingRepository->list('', [], 'all', 'id', 'asc');
 
@@ -60,7 +72,13 @@ class ApplicationSettingsController
     public function edit($model): View
     {
         if ($model == "basic") {
-            return view('admin.application.basic.edit');
+            $resp = $this->applicationSettingRepository->list('', [], 'all', 'id', 'asc');
+            $productTypes = $this->developerSettingRepository->getByKey('product_type');
+
+            return view('admin.application.basic.edit', [
+                'data' => $resp['data'],
+                'productTypes' => json_decode($productTypes['data']->value)
+            ]);
         } elseif ($model == "cart") {
             $resp = $this->cartSettingRepository->list('', [], 'all', 'id', 'asc');
 
@@ -89,7 +107,24 @@ class ApplicationSettingsController
     {
         // dd($request->all());
 
-        if ($request->type == "cart") {
+        if ($request->type == "basic") {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|array',
+                'id.*' => 'integer|min:1',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+
+            foreach ($request->id as $index => $value) {
+                $this->applicationSettingRepository->update([
+                    'id' => $request->id[$index],
+                    // 'key' => $request->key[$index],
+                    'value' => $request->value[$index]
+                ]);
+            }
+        } elseif ($request->type == "cart") {
             $validator = Validator::make($request->all(), [
                 'id' => 'required|array',
                 'id.*' => 'integer|min:1',

@@ -44,8 +44,8 @@ return new class extends Migration
             ],
             [
                 'category' => 'stage2',
-                'key' => 'country_id',
-                'value' => 82,
+                'key' => 'country_code',
+                'value' => 'IN',
                 'description' => 'Application country id from countries table',
             ],
         ];
