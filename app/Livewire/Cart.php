@@ -17,10 +17,12 @@ class Cart extends Component
     public Collection $savedItems;
     public Collection $shippingMethods;
     public Collection $cartSetting;
+    public ?string $selectedShippingMethod = null;
     private CartInterface $cartRepository;
     private CartItemInterface $cartItemRepository;
     private CartSettingInterface $cartSettingRepository;
     private ShippingMethodInterface $shippingMethodRepository;
+    protected $listeners = ['updateCartInfo' => 'getCartData'];
 
     public function mount(
         CartInterface $cartRepository, 
@@ -82,6 +84,7 @@ class Cart extends Component
         $this->cart = collect($cart['data'] ?? []);
         $this->savedItems = collect($cart['data']->savedItems ?? []);
         $this->shippingMethods = collect($shippingMethods ?? []);
+        $this->selectedShippingMethod = $cart['data']->shipping_method_id ?? null;
         // $this->savedItems = count($cart['data']) > 0 ? collect($cart['data']->savedItems) : collect([]);
     }
 
@@ -213,6 +216,33 @@ class Cart extends Component
                 'Cart action error', ['type' => 'error']
             );
         }
+    }
+
+    public function updatedselectedShippingMethod($id)
+    {
+        $this->dispatch('showFullPageLoader');
+
+        // Get Cart Data
+        $cartRepository = app(CartInterface::class);
+        if (auth()->guard('web')->check()) {
+            $cart = $cartRepository->exists([
+                'user_id' => auth()->guard('web')->user()->id
+            ])['data'];
+        } else {
+            $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
+
+            $cart = $cartRepository->exists([
+                'device_id' => $deviceId,
+            ])['data'];
+        }
+
+        $updtResp = $cartRepository->updateShippingMethod($id, $cart->id);
+        $this->dispatch('show-notification', 
+            'Shipping method updated', ['type' => 'success']
+        );
+        $this->getCartData();
+        // $this->emit('updateCartInfo');
+        $this->dispatch('hideFullPageLoader');
     }
 
     public function render()

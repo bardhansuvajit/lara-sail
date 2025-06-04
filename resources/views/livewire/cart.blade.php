@@ -24,7 +24,7 @@
                 </div>
             @endif
 
-            @if ($cartSetting['free_shipping_threshold'] > $cart['total'])
+            @if ($cartSetting['free_shipping_threshold'] > $cart['sub_total'])
                 <div class="flex w-full items-center gap-3 sm:gap-4 {{FD['activeBgClass']}} px-2 sm:px-4 py-1 mt-2 sm:mt-4 font-light">
                     <div class="{{FD['iconClass']}} lg:w-6 lg:h-6">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-160q-50 0-85-35t-35-85H60l18-80h113q17-19 40-29.5t49-10.5q26 0 49 10.5t40 29.5h167l84-360H262l17-80h441l-37 160h117l120 160-40 200h-80q0 50-35 85t-85 35q-50 0-85-35t-35-85H400q0 50-35 85t-85 35Zm357-280h193l4-21-74-99h-95l-28 120Zm-17-280-84 360 2-7 82-353ZM140-440v-120H40l140-200v120h100L140-440Zm140 200q17 0 28.5-11.5T320-280q0-17-11.5-28.5T280-320q-17 0-28.5 11.5T240-280q0 17 11.5 28.5T280-240Zm400 0q17 0 28.5-11.5T720-280q0-17-11.5-28.5T680-320q-17 0-28.5 11.5T640-280q0 17 11.5 28.5T680-240Z"/></svg>
@@ -34,12 +34,8 @@
                         <p class="{{FD['text']}}">
                             {!! __('You are only <span class="currency-symbol">:icon</span> :amount away from  <span class="font-medium">Free Shipping</span>', [
                                 'icon' => COUNTRY['icon'],
-                                'amount' => formatIndianMoney($cartSetting['free_shipping_threshold'] - $cart['total'])
+                                'amount' => formatIndianMoney($cartSetting['free_shipping_threshold'] - $cart['sub_total'])
                             ]) !!}
-                            {{-- You are only 
-                            <span class="font-medium"><span class="currency-symbol">{{COUNTRY['icon']}}</span><span id="free-shipping-amount">99.99</span></span> 
-                            away from 
-                            <span class="font-medium">Free Shipping</span>  --}}
                         </p>
                         <p class="{{FD['text']}}">
                             <a href="javascript: void(0)" class="font-medium underline hover:no-underline inline-block" x-data="" x-on:click="$dispatch('open-modal', 'shipping-value');">How do i get this ?</a>
@@ -280,12 +276,6 @@
                                             @if ($saved_item->product->average_rating > 0)
                                                 {!! frontRatingHtml($saved_item->product->average_rating) !!}
                                             @endif
-                                            {{-- <div class="w-10 h-5 flex space-x-1 items-center bg-gray-50 px-1 border">
-                                                <p class="{{FD['text-0']}} text-gray-900 font-bold">3.9</p>
-                                                <div class="{{FD['iconClass']}} text-yellow-400 flex items-center">
-                                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z"></path></svg>
-                                                </div>
-                                            </div> --}}
 
                                             <button type="button" class="rounded-full w-6 h-6 p-1 hover:bg-gray-100 dark:hover:bg-gray-300">
                                                 <div class="{{FD['iconClass']}} text-gray-500">
@@ -426,11 +416,16 @@
                 <div>
                     <div class="grid grid-cols-3 gap-2">
                         @foreach ($shippingMethods as $shipMethod)
-                            <x-front.radio-input-button id="shipMethod{{$shipMethod->id}}" name="shipping_address_id" value="{{$shipMethod->id}}" :checked="$cart['shipping_method_id'] == $shipMethod->id">
-                                <div class="w-full max-w-sm">
+                            <x-front.radio-input-button 
+                                id="shipMethod{{$shipMethod->id}}" 
+                                name="shipping_address_id" 
+                                value="{{$shipMethod->id}}" 
+                                wire:model.lazy="selectedShippingMethod" 
+                            >
+                                <div class="">
                                     <div class="w-10 h-10">{!! $shipMethod->icon !!}</div>
 
-                                    <div class="p-1">
+                                    <div class="">
                                         <h5 class="{{FD['text-0']}} font-medium tracking-tight text-gray-900 dark:text-white">{{$shipMethod->title}}</h5>
 
                                         <p class="{{FD['text-0']}} dark:text-gray-400 line-clamp-2">{{$shipMethod->subtitle}}</p>

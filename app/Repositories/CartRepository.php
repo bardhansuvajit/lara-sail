@@ -11,6 +11,7 @@ use App\Interfaces\TrashInterface;
 use Illuminate\Database\Eloquent\Collection;
 use App\Interfaces\CartSettingInterface;
 use App\Interfaces\PaymentMethodInterface;
+use App\Interfaces\ShippingMethodInterface;
 
 use App\Exports\CartsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -20,16 +21,19 @@ class CartRepository implements CartInterface
     private TrashInterface $trashRepository;
     private CartSettingInterface $cartSettingRepository;
     private PaymentMethodInterface $paymentMethodRepository;
+    private ShippingMethodInterface $shippingMethodRepository;
 
     public function __construct(
         TrashInterface $trashRepository, 
         CartSettingInterface $cartSettingRepository, 
-        PaymentMethodInterface $paymentMethodRepository
+        PaymentMethodInterface $paymentMethodRepository,
+        ShippingMethodInterface $shippingMethodRepository
     )
     {
         $this->trashRepository = $trashRepository;
         $this->cartSettingRepository = $cartSettingRepository;
         $this->paymentMethodRepository = $paymentMethodRepository;
+        $this->shippingMethodRepository = $shippingMethodRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
@@ -310,7 +314,7 @@ class CartRepository implements CartInterface
                 return [
                     'code' => 400,
                     'status' => 'error',
-                    'message' => 'Invalid or inactive payment method.',
+                    'message' => 'Invalid payment method.',
                 ];
             }
 
@@ -335,6 +339,63 @@ class CartRepository implements CartInterface
                 'code' => 200,
                 'status' => 'success',
                 'message' => 'Payment method updated successfully.',
+                'data' => [
+                    'cart' => $cart,
+                    'payment_details' => $paymentDetails
+                ],
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating payment method.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function updateShippingMethod(int $id, Int $cartId)
+    {
+        try {
+            $cart = $this->getById($cartId);
+
+            if (!$cart) {
+                return [
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'Cart not found.',
+                ];
+            }
+
+            $cart = $cart['data'];
+
+            // Get Shipping data
+            $shippingMethodData = $this->shippingMethodRepository->getById($id);
+
+            if (!$shippingMethodData['code'] == 200 || $shippingMethodData['data']->status != 1) {
+                return [
+                    'code' => 400,
+                    'status' => 'error',
+                    'message' => 'Invalid shipping method.',
+                ];
+            }
+
+            $shippingMethodData = $shippingMethodData['data'];
+            $shippingMethodCost = $cart->shipping_cost + $shippingMethodData->cost;
+            $newTotal = $cart->total + $shippingMethodCost;
+
+            // Update cart with new payment method details
+            $cart->update([
+                'shipping_method_id' => $id,
+                'shipping_cost' => $shippingMethodCost,
+                'total' => $newTotal,
+                'last_activity_at' => now(),
+            ]);
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Shipping method updated successfully.',
                 'data' => [
                     'cart' => $cart,
                     'payment_details' => $paymentDetails

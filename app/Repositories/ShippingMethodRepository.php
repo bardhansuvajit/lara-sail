@@ -126,7 +126,7 @@ class ShippingMethodRepository implements ShippingMethodInterface
     public function getById(Int $id)
     {
         try {
-            $data = ShippingMethod::with('cart')
+            $data = ShippingMethod::with('countryDetails')
             ->find($id);
 
             if (!empty($data)) {

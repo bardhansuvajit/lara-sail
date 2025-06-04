@@ -2,7 +2,7 @@
     name="shipping-value" 
     maxWidth="sm" 
     vertical="middle" 
-    :show="($cartSetting['free_shipping_threshold'] > $cart['total']) && (request()->query('free-shipping-alert') == true)"
+    :show="($cartSetting['free_shipping_threshold'] > $cart['sub_total']) && (request()->query('free-shipping-alert') == true)"
 >
     <div class="p-6">
         <div class="max-w-sm border-gray-200 rounded-lg shadow-sm text-center">
@@ -14,7 +14,7 @@
             <p class="mb-3 font-normal {{FD['text-1']}} text-gray-500 dark:text-gray-400">
                 {!! __('Add <span class="italic font-bold dark:text-gray-300"><span class="currency-symbol">:icon</span>:amount</span> more  to your cart to qualify for free shipping on your order.', [
                     'icon' => COUNTRY['icon'],
-                    'amount' => formatIndianMoney($cartSetting['free_shipping_threshold'] - $cart['total'])
+                    'amount' => formatIndianMoney($cartSetting['free_shipping_threshold'] - $cart['sub_total'])
                 ]) !!}
             </p>
 
