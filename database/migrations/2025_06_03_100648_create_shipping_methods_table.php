@@ -38,7 +38,7 @@ return new class extends Migration
             [
                 'country_code' => 'IN',
                 'method' => 'free',
-                'title' => 'Free Delivery',
+                'title' => 'Standard Delivery',
                 'subtitle' => '5-6 business days',
                 'description' => 'No shipping charges. Suitable for standard deliveries with flexible timelines.',
                 'cost' => 0.00,
@@ -72,7 +72,7 @@ return new class extends Migration
             [
                 'country_code' => 'US',
                 'method' => 'free',
-                'title' => 'Free Delivery',
+                'title' => 'Standard Delivery',
                 'subtitle' => '5-6 business days',
                 'description' => 'Enjoy zero-cost delivery on all standard orders within the US.',
                 'cost' => 0.00,

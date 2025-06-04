@@ -34,7 +34,7 @@
             @if ( ($cart['payment_method_charge'] > 0))
                 <dl class="flex items-center justify-between gap-4">
                     <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400" id="payment-method-summary-text">Payment method Charge</dt>
-                    <dd class="{{FD['text']}} font-medium" id="payment-method-summary-highlight">
+                    <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white" id="payment-method-summary-highlight">
                         <span id="payment-method-summary-icon"></span><span class="currency-symbol">{{COUNTRY['icon']}}</span><span id="payment-method-summary-amount">{{formatIndianMoney($cart['payment_method_charge'])}}</span>
                     </dd>
                 </dl>

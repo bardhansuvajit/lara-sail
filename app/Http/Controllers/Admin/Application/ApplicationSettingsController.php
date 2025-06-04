@@ -6,20 +6,24 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Interfaces\CartSettingInterface;
 use App\Interfaces\PaymentMethodInterface;
+use App\Interfaces\ShippingMethodInterface;
 use Illuminate\Support\Facades\Validator;
 
 class ApplicationSettingsController
 {
     private CartSettingInterface $cartSettingRepository;
     private PaymentMethodInterface $paymentMethodRepository;
+    private ShippingMethodInterface $shippingMethodRepository;
 
     public function __construct(
         CartSettingInterface $cartSettingRepository, 
-        PaymentMethodInterface $paymentMethodRepository
+        PaymentMethodInterface $paymentMethodRepository,
+        ShippingMethodInterface $shippingMethodRepository
     )
     {
         $this->cartSettingRepository = $cartSettingRepository;
         $this->paymentMethodRepository = $paymentMethodRepository;
+        $this->shippingMethodRepository = $shippingMethodRepository;
     }
 
     /**
@@ -39,6 +43,12 @@ class ApplicationSettingsController
             $resp = $this->paymentMethodRepository->list('', [], 'all', 'id', 'asc');
 
             return view('admin.application.payment.index', [
+                'data' => $resp['data'],
+            ]);
+        } elseif ($model == "shipping") {
+            $resp = $this->shippingMethodRepository->list('', [], 'all', 'id', 'asc');
+
+            return view('admin.application.shipping.index', [
                 'data' => $resp['data'],
             ]);
         }
@@ -61,6 +71,12 @@ class ApplicationSettingsController
             $resp = $this->paymentMethodRepository->list('', [], 'all', 'id', 'asc');
 
             return view('admin.application.payment.edit', [
+                'data' => $resp['data'],
+            ]);
+        } elseif ($model == "shipping") {
+            $resp = $this->shippingMethodRepository->list('', [], 'all', 'id', 'asc');
+
+            return view('admin.application.shipping.edit', [
                 'data' => $resp['data'],
             ]);
         }
@@ -118,6 +134,27 @@ class ApplicationSettingsController
                     'discount_title' => $request->discount_title[$index],
                     'discount_amount' => $request->discount_amount[$index],
                     'discount_type' => $request->discount_type[$index],
+                ]);
+            }
+        } elseif ($request->type == "shipping") {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|array',
+                'id.*' => 'integer|min:1',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+
+            foreach ($request->id as $index => $value) {
+                $this->shippingMethodRepository->update([
+                    'id' => $request->id[$index],
+                    'method' => $request->method[$index],
+                    'title' => $request->title[$index],
+                    'subtitle' => $request->subtitle[$index],
+                    'description' => $request->description[$index],
+                    'icon' => $request->icon[$index],
+                    'cost' => $request->cost[$index]
                 ]);
             }
         }

@@ -126,8 +126,7 @@ class ShippingMethodRepository implements ShippingMethodInterface
     public function getById(Int $id)
     {
         try {
-            $data = ShippingMethod::with('countryDetails')
-            ->find($id);
+            $data = ShippingMethod::with('countryDetails')->find($id);
 
             if (!empty($data)) {
                 return [
@@ -186,38 +185,30 @@ class ShippingMethodRepository implements ShippingMethodInterface
 
     public function update(Array $array)
     {
+        // dd($array);
+
         try {
             $data = $this->getById($array['id']);
 
-            if ($data['code'] == 200) {
-                if (isset($array['type'])) {
-                    if ($array['type'] == "asc") {
-                        $data['data']->quantity += 1;
-                    } elseif ($array['type'] == "desc") {
-                        $data['data']->quantity -= 1;
-                    } else {
-                        return [
-                            'code' => 500,
-                            'status' => 'error',
-                            'message' => 'An error occurred while updating data.'
-                        ];
-                    }
-                }
+            // dd($data['data']->title, $array['title']);
 
-                if (!empty($array['quantity']))         $data['data']->quantity = $array['quantity'];
-                if (!empty($array['total']))            $data['data']->total = $array['total'];
-                if (!empty($array['image_s']))          $data['data']->image_s = $array['image_s'];
-                if (!empty($array['image_m']))          $data['data']->image_m = $array['image_m'];
-                if (!empty($array['image_l']))          $data['data']->image_l = $array['image_l'];
+            if ($data['code'] == 200) {
+                if (isset($array['method'])) $data['data']->method = $array['method'];
+                if (isset($array['title'])) $data['data']->title = $array['title'];
+                if (isset($array['subtitle'])) $data['data']->subtitle = $array['subtitle'];
+                if (isset($array['description'])) $data['data']->description = $array['description'];
+                if (isset($array['icon'])) $data['data']->icon = $array['icon'];
+                if (isset($array['cost'])) $data['data']->cost = $array['cost'];
 
                 $data['data']->save();
+
+                // dd($data['data']);
 
                 return [
                     'code' => 200,
                     'status' => 'success',
                     'message' => 'Changes have been saved',
                     'data' => $data,
-                    'cart' => $data['data']->cart,
                 ];
             } else {
                 return $data;

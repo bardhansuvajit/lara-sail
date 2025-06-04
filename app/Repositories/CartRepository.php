@@ -234,6 +234,7 @@ class CartRepository implements CartInterface
             // Calculate item totals
             $itemsTotal = $cart->items()->sum('total');
             $itemsQuantity = $cart->items()->sum('quantity');
+            $currentShippingCost = $cart->shipping_cost;
 
             // $totalMrp = 0;
             // foreach ($cart->items as $itemKey => $itemValue) {
@@ -248,9 +249,8 @@ class CartRepository implements CartInterface
                 return $price * $item->quantity;
             });
 
-
             // Calculate shipping cost
-            $shippingCost = $this->calculateShippingCost($cart, $itemsTotal);
+            $shippingCost = $this->calculateCartSettingShippingCost($cart, $itemsTotal);
 
             // Calculate payment method adjustments
             $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $shippingCost);
@@ -380,26 +380,41 @@ class CartRepository implements CartInterface
                 ];
             }
 
-            $shippingMethodData = $shippingMethodData['data'];
-            $shippingMethodCost = $cart->shipping_cost + $shippingMethodData->cost;
-            $newTotal = $cart->total + $shippingMethodCost;
+            // Calculate shipping cost
+            $itemsTotal = $cart->items()->sum('total');
+            $shippingCost = $this->calculateCartSettingShippingCost($cart, $itemsTotal);
+
+            // Calculate payment method adjustments
+            $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $shippingCost);
+
+            // $shippingMethodData = $shippingMethodData['data'];
+            // $selectedShippingMethodCost = (float) $shippingMethodData->cost;
+            // $existingCartShippingCost = (float) $shippingCost;
+
+            // // dd($selectedShippingMethodCost, $existingCartShippingCost);
+
+            // $newShippingCost = $existingCartShippingCost + $selectedShippingMethodCost;
+            // // dd($newShippingCost);
+            // $newTotal = $cart->total + $newShippingCost;
 
             // Update cart with new payment method details
-            $cart->update([
+            $cratUpdt = $cart->update([
                 'shipping_method_id' => $id,
-                'shipping_cost' => $shippingMethodCost,
-                'total' => $newTotal,
+                'shipping_cost' => $shippingCost,
+                'total' => $paymentDetails['grandTotal'],
                 'last_activity_at' => now(),
             ]);
+
+            // dd($cratUpdt);
 
             return [
                 'code' => 200,
                 'status' => 'success',
                 'message' => 'Shipping method updated successfully.',
-                'data' => [
-                    'cart' => $cart,
-                    'payment_details' => $paymentDetails
-                ],
+                // 'data' => [
+                //     'cart' => $cart,
+                //     'payment_details' => $paymentDetails
+                // ],
             ];
         } catch (\Exception $e) {
             return [
@@ -443,19 +458,60 @@ class CartRepository implements CartInterface
         ];
     }
 
-    protected function calculateShippingCost($cart, $itemsTotal): float
+    protected function calculateCartSettingShippingCost($cart, $itemsTotal): float
     {
+        $cartSettingResp = $this->cartSettingRepository->list('', ['country' => COUNTRY['country']], 'all', 'id', 'asc');
+        $cartSetting = $cartSettingResp['data'][0] ?? [];
+        $cartShippingCost = (float) $cartSetting->shipping_charge;
+
+        if ($itemsTotal > $cartSetting->free_shipping_threshold) {
+            $cartShippingCost = 0;
+        }
+
+        // current shipping method id
+        $cartShippingMethodId = $cart->shipping_method_id;
+        $shippingMethodData = $this->shippingMethodRepository->getById($cartShippingMethodId);
+
+        if ($shippingMethodData['code'] == 200 || $shippingMethodData['data']->status == 1) {
+            $shippingMethodData = $shippingMethodData['data'];
+            $shippingMethodCost = (float) $shippingMethodData->cost;
+            $finalShippingCost = $shippingMethodCost + $cartShippingCost;
+        }
+
+        return (float) $finalShippingCost;
+
+        // return 0.0;
+
+
+        /*
         $cartSettingResp = $this->cartSettingRepository->list('', [], 'all', 'id', 'asc');
         $cartSettings = $cartSettingResp['data'] ?? [];
 
         foreach ($cartSettings as $cartSetting) {
-            if ($cartSetting->country === $cart->country 
-                && $itemsTotal < $cartSetting->free_shipping_threshold) {
-                return (float) $cartSetting->shipping_charge;
+            if (
+                $cartSetting->country === $cart->country 
+                && $itemsTotal < $cartSetting->free_shipping_threshold
+            ) {
+
+                // current shipping method id
+                $cartShippingMethodId = $cart->shipping_method_id;
+                $shippingMethodData = $this->shippingMethodRepository->getById($cartShippingMethodId);
+
+                if ($shippingMethodData['code'] == 200 || $shippingMethodData['data']->status == 1) {
+                    $shippingMethodData = $shippingMethodData['data'];
+                    $shippingMethodCost = (float) $shippingMethodData->cost;
+
+                    $cartShippingCost = (float) $cartSetting->shipping_charge;
+
+                    $finalShippingCost = $shippingMethodCost + $cartShippingCost;
+                }
+
+                return (float) $finalShippingCost;
             }
         }
 
         return 0.0;
+        */
     }
 
     protected function calculatePaymentMethodAdjustments(float $itemsTotal, float $shippingCost): array

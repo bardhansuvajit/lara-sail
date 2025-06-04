@@ -17,7 +17,7 @@ class Cart extends Component
     public Collection $savedItems;
     public Collection $shippingMethods;
     public Collection $cartSetting;
-    public ?string $selectedShippingMethod = null;
+    public Int $selectedShippingMethod;
     private CartInterface $cartRepository;
     private CartItemInterface $cartItemRepository;
     private CartSettingInterface $cartSettingRepository;
@@ -38,6 +38,8 @@ class Cart extends Component
 
     public function getCartData()
     {
+        $this->dispatch('showFullPageLoader');
+
         $country = COUNTRY['country'];
 
         // Get Cart Setting
@@ -86,10 +88,14 @@ class Cart extends Component
         $this->shippingMethods = collect($shippingMethods ?? []);
         $this->selectedShippingMethod = $cart['data']->shipping_method_id ?? null;
         // $this->savedItems = count($cart['data']) > 0 ? collect($cart['data']->savedItems) : collect([]);
+
+        $this->dispatch('hideFullPageLoader');
     }
 
     public function updateQty($id, $type, $currentQty)
     {
+        $this->dispatch('showFullPageLoader');
+
         // dd($id, $type);
         $currentQty = (int)$currentQty;
 
@@ -126,10 +132,14 @@ class Cart extends Component
                 'Cart action error', ['type' => 'error']
             );
         }
+
+        $this->dispatch('hideFullPageLoader');
     }
 
     public function deleteItem($id)
     {
+        $this->dispatch('showFullPageLoader');
+
         try {
             $cartRepository = app(CartInterface::class);
             $cartItemRepository = app(CartItemInterface::class);
@@ -156,10 +166,14 @@ class Cart extends Component
                 'Cart action error', ['type' => 'error']
             );
         }
+
+        $this->dispatch('hideFullPageLoader');
     }
 
     public function saveItemForLater($id)
     {
+        $this->dispatch('showFullPageLoader');
+
         try {
             $cartRepository = app(CartInterface::class);
             $cartItemRepository = app(CartItemInterface::class);
@@ -186,10 +200,14 @@ class Cart extends Component
                 'Cart action error', ['type' => 'error']
             );
         }
+
+        $this->dispatch('hideFullPageLoader');
     }
 
     public function moveItemToCart($id)
     {
+        $this->dispatch('showFullPageLoader');
+
         try {
             $cartRepository = app(CartInterface::class);
             $cartItemRepository = app(CartItemInterface::class);
@@ -216,6 +234,8 @@ class Cart extends Component
                 'Cart action error', ['type' => 'error']
             );
         }
+
+        $this->dispatch('hideFullPageLoader');
     }
 
     public function updatedselectedShippingMethod($id)

@@ -413,38 +413,7 @@
             @if (isset($cart['items']) && count($cart['items']) > 0)
                 @include('livewire.includes.order-summary')
 
-                <div>
-                    <div class="grid grid-cols-3 gap-2">
-                        @foreach ($shippingMethods as $shipMethod)
-                            <x-front.radio-input-button 
-                                id="shipMethod{{$shipMethod->id}}" 
-                                name="shipping_address_id" 
-                                value="{{$shipMethod->id}}" 
-                                wire:model.lazy="selectedShippingMethod" 
-                            >
-                                <div class="">
-                                    <div class="w-10 h-10">{!! $shipMethod->icon !!}</div>
-
-                                    <div class="">
-                                        <h5 class="{{FD['text-0']}} font-medium tracking-tight text-gray-900 dark:text-white">{{$shipMethod->title}}</h5>
-
-                                        <p class="{{FD['text-0']}} dark:text-gray-400 line-clamp-2">{{$shipMethod->subtitle}}</p>
-
-                                        <div class="mt-2 flex items-center gap-2">
-                                            <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
-                                                @if ($shipMethod->cost == 0)
-                                                    FREE
-                                                @else
-                                                    <span class="currency-symbol">{{COUNTRY['icon']}}</span>{{formatIndianMoney($shipMethod->cost)}}
-                                                @endif
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </x-front.radio-input-button>
-                        @endforeach
-                    </div>
-                </div>
+                @include('livewire.includes.shipping-methods')
             @endif
 
             <div class="w-full space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
