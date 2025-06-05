@@ -14,7 +14,7 @@
                 <div class="flex space-x-4">
                     @if (!empty(Storage::url(Auth::guard('admin')->user()->profile_picture_m)))
                         <div class="content-center">
-                            <img class="h-14 w-14 rounded-lg object-contain" src="{{ Storage::url(Auth::guard('admin')->user()->profile_picture_m) }}" alt="" />
+                            <img class="h-14 w-14 rounded-lg object-contain" src="{{ Storage::url(Auth::guard('admin')->user()->profile_picture_m) }}" alt="Picture" />
                         </div>
                     @endif
                     <div>

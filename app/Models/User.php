@@ -22,7 +22,7 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'email',
-        'country_id',
+        'country_code',
         'primary_phone_no',
         'gender_id',
         'password',
@@ -57,7 +57,7 @@ class User extends Authenticatable
 
     public function country()
     {
-        return $this->belongsTo('App\Models\Country', 'country_id', 'id');
+        return $this->belongsTo('App\Models\Country', 'country_code', 'short_name');
     }
 
     public function shippingAddresses()

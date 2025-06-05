@@ -43,13 +43,13 @@ class RegisteredUserController extends Controller
         // dd($request->all());
 
         // dynamic phone number digits based on country
-        $phoneNumberDigits = 10;
+        $phoneNumberDigits = COUNTRY['phoneNoDigits'];
 
         // phone number country code fetch
-        if (!empty($request->phone_country_code)) {
-            $countryData = $this->countryRepository->getByShortName($request->phone_country_code);
-        }
-        if($countryData['code'] == 200) $phoneNumberDigits = $countryData['data']->phone_no_digits;
+        // if (!empty($request->phone_country_code)) {
+        //     $countryData = $this->countryRepository->getByShortName($request->phone_country_code);
+        // }
+        // if($countryData['code'] == 200) $phoneNumberDigits = $countryData['data']->phone_no_digits;
 
         $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
@@ -64,7 +64,7 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
-            'country_id' => $countryData['data']->id,
+            'country_code' => $request->phone_country_code,
             'primary_phone_no' => $request->phone_no,
             'email' => $request->email ?? null,
             'password' => Hash::make($request->password),

@@ -469,7 +469,7 @@ class CartRepository implements CartInterface
         }
 
         // current shipping method id
-        $cartShippingMethodId = $cart->shipping_method_id;
+        $cartShippingMethodId = $cart->shipping_method_id ?? 1;
         $shippingMethodData = $this->shippingMethodRepository->getById($cartShippingMethodId);
 
         if ($shippingMethodData['code'] == 200 || $shippingMethodData['data']->status == 1) {

@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->string('ipv4', 100)->unique();
             $table->string('ipv6', 100)->unique()->nullable();
-            $table->string('country_code', 5)->nullable();
+            $table->string('country_code', 2)->nullable();
             $table->string('state_code', 5)->nullable();
             $table->string('city', 100)->nullable();
             $table->string('zip', 20)->nullable();

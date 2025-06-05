@@ -38,6 +38,7 @@
                                         class="hidden md:inline-block mt-1 accent-primary-600 dark:accent-red-500" 
                                         wire:model.lazy="selectedMethod"
                                         x-bind:checked="methodIndex == 0"
+                                        form="place-order-form"
                                     />
 
                                     <div class="flex flex-col {{FD['text-1']}} text-gray-700">
@@ -70,9 +71,11 @@
                     </div>
 
                     <div>
-                        <button type="submit" class="flex w-full md:w-40 items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                            Place Order
-                        </button>
+                        <form action="{{ route('front.order.store') }}" method="post" id="place-order-form">@csrf
+                            <button type="submit" class="flex w-full md:w-40 items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                Place Order
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -19,38 +19,36 @@
                 </div>
             @endif --}}
 
-            <form action="{{ route('front.order.store') }}" method="post" id="place-order-form">@csrf
-                <div class="mt-4 sm:mt-6 md:gap-6 lg:flex lg:items-start xl:gap-8">
-                    {{-- left part --}}
-                    <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl mb-8">
-                        <div class="space-y-2">
+            <div class="mt-4 sm:mt-6 md:gap-6 lg:flex lg:items-start xl:gap-8">
+                {{-- left part --}}
+                <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl mb-8">
+                    <div class="space-y-2">
 
-                            <!-- ACCOUNT -->
-                            @include('front.checkout.includes.account')
+                        <!-- ACCOUNT -->
+                        @include('front.checkout.includes.account')
 
-                            @if (auth()->guard('web')->check())
-                                <!-- ADDRESS -->
-                                @include('front.checkout.includes.address')
+                        @if (auth()->guard('web')->check())
+                        
+                            <!-- ADDRESS -->
+                            @include('front.checkout.includes.address')
 
-                                <!-- PAYMENT -->
-                                @livewire('payment-method', [
-                                    'shippingAddrExistCount' => count($shippingAddresses)
-                                ])
-                                {{-- @include('front.checkout.includes.payment') --}}
-                            @endif
-
-                        </div>
-                    </div>
-
-                    {{-- right part - cart items & order summary --}}
-                    <div class="mx-auto mt-6 mb-8 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
-
-                        <!-- CART -->
-                        @livewire('cart-checkout')
+                            <!-- PAYMENT -->
+                            @livewire('payment-method', [
+                                'shippingAddrExistCount' => count($shippingAddresses)
+                            ])
+                        @endif
 
                     </div>
                 </div>
-            </form>
+
+                {{-- right part - cart items & order summary --}}
+                <div class="mx-auto mt-6 mb-8 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
+
+                    <!-- CART -->
+                    @livewire('cart-checkout')
+
+                </div>
+            </div>
         </div>
     </section>
 

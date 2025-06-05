@@ -31,13 +31,17 @@ class UserRepository implements UserInterface
             // keyword
             if (!empty($keyword)) {
                 $query->where(function ($query) use ($keyword) {
-                    $query->where('title', 'like', '%' . $keyword . '%')
-                        ->orWhere('slug', 'like', '%' . $keyword . '%')
-                        ->orWhere('short_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('long_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('tags', 'like', '%' . $keyword . '%');
+                    $query->where('first_name', 'like', '%' . $keyword . '%')
+                        ->orWhere('last_name', 'like', '%' . $keyword . '%')
+                        ->orWhere('email', 'like', '%' . $keyword . '%')
+                        ->orWhere('country_code', 'like', '%' . $keyword . '%')
+                        ->orWhere('primary_phone_no', 'like', '%' . $keyword . '%')
+                        ->orWhere('alt_phone_no', 'like', '%' . $keyword . '%')
+                        ->orWhere('date_of_birth', 'like', '%' . $keyword . '%');
                 });
             }
+
+            // dd($filters);
 
             // filters
             foreach ($filters as $field => $value) {
@@ -85,19 +89,16 @@ class UserRepository implements UserInterface
         // dd($array['image']);
         try {
             $data = new User();
-            $data->title = $array['title'];
-            $data->slug = Str::slug($array['title']);
-            $data->parent_id = $array['parent_id'] ?? null;
-            $data->level = $array['level'];
-
-            if (!empty($array['image'])) {
-                $uploadResp = fileUpload($array['image'], 'p-cat');
-
-                $data->image_s = $uploadResp['smallThumbName'];
-                $data->image_m = $uploadResp['mediumThumbName'];
-                $data->image_l = $uploadResp['largeThumbName'];
-            }
-
+            $data->first_name = $array['first_name'];
+            $data->last_name = $array['last_name'];
+            $data->email = $array['email'];
+            $data->country_code = $array['country_code'];
+            $data->primary_phone_no = $array['primary_phone_no'];
+            $data->gender_id = $array['gender_id'];
+            $data->password = Hash::make($array['password']);
+            $data->alt_phone_no = $array['alt_phone_no'] ?? null;
+            $data->date_of_birth = $array['date_of_birth'] ?? null;
+            $data->profile_picture = $array['profile_picture'] ?? null;
             $data->save();
 
             return [
@@ -120,7 +121,7 @@ class UserRepository implements UserInterface
     public function getById(Int $id)
     {
         try {
-            $data = User::find($id);
+            $data = User::with('country', 'shippingAddresses', 'billingAddresses')->find($id);
 
             if (!empty($data)) {
                 return [
@@ -147,10 +148,10 @@ class UserRepository implements UserInterface
         }
     }
 
-    public function getByCountryPrimaryPhone(Int $countryId, String $phoneNo)
+    public function exists(Array $conditions)
     {
         try {
-            $data = User::where('country_id', $countryId)->where('primary_phone_no', $phoneNo)->first();
+            $data = User::where($conditions)->get();
 
             if (!empty($data)) {
                 return [
@@ -179,24 +180,35 @@ class UserRepository implements UserInterface
 
     public function update(Array $array)
     {
+        // dd($array);
+
         try {
             $data = $this->getById($array['id']);
 
+            // dd($data['data']->title, $array['title']);
+
             if ($data['code'] == 200) {
-                $data['data']->title = $array['title'];
-                $data['data']->slug = \Str::slug($array['title']);
-                $data['data']->level = $array['level'];
-                $data['data']->parent_id = $array['parent_id'] ?? null;
+                $data['data']->first_name = $array['first_name'];
+                $data['data']->last_name = $array['last_name'];
+                $data['data']->email = $array['email'];
+                $data['data']->country_code = $array['country_code'];
+                $data['data']->primary_phone_no = $array['primary_phone_no'];
+                $data['data']->gender_id = $array['gender_id'];
+                $data['data']->password = Hash::make($array['password']);
+                $data['data']->alt_phone_no = $array['alt_phone_no'] ?? null;
+                $data['data']->date_of_birth = $array['date_of_birth'] ?? null;
+                $data['data']->profile_picture = $array['profile_picture'] ?? null;
 
-                if (!empty($array['image'])) {
-                    $uploadResp = fileUpload($array['image'], 'p-cat');
-
-                    $data['data']->image_s = $uploadResp['smallThumbName'];
-                    $data['data']->image_m = $uploadResp['mediumThumbName'];
-                    $data['data']->image_l = $uploadResp['largeThumbName'];
-                }
+                // if (isset($array['method'])) $data['data']->method = $array['method'];
+                // if (isset($array['title'])) $data['data']->title = $array['title'];
+                // if (isset($array['subtitle'])) $data['data']->subtitle = $array['subtitle'];
+                // if (isset($array['description'])) $data['data']->description = $array['description'];
+                // if (isset($array['icon'])) $data['data']->icon = $array['icon'];
+                // if (isset($array['cost'])) $data['data']->cost = $array['cost'];
 
                 $data['data']->save();
+
+                // dd($data['data']);
 
                 return [
                     'code' => 200,
@@ -223,16 +235,22 @@ class UserRepository implements UserInterface
             $data = $this->getById($id);
 
             if ($data['code'] == 200) {
+                $cartItem = $data['data'];
+
+                // dd($cartItem);
+
                 // Handling trash
-                $this->trashRepository->store([
+                $trashData = $this->trashRepository->store([
                     'model' => 'User',
-                    'table_name' => 'product_categories',
+                    'table_name' => 'users',
                     'deleted_row_id' => $data['data']->id,
-                    'thumbnail' => $data['data']->image_s,
-                    'title' => $data['data']->title,
-                    'description' => $data['data']->title.' data deleted from product categories table',
+                    'thumbnail' => $data['data']->profile_picture,
+                    'title' => $data['data']->first_name,
+                    'description' => $data['data']->first_name.' & '. $data['data']->variation_attributes.' data deleted from users table',
                     'status' => 'deleted',
                 ]);
+
+                // dd($trashData);
 
                 $data['data']->delete();
 
@@ -240,7 +258,8 @@ class UserRepository implements UserInterface
                     'code' => 200,
                     'status' => 'success',
                     'message' => 'Data deleted',
-                    'data' => $data,
+                    'data' => $cartItem,
+                    'cart' => $cartItem->cart
                 ];
             } else {
                 return $data;
@@ -261,14 +280,15 @@ class UserRepository implements UserInterface
             $data = User::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
+
                     // Handling trash
                     $this->trashRepository->store([
                         'model' => 'User',
-                        'table_name' => 'product_categories',
+                        'table_name' => 'users',
                         'deleted_row_id' => $item->id,
-                        'thumbnail' => $item->image_s,
+                        'thumbnail' => $item->profile_picture,
                         'title' => $item->title,
-                        'description' => $item->title.' data deleted from product categories table',
+                        'description' => $item->title.' data deleted from users table',
                         'status' => 'deleted',
                     ]);
 
@@ -310,21 +330,20 @@ class UserRepository implements UserInterface
             $processedCount = 0;
 
             foreach ($data as $item) {
-                if (!isset($item['first_name'])) {
-                    continue; // Skip rows without a first_name
+                if (!isset($item['title'])) {
+                    continue; // Skip rows without a title
                 }
 
                 User::create([
-                    'first_name' => $item['first_name'] ? $item['first_name'] : null,
-                    'last_name' => $item['last_name'] ? $item['last_name'] : null,
-                    'email' => $item['email'] ? $item['email'] : null,
-                    'country_id' => $item['country_id'] ? $item['country_id'] : null,
-                    'primary_phone_no' => $item['primary_phone_no'] ? $item['primary_phone_no'] : null,
-                    'gender_id' => $item['gender_id'] ? $item['gender_id'] : null,
-                    'password' => $item['password'] ? Hash::make($item['password']) : null,
-                    'alt_phone_no' => $item['alt_phone_no'] ? $item['alt_phone_no'] : null,
-                    'date_of_birth' => $item['date_of_birth'] ? $item['date_of_birth'] : null,
-                    'status' => $item['status'] ? $item['status'] : 0
+                    'title' => $item['title'] ? $item['title'] : null,
+                    'slug' => !empty($item['title']) ? Str::slug($item['title']) : null,
+                    'short_description' => !empty($item['short_description']) ? $item['short_description'] : null,
+                    'long_description' => !empty($item['long_description']) ? $item['long_description'] : null,
+                    'tags' => !empty($item['tags']) ? $item['tags'] : null,
+                    'meta_title' => !empty($item['meta_title']) ? $item['meta_title'] : null,
+                    'meta_desc' => !empty($item['meta_desc']) ? $item['meta_desc'] : null,
+                    'position' => !empty($item['position']) ? $item['position'] : 1,
+                    'status' => !empty($item['status']) ? $item['status'] : 0
                 ]);
 
                 $processedCount++;
@@ -342,8 +361,7 @@ class UserRepository implements UserInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                // 'message' => 'An error occurred while uploading data.',
-                'message' => $e->getMessage(),
+                'message' => 'An error occurred while uploading data.',
                 'error' => $e->getMessage(),
             ];
         }
@@ -355,7 +373,7 @@ class UserRepository implements UserInterface
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
             if (count($data['data']) > 0) {
-                $fileName = "product_categories_export_" . date('Y-m-d') . '-' . time();
+                $fileName = "users_export_" . date('Y-m-d') . '-' . time();
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";
@@ -400,4 +418,5 @@ class UserRepository implements UserInterface
             ];
         }
     }
+
 }
