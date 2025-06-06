@@ -95,7 +95,7 @@ class UserRepository implements UserInterface
             $data->country_code = $array['country_code'];
             $data->primary_phone_no = $array['primary_phone_no'];
             $data->gender_id = $array['gender_id'];
-            $data->password = Hash::make($array['password']);
+            $data->password = Hash::make($array['primary_phone_no']);
             $data->alt_phone_no = $array['alt_phone_no'] ?? null;
             $data->date_of_birth = $array['date_of_birth'] ?? null;
             $data->profile_picture = $array['profile_picture'] ?? null;
@@ -122,6 +122,36 @@ class UserRepository implements UserInterface
     {
         try {
             $data = User::with('country', 'shippingAddresses', 'billingAddresses')->find($id);
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function getByCountryPrimaryPhone(String $countryCode, String $phoneNo)
+    {
+        try {
+            $data = User::where('country_code', $countryCode)->where('primary_phone_no', $phoneNo)->first();
 
             if (!empty($data)) {
                 return [
@@ -194,10 +224,19 @@ class UserRepository implements UserInterface
                 $data['data']->country_code = $array['country_code'];
                 $data['data']->primary_phone_no = $array['primary_phone_no'];
                 $data['data']->gender_id = $array['gender_id'];
-                $data['data']->password = Hash::make($array['password']);
+                // $data['data']->password = Hash::make($array['password']);
                 $data['data']->alt_phone_no = $array['alt_phone_no'] ?? null;
                 $data['data']->date_of_birth = $array['date_of_birth'] ?? null;
-                $data['data']->profile_picture = $array['profile_picture'] ?? null;
+
+                if (!empty($array['profile_picture'])) {
+                    $uploadResp = fileUpload($array['profile_picture'], 'user');
+
+                    // $data['data']->profile_picture_s = $uploadResp['smallThumbName'];
+                    $data['data']->profile_picture = $uploadResp['mediumThumbName'];
+                    // $data['data']->profile_picture_l = $uploadResp['largeThumbName'];
+                }
+
+                // $data['data']->profile_picture = $array['profile_picture'] ?? null;
 
                 // if (isset($array['method'])) $data['data']->method = $array['method'];
                 // if (isset($array['title'])) $data['data']->title = $array['title'];

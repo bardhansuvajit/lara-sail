@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Admin\User;
+namespace App\Http\Controllers\Admin\Order;
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Validation\Rule;
-use App\Interfaces\UserInterface;
+use App\Interfaces\OrderInterface;
 
-class UserController
+class OrderController
 {
-    private UserInterface $userRepository;
+    private OrderInterface $orderRepository;
 
-    public function __construct(UserInterface $userRepository)
+    public function __construct(OrderInterface $orderRepository)
     {
-        $this->userRepository = $userRepository;
+        $this->orderRepository = $orderRepository;
     }
 
     public function index(Request $request): View
@@ -37,16 +37,16 @@ class UserController
             'status' => $request->input('status', ''),
             'country_code' => $request->input('countryCode', ''),
         ];
-        $resp = $this->userRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
+        $resp = $this->orderRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
-        return view('admin.user.index', [
+        return view('admin.order.index', [
             'data' => $resp['data'],
         ]);
     }
 
     public function create(): View
     {
-        return view('admin.user.create');
+        return view('admin.order.create');
     }
 
     public function store(Request $request)
@@ -77,14 +77,14 @@ class UserController
             'profile_picture.max' => 'The image field must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
         ]);
 
-        $resp = $this->userRepository->store($request->all());
-        return redirect()->route('admin.user.index')->with($resp['status'], $resp['message']);
+        $resp = $this->orderRepository->store($request->all());
+        return redirect()->route('admin.order.index')->with($resp['status'], $resp['message']);
     }
 
     public function edit(Int $id): View
     {
-        $resp = $this->userRepository->getById($id);
-        return view('admin.user.edit', [
+        $resp = $this->orderRepository->getById($id);
+        return view('admin.order.edit', [
             'data' => $resp['data'],
         ]);
     }
@@ -118,13 +118,13 @@ class UserController
             'profile_picture.max' => 'The image field must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
         ]);
 
-        $resp = $this->userRepository->update($request->all());
+        $resp = $this->orderRepository->update($request->all());
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
     public function delete(Int $id)
     {
-        $resp = $this->userRepository->delete($id);
+        $resp = $this->orderRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
@@ -137,7 +137,7 @@ class UserController
             'action' => 'required|in:delete,archive',
         ]);
 
-        $resp = $this->userRepository->bulkAction($request->except('_token'));
+        $resp = $this->orderRepository->bulkAction($request->except('_token'));
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
@@ -147,7 +147,7 @@ class UserController
             'file' => 'required|file|max:5000|mimes:csv,xlsx,xls',
         ]);
 
-        $resp = $this->userRepository->import($request->file('file'));
+        $resp = $this->orderRepository->import($request->file('file'));
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
@@ -169,7 +169,7 @@ class UserController
             'status' => $request->input('status', ''),
         ];
 
-        $resp = $this->userRepository->export($keyword, $filters, $perPage, $sortBy, $sortOrder, $type);
+        $resp = $this->orderRepository->export($keyword, $filters, $perPage, $sortBy, $sortOrder, $type);
         if ($resp instanceof \Symfony\Component\HttpFoundation\BinaryFileResponse) {
             return $resp;
         }

@@ -105,18 +105,18 @@ class CheckoutController extends Controller
             if (!empty($_GET['phone_no'])) {
                 $phoneNo = $_GET['phone_no'];
 
-                $phoneNumberDigits = 10;
+                $phoneNumberDigits = COUNTRY['phoneNoDigits'];
                 $countryShortName = $country;
-                $countryData = $this->countryRepository->getByShortName($countryShortName);
-                $countryId = $countryData['data']->id;
-                $phoneNumberDigits = $countryData['data']->phone_no_digits;
+                // $countryData = $this->countryRepository->getByShortName($countryShortName);
+                // $countryId = $countryData['data']->id;
+                // $phoneNumberDigits = $countryData['data']->phone_no_digits;
 
                 $request->validate([
                     'phone_no' => 'required|integer|digits:'.$phoneNumberDigits,
                 ]);
 
                 // CHECK IF USER EXISTS
-                $userData = $this->userRepository->getByCountryPrimaryPhone($countryId, $phoneNo);
+                $userData = $this->userRepository->getByCountryPrimaryPhone($countryShortName, $phoneNo);
 
                 // dd($userData);
 
@@ -134,7 +134,7 @@ class CheckoutController extends Controller
                         'focus' => 'first_name',
                         'buttonText' => 'Create Account',
                         'formType' => 'register',
-                        'countryId' => $countryId
+                        // 'countryId' => $countryId
                     ]);
                 }
             }

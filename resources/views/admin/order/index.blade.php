@@ -1,8 +1,8 @@
 <x-admin-app-layout
     screen="md:w-full"
-    title="{{ __('User') }}"
+    title="{{ __('Order') }}"
     :breadcrumb="[
-        ['label' => 'User']
+        ['label' => 'Order']
     ]"
 >
 
@@ -11,11 +11,11 @@
         <div class="flex space-x-2 justify-end">
             <x-admin.button
                 element="a"
-                :href="route('admin.user.create')">
+                :href="route('admin.order.create')">
                 @slot('icon')
                     <svg fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" /></svg>
                 @endslot
-                {{ __('Add data') }}
+                {{ __('Create Offline Order') }}
             </x-admin.button>
 
             <x-admin.button 
@@ -27,8 +27,8 @@
                 id="importButton" 
                 x-on:click.prevent="
                     $dispatch('open-modal', 'import');
-                    $dispatch('set-model', 'User');
-                    $dispatch('set-route', '{{ route('admin.user.import') }}');
+                    $dispatch('set-model', 'Order');
+                    $dispatch('set-route', '{{ route('admin.order.import') }}');
                 ">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
@@ -45,7 +45,7 @@
                 id="exportButton" 
                 x-on:click.prevent="
                     $dispatch('open-modal', 'export');
-                    $dispatch('set-route', '{{ route('admin.user.export', 'csv') }}');
+                    $dispatch('set-route', '{{ route('admin.order.export', 'csv') }}');
                 ">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
@@ -142,7 +142,7 @@
                                         $dispatch('open-modal', 'confirm-bulk-action');
                                         $dispatch('data-desc', 'Are you sure you want to Delete selected data?');
                                         $dispatch('data-button-text', 'Yes, Delete');
-                                        $dispatch('set-route', '{{ route('admin.user.bulk') }}');
+                                        $dispatch('set-route', '{{ route('admin.order.bulk') }}');
                                         document.getElementById('bulkActionInput').value = 'delete';
                                     ">
                                     @slot('icon')
@@ -225,9 +225,12 @@
                             <x-admin.input-checkbox id="checkbox-all" />
                         </th>
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
-                        <th scope="col" class="px-2 py-1">Name</th>
-                        <th scope="col" class="px-2 py-1">Country</th>
-                        <th scope="col" class="px-2 py-1">Contact</th>
+                        <th scope="col" class="px-2 py-1">Order number</th>
+                        <th scope="col" class="px-2 py-1">User</th>
+                        <th scope="col" class="px-2 py-1">Total amount</th>
+                        <th scope="col" class="px-2 py-1">Items</th>
+                        <th scope="col" class="px-2 py-1">Payment</th>
+                        <th scope="col" class="px-2 py-1">Datetime</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
@@ -247,30 +250,41 @@
                                 <p class="text-xs">{{ $item->id }}</p>
                             </th>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <p class="text-xs font-bold">{{ $item->first_name }} {{ $item->last_name }}</p>
+                                <p class="text-xs font-bold">{{ $item->order_number }}</p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
-                                <div class="flex space-x-2 items-center">
-                                    @if($item->country->flag) <div class="w-8 h-8 overflow-hidden flex">{!! $item->country->flag !!}</div> @endif
-                                    <div>
-                                        <p class="text-xs">{{ $item->country->name }}</p>
-                                    </div>
+                                <a href="{{ route('admin.user.edit', $item->user_id) }}" class="text-primary-500 underline hover:no-underline">
+                                    {{ $item->user->first_name }} {{ $item->user->last_name }}
+                                </a>
+                            </td>
+                            <th scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                <p class="text-xs">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-500">
+                                <div class="flex flex-col space-y-1">
+                                    @foreach ($item->items as $orderItem)
+                                        <div class="flex space-x-1">
+                                            @if ($orderItem->image_s)
+                                                <img src="{{ Storage::url($orderItem->image_s) }}" alt="product" class="h-4">
+                                            @endif
+                                            {{$orderItem->product_title}} x {{$orderItem->quantity}}
+                                            {{$orderItem->variation_attributes}}
+                                        </div>
+                                    @endforeach
                                 </div>
                             </td>
-                            <td scope="row" class="px-2 py-1 text-gray-500 dark:text-gray-300">
-                                <p class="text-xs">{{ $item->primary_phone_no }}</p>
-                                <p class="text-xs">{{ $item->email }}</p>
+                            <td scope="row" class="px-2 py-1 text-gray-500">
+                                
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-500">
+                                
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">
                                     @livewire('toggle-status', [
-                                        'model' => 'User',
+                                        'model' => 'Order',
                                         'modelId' => $item->id,
                                     ])
-
-                                    @php
-                                        // $customDOB = $item->date_of_birth ? Carbon\Carbon::parse($item->date_of_birth)->format('F j, Y') : 'NA';
-                                    @endphp
 
                                     <x-admin.button-icon
                                         element="a"
@@ -281,13 +295,13 @@
                                         x-data=""
                                         x-on:click.prevent="
                                             $dispatch('open-sidebar', 'quick-data-view');
-                                            $dispatch('data-flag', '{{ $item->country->flag }}');
+                                            {{-- $dispatch('data-flag', '{{ $item->country->flag }}'); --}}
                                             $dispatch('data-profile_picture', '{{ $item->profile_picture ? Storage::url($item->profile_picture) : '' }}');
-                                            $dispatch('data-country', '{{ $item->country->name }}');
+                                            {{-- $dispatch('data-country', '{{ $item->country->name }}'); --}}
                                             $dispatch('data-name', '{{ $item->first_name.' '.$item->last_name }}');
                                             $dispatch('data-primary_phone_no', '{{ $item->primary_phone_no }}');
                                             $dispatch('data-email', '{{ $item->email }}');
-                                            $dispatch('data-gender', '{{ genderString($item->gender_id) }}');
+                                            {{-- $dispatch('data-gender', '{{ genderString($item->gender_id) }}'); --}}
                                             $dispatch('data-alt_phone_no', '{{ $item->alt_phone_no }}');
                                             {{-- $dispatch('data-date_of_birth', @js($customDOB)); --}}
                                             $dispatch('data-date_of_birth', '{{ $item->date_of_birth }}');
@@ -302,7 +316,7 @@
                                     <x-admin.button-icon
                                         element="a"
                                         tag="secondary"
-                                        :href="route('admin.user.edit', $item->id)"
+                                        :href="route('admin.order.edit', $item->id)"
                                         title="Edit"
                                         class="border" >
                                         @slot('icon')
@@ -318,12 +332,11 @@
                                         x-on:click.prevent="
                                             $dispatch('open-modal', 'confirm-data-deletion'); 
                                             $dispatch('data-title', '{{ $item->title }}');
-                                            $dispatch('set-delete-route', '{{ route('admin.user.delete', $item->id) }}')" >
+                                            $dispatch('set-delete-route', '{{ route('admin.order.delete', $item->id) }}')" >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                                         @endslot
                                     </x-admin.button-icon>
-
                                 </div>
                             </td>
                         </tr>

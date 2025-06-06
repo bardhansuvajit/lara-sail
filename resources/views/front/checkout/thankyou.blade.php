@@ -174,12 +174,12 @@
                             <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">{{$order->phone_no}}</p>
 
                             <div class="flex items-center mt-3">
-                                @if ($order->countryDetail->flag)
+                                @if ($order->country->flag)
                                     <div class="inline-flex justify-center h-4 mr-2">
-                                        {!! $order->countryDetail->flag !!}
+                                        {!! $order->country->flag !!}
                                     </div>
                                 @endif
-                                <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">{{ $order->countryDetail->name }}</p>
+                                <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">{{ $order->country->name }}</p>
                             </div>
 
                         </div>
@@ -226,7 +226,7 @@
                                 {{ $shippingAddress->postal_code }}
                             </p>
 
-                            @if ($order->countryDetail->short_name != $shippingAddress->country_code)
+                            @if ($order->country->short_name != $shippingAddress->country_code)
                                 <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">
                                     {{ $shippingAddress->country_code }}
                                 </p>
@@ -263,7 +263,7 @@
                                 {{ $billingAddress->postal_code }}
                             </p>
 
-                            @if ($order->countryDetail->short_name != $billingAddress->country_code)
+                            @if ($order->country->short_name != $billingAddress->country_code)
                                 <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">
                                     {{ $billingAddress->country_code }}
                                 </p>

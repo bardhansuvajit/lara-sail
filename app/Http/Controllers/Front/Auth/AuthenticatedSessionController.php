@@ -36,18 +36,18 @@ class AuthenticatedSessionController extends Controller
         if (!empty($_GET['phone_no'])) {
             $phoneNo = $_GET['phone_no'];
 
-            $phoneNumberDigits = 10;
+            $phoneNumberDigits = COUNTRY['phoneNoDigits'];
             $countryShortName = COUNTRY['country'];
-            $countryData = $this->countryRepository->getByShortName($countryShortName);
-            $countryId = $countryData['data']->id;
-            $phoneNumberDigits = $countryData['data']->phone_no_digits;
+            // $countryData = $this->countryRepository->getByShortName($countryShortName);
+            // $countryId = $countryData['data']->id;
+            // $phoneNumberDigits = $countryData['data']->phone_no_digits;
 
             $request->validate([
                 'phone_no' => 'required|integer|digits:'.$phoneNumberDigits,
             ]);
 
             // CHECK IF USER EXISTS
-            $userData = $this->userRepository->getByCountryPrimaryPhone($countryId, $phoneNo);
+            $userData = $this->userRepository->getByCountryPrimaryPhone($countryShortName, $phoneNo);
 
             // dd($userData);
 
@@ -65,7 +65,7 @@ class AuthenticatedSessionController extends Controller
                     'focus' => 'first_name',
                     'buttonText' => 'Create Account',
                     'formType' => 'register',
-                    'countryId' => $countryId
+                    // 'countryId' => $countryId
                 ]);
             }
         }
@@ -77,54 +77,6 @@ class AuthenticatedSessionController extends Controller
                 'formType' => 'default'
             ]);
         }
-
-
-        /*
-        // active countries
-        $countries_filters = [
-            'status' => 1,
-        ];
-        $activeCountries = $this->countryRepository->list('', $countries_filters, 'all', 'name', 'asc');
-
-        // trying for login
-        if (!empty($request->phone_country_code) && !empty($request->phone_no)) {
-            // dd($request->all());
-            // dynamic phone number digits based on country
-            $phoneNumberDigits = 10;
-
-            // phone number country code fetch
-            if (!empty($request->phone_country_code)) {
-                $countryData = $this->countryRepository->getByShortName($request->phone_country_code);
-            }
-            if($countryData['code'] == 200) $phoneNumberDigits = $countryData['data']->phone_no_digits;
-
-            $request->validate([
-                'phone_country_code' => 'required|string|min:1|max:5',
-                'phone_no' => 'required|integer|digits:'.$phoneNumberDigits,
-            ]);
-
-            // check if user exists
-            $userData = $this->userRepository->getByCountryPrimaryPhone($countryData['data']->id, $request->phone_no);
-            if ($userData['code'] == 200) {
-                return view('front.auth.login', [
-                    'activeCountries' => $activeCountries['data'],
-                    'type' => 'login',
-                    'focus' => 'password'
-                ]);
-            } else {
-                return view('front.auth.login', [
-                    'activeCountries' => $activeCountries['data'],
-                    'type' => 'register',
-                    'focus' => 'first_name'
-                ]);
-            }
-        }
-
-        return view('front.auth.login', [
-            'activeCountries' => $activeCountries['data'],
-            'focus' => 'phone_no'
-        ]);
-        */
     }
 
     /**

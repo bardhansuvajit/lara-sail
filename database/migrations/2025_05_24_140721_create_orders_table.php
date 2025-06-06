@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('phone_no');
 
             // Currency information
-            $table->string('country', 2)->default(FAILSAFE['country']);
+            $table->string('country_code', 2)->default(FAILSAFE['country']);
             $table->char('currency_code', 3)->default(FAILSAFE['currency_code']);
             $table->string('currency_symbol', 20)->default(FAILSAFE['currency_icon']);
 

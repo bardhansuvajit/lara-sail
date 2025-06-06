@@ -1,14 +1,14 @@
 <x-admin-app-layout
     screen="md:max-w-screen-lg"
-    title="{{ __('Create User') }}"
+    title="{{ __('Create Order') }}"
     :breadcrumb="[
-        ['label' => 'User', 'url' => route('admin.user.index')],
+        ['label' => 'Order', 'url' => route('admin.order.index')],
         ['label' => 'Create']
     ]"
 >
 
     <div class="w-full mt-2">
-        <form action="{{ route('admin.user.store') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('admin.order.store') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div>

@@ -12,13 +12,13 @@
             @csrf
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div>
-                    <div class="flex">
+                    <div class="grid grid-cols-[auto_1fr] gap-3 items-center">
                         @if (!empty($data->profile_picture))
                             <div class="content-center me-3">
                                 <img class="h-14 w-14 rounded-lg object-contain" src="{{ Storage::url($data->profile_picture) }}" alt="Picture" />
                             </div>
                         @endif
-                        <div>
+                        <div class="@if(!empty($data->profile_picture)) col-start-2 @else col-span-full @endif">
                             <x-admin.input-label for="profile_picture" :value="__('Profile picture')" />
                             <x-admin.file-input id="profile_picture" name="profile_picture" />
                             <x-admin.input-error :messages="$errors->get('profile_picture')" class="mt-2" />
@@ -123,10 +123,12 @@
 
                 <div>
                     <x-admin.input-label for="date_of_birth" :value="__('Date of Birth')" />
-                    <x-admin.text-input id="date_of_birth" class="block w-full" type="date" name="date_of_birth" :value="old('date_of_birth', optional($data->date_of_birth)->format('Y-m-d'))" placeholder="Enter Date of Birth" />
+                    <x-admin.text-input id="date_of_birth" class="block w-full" type="date" name="date_of_birth" :value="old('date_of_birth', $data->date_of_birth)" placeholder="Enter Date of Birth" />
                     <x-admin.input-error :messages="$errors->get('date_of_birth')" class="mt-2" />
                 </div>
             </div>
+
+            {{-- {{ dd($data->date_of_birth) }} --}}
 
             <div class="items-center space-x-4 flex my-6">
                 <x-admin.button

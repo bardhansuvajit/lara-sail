@@ -79,9 +79,9 @@ class Order extends Model
         return $this->belongsTo('App\Models\User', 'user_id', 'id');
     }
 
-    public function countryDetail()
+    public function country()
     {
-        return $this->belongsTo('App\Models\Country', 'country', 'short_name');
+        return $this->belongsTo('App\Models\Country', 'country_code', 'short_name');
     }
 
     public function paymentMethod()
