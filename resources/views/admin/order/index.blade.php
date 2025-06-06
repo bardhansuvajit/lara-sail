@@ -59,7 +59,7 @@
         {{-- filters --}}
         <form action="" method="get">
             <div class="grid grid-cols-10 gap-4 py-4">
-                <div class="w-full col-span-2">
+                <div class="w-full col-span-3">
                     <div class="flex space-x-1 items-end">
                         <div class="w-max">
                             <x-admin.input-label for="perPage" :value="__('Show')" />
@@ -113,7 +113,6 @@
                                     element="button"
                                     type="submit"
                                     tag="secondary"
-                                    href="javascript: void(0)"
                                     title="Archive"
                                     class="border"
                                     form="bulActionForm"
@@ -122,6 +121,7 @@
                                         $dispatch('open-modal', 'confirm-bulk-action');
                                         $dispatch('data-desc', 'Are you sure you want to Archive selected data?');
                                         $dispatch('data-button-text', 'Yes, Archive');
+                                        $dispatch('set-route', '{{ route('admin.order.bulk') }}');
                                         document.getElementById('bulkActionInput').value = 'archive';
                                     ">
                                     @slot('icon')
@@ -133,7 +133,6 @@
                                     element="button"
                                     type="submit"
                                     tag="secondary"
-                                    href="javascript: void(0)"
                                     title="Delete"
                                     class="border"
                                     form="bulActionForm"
@@ -153,23 +152,35 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-span-8 flex flex-row space-x-1 justify-end items-end">
-                    <div class="basis-1/8">
-                        <x-admin.input-label for="country_code" :value="__('Country')" />
+                <div class="col-span-7 flex flex-row space-x-1 justify-end items-end">
+                    <div class="basis-1/1">
+                        <x-admin.input-label for="countryCode" :value="__('Country')" />
                         <x-admin.input-select 
-                            id="country_code" 
+                            id="countryCode" 
                             name="countryCode" 
                             :title="request()->input('countryCode')"
-                            {{-- :title="request()->input('countryCode') == '1' ? 'Active' : (request()->input('status') == '0' ? 'Disabled' : 'All')" --}}
                         >
                             @slot('options')
                                 <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
                                 @foreach ($activeCountries as $country)
-                                    <x-admin.input-select-option value="{{$country->short_name}}" :selected="request()->input('countryCode') == $country->short_name"> {{$country->short_name}} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="{{$country->short_name}}" :selected="request()->input('countryCode') == $country->short_name"> {{$country->name}} </x-admin.input-select-option>
                                 @endforeach
-                                {{-- <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
-                                <x-admin.input-select-option value="1" :selected="request()->input('status') == '1'"> {{ __('Active') }} </x-admin.input-select-option>
-                                <x-admin.input-select-option value="0" :selected="request()->input('status') == '0'"> {{ __('Disabled') }} </x-admin.input-select-option> --}}
+                            @endslot
+                        </x-admin.input-select>
+                    </div>
+
+                    <div class="basis-1/1">
+                        <x-admin.input-label for="shippingMethodId" :value="__('Shipping Method')" />
+                        <x-admin.input-select 
+                            id="shippingMethodId" 
+                            name="shippingMethodId" 
+                            :title="request()->input('shippingMethodId')"
+                        >
+                            @slot('options')
+                                <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
+                                @foreach ($shippingMethods as $method)
+                                    <x-admin.input-select-option value="{{$method->id}}" :selected="request()->input('shippingMethodId') == $method->id"> {{strtoupper($method->method).' '.$method->country_code}} </x-admin.input-select-option>
+                                @endforeach
                             @endslot
                         </x-admin.input-select>
                     </div>
@@ -179,12 +190,15 @@
                         <x-admin.input-select 
                             id="status" 
                             name="status" 
-                            :title="request()->input('status') == '1' ? 'Active' : (request()->input('status') == '0' ? 'Disabled' : 'All')"
+                            :title="request()->input('status')"
                         >
                             @slot('options')
                                 <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
-                                <x-admin.input-select-option value="1" :selected="request()->input('status') == '1'"> {{ __('Active') }} </x-admin.input-select-option>
-                                <x-admin.input-select-option value="0" :selected="request()->input('status') == '0'"> {{ __('Disabled') }} </x-admin.input-select-option>
+                                @foreach ($orderStatus as $status)
+                                    <x-admin.input-select-option value="{{ $status->slug }}" :selected="request()->input('status') == $status->slug"> {{ $status->title }} </x-admin.input-select-option>
+                                @endforeach
+                                {{-- <x-admin.input-select-option value="1" :selected="request()->input('status') == '1'"> {{ __('Active') }} </x-admin.input-select-option>
+                                <x-admin.input-select-option value="0" :selected="request()->input('status') == '0'"> {{ __('Disabled') }} </x-admin.input-select-option> --}}
                             @endslot
                         </x-admin.input-select>
                     </div>
@@ -229,7 +243,7 @@
                         <th scope="col" class="px-2 py-1">User</th>
                         <th scope="col" class="px-2 py-1">Total amount</th>
                         <th scope="col" class="px-2 py-1">Items</th>
-                        <th scope="col" class="px-2 py-1">Payment</th>
+                        <th scope="col" class="px-2 py-1">Shipping</th>
                         <th scope="col" class="px-2 py-1">Datetime</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
@@ -252,14 +266,25 @@
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 <p class="text-xs font-bold">{{ $item->order_number }}</p>
                             </td>
+
+                            {{-- User --}}
                             <td scope="row" class="px-2 py-1 text-gray-500">
-                                <a href="{{ route('admin.user.edit', $item->user_id) }}" class="text-primary-500 underline hover:no-underline">
-                                    {{ $item->user->first_name }} {{ $item->user->last_name }}
-                                </a>
+                                @if ($item->user)
+                                    <a href="{{ route('admin.user.edit', $item->user_id) }}" class="text-primary-400 underline hover:no-underline">
+                                        {{ $item->user?->first_name ?? 'NA' }} {{ $item->user?->last_name ?? 'NA' }}
+                                    </a>
+                                @else
+                                    <p class="text-red-500">ERROR</p>
+                                @endif
                             </td>
+
+                            {{-- Payment Details --}}
                             <th scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <p class="text-xs">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
+                                <p class="text-xs text-green-500">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
+                                <p class="text-xs text-red-500">{{ strtoupper($item->paymentMethod->method).' - '.$item->payment_status }}</p>
                             </td>
+
+                            {{-- Order items --}}
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex flex-col space-y-1">
                                     @foreach ($item->items as $orderItem)
@@ -267,24 +292,47 @@
                                             @if ($orderItem->image_s)
                                                 <img src="{{ Storage::url($orderItem->image_s) }}" alt="product" class="h-4">
                                             @endif
-                                            {{$orderItem->product_title}} x {{$orderItem->quantity}}
+                                            <a href="{{ route('admin.product.listing.edit', $orderItem->product_id) }}" class="text-primary-400 underline hover:no-underline">
+                                                {{$orderItem->product_title}}
+                                            </a>
+                                            <p class="text-gray-600 dark:text-gray-400"> x {{$orderItem->quantity}}</p>
                                             {{$orderItem->variation_attributes}}
                                         </div>
                                     @endforeach
                                 </div>
                             </td>
-                            <td scope="row" class="px-2 py-1 text-gray-500">
-                                
+
+                            {{-- Shipping --}}
+                            @php
+                                $shippingAddress = json_decode($item->shipping_address);
+                            @endphp
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                <div class="flex space-x-2 items-center">
+                                    @if($item->country->flag) <div class="w-8 h-8 overflow-hidden flex">{!! $item->country->flag !!}</div> @endif
+                                    <div>
+                                        <p>{{ $shippingAddress->postal_code }}, {{ $shippingAddress->state }}</p>
+                                        {{ strtoupper($item->shippingMethod->method) }} 
+                                        Delivery 
+                                        @if ($item->shipping_cost > 0) <span class="text-xs text-green-500">({{ $item->currency_symbol }} {{ formatIndianMoney($item->shipping_cost) }})</span> @endif
+                                        by {{ $item->created_at->addDays($item->shippingMethod->max_delivery_day)->format('l, F d, Y') }}
+                                    </div>
+                                </div>
                             </td>
+
+                            {{-- Order Datetime --}}
                             <td scope="row" class="px-2 py-1 text-gray-500">
-                                
+                                <p class="text-xs">{{ $item->created_at->diffForHumans() }}</p>
+                                <p class="text-xs">{{ $item->created_at->format('F j, Y h:i a') }}</p>
                             </td>
-                            <td scope="row" class="px-2 py-1 text-gray-500">
+
+                            {{-- Action --}}
+                            <td scope="row" class="px-2 py-1 text-gray-600 dark:text-gray-400">
                                 <div class="flex space-x-2 items-center justify-end">
-                                    @livewire('toggle-status', [
+                                    <p class="text-xs">{{ ucwords($item->status) }}</p>
+                                    {{-- @livewire('toggle-status', [
                                         'model' => 'Order',
                                         'modelId' => $item->id,
-                                    ])
+                                    ]) --}}
 
                                     <x-admin.button-icon
                                         element="a"

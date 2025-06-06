@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('category', 100);
             $table->string('key', 200)->unique();
             $table->json('value');
-            $table->text('description');
+            $table->text('description')->nullable();
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
@@ -168,6 +168,69 @@ return new class extends Migration
             ]
         ]);
 
+        $order_status = json_encode([
+            [
+                'title' => 'Pending',
+                'slug' => 'pending',
+                'description' => 'Order placed, awaiting confirmation or payment.',
+                'class' => 'text-yellow-500 bg-yellow-100'
+            ],
+            [
+                'title' => 'Confirmed',
+                'slug' => 'confirmed',
+                'description' => 'Order confirmed and payment verified.',
+                'class' => 'text-blue-600 bg-blue-100'
+            ],
+            [
+                'title' => 'Processing',
+                'slug' => 'processing',
+                'description' => 'Order is being prepared or packed.',
+                'class' => 'text-indigo-600 bg-indigo-100'
+            ],
+            [
+                'title' => 'Shipped',
+                'slug' => 'shipped',
+                'description' => 'Order has been shipped and is in transit.',
+                'class' => 'text-purple-600 bg-purple-100'
+            ],
+            [
+                'title' => 'Delivered',
+                'slug' => 'delivered',
+                'description' => 'Order delivered successfully to the customer.',
+                'class' => 'text-green-600 bg-green-100'
+            ],
+            [
+                'title' => 'Cancelled',
+                'slug' => 'cancelled',
+                'description' => 'Order was cancelled before fulfillment.',
+                'class' => 'text-gray-600 bg-gray-200'
+            ],
+            [
+                'title' => 'Returned',
+                'slug' => 'returned',
+                'description' => 'Customer returned the product after delivery.',
+                'class' => 'text-orange-600 bg-orange-100'
+            ],
+            [
+                'title' => 'Failed',
+                'slug' => 'failed',
+                'description' => 'Order failed due to payment or technical issues.',
+                'class' => 'text-red-600 bg-red-100'
+            ],
+            [
+                'title' => 'Refunded',
+                'slug' => 'refunded',
+                'description' => 'Amount refunded for the returned or failed order.',
+                'class' => 'text-teal-600 bg-teal-100'
+            ],
+            [
+                'title' => 'On Hold',
+                'slug' => 'on-hold',
+                'description' => 'Order processing is temporarily paused.',
+                'class' => 'text-pink-600 bg-pink-100'
+            ],
+        ]);
+
         $data = [
             [
                 'category' => 'file_upload',
@@ -197,6 +260,12 @@ return new class extends Migration
                 'category' => 'product',
                 'key' => 'product_status',
                 'value' => $product_status,
+                'description' => '',
+            ],
+            [
+                'category' => 'order',
+                'key' => 'order_status',
+                'value' => $order_status,
                 'description' => '',
             ]
         ];

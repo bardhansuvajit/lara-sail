@@ -15,7 +15,7 @@ use App\Interfaces\OrderItemInterface;
 
 use App\Services\OrderNumberService;
 
-use App\Exports\CartsExport;
+use App\Exports\OrdersExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class OrderRepository implements OrderInterface
@@ -50,11 +50,19 @@ class OrderRepository implements OrderInterface
             // keyword
             if (!empty($keyword)) {
                 $query->where(function ($query) use ($keyword) {
-                    $query->where('title', 'like', '%' . $keyword . '%')
-                        ->orWhere('slug', 'like', '%' . $keyword . '%')
-                        ->orWhere('short_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('long_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('tags', 'like', '%' . $keyword . '%');
+                    $query->where('order_number', 'like', '%' . $keyword . '%')
+                        ->orWhere('email', 'like', '%' . $keyword . '%')
+                        ->orWhere('phone_no', 'like', '%' . $keyword . '%')
+                        ->orWhere('currency_code', 'like', '%' . $keyword . '%')
+                        ->orWhere('mrp', 'like', '%' . $keyword . '%')
+                        ->orWhere('sub_total', 'like', '%' . $keyword . '%')
+                        ->orWhere('total', 'like', '%' . $keyword . '%')
+                        ->orWhere('coupon_code', 'like', '%' . $keyword . '%')
+                        ->orWhere('shipping_address', 'like', '%' . $keyword . '%')
+                        ->orWhere('billing_address', 'like', '%' . $keyword . '%')
+                        ->orWhere('payment_method_title', 'like', '%' . $keyword . '%')
+                        ->orWhere('payment_status', 'like', '%' . $keyword . '%')
+                        ->orWhere('status', 'like', '%' . $keyword . '%');
                 });
             }
 
@@ -115,7 +123,7 @@ class OrderRepository implements OrderInterface
             $data->email = $array['email'];
             $data->phone_no = $array['phone_no'];
 
-            $data->country = $array['country'];
+            $data->country_code = $array['country'];
             $data->currency_code = $array['currency_code'];
 
             $data->total_items = $array['total_items'];
@@ -303,117 +311,6 @@ class OrderRepository implements OrderInterface
             ];
         }
     }
-
-    /*
-    public function updateCartTotals($cart)
-    {
-        // dd($cart->items()->sum('quantity'));
-
-        try {
-            $itemsTotal = $cart->items()->sum('total');
-            $itemsQuantity = $cart->items()->sum('quantity');
-            $totalMrp = $cart->items->sum(function ($item) {
-                return $item->mrp * $item->quantity;
-            });
-
-            $shippingCost = 0;
-
-            // Calculate SHIPPING Cost
-            $cartSettingResp = $this->cartSettingRepository->list('', [], 'all', 'id', 'asc');
-            $cartSettings = $cartSettingResp['data'] ?? [];
-
-            foreach ($cartSettings as $cartSetting) {
-                // dd($cartSetting->country, $cart->country);
-                if (
-                    $cartSetting->country == $cart->country &&
-                    $itemsTotal < $cartSetting->free_shipping_threshold
-                ) {
-                    $shippingCost = $cartSetting->shipping_charge;
-                    break;
-                }
-            }
-
-            // dd($shippingCost);
-            $grandTotal = $itemsTotal + $shippingCost;
-
-            // Calculate PAYMENT METHOD Cost
-            $paymentMethodCost = $paymentMethodCharge = $paymentMethodDiscount = 0;
-            $paymentMethodTitle = null;
-
-            $paymentMethodData = $this->paymentMethodRepository->list('', ['status' => 1, 'country_code' => COUNTRY['country']], 'all', 'position', 'asc')['data'][0];
-            // If CHARGE
-            if ($paymentMethodData->charge_amount > 0) {
-                $paymentMethodTitle = $paymentMethodData->charge_title;
-                $c_amount = $paymentMethodData->charge_amount;
-                $c_type = $paymentMethodData->charge_type;
-
-                if ($c_type == 'fixed') {
-                    $paymentCharge = $c_amount;
-                    $totalAfterCharge = $itemsTotal + $paymentCharge;
-                } else if ($c_type == 'percentage') {
-                    $paymentCharge = ($itemsTotal * $c_amount) / 100;
-                    $totalAfterCharge = $itemsTotal + $paymentCharge;
-                }
-
-                $paymentMethodCharge = $paymentCharge;
-                $paymentMethodDiscount = 0;
-                $grandTotal = $totalAfterCharge + $shippingCost;
-            }
-            // If DISCOUNT
-            elseif ($paymentMethodData->discount_amount > 0) {
-                $paymentMethodTitle = $paymentMethodData->discount_title;
-                $d_amount = $paymentMethodData->discount_amount;
-                $d_type = $paymentMethodData->discount_type;
-
-                if ($d_type == 'fixed') {
-                    // dd('fixed');
-                    $paymentCharge = $d_amount;
-                    $totalAfterCharge = $itemsTotal - $paymentCharge;
-                } else if ($d_type == 'percentage') {
-                    $paymentCharge = ($itemsTotal * $d_amount) / 100;
-                    $totalAfterCharge = $itemsTotal - $paymentCharge;
-                }
-
-                $paymentMethodDiscount = $paymentCharge;
-                $paymentMethodCharge = 0;
-                $grandTotal = $totalAfterCharge + $shippingCost;
-            }
-            // dd($paymentMethodData);
-
-            // Update cart totals
-            $cart->update([
-                'total_items' => $itemsQuantity,
-                'mrp' => $totalMrp,
-                'sub_total' => $itemsTotal,
-                'shipping_cost' => $shippingCost,
-
-                'payment_method' => $paymentMethodTitle,
-                'payment_method_charge' => $paymentMethodCharge,
-                'payment_method_discount' => $paymentMethodDiscount,
-
-                'total' => $grandTotal,
-                'last_activity_at' => now(),
-            ]);
-
-            return [
-                'code' => 200,
-                'status' => 'success',
-                'message' => 'Order totals updated successfully.',
-                'data' => [
-                    'cart' => $cart,
-                    'items' => $cart->items
-                ],
-            ];
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while updating the cart totals.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-    */
 
     public function updateCartTotals($cart)
     {
@@ -642,11 +539,11 @@ class OrderRepository implements OrderInterface
                 // Handling trash
                 $this->trashRepository->store([
                     'model' => 'Order',
-                    'table_name' => 'carts',
+                    'table_name' => 'orders',
                     'deleted_row_id' => $data['data']->id,
-                    'thumbnail' => $data['data']->image_s,
-                    'title' => $data['data']->product_title,
-                    'description' => $data['data']->product_title.' & '. $data['data']->variation_attributes.' data deleted from carts table',
+                    'thumbnail' => null,
+                    'title' => $data['data']->order_number,
+                    'description' => $data['data']->order_number.' data deleted from orders table',
                     'status' => 'deleted',
                 ]);
 
@@ -681,11 +578,11 @@ class OrderRepository implements OrderInterface
                     // Handling trash
                     $this->trashRepository->store([
                         'model' => 'Order',
-                        'table_name' => 'carts',
+                        'table_name' => 'orders',
                         'deleted_row_id' => $item->id,
-                        'thumbnail' => $item->image_s,
-                        'title' => $item->title,
-                        'description' => $item->title.' data deleted from carts table',
+                        'thumbnail' => null,
+                        'title' => $item->order_number,
+                        'description' => $item->order_number.' data deleted from orders table',
                         'status' => 'deleted',
                     ]);
 
@@ -774,19 +671,19 @@ class OrderRepository implements OrderInterface
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";
-                    return Excel::download(new CartsExport($data['data']), $fileName.$fileExtension);
+                    return Excel::download(new OrdersExport($data['data']), $fileName.$fileExtension);
                 }
                 elseif ($type == 'csv') {
                     $fileExtension = ".csv";
-                    return Excel::download(new CartsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
+                    return Excel::download(new OrdersExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
                 }
                 elseif ($type == 'html') {
                     $fileExtension = ".html";
-                    return Excel::download(new CartsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
+                    return Excel::download(new OrdersExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
                 }
                 elseif ($type == 'pdf') {
                     $fileExtension = ".pdf";
-                    return Excel::download(new CartsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
+                    return Excel::download(new OrdersExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
                 }
                 else {
                     return [
@@ -816,27 +713,4 @@ class OrderRepository implements OrderInterface
         }
     }
 
-    public function position(Array $ids)
-    {
-        try {
-            foreach ($ids as $index => $id) {
-                Order::where('id', $id)->update([
-                    'position' => $index + 1
-                ]);
-            }
-
-            return [
-                'code' => 200,
-                'status' => 'success',
-                'message' => 'Position updated'
-            ];
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while positioning data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
 }

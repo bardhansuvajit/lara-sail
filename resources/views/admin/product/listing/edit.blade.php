@@ -12,7 +12,9 @@
 
         @if ($errors->any())
             @foreach ($errors->all() as $error)
-                <p class="text-red-600">{{ $error }}</p>
+                @foreach ($error as $error)
+                    <p class="text-red-600">{{ $error }}</p>
+                @endforeach
             @endforeach
         @endif
 

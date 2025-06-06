@@ -59,7 +59,7 @@
         {{-- filters --}}
         <form action="" method="get">
             <div class="grid grid-cols-10 gap-4 py-4">
-                <div class="w-full col-span-2">
+                <div class="w-full col-span-3">
                     <div class="flex space-x-1 items-end">
                         <div class="w-max">
                             <x-admin.input-label for="perPage" :value="__('Show')" />
@@ -153,8 +153,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-span-8 flex flex-row space-x-1 justify-end items-end">
-                    <div class="basis-1/8">
+                <div class="col-span-7 flex flex-row space-x-1 justify-end items-end">
+                    <div class="basis-1/1">
                         <x-admin.input-label for="country_code" :value="__('Country')" />
                         <x-admin.input-select 
                             id="country_code" 
@@ -165,7 +165,7 @@
                             @slot('options')
                                 <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
                                 @foreach ($activeCountries as $country)
-                                    <x-admin.input-select-option value="{{$country->short_name}}" :selected="request()->input('countryCode') == $country->short_name"> {{$country->short_name}} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="{{$country->short_name}}" :selected="request()->input('countryCode') == $country->short_name"> {{$country->name}} </x-admin.input-select-option>
                                 @endforeach
                                 {{-- <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
                                 <x-admin.input-select-option value="1" :selected="request()->input('status') == '1'"> {{ __('Active') }} </x-admin.input-select-option>

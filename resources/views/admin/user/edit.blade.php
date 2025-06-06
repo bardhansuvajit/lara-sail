@@ -139,7 +139,6 @@
                     @endslot
                     {{ __('Save data') }}
                 </x-admin.button>
-
             </div>
 
             <input type="hidden" name="id" value="{{ $data->id }}" />

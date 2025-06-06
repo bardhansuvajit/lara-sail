@@ -6,14 +6,20 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Validation\Rule;
 use App\Interfaces\OrderInterface;
+use App\Interfaces\ShippingMethodInterface;
 
 class OrderController
 {
     private OrderInterface $orderRepository;
+    private ShippingMethodInterface $shippingMethodRepository;
 
-    public function __construct(OrderInterface $orderRepository)
+    public function __construct(
+        OrderInterface $orderRepository, 
+        ShippingMethodInterface $shippingMethodRepository
+    )
     {
         $this->orderRepository = $orderRepository;
+        $this->shippingMethodRepository = $shippingMethodRepository;
     }
 
     public function index(Request $request): View
@@ -25,8 +31,9 @@ class OrderController
             'perPage' => 'nullable|string',
             'sortBy' => 'nullable|string|in:id,first_name,last_name',
             'sortOrder' => 'nullable|string|in:asc,desc',
-            'status' => 'nullable|string|in:0,1',
-            'countryCode' => 'nullable|string'
+            'status' => 'nullable|string',
+            'countryCode' => 'nullable|string',
+            'shippingMethodId' => 'nullable|integer'
         ]);
 
         $perPage = $request->input('perPage', 15);
@@ -36,11 +43,20 @@ class OrderController
         $filters = [
             'status' => $request->input('status', ''),
             'country_code' => $request->input('countryCode', ''),
+            'shipping_method_id' => $request->input('shippingMethodId', ''),
         ];
         $resp = $this->orderRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
+        // Order status
+        $orderStatus = developerSettings('order_status');
+
+        // Shipping methods
+        $shippingMethods = $this->shippingMethodRepository->list('', [], 'all', 'id', 'asc')['data'];
+
         return view('admin.order.index', [
             'data' => $resp['data'],
+            'orderStatus' => $orderStatus,
+            'shippingMethods' => $shippingMethods
         ]);
     }
 
