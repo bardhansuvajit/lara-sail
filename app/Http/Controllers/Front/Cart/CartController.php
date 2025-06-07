@@ -109,7 +109,7 @@ class CartController extends Controller
             } else {
                 $cart = $this->cartRepository->store([
                     'device_id' => $deviceId,
-                    'user_id' => null
+                    // 'user_id' => null
                 ]);
             }
 
@@ -281,9 +281,13 @@ class CartController extends Controller
                     'options' => null,
                     'custom_fields' => null,
 
-                    'image_s' => $productImage['image_s'] ? 'storage/'.$productImage['image_s'] : null,
-                    'image_m' => $productImage['image_m'] ? 'storage/'.$productImage['image_m'] : null,
-                    'image_l' => $productImage['image_l'] ? 'storage/'.$productImage['image_l'] : null
+                    'image_s' => $productImage['image_s'] ? $productImage['image_s'] : null,
+                    'image_m' => $productImage['image_m'] ? $productImage['image_m'] : null,
+                    'image_l' => $productImage['image_l'] ? $productImage['image_l'] : null
+
+                    // 'image_s' => $productImage['image_s'] ? 'storage/'.$productImage['image_s'] : null,
+                    // 'image_m' => $productImage['image_m'] ? 'storage/'.$productImage['image_m'] : null,
+                    // 'image_l' => $productImage['image_l'] ? 'storage/'.$productImage['image_l'] : null
                 ]);
 
                 // dd($cartItemResp);
