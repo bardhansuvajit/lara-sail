@@ -165,7 +165,7 @@
                             @slot('options')
                                 <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
                                 @foreach ($activeCountries as $country)
-                                    <x-admin.input-select-option value="{{$country->short_name}}" :selected="request()->input('countryCode') == $country->short_name"> {{$country->name}} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="{{$country->code}}" :selected="request()->input('countryCode') == $country->code"> {{$country->name}} </x-admin.input-select-option>
                                 @endforeach
                                 {{-- <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
                                 <x-admin.input-select-option value="1" :selected="request()->input('status') == '1'"> {{ __('Active') }} </x-admin.input-select-option>

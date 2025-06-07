@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('states', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('country_id')->constrained('countries')->onDelete('cascade');
+            $table->string('country_code', 2);
 
             $table->string('name');
             $table->string('code')->comment('State/Province code (e.g., CA for California)');
@@ -34,8 +34,8 @@ return new class extends Migration
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
 
-            $table->unique(['country_id', 'name']);
-            $table->unique(['country_id', 'code']);
+            $table->unique(['country_code', 'name']);
+            $table->unique(['country_code', 'code']);
 
             $table->index(['status']);
         });

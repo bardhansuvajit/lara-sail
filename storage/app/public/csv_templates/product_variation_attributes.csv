@@ -1,3 +1,5 @@
 "title","slug","is_global","short_description","long_description","tags","position","status","values"
 "Size","size","","","","","1","1","XS,S,M,L,XL,XXL,XXXL"
 "Color","color","1","","","","1","1",""
+"RAM","ram","","","","","1","1","16GB,24 GB,32 GB"
+"Internal Memory","internal-memory","","","","","1","1","256 GB,512 GB,1 TB, 2 TB"

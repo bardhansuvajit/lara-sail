@@ -50,7 +50,7 @@
                                         >
                                             @slot('options')
                                                 @foreach ($activeCountries as $country)
-                                                    <x-admin.input-select-option value="{{$country->short_name}}" :selected="$country->short_name == $item->value"> {{ $country->name }} </x-admin.input-select-option>
+                                                    <x-admin.input-select-option value="{{$country->code}}" :selected="$country->code == $item->value"> {{ $country->name }} </x-admin.input-select-option>
                                                 @endforeach
                                             @endslot
                                         </x-admin.input-select>

@@ -76,7 +76,7 @@
                                     <div class="flex flex-col space-y-2 items-center">
                                         {{-- <img src="https://placehold.co/100x100" alt="Premium T-Shirt" class="w-[60px] h-[60px] object-cover rounded border border-gray-200 dark:border-gray-600"> --}}
                                         <div class="h-[60px] object-cover">
-                                            @if (!empty($item->image_s))
+                                            @if (!empty($item->image_m))
                                                 <img class="h-auto max-h-full w-full" src="{{ str_replace('storage/storage', 'storage', Storage::url($item->image_m)) }}" alt="{{$item->product_title}}" />
                                                 {{-- <img class="h-auto max-h-full w-full" src="{{ Storage::url($item->image_m) }}" alt="{{$item->product_title}}" /> --}}
                                             @else
@@ -227,7 +227,7 @@
                                 {{ $shippingAddress->postal_code }}
                             </p>
 
-                            @if ($order->country->short_name != $shippingAddress->country_code)
+                            @if ($order->country->code != $shippingAddress->country_code)
                                 <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">
                                     {{ $shippingAddress->country_code }}
                                 </p>
@@ -264,7 +264,7 @@
                                 {{ $billingAddress->postal_code }}
                             </p>
 
-                            @if ($order->country->short_name != $billingAddress->country_code)
+                            @if ($order->country->code != $billingAddress->country_code)
                                 <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">
                                     {{ $billingAddress->country_code }}
                                 </p>

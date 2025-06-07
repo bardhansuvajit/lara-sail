@@ -8,6 +8,6 @@ class CartSetting extends Model
 {
     public function countryDetails()
     {
-        return $this->belongsTo('App\Models\Country', 'country', 'short_name');
+        return $this->belongsTo('App\Models\Country', 'country', 'code');
     }
 }

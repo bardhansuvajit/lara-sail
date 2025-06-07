@@ -173,7 +173,7 @@ class AddressRepository implements AddressInterface
     public function exists(Array $conditions)
     {
         try {
-            $data = UserAddress::where($conditions)->get();
+            $data = UserAddress::with('countryDetail', 'stateDetail')->where($conditions)->get();
 
             if (!empty($data)) {
                 return [

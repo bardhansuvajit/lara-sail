@@ -55,10 +55,10 @@ class ProductListingController
 
     public function create(): View
     {
-        $countries_filters = [
-            'status' => 1,
-        ];
-        $activeCountries = $this->countryRepository->list('', $countries_filters, 'all', 'name', 'asc');
+        // $countries_filters = [
+        //     'status' => 1,
+        // ];
+        // $activeCountries = $this->countryRepository->list('', $countries_filters, 'all', 'name', 'asc');
 
         // product type
         $companyDomain = applicationSettings('company_domain');
@@ -66,7 +66,7 @@ class ProductListingController
         $productType = collect($productTypes)->firstWhere('key', $companyDomain);
 
         return view('admin.product.listing.create', [
-            'activeCountries' => $activeCountries['data'],
+            // 'activeCountries' => $activeCountries['data'],
             'productType' => $productType
         ]);
     }

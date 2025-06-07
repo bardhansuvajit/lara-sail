@@ -116,7 +116,7 @@ class OrderController extends Controller
                 'discount_type' => $cart->discount_type,
 
                 'shipping_method_id' => $cart->shipping_method_id,
-                'shipping_method_name' => $cart->shipping_method_name,
+                'shipping_method_name' => $cart->shippingMethod->method,
                 'shipping_cost' => $cart->shipping_cost,
                 'shipping_address' => $shippingAddress,
 

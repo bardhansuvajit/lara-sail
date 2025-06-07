@@ -63,8 +63,8 @@
                         @slot('options')
                             @foreach ($activeCountries as $country)
                                 <x-admin.input-select-option 
-                                    value="{{$country->short_name}}" 
-                                    :selected="old('phone_country_code') ? old('phone_country_code') == $country->short_name : Auth::guard('admin')->user()->phone_country_code == $country->phone_code"
+                                    value="{{$country->code}}" 
+                                    :selected="old('phone_country_code') ? old('phone_country_code') == $country->code : Auth::guard('admin')->user()->phone_country_code == $country->phone_code"
                                 >
                                     {{ $country->name }} ({{ $country->phone_code }})
                                 </x-admin.input-select-option>
@@ -92,8 +92,8 @@
                         @slot('options')
                             @foreach ($activeCountries as $country)
                                 <x-admin.input-select-option 
-                                    value="{{$country->short_name}}" 
-                                    :selected="old('alt_phone_country_code') ? old('alt_phone_country_code') == $country->short_name : Auth::guard('admin')->user()->alt_phone_country_code == $country->phone_code"
+                                    value="{{$country->code}}" 
+                                    :selected="old('alt_phone_country_code') ? old('alt_phone_country_code') == $country->code : Auth::guard('admin')->user()->alt_phone_country_code == $country->phone_code"
                                 >
                                     {{ $country->name }} ({{ $country->phone_code }})
                                 </x-admin.input-select-option>

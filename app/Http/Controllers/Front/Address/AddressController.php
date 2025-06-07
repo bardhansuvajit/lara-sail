@@ -22,6 +22,18 @@ class AddressController extends Controller
         $this->addressRepository = $addressRepository;
     }
 
+    public function index(): View
+    {
+        $userId = auth()->guard('web')->id();
+        $addresses = $this->addressRepository->exists([
+            'user_id' => $userId
+        ]);
+
+        return view('front.account.address.index', [
+            'addresses' => $addresses['data'],
+        ]);
+    }
+
     public function store(Request $request): RedirectResponse
     {
         // dd($request->all());
@@ -41,7 +53,7 @@ class AddressController extends Controller
             'city' => 'required|string|min:1|max:50',
             'state' => 'required|string|min:1|max:50',
             'postal_code' => 'required|string|digits:'.COUNTRY['postalCodeDigits'],
-            'country_code' => 'required|string|max:2|exists:countries,short_name',
+            'country_code' => 'required|string|max:2|exists:countries,code',
             'phone_no' => 'required|integer|digits:'.COUNTRY['phoneNoDigits'],
             'email' => 'nullable|email|min:2|max:80',
             'landmark' => 'nullable|string|min:1|max:200',

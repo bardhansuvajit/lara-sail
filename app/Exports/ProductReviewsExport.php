@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\ProductCategory;
+use App\Models\ProductReview;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 

@@ -271,7 +271,7 @@
                                         x-on:click.prevent="
                                             $dispatch('open-sidebar', 'quick-data-view');
                                             $dispatch('data-name', '{{ $item->name }}');
-                                            $dispatch('data-short_name', '{{ $item->short_name }}');
+                                            $dispatch('data-code', '{{ $item->code }}');
                                             $dispatch('data-phone_code', '{{ $item->phone_code }}');
                                             $dispatch('data-phone_no_digits', '{{ $item->phone_no_digits }}');
                                             $dispatch('data-zip_code_format', '{{ $item->zip_code_format }}');
@@ -342,9 +342,9 @@
     <x-admin.sidebar name="quick-data-view" maxWidth="sm" direction="right" header="Quick View" focusable>
         <div 
             class="p-4"
-            x-data="{name: '', short_name: '', phone_code: '', phone_no_digits: '', zip_code_format: '', currency_code: '', currency_symbol: '', continent: '', flag: '', language: '', time_zone: '', shipping_availability: '', cash_on_delivery_availability: '', status: ''}"
+            x-data="{name: '', code: '', phone_code: '', phone_no_digits: '', zip_code_format: '', currency_code: '', currency_symbol: '', continent: '', flag: '', language: '', time_zone: '', shipping_availability: '', cash_on_delivery_availability: '', status: ''}"
             x-on:data-name.window="name = $event.detail"
-            x-on:data-short_name.window="short_name = $event.detail"
+            x-on:data-code.window="code = $event.detail"
             x-on:data-phone_code.window="phone_code = $event.detail"
             x-on:data-phone_no_digits.window="phone_no_digits = $event.detail"
             x-on:data-zip_code_format.window="zip_code_format = $event.detail"
@@ -362,7 +362,7 @@
             <p class="text-sm mb-3" x-text="name"></p>
 
             <h5 class="text-xs font-bold mb-1">Short name</h5>
-            <p class="text-sm mb-3" x-text="short_name"></p>
+            <p class="text-sm mb-3" x-text="code"></p>
 
             <h5 class="text-xs font-bold mb-1">Phone number code</h5>
             <p class="text-sm mb-3" x-text="phone_code"></p>

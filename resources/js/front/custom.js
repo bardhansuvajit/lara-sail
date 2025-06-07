@@ -5,6 +5,7 @@ const FDtext1 = 'text-sm';
 const FDrounded = '';
 const FDBrokenImage = `<svg class="max-w-full max-h-full w-32 h-32 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M366.15-412.31h347.7L603.54-558.46l-98.16 123.08-63.53-75.39-75.7 98.46ZM324.62-280q-27.62 0-46.12-18.5Q260-317 260-344.62v-430.76q0-27.62 18.5-46.12Q297-840 324.62-840h430.76q27.62 0 46.12 18.5Q820-803 820-775.38v430.76q0 27.62-18.5 46.12Q783-280 755.38-280H324.62Zm0-40h430.76q9.24 0 16.93-7.69 7.69-7.69 7.69-16.93v-430.76q0-9.24-7.69-16.93-7.69-7.69-16.93-7.69H324.62q-9.24 0-16.93 7.69-7.69 7.69-7.69 16.93v430.76q0 9.24 7.69 16.93 7.69 7.69 16.93 7.69Zm-120 160q-27.62 0-46.12-18.5Q140-197 140-224.61v-470.77h40v470.77q0 9.23 7.69 16.92 7.69 7.69 16.93 7.69h470.76v40H204.62ZM300-800v480-480Z"/></svg>`;
 
+const baseUrl = window.location.origin;
 const urlParams = getUrlParams();
 const navbar = document.getElementById('navbar');
 const darkModeToggleEl = document.getElementById('dark-mode');
@@ -816,7 +817,7 @@ function updateCartData(cartInfo, cartItems) {
                     <div class="flex items-center gap-3">
                         <a href="${item.product_url_with_variation ? item.product_url_with_variation : item.product_url}" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
                             ${item.image_s ? 
-                                `<img class="h-auto max-h-full w-full" src="${item.image_s}" alt="${item.product_title}">` :
+                                `<img class="h-auto max-h-full w-full" src="${baseUrl}/storage/${item.image_s}" alt="${item.product_title}">` :
                                 `${FDBrokenImage}`
                             }
                         </a>
@@ -904,7 +905,7 @@ function updateCartData(cartInfo, cartItems) {
         cartProductsElements.forEach(el => {
             el.innerHTML = `
             <div class="p-4">
-                <img src="/storage/default/cart/undraw_successful-purchase_p2fz.svg" alt="empty-cart" class="w-full h-24">
+                <img src="${baseUrl}/storage/default/cart/undraw_successful-purchase_p2fz.svg" alt="empty-cart" class="w-full h-24">
                 <P class="text-xs mt-4 text-center">Your cart is empty!</P>
             </div>
             `;
@@ -940,7 +941,7 @@ function bindRemoveFromCartEvents() {
             const link = btn.dataset.link;
             const image = btn.dataset.image;
 
-            let imagePath = `<img class="h-auto max-h-full w-full" src="${image}" alt="${title}">`;
+            let imagePath = `<img class="h-auto max-h-full w-full" src="${baseUrl}/storage/${image}" alt="${title}">`;
 
             if (image == "not found") {
                 imagePath = FDBrokenImage;

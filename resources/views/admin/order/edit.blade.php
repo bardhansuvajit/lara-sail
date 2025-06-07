@@ -31,7 +31,7 @@
                     <x-admin.input-select id="country_code" name="country_code" title="Select Parent" class="w-full">
                         @slot('options')
                             @foreach ($activeCountries as $country)
-                                <x-admin.input-select-option value="{{$country->short_name}}" :selected="$data->country_code == $country->short_name"> {{$country->name}} </x-admin.input-select-option>
+                                <x-admin.input-select-option value="{{$country->code}}" :selected="$data->country_code == $country->code"> {{$country->name}} </x-admin.input-select-option>
                             @endforeach
                         @endslot
                     </x-admin.input-select>

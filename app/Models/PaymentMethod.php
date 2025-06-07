@@ -30,6 +30,6 @@ class PaymentMethod extends Model
 
     public function countryDetails()
     {
-        return $this->belongsTo('App\Models\Country', 'country_code', 'short_name');
+        return $this->belongsTo('App\Models\Country', 'country_code', 'code');
     }
 }

@@ -56,8 +56,8 @@
             @slot('options')
                 @foreach ($activeCountries as $countryIndex => $country)
                     <x-front.input-select-option 
-                        value="{{$country->short_name}}" 
-                        :selected="$selectedCountry == $country->short_name"
+                        value="{{$country->code}}" 
+                        :selected="$selectedCountry == $country->code"
                     >
                         {{ $country->name }} ({{ $country->phone_code }})
                     </x-front.input-select-option>

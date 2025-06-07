@@ -30,7 +30,7 @@ class CountryRepository implements CountryInterface
             // keyword
             if (!empty($keyword)) {
                 $query->where(function ($query) use ($keyword) {
-                    $query->where('short_name', 'like', '%' . $keyword . '%')
+                    $query->where('code', 'like', '%' . $keyword . '%')
                         ->orWhere('name', 'like', '%' . $keyword . '%')
                         ->orWhere('phone_code', 'like', '%' . $keyword . '%')
                         ->orWhere('currency_code', 'like', '%' . $keyword . '%')
@@ -131,7 +131,7 @@ class CountryRepository implements CountryInterface
     public function getByShortName(String $shortName)
     {
         try {
-            $data = Country::where('short_name', $shortName)->first();
+            $data = Country::where('code', $shortName)->first();
 
             if (!empty($data)) {
                 return [
@@ -276,7 +276,7 @@ class CountryRepository implements CountryInterface
                 }
 
                 Country::create([
-                    'short_name' => !empty($item['short_name']) ? $item['short_name'] : null,
+                    'code' => !empty($item['code']) ? $item['code'] : null,
                     'name' => $item['name'] ? $item['name'] : null,
                     'phone_code' => !empty($item['phone_code']) ? $item['phone_code'] : null,
                     'phone_no_digits' => !empty($item['phone_no_digits']) ? $item['phone_no_digits'] : null,

@@ -1,12 +1,12 @@
 <x-front.modal name="confirm-cart-item-deletion" maxWidth="sm" vertical="middle" focusable>
     <div class="p-6">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+        <h2 class="text-center text-lg font-medium text-gray-900 dark:text-gray-100">
             {{ __('Are you sure?') }}
         </h2>
 
         <div class="delete-product-data my-4"></div>
 
-        <form action="" method="POST" class="mt-6 flex gap-2 justify-end" id="delete-cart-item-form">
+        <form action="" method="POST" class="mt-6 flex gap-2 justify-center" id="delete-cart-item-form">
             <input type="hidden" name="type" id="cart-item-type" value="delete">
 
             <x-admin.button

@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-// use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Cache;
 
 class Country extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'short_name',
+        'code',
         'name',
         'phone_code',
         'phone_no_digits',
@@ -34,14 +34,33 @@ class Country extends Model
 
     public function states()
     {
-        return $this->hasMany('App\Models\State', 'country_id', 'id');
+        return $this->hasMany('App\Models\State', 'country_code', 'code');
     }
 
-    // Cache countries for 24 hours
-    // public static function cachedCountries()
+    protected static function booted()
+    {
+        static::saved(function () {
+            self::clearActiveCountriesCache();
+        });
+
+        static::deleted(function () {
+            self::clearActiveCountriesCache();
+        });
+    }
+
+    public static function clearActiveCountriesCache()
+    {
+        Cache::forget('active_countries');
+
+        // Optionally re-cache immediately if needed:
+        Cache::rememberForever('active_countries', function () {
+            return self::active()->get();
+        });
+    }
+
+    // public function scopeActive($query)
     // {
-    //     return Cache::remember('active_countries', 86400, function () {
-    //         return self::active()->get();
-    //     });
+    //     return $query->where('status', 1);
     // }
+
 }

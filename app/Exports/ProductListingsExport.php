@@ -2,11 +2,11 @@
 
 namespace App\Exports;
 
-use App\Models\User;
+use App\Models\Product;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class UsersExport implements FromCollection, WithHeadings
+class ProductListingsExport implements FromCollection, WithHeadings
 {
     private $data;
 

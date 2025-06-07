@@ -1,6 +1,8 @@
 title,slug,parent_id,level,short_description,long_description,size_guide,meta_title,meta_desc,tags,position,status
 T-shirt,t-shirt,,1,,,,,,tags1,1,1
-Shoes,shoes,,1,,,,,,tags2,1,1
-Mens Shoes,mens-shoes,2,2,,,,,,,1,1
-Womens Shoes,womens-shoes,2,2,,,,,,,1,1
-Kids Shoes,kids-shoes,2,2,,,,,,,1,1
+Shoes,shoes,,1,,,,,,tags2,2,1
+Mens Shoes,mens-shoes,2,2,,,,,,,3,1
+Womens Shoes,womens-shoes,2,2,,,,,,,4,1
+Kids Shoes,kids-shoes,2,2,,,,,,,5,1
+Electronics,electronics,,1,,,,,,electronics,6,1
+Laptop,laptop,6,2,,,,,,,7,1

@@ -265,7 +265,7 @@
                                         @foreach ($activeCountries as $country)
                                             <x-admin.input-select-option 
                                                 value="{{$country->id}}" 
-                                                :selected="old('currency_code') ? old('currency_code') == $country->id : applicationSettings('country_code') == $country->short_name"
+                                                :selected="old('currency_code') ? old('currency_code') == $country->id : applicationSettings('country_code') == $country->code"
                                             >
                                                 {{ $country->currency_symbol }} ({{ $country->currency_code }})
                                             </x-admin.input-select-option>

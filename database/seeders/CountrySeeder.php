@@ -16,7 +16,7 @@ class CountrySeeder extends Seeder
     {
         DB::table('countries')->insert([
             [
-                'short_name' => 'AF',
+                'code' => 'AF',
                 'name' => 'Afghanistan',
                 'phone_code' => '93',
                 'phone_no_digits' => 0,
@@ -32,7 +32,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'AL',
+                'code' => 'AL',
                 'name' => 'Albania',
                 'phone_code' => '355',
                 'phone_no_digits' => 0,
@@ -48,7 +48,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'DZ',
+                'code' => 'DZ',
                 'name' => 'Algeria',
                 'phone_code' => '213',
                 'phone_no_digits' => 0,
@@ -65,7 +65,7 @@ class CountrySeeder extends Seeder
             ],
             // Add all other countries from your SQL data here
             [
-                'short_name' => 'AD',
+                'code' => 'AD',
                 'name' => 'Andorra',
                 'phone_code' => '376',
                 'phone_no_digits' => 0,
@@ -81,7 +81,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'AO',
+                'code' => 'AO',
                 'name' => 'Angola',
                 'phone_code' => '244',
                 'phone_no_digits' => 0,
@@ -97,7 +97,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'AI',
+                'code' => 'AI',
                 'name' => 'Anguilla',
                 'phone_code' => '+1-264',
                 'phone_no_digits' => 7,
@@ -113,7 +113,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'AG',
+                'code' => 'AG',
                 'name' => 'Antigua and Barbuda',
                 'phone_code' => '+1-268',
                 'phone_no_digits' => 7,
@@ -129,7 +129,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'AR',
+                'code' => 'AR',
                 'name' => 'Argentina',
                 'phone_code' => '54',
                 'phone_no_digits' => 0,
@@ -145,7 +145,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'AM',
+                'code' => 'AM',
                 'name' => 'Armenia',
                 'phone_code' => '374',
                 'phone_no_digits' => 0,
@@ -161,7 +161,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'AW',
+                'code' => 'AW',
                 'name' => 'Aruba',
                 'phone_code' => '297',
                 'phone_no_digits' => 0,
@@ -177,7 +177,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'AU',
+                'code' => 'AU',
                 'name' => 'Australia',
                 'phone_code' => '61',
                 'phone_no_digits' => 0,
@@ -193,7 +193,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'AT',
+                'code' => 'AT',
                 'name' => 'Austria',
                 'phone_code' => '43',
                 'phone_no_digits' => 0,
@@ -209,7 +209,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'AZ',
+                'code' => 'AZ',
                 'name' => 'Azerbaijan',
                 'phone_code' => '994',
                 'phone_no_digits' => 0,
@@ -225,7 +225,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BS',
+                'code' => 'BS',
                 'name' => 'Bahamas',
                 'phone_code' => '+1-242',
                 'phone_no_digits' => 7,
@@ -241,7 +241,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BH',
+                'code' => 'BH',
                 'name' => 'Bahrain',
                 'phone_code' => '973',
                 'phone_no_digits' => 0,
@@ -257,7 +257,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BD',
+                'code' => 'BD',
                 'name' => 'Bangladesh',
                 'phone_code' => '+880',
                 'phone_no_digits' => 0,
@@ -273,7 +273,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BB',
+                'code' => 'BB',
                 'name' => 'Barbados',
                 'phone_code' => '+1-246',
                 'phone_no_digits' => 7,
@@ -289,7 +289,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BY',
+                'code' => 'BY',
                 'name' => 'Belarus',
                 'phone_code' => '375',
                 'phone_no_digits' => 0,
@@ -305,7 +305,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BE',
+                'code' => 'BE',
                 'name' => 'Belgium',
                 'phone_code' => '32',
                 'phone_no_digits' => 0,
@@ -321,7 +321,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BZ',
+                'code' => 'BZ',
                 'name' => 'Belize',
                 'phone_code' => '501',
                 'phone_no_digits' => 0,
@@ -337,7 +337,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BJ',
+                'code' => 'BJ',
                 'name' => 'Benin',
                 'phone_code' => '229',
                 'phone_no_digits' => 0,
@@ -353,7 +353,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BM',
+                'code' => 'BM',
                 'name' => 'Bermuda',
                 'phone_code' => '+1-441',
                 'phone_no_digits' => 7,
@@ -366,10 +366,10 @@ class CountrySeeder extends Seeder
                 'time_zone' => 'Atlantic/Bermuda',
                 'shipping_availability' => true,
                 'cash_on_delivery_availability' => false,
-                'status' => 1,
+                'status' => 0,
             ],
             [
-                'short_name' => 'BT',
+                'code' => 'BT',
                 'name' => 'Bhutan',
                 'phone_code' => '975',
                 'phone_no_digits' => 0,
@@ -385,7 +385,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BO',
+                'code' => 'BO',
                 'name' => 'Bolivia',
                 'phone_code' => '591',
                 'phone_no_digits' => 0,
@@ -401,7 +401,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BA',
+                'code' => 'BA',
                 'name' => 'Bosnia and Herzegovina',
                 'phone_code' => '387',
                 'phone_no_digits' => 0,
@@ -417,7 +417,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BW',
+                'code' => 'BW',
                 'name' => 'Botswana',
                 'phone_code' => '267',
                 'phone_no_digits' => 0,
@@ -433,7 +433,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BR',
+                'code' => 'BR',
                 'name' => 'Brazil',
                 'phone_code' => '55',
                 'phone_no_digits' => 0,
@@ -449,7 +449,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'IO',
+                'code' => 'IO',
                 'name' => 'British Indian Ocean Territory',
                 'phone_code' => '246',
                 'phone_no_digits' => 0,
@@ -465,7 +465,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'VG',
+                'code' => 'VG',
                 'name' => 'British Virgin Islands',
                 'phone_code' => '+1-284',
                 'phone_no_digits' => 7,
@@ -481,7 +481,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BN',
+                'code' => 'BN',
                 'name' => 'Brunei',
                 'phone_code' => '673',
                 'phone_no_digits' => 0,
@@ -497,7 +497,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BG',
+                'code' => 'BG',
                 'name' => 'Bulgaria',
                 'phone_code' => '359',
                 'phone_no_digits' => 0,
@@ -513,7 +513,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BF',
+                'code' => 'BF',
                 'name' => 'Burkina Faso',
                 'phone_code' => '226',
                 'phone_no_digits' => 0,
@@ -529,7 +529,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'BI',
+                'code' => 'BI',
                 'name' => 'Burundi',
                 'phone_code' => '257',
                 'phone_no_digits' => 0,
@@ -545,7 +545,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CV',
+                'code' => 'CV',
                 'name' => 'Cabo Verde',
                 'phone_code' => '238',
                 'phone_no_digits' => 0,
@@ -561,7 +561,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'KH',
+                'code' => 'KH',
                 'name' => 'Cambodia',
                 'phone_code' => '855',
                 'phone_no_digits' => 0,
@@ -577,7 +577,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CM',
+                'code' => 'CM',
                 'name' => 'Cameroon',
                 'phone_code' => '237',
                 'phone_no_digits' => 0,
@@ -593,7 +593,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CA',
+                'code' => 'CA',
                 'name' => 'Canada',
                 'phone_code' => '1',
                 'phone_no_digits' => 0,
@@ -609,7 +609,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'KY',
+                'code' => 'KY',
                 'name' => 'Cayman Islands',
                 'phone_code' => '+1-345',
                 'phone_no_digits' => 7,
@@ -625,7 +625,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CF',
+                'code' => 'CF',
                 'name' => 'Central African Republic',
                 'phone_code' => '236',
                 'phone_no_digits' => 0,
@@ -641,7 +641,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'TD',
+                'code' => 'TD',
                 'name' => 'Chad',
                 'phone_code' => '235',
                 'phone_no_digits' => 0,
@@ -657,7 +657,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CL',
+                'code' => 'CL',
                 'name' => 'Chile',
                 'phone_code' => '56',
                 'phone_no_digits' => 0,
@@ -673,7 +673,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CN',
+                'code' => 'CN',
                 'name' => 'China',
                 'phone_code' => '86',
                 'phone_no_digits' => 0,
@@ -689,7 +689,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CO',
+                'code' => 'CO',
                 'name' => 'Colombia',
                 'phone_code' => '57',
                 'phone_no_digits' => 0,
@@ -705,7 +705,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'KM',
+                'code' => 'KM',
                 'name' => 'Comoros',
                 'phone_code' => '269',
                 'phone_no_digits' => 0,
@@ -721,7 +721,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CG',
+                'code' => 'CG',
                 'name' => 'Congo - Brazzaville',
                 'phone_code' => '242',
                 'phone_no_digits' => 0,
@@ -737,7 +737,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CD',
+                'code' => 'CD',
                 'name' => 'Congo - Kinshasa',
                 'phone_code' => '243',
                 'phone_no_digits' => 0,
@@ -753,7 +753,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CR',
+                'code' => 'CR',
                 'name' => 'Costa Rica',
                 'phone_code' => '506',
                 'phone_no_digits' => 0,
@@ -769,7 +769,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'HR',
+                'code' => 'HR',
                 'name' => 'Croatia',
                 'phone_code' => '385',
                 'phone_no_digits' => 0,
@@ -785,7 +785,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CU',
+                'code' => 'CU',
                 'name' => 'Cuba',
                 'phone_code' => '53',
                 'phone_no_digits' => 0,
@@ -801,7 +801,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CY',
+                'code' => 'CY',
                 'name' => 'Cyprus',
                 'phone_code' => '357',
                 'phone_no_digits' => 0,
@@ -817,7 +817,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CZ',
+                'code' => 'CZ',
                 'name' => 'Czechia',
                 'phone_code' => '420',
                 'phone_no_digits' => 0,
@@ -833,7 +833,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'DK',
+                'code' => 'DK',
                 'name' => 'Denmark',
                 'phone_code' => '45',
                 'phone_no_digits' => 0,
@@ -849,7 +849,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'DJ',
+                'code' => 'DJ',
                 'name' => 'Djibouti',
                 'phone_code' => '253',
                 'phone_no_digits' => 0,
@@ -865,7 +865,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'DM',
+                'code' => 'DM',
                 'name' => 'Dominica',
                 'phone_code' => '+1-767',
                 'phone_no_digits' => 7,
@@ -881,7 +881,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'DO',
+                'code' => 'DO',
                 'name' => 'Dominican Republic',
                 'phone_code' => '+1-809, +1-829, +1-849',
                 'phone_no_digits' => 7,
@@ -897,7 +897,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'EC',
+                'code' => 'EC',
                 'name' => 'Ecuador',
                 'phone_code' => '593',
                 'phone_no_digits' => 0,
@@ -913,7 +913,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'EG',
+                'code' => 'EG',
                 'name' => 'Egypt',
                 'phone_code' => '20',
                 'phone_no_digits' => 0,
@@ -929,7 +929,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SV',
+                'code' => 'SV',
                 'name' => 'El Salvador',
                 'phone_code' => '503',
                 'phone_no_digits' => 0,
@@ -945,7 +945,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'GQ',
+                'code' => 'GQ',
                 'name' => 'Equatorial Guinea',
                 'phone_code' => '240',
                 'phone_no_digits' => 0,
@@ -961,7 +961,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'ER',
+                'code' => 'ER',
                 'name' => 'Eritrea',
                 'phone_code' => '291',
                 'phone_no_digits' => 0,
@@ -977,7 +977,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'EE',
+                'code' => 'EE',
                 'name' => 'Estonia',
                 'phone_code' => '372',
                 'phone_no_digits' => 0,
@@ -993,7 +993,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SZ',
+                'code' => 'SZ',
                 'name' => 'Eswatini',
                 'phone_code' => '268',
                 'phone_no_digits' => 0,
@@ -1009,7 +1009,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'ET',
+                'code' => 'ET',
                 'name' => 'Ethiopia',
                 'phone_code' => '251',
                 'phone_no_digits' => 0,
@@ -1025,7 +1025,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'FJ',
+                'code' => 'FJ',
                 'name' => 'Fiji',
                 'phone_code' => '679',
                 'phone_no_digits' => 0,
@@ -1041,7 +1041,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'FI',
+                'code' => 'FI',
                 'name' => 'Finland',
                 'phone_code' => '358',
                 'phone_no_digits' => 0,
@@ -1057,7 +1057,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'FR',
+                'code' => 'FR',
                 'name' => 'France',
                 'phone_code' => '33',
                 'phone_no_digits' => 0,
@@ -1073,7 +1073,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'GA',
+                'code' => 'GA',
                 'name' => 'Gabon',
                 'phone_code' => '241',
                 'phone_no_digits' => 0,
@@ -1089,7 +1089,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'GM',
+                'code' => 'GM',
                 'name' => 'Gambia',
                 'phone_code' => '220',
                 'phone_no_digits' => 0,
@@ -1105,7 +1105,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'GE',
+                'code' => 'GE',
                 'name' => 'Georgia',
                 'phone_code' => '995',
                 'phone_no_digits' => 0,
@@ -1121,7 +1121,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'DE',
+                'code' => 'DE',
                 'name' => 'Germany',
                 'phone_code' => '49',
                 'phone_no_digits' => 0,
@@ -1137,7 +1137,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'GH',
+                'code' => 'GH',
                 'name' => 'Ghana',
                 'phone_code' => '233',
                 'phone_no_digits' => 0,
@@ -1153,7 +1153,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'GR',
+                'code' => 'GR',
                 'name' => 'Greece',
                 'phone_code' => '30',
                 'phone_no_digits' => 0,
@@ -1169,7 +1169,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'GD',
+                'code' => 'GD',
                 'name' => 'Grenada',
                 'phone_code' => '+1-473',
                 'phone_no_digits' => 7,
@@ -1185,7 +1185,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'GT',
+                'code' => 'GT',
                 'name' => 'Guatemala',
                 'phone_code' => '502',
                 'phone_no_digits' => 0,
@@ -1201,7 +1201,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'GN',
+                'code' => 'GN',
                 'name' => 'Guinea',
                 'phone_code' => '224',
                 'phone_no_digits' => 0,
@@ -1217,7 +1217,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'GW',
+                'code' => 'GW',
                 'name' => 'Guinea-Bissau',
                 'phone_code' => '245',
                 'phone_no_digits' => 0,
@@ -1233,7 +1233,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'GY',
+                'code' => 'GY',
                 'name' => 'Guyana',
                 'phone_code' => '592',
                 'phone_no_digits' => 0,
@@ -1249,7 +1249,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'HT',
+                'code' => 'HT',
                 'name' => 'Haiti',
                 'phone_code' => '509',
                 'phone_no_digits' => 0,
@@ -1265,7 +1265,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'HN',
+                'code' => 'HN',
                 'name' => 'Honduras',
                 'phone_code' => '504',
                 'phone_no_digits' => 0,
@@ -1281,7 +1281,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'HU',
+                'code' => 'HU',
                 'name' => 'Hungary',
                 'phone_code' => '36',
                 'phone_no_digits' => 0,
@@ -1297,7 +1297,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'IS',
+                'code' => 'IS',
                 'name' => 'Iceland',
                 'phone_code' => '354',
                 'phone_no_digits' => 0,
@@ -1313,7 +1313,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'IN',
+                'code' => 'IN',
                 'name' => 'India',
                 'phone_code' => '+91',
                 'phone_no_digits' => 10,
@@ -1329,7 +1329,7 @@ class CountrySeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'short_name' => 'ID',
+                'code' => 'ID',
                 'name' => 'Indonesia',
                 'phone_code' => '62',
                 'phone_no_digits' => 0,
@@ -1345,7 +1345,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'IR',
+                'code' => 'IR',
                 'name' => 'Iran',
                 'phone_code' => '98',
                 'phone_no_digits' => 0,
@@ -1361,7 +1361,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'IQ',
+                'code' => 'IQ',
                 'name' => 'Iraq',
                 'phone_code' => '964',
                 'phone_no_digits' => 0,
@@ -1377,7 +1377,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'IE',
+                'code' => 'IE',
                 'name' => 'Ireland',
                 'phone_code' => '353',
                 'phone_no_digits' => 0,
@@ -1393,7 +1393,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'IL',
+                'code' => 'IL',
                 'name' => 'Israel',
                 'phone_code' => '972',
                 'phone_no_digits' => 0,
@@ -1409,7 +1409,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'IT',
+                'code' => 'IT',
                 'name' => 'Italy',
                 'phone_code' => '39',
                 'phone_no_digits' => 0,
@@ -1425,7 +1425,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'JM',
+                'code' => 'JM',
                 'name' => 'Jamaica',
                 'phone_code' => '+1-876',
                 'phone_no_digits' => 7,
@@ -1441,7 +1441,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'JP',
+                'code' => 'JP',
                 'name' => 'Japan',
                 'phone_code' => '81',
                 'phone_no_digits' => 0,
@@ -1457,7 +1457,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'JO',
+                'code' => 'JO',
                 'name' => 'Jordan',
                 'phone_code' => '962',
                 'phone_no_digits' => 0,
@@ -1473,7 +1473,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'KZ',
+                'code' => 'KZ',
                 'name' => 'Kazakhstan',
                 'phone_code' => '7',
                 'phone_no_digits' => 0,
@@ -1489,7 +1489,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'KE',
+                'code' => 'KE',
                 'name' => 'Kenya',
                 'phone_code' => '254',
                 'phone_no_digits' => 0,
@@ -1505,7 +1505,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'KI',
+                'code' => 'KI',
                 'name' => 'Kiribati',
                 'phone_code' => '686',
                 'phone_no_digits' => 0,
@@ -1521,7 +1521,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'KP',
+                'code' => 'KP',
                 'name' => 'Korea (North)',
                 'phone_code' => '850',
                 'phone_no_digits' => 0,
@@ -1537,7 +1537,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'KR',
+                'code' => 'KR',
                 'name' => 'Korea (South)',
                 'phone_code' => '82',
                 'phone_no_digits' => 0,
@@ -1553,7 +1553,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'KW',
+                'code' => 'KW',
                 'name' => 'Kuwait',
                 'phone_code' => '965',
                 'phone_no_digits' => 0,
@@ -1569,7 +1569,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'KG',
+                'code' => 'KG',
                 'name' => 'Kyrgyzstan',
                 'phone_code' => '996',
                 'phone_no_digits' => 0,
@@ -1585,7 +1585,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'LA',
+                'code' => 'LA',
                 'name' => 'Laos',
                 'phone_code' => '856',
                 'phone_no_digits' => 0,
@@ -1601,7 +1601,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'LV',
+                'code' => 'LV',
                 'name' => 'Latvia',
                 'phone_code' => '371',
                 'phone_no_digits' => 0,
@@ -1617,7 +1617,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'LB',
+                'code' => 'LB',
                 'name' => 'Lebanon',
                 'phone_code' => '961',
                 'phone_no_digits' => 0,
@@ -1633,7 +1633,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'LS',
+                'code' => 'LS',
                 'name' => 'Lesotho',
                 'phone_code' => '266',
                 'phone_no_digits' => 0,
@@ -1649,7 +1649,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'LR',
+                'code' => 'LR',
                 'name' => 'Liberia',
                 'phone_code' => '231',
                 'phone_no_digits' => 0,
@@ -1665,7 +1665,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'LY',
+                'code' => 'LY',
                 'name' => 'Libya',
                 'phone_code' => '218',
                 'phone_no_digits' => 0,
@@ -1681,7 +1681,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'LI',
+                'code' => 'LI',
                 'name' => 'Liechtenstein',
                 'phone_code' => '423',
                 'phone_no_digits' => 0,
@@ -1697,7 +1697,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'LT',
+                'code' => 'LT',
                 'name' => 'Lithuania',
                 'phone_code' => '370',
                 'phone_no_digits' => 0,
@@ -1713,7 +1713,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'LU',
+                'code' => 'LU',
                 'name' => 'Luxembourg',
                 'phone_code' => '352',
                 'phone_no_digits' => 0,
@@ -1729,7 +1729,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MG',
+                'code' => 'MG',
                 'name' => 'Madagascar',
                 'phone_code' => '261',
                 'phone_no_digits' => 0,
@@ -1745,7 +1745,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MW',
+                'code' => 'MW',
                 'name' => 'Malawi',
                 'phone_code' => '265',
                 'phone_no_digits' => 0,
@@ -1761,7 +1761,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MY',
+                'code' => 'MY',
                 'name' => 'Malaysia',
                 'phone_code' => '60',
                 'phone_no_digits' => 0,
@@ -1777,7 +1777,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MV',
+                'code' => 'MV',
                 'name' => 'Maldives',
                 'phone_code' => '960',
                 'phone_no_digits' => 0,
@@ -1793,7 +1793,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'ML',
+                'code' => 'ML',
                 'name' => 'Mali',
                 'phone_code' => '223',
                 'phone_no_digits' => 0,
@@ -1809,7 +1809,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MT',
+                'code' => 'MT',
                 'name' => 'Malta',
                 'phone_code' => '356',
                 'phone_no_digits' => 0,
@@ -1825,7 +1825,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MH',
+                'code' => 'MH',
                 'name' => 'Marshall Islands',
                 'phone_code' => '692',
                 'phone_no_digits' => 0,
@@ -1841,7 +1841,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MR',
+                'code' => 'MR',
                 'name' => 'Mauritania',
                 'phone_code' => '222',
                 'phone_no_digits' => 0,
@@ -1857,7 +1857,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MU',
+                'code' => 'MU',
                 'name' => 'Mauritius',
                 'phone_code' => '230',
                 'phone_no_digits' => 0,
@@ -1873,7 +1873,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MX',
+                'code' => 'MX',
                 'name' => 'Mexico',
                 'phone_code' => '52',
                 'phone_no_digits' => 0,
@@ -1889,7 +1889,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'FM',
+                'code' => 'FM',
                 'name' => 'Micronesia',
                 'phone_code' => '691',
                 'phone_no_digits' => 0,
@@ -1905,7 +1905,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MD',
+                'code' => 'MD',
                 'name' => 'Moldova',
                 'phone_code' => '373',
                 'phone_no_digits' => 0,
@@ -1921,7 +1921,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MC',
+                'code' => 'MC',
                 'name' => 'Monaco',
                 'phone_code' => '377',
                 'phone_no_digits' => 0,
@@ -1937,7 +1937,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MN',
+                'code' => 'MN',
                 'name' => 'Mongolia',
                 'phone_code' => '976',
                 'phone_no_digits' => 0,
@@ -1953,7 +1953,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'ME',
+                'code' => 'ME',
                 'name' => 'Montenegro',
                 'phone_code' => '382',
                 'phone_no_digits' => 0,
@@ -1969,7 +1969,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MA',
+                'code' => 'MA',
                 'name' => 'Morocco',
                 'phone_code' => '212',
                 'phone_no_digits' => 0,
@@ -1985,7 +1985,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MZ',
+                'code' => 'MZ',
                 'name' => 'Mozambique',
                 'phone_code' => '258',
                 'phone_no_digits' => 0,
@@ -2001,7 +2001,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MM',
+                'code' => 'MM',
                 'name' => 'Myanmar',
                 'phone_code' => '95',
                 'phone_no_digits' => 0,
@@ -2017,7 +2017,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'NA',
+                'code' => 'NA',
                 'name' => 'Namibia',
                 'phone_code' => '264',
                 'phone_no_digits' => 0,
@@ -2033,7 +2033,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'NR',
+                'code' => 'NR',
                 'name' => 'Nauru',
                 'phone_code' => '674',
                 'phone_no_digits' => 0,
@@ -2049,7 +2049,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'NP',
+                'code' => 'NP',
                 'name' => 'Nepal',
                 'phone_code' => '977',
                 'phone_no_digits' => 0,
@@ -2065,7 +2065,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'NL',
+                'code' => 'NL',
                 'name' => 'Netherlands',
                 'phone_code' => '31',
                 'phone_no_digits' => 0,
@@ -2081,7 +2081,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'NZ',
+                'code' => 'NZ',
                 'name' => 'New Zealand',
                 'phone_code' => '64',
                 'phone_no_digits' => 0,
@@ -2097,7 +2097,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'NI',
+                'code' => 'NI',
                 'name' => 'Nicaragua',
                 'phone_code' => '505',
                 'phone_no_digits' => 0,
@@ -2113,7 +2113,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'NE',
+                'code' => 'NE',
                 'name' => 'Niger',
                 'phone_code' => '227',
                 'phone_no_digits' => 0,
@@ -2129,7 +2129,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'NG',
+                'code' => 'NG',
                 'name' => 'Nigeria',
                 'phone_code' => '234',
                 'phone_no_digits' => 0,
@@ -2145,7 +2145,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'MK',
+                'code' => 'MK',
                 'name' => 'North Macedonia',
                 'phone_code' => '389',
                 'phone_no_digits' => 0,
@@ -2161,7 +2161,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'NO',
+                'code' => 'NO',
                 'name' => 'Norway',
                 'phone_code' => '47',
                 'phone_no_digits' => 0,
@@ -2177,7 +2177,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'OM',
+                'code' => 'OM',
                 'name' => 'Oman',
                 'phone_code' => '968',
                 'phone_no_digits' => 0,
@@ -2193,7 +2193,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'PK',
+                'code' => 'PK',
                 'name' => 'Pakistan',
                 'phone_code' => '92',
                 'phone_no_digits' => 0,
@@ -2209,7 +2209,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'PW',
+                'code' => 'PW',
                 'name' => 'Palau',
                 'phone_code' => '680',
                 'phone_no_digits' => 0,
@@ -2225,7 +2225,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'PS',
+                'code' => 'PS',
                 'name' => 'Palestine',
                 'phone_code' => '970',
                 'phone_no_digits' => 0,
@@ -2241,7 +2241,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'PA',
+                'code' => 'PA',
                 'name' => 'Panama',
                 'phone_code' => '507',
                 'phone_no_digits' => 0,
@@ -2257,7 +2257,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'PG',
+                'code' => 'PG',
                 'name' => 'Papua New Guinea',
                 'phone_code' => '675',
                 'phone_no_digits' => 0,
@@ -2273,7 +2273,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'PY',
+                'code' => 'PY',
                 'name' => 'Paraguay',
                 'phone_code' => '595',
                 'phone_no_digits' => 0,
@@ -2289,7 +2289,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'PE',
+                'code' => 'PE',
                 'name' => 'Peru',
                 'phone_code' => '51',
                 'phone_no_digits' => 0,
@@ -2305,7 +2305,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'PH',
+                'code' => 'PH',
                 'name' => 'Philippines',
                 'phone_code' => '63',
                 'phone_no_digits' => 0,
@@ -2321,7 +2321,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'PL',
+                'code' => 'PL',
                 'name' => 'Poland',
                 'phone_code' => '48',
                 'phone_no_digits' => 0,
@@ -2337,7 +2337,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'PT',
+                'code' => 'PT',
                 'name' => 'Portugal',
                 'phone_code' => '351',
                 'phone_no_digits' => 0,
@@ -2353,7 +2353,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'QA',
+                'code' => 'QA',
                 'name' => 'Qatar',
                 'phone_code' => '974',
                 'phone_no_digits' => 0,
@@ -2369,7 +2369,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'RO',
+                'code' => 'RO',
                 'name' => 'Romania',
                 'phone_code' => '40',
                 'phone_no_digits' => 0,
@@ -2385,7 +2385,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'RU',
+                'code' => 'RU',
                 'name' => 'Russia',
                 'phone_code' => '7',
                 'phone_no_digits' => 0,
@@ -2401,7 +2401,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'RW',
+                'code' => 'RW',
                 'name' => 'Rwanda',
                 'phone_code' => '250',
                 'phone_no_digits' => 0,
@@ -2417,7 +2417,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'KN',
+                'code' => 'KN',
                 'name' => 'Saint Kitts and Nevis',
                 'phone_code' => '1-869',
                 'phone_no_digits' => 0,
@@ -2433,7 +2433,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'LC',
+                'code' => 'LC',
                 'name' => 'Saint Lucia',
                 'phone_code' => '1-758',
                 'phone_no_digits' => 0,
@@ -2449,7 +2449,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'VC',
+                'code' => 'VC',
                 'name' => 'Saint Vincent and the Grenadines',
                 'phone_code' => '1-784',
                 'phone_no_digits' => 0,
@@ -2465,7 +2465,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'WS',
+                'code' => 'WS',
                 'name' => 'Samoa',
                 'phone_code' => '685',
                 'phone_no_digits' => 0,
@@ -2481,7 +2481,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SM',
+                'code' => 'SM',
                 'name' => 'San Marino',
                 'phone_code' => '378',
                 'phone_no_digits' => 0,
@@ -2497,7 +2497,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SA',
+                'code' => 'SA',
                 'name' => 'Saudi Arabia',
                 'phone_code' => '966',
                 'phone_no_digits' => 0,
@@ -2513,7 +2513,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SN',
+                'code' => 'SN',
                 'name' => 'Senegal',
                 'phone_code' => '221',
                 'phone_no_digits' => 0,
@@ -2529,7 +2529,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'RS',
+                'code' => 'RS',
                 'name' => 'Serbia',
                 'phone_code' => '381',
                 'phone_no_digits' => 0,
@@ -2545,7 +2545,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SC',
+                'code' => 'SC',
                 'name' => 'Seychelles',
                 'phone_code' => '248',
                 'phone_no_digits' => 0,
@@ -2561,7 +2561,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SL',
+                'code' => 'SL',
                 'name' => 'Sierra Leone',
                 'phone_code' => '232',
                 'phone_no_digits' => 0,
@@ -2577,7 +2577,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SG',
+                'code' => 'SG',
                 'name' => 'Singapore',
                 'phone_code' => '+65',
                 'phone_no_digits' => 8,
@@ -2590,10 +2590,10 @@ class CountrySeeder extends Seeder
                 'time_zone' => 'Asia/Singapore',
                 'shipping_availability' => true,
                 'cash_on_delivery_availability' => false,
-                'status' => 1,
+                'status' => 0,
             ],
             [
-                'short_name' => 'SK',
+                'code' => 'SK',
                 'name' => 'Slovakia',
                 'phone_code' => '421',
                 'phone_no_digits' => 0,
@@ -2609,7 +2609,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SI',
+                'code' => 'SI',
                 'name' => 'Slovenia',
                 'phone_code' => '386',
                 'phone_no_digits' => 0,
@@ -2625,7 +2625,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SB',
+                'code' => 'SB',
                 'name' => 'Solomon Islands',
                 'phone_code' => '677',
                 'phone_no_digits' => 0,
@@ -2641,7 +2641,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SO',
+                'code' => 'SO',
                 'name' => 'Somalia',
                 'phone_code' => '252',
                 'phone_no_digits' => 0,
@@ -2657,7 +2657,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'ZA',
+                'code' => 'ZA',
                 'name' => 'South Africa',
                 'phone_code' => '27',
                 'phone_no_digits' => 0,
@@ -2673,7 +2673,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SS',
+                'code' => 'SS',
                 'name' => 'South Sudan',
                 'phone_code' => '211',
                 'phone_no_digits' => 0,
@@ -2689,7 +2689,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'ES',
+                'code' => 'ES',
                 'name' => 'Spain',
                 'phone_code' => '34',
                 'phone_no_digits' => 0,
@@ -2705,7 +2705,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'LK',
+                'code' => 'LK',
                 'name' => 'Sri Lanka',
                 'phone_code' => '94',
                 'phone_no_digits' => 0,
@@ -2721,7 +2721,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SD',
+                'code' => 'SD',
                 'name' => 'Sudan',
                 'phone_code' => '249',
                 'phone_no_digits' => 0,
@@ -2737,7 +2737,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SR',
+                'code' => 'SR',
                 'name' => 'Suriname',
                 'phone_code' => '597',
                 'phone_no_digits' => 0,
@@ -2753,7 +2753,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SE',
+                'code' => 'SE',
                 'name' => 'Sweden',
                 'phone_code' => '46',
                 'phone_no_digits' => 0,
@@ -2769,7 +2769,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'CH',
+                'code' => 'CH',
                 'name' => 'Switzerland',
                 'phone_code' => '41',
                 'phone_no_digits' => 0,
@@ -2785,7 +2785,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'SY',
+                'code' => 'SY',
                 'name' => 'Syria',
                 'phone_code' => '963',
                 'phone_no_digits' => 0,
@@ -2801,7 +2801,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'TW',
+                'code' => 'TW',
                 'name' => 'Taiwan',
                 'phone_code' => '886',
                 'phone_no_digits' => 0,
@@ -2817,7 +2817,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'TJ',
+                'code' => 'TJ',
                 'name' => 'Tajikistan',
                 'phone_code' => '992',
                 'phone_no_digits' => 0,
@@ -2833,7 +2833,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'TZ',
+                'code' => 'TZ',
                 'name' => 'Tanzania',
                 'phone_code' => '255',
                 'phone_no_digits' => 0,
@@ -2849,7 +2849,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'TH',
+                'code' => 'TH',
                 'name' => 'Thailand',
                 'phone_code' => '66',
                 'phone_no_digits' => 0,
@@ -2865,7 +2865,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'TL',
+                'code' => 'TL',
                 'name' => 'Timor-Leste',
                 'phone_code' => '670',
                 'phone_no_digits' => 0,
@@ -2881,7 +2881,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'TG',
+                'code' => 'TG',
                 'name' => 'Togo',
                 'phone_code' => '228',
                 'phone_no_digits' => 0,
@@ -2897,7 +2897,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'TO',
+                'code' => 'TO',
                 'name' => 'Tonga',
                 'phone_code' => '676',
                 'phone_no_digits' => 0,
@@ -2913,7 +2913,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'TT',
+                'code' => 'TT',
                 'name' => 'Trinidad and Tobago',
                 'phone_code' => '1-868',
                 'phone_no_digits' => 0,
@@ -2929,7 +2929,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'TN',
+                'code' => 'TN',
                 'name' => 'Tunisia',
                 'phone_code' => '216',
                 'phone_no_digits' => 0,
@@ -2945,7 +2945,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'TR',
+                'code' => 'TR',
                 'name' => 'Turkey',
                 'phone_code' => '90',
                 'phone_no_digits' => 0,
@@ -2961,7 +2961,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'TM',
+                'code' => 'TM',
                 'name' => 'Turkmenistan',
                 'phone_code' => '993',
                 'phone_no_digits' => 0,
@@ -2977,7 +2977,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'TV',
+                'code' => 'TV',
                 'name' => 'Tuvalu',
                 'phone_code' => '688',
                 'phone_no_digits' => 0,
@@ -2993,7 +2993,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'UG',
+                'code' => 'UG',
                 'name' => 'Uganda',
                 'phone_code' => '256',
                 'phone_no_digits' => 0,
@@ -3009,7 +3009,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'UA',
+                'code' => 'UA',
                 'name' => 'Ukraine',
                 'phone_code' => '380',
                 'phone_no_digits' => 0,
@@ -3025,7 +3025,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'AE',
+                'code' => 'AE',
                 'name' => 'United Arab Emirates',
                 'phone_code' => '971',
                 'phone_no_digits' => 0,
@@ -3041,7 +3041,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'GB',
+                'code' => 'GB',
                 'name' => 'United Kingdom',
                 'phone_code' => '44',
                 'phone_no_digits' => 0,
@@ -3057,7 +3057,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'US',
+                'code' => 'US',
                 'name' => 'United States',
                 'phone_code' => '+1',
                 'phone_no_digits' => 10,
@@ -3073,7 +3073,7 @@ class CountrySeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'short_name' => 'UY',
+                'code' => 'UY',
                 'name' => 'Uruguay',
                 'phone_code' => '598',
                 'phone_no_digits' => 0,
@@ -3089,7 +3089,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'UZ',
+                'code' => 'UZ',
                 'name' => 'Uzbekistan',
                 'phone_code' => '998',
                 'phone_no_digits' => 0,
@@ -3105,7 +3105,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'VU',
+                'code' => 'VU',
                 'name' => 'Vanuatu',
                 'phone_code' => '678',
                 'phone_no_digits' => 0,
@@ -3121,7 +3121,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'VE',
+                'code' => 'VE',
                 'name' => 'Venezuela',
                 'phone_code' => '58',
                 'phone_no_digits' => 0,
@@ -3137,7 +3137,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'VN',
+                'code' => 'VN',
                 'name' => 'Vietnam',
                 'phone_code' => '84',
                 'phone_no_digits' => 0,
@@ -3153,7 +3153,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'YE',
+                'code' => 'YE',
                 'name' => 'Yemen',
                 'phone_code' => '967',
                 'phone_no_digits' => 0,
@@ -3169,7 +3169,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'ZM',
+                'code' => 'ZM',
                 'name' => 'Zambia',
                 'phone_code' => '260',
                 'phone_no_digits' => 0,
@@ -3185,7 +3185,7 @@ class CountrySeeder extends Seeder
                 'status' => 0,
             ],
             [
-                'short_name' => 'ZW',
+                'code' => 'ZW',
                 'name' => 'Zimbabwe',
                 'phone_code' => '263',
                 'phone_no_digits' => 0,

@@ -28,6 +28,11 @@ class Cart extends Model
         return $this->hasMany('App\Models\CartItem', 'cart_id', 'id')->where('is_saved_for_later', 1)->orderBy('id', 'desc');
     }
 
+    public function shippingMethod()
+    {
+        return $this->belongsTo('App\Models\ShippingMethod', 'shipping_method_id', 'id');
+    }
+
     // mark abandon
     public function shouldBeMarkedAbandoned()
     {

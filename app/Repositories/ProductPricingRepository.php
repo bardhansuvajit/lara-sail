@@ -186,6 +186,8 @@ class ProductPricingRepository implements ProductPricingInterface
 
     public function update(Int $id, Array $array)
     {
+        // dd($array);
+
         try {
             // $data = $this->getById($array['id']);
             $data = $this->getById($id);

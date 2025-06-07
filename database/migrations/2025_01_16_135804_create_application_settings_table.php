@@ -33,13 +33,19 @@ return new class extends Migration
             [
                 'category' => 'stage1',
                 'key' => 'domain_name',
-                'value' => 'www.example.com',
+                'value' => 'https://example.com',
                 'description' => '',
             ],
             [
                 'category' => 'stage1',
                 'key' => 'company_name',
                 'value' => 'Example company LLP',
+                'description' => '',
+            ],
+            [
+                'category' => 'stage1',
+                'key' => 'company_establish_year',
+                'value' => 2000,
                 'description' => '',
             ],
             [

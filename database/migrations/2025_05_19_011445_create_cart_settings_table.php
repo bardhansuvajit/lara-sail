@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('country', 2)->unique();
-            $table->foreign('country')->references('short_name')->on('countries')->onDelete('cascade');
+            $table->foreign('country')->references('code')->on('countries')->onDelete('cascade');
 
             $table->decimal('min_order_value', 10, 2)->default(0);
             $table->decimal('shipping_charge', 10, 2)->default(0);

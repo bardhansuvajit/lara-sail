@@ -66,7 +66,7 @@
                                             class="flex aspect-[1/1] h-12 md:h-16 flex-shrink-0 items-center"
                                         >
                                             @if (!empty($item['image_s']))
-                                                <img class="h-auto max-h-full w-full" src="{{$item['image_s']}}" alt="{{$item['product_title']}}" />
+                                                <img class="h-auto max-h-full w-full" src="{{ Storage::url($item['image_s']) }}" alt="{{$item['product_title']}}" />
                                             @else
                                                 {!! FD['brokenImageFront'] !!}
                                             @endif
@@ -196,7 +196,7 @@
                                                 $dispatch('data-selling-price', @js(formatIndianMoney($item['selling_price'])));
                                                 $dispatch('data-mrp', @js(formatIndianMoney($item['mrp'])));
                                                 $dispatch('data-discount', @js(discountPercentageCalc($item['selling_price'], $item['mrp'])));
-                                                $dispatch('data-image-path', @js($item['image_s']));
+                                                $dispatch('data-image-path', @js($item['image_s'] ? Storage::url($item['image_s']) : ''));
                                             "
                                         >
                                             <div class="{{FD['iconClass']}}">
@@ -218,7 +218,7 @@
                                                 $dispatch('data-selling-price', @js(formatIndianMoney($item['selling_price'])));
                                                 $dispatch('data-mrp', @js(formatIndianMoney($item['mrp'])));
                                                 $dispatch('data-discount', @js(discountPercentageCalc($item['selling_price'], $item['mrp'])));
-                                                $dispatch('data-image-path', @js($item['image_s']));
+                                                $dispatch('data-image-path', @js($item['image_s'] ? Storage::url($item['image_s']) : ''));
                                             "
                                         >
                                             <div class="{{FD['iconClass']}}">

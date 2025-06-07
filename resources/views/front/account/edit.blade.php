@@ -129,8 +129,8 @@
                                             @slot('options')
                                                 @foreach ($activeCountries as $country)
                                                     <x-front.input-select-option 
-                                                        value="{{$country->short_name}}" 
-                                                        :selected="old('phone_country_code') ? $country->short_name == old('phone_country_code') : $country->short_name == Auth::guard('web')->user()->country->short_name"
+                                                        value="{{$country->code}}" 
+                                                        :selected="old('phone_country_code') ? $country->code == old('phone_country_code') : $country->code == Auth::guard('web')->user()->country->code"
                                                     >
                                                         {{ $country->name }} ({{ $country->phone_code }})
                                                     </x-front.input-select-option>

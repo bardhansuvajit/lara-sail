@@ -13,6 +13,8 @@ use App\Http\Controllers\Front\Auth\RegisteredUserController;
 use App\Http\Controllers\Front\Auth\VerifyEmailController;
 use App\Http\Controllers\Front\Account\AccountController;
 use App\Http\Controllers\Front\Address\AddressController;
+use App\Http\Controllers\Front\Order\OrderController;
+use App\Http\Controllers\Front\Wishlist\WishlistController;
 
 Route::name('front.')->group(function () {
     Route::middleware('guest')->group(function () {
@@ -32,29 +34,36 @@ Route::name('front.')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('verify-email', EmailVerificationPromptController::class)->name('verification.notice');
         Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
-
         Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->middleware('throttle:6,1')->name('verification.send');
 
         Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])->name('password.confirm');
-
         Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
-
         Route::put('password', [PasswordController::class, 'update'])->name('password.update');
-
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
         // account
-        Route::prefix('account')->name('account.')->group(function() {
-            Route::get('/', [AccountController::class, 'index'])->name('index');
-            Route::get('/edit', [AccountController::class, 'edit'])->name('edit');
-            Route::post('/update', [AccountController::class, 'update'])->name('update');
-            Route::post('/update/optional', [AccountController::class, 'updateOptional'])->name('update.optional');
+        Route::prefix('account')->name('account.')->controller(AccountController::class)->group(function() {
+            Route::get('/', 'index')->name('index');
+            Route::get('/edit', 'edit')->name('edit');
+            Route::post('/update', 'update')->name('update');
+            Route::post('/update/optional', 'updateOptional')->name('update.optional');
+        });
+
+        // order
+        Route::prefix('order')->name('order.')->controller(OrderController::class)->group(function() {
+            Route::get('/', 'index')->name('index');
+        });
+
+        // wishlist
+        Route::prefix('wishlist')->name('wishlist.')->controller(WishlistController::class)->group(function() {
+            Route::get('/', 'index')->name('index');
         });
 
         // address
-        Route::prefix('address')->name('address.')->group(function() {
-            Route::post('/store', [AddressController::class, 'store'])->name('store');
-            Route::delete('/delete/{id}', [AddressController::class, 'delete'])->name('delete');
+        Route::prefix('address')->name('address.')->controller(AddressController::class)->group(function() {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::delete('/delete/{id}', 'delete')->name('delete');
         });
     });
 });

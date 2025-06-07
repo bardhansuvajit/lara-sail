@@ -70,7 +70,7 @@ class OrderController
         // dd($request->all());
 
         $request->validate([
-            'country_code' => 'required|string:2|max:2|exists:countries,short_name',
+            'country_code' => 'required|string:2|max:2|exists:countries,code',
             'first_name' => 'required|string|min:2|max:100',
             'last_name' => 'required|string|min:2|max:100',
             'email' => [
@@ -111,7 +111,7 @@ class OrderController
 
         $request->validate([
             'id' => 'required|integer|min:1',
-            'country_code' => 'required|string:2|max:2|exists:countries,short_name',
+            'country_code' => 'required|string:2|max:2|exists:countries,code',
             'first_name' => 'required|string|min:2|max:100',
             'last_name' => 'required|string|min:2|max:100',
             'email' => [

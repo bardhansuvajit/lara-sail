@@ -271,7 +271,7 @@
                                 @if ($item->parentDetails)
                                     <p class="text-xs text-gray-500">
                                         Parent 
-                                        <span class="font-medium text-gray-800 dark:text-gray-300">{{ $item->parentDetails->title }}</span>
+                                        <span class="font-medium text-gray-800 dark:text-gray-300">{{ $item->parentDetails?->title }}</span>
                                     </p>
                                 @endif
                                 @if (count($item->childDetails) > 0)
@@ -319,7 +319,7 @@
                                             $dispatch('data-title', '{{ $item->title }}');
                                             $dispatch('data-slug', '{{ $item->slug }}');
                                             $dispatch('data-level', '{{ $item->level }}');
-                                            $dispatch('data-parent', '{{ $item->parent_id ? $item->parentDetails->title : '' }}');
+                                            $dispatch('data-parent', '{{ $item->parent_id ? $item->parentDetails?->title : '' }}');
                                             $dispatch('data-child', '{{ (count($item->childDetails) > 0) ? $item->childDetails : '' }}');
                                         " >
                                         @slot('icon')

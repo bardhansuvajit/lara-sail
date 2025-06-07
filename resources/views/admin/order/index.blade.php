@@ -163,7 +163,7 @@
                             @slot('options')
                                 <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
                                 @foreach ($activeCountries as $country)
-                                    <x-admin.input-select-option value="{{$country->short_name}}" :selected="request()->input('countryCode') == $country->short_name"> {{$country->name}} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="{{$country->code}}" :selected="request()->input('countryCode') == $country->code"> {{$country->name}} </x-admin.input-select-option>
                                 @endforeach
                             @endslot
                         </x-admin.input-select>
@@ -295,8 +295,10 @@
                                             <a href="{{ route('admin.product.listing.edit', $orderItem->product_id) }}" class="text-primary-400 underline hover:no-underline">
                                                 {{$orderItem->product_title}}
                                             </a>
+                                            @if ($orderItem->variation_attributes)
+                                                <p class="text-gray-900 dark:text-white">{{$orderItem->variation_attributes}}</p>
+                                            @endif
                                             <p class="text-gray-600 dark:text-gray-400"> x {{$orderItem->quantity}}</p>
-                                            {{$orderItem->variation_attributes}}
                                         </div>
                                     @endforeach
                                 </div>
@@ -343,18 +345,42 @@
                                         x-data=""
                                         x-on:click.prevent="
                                             $dispatch('open-sidebar', 'quick-data-view');
-                                            {{-- $dispatch('data-flag', '{{ $item->country->flag }}'); --}}
-                                            $dispatch('data-profile_picture', '{{ $item->profile_picture ? Storage::url($item->profile_picture) : '' }}');
-                                            {{-- $dispatch('data-country', '{{ $item->country->name }}'); --}}
-                                            $dispatch('data-name', '{{ $item->first_name.' '.$item->last_name }}');
-                                            $dispatch('data-primary_phone_no', '{{ $item->primary_phone_no }}');
-                                            $dispatch('data-email', '{{ $item->email }}');
-                                            {{-- $dispatch('data-gender', '{{ genderString($item->gender_id) }}'); --}}
-                                            $dispatch('data-alt_phone_no', '{{ $item->alt_phone_no }}');
-                                            {{-- $dispatch('data-date_of_birth', @js($customDOB)); --}}
-                                            $dispatch('data-date_of_birth', '{{ $item->date_of_birth }}');
-                                            $dispatch('data-is_blacklisted', '{{ $item->is_blacklisted }}');
+                                            $dispatch('data-flag', '{{ $item->country->flag }}');
+                                            $dispatch('data-country', '{{ $item->country->name }}');
+                                            $dispatch('data-order_number', '{{ $item->order_number }}');
                                             $dispatch('data-status', '{{ $item->status }}');
+                                            $dispatch('data-email', '{{ $item->email }}');
+                                            $dispatch('data-phone_no', '{{ $item->phone_no }}');
+                                            $dispatch('data-total_items', '{{ $item->total_items }}');
+                                            $dispatch('data-currency_symbol', '{{ $item->currency_symbol }}');
+                                            $dispatch('data-mrp', '{{ formatIndianMoney($item->mrp) }}');
+                                            $dispatch('data-sub_total', '{{ formatIndianMoney($item->sub_total) }}');
+                                            $dispatch('data-total', '{{ formatIndianMoney($item->total) }}');
+                                            $dispatch('data-coupon_code', '{{ $item->coupon_code }}');
+                                            $dispatch('data-discount_amount', '{{ $item->discount_amount }}');
+                                            $dispatch('data-discount_type', '{{ $item->discount_type }}');
+                                            $dispatch('data-shipping_method', '{{ $item->shipping_method_name }}');
+                                            $dispatch('data-shipping_cost', '{{ $item->shipping_cost }}');
+                                            $dispatch('data-shipping_address', `{!! nl2br(e($item->shipping_address)) !!}`);
+                                            $dispatch('data-billing_address', `{!! nl2br(e($item->billing_address)) !!}`);
+                                            {{-- $dispatch('data-same_as_shipping', '{{ $item->same_as_shipping ? "Yes" : "No" }}'); --}}
+                                            $dispatch('data-tax_amount', '{{ $item->tax_amount }}');
+                                            $dispatch('data-tax_type', '{{ $item->tax_type }}');
+                                            $dispatch('data-tax_details', `{!! nl2br(e($item->tax_details)) !!}`);
+                                            $dispatch('data-payment_method', '{{ $item->payment_method_title }}');
+                                            $dispatch('data-payment_charge', '{{ $item->payment_method_charge }}');
+                                            $dispatch('data-payment_discount', '{{ $item->payment_method_discount }}');
+                                            $dispatch('data-payment_status', '{{ $item->payment_status }}');
+                                            $dispatch('data-transaction_id', '{{ $item->transaction_id }}');
+                                            $dispatch('data-payment_details', `{!! nl2br(e($item->payment_details)) !!}`);
+                                            {{-- $dispatch('data-paid_at', '{{ optional($item->paid_at)->format("d M Y, h:i A") ?? "NA" }}');
+                                            $dispatch('data-processed_at', '{{ optional($item->processed_at)->format("d M Y, h:i A") ?? "NA" }}');
+                                            $dispatch('data-shipped_at', '{{ optional($item->shipped_at)->format("d M Y, h:i A") ?? "NA" }}');
+                                            $dispatch('data-delivered_at', '{{ optional($item->delivered_at)->format("d M Y, h:i A") ?? "NA" }}');
+                                            $dispatch('data-cancelled_at', '{{ optional($item->cancelled_at)->format("d M Y, h:i A") ?? "NA" }}'); --}}
+                                            {{-- $dispatch('data-cancellation_reason', `{!! nl2br(e($item->cancellation_reason)) !!}`); --}}
+                                            {{-- $dispatch('data-notes', `{!! nl2br(e($item->notes)) !!}`); --}}
+                                            {{-- $dispatch('data-custom_fields', `{!! nl2br(e($item->custom_fields)) !!}`); --}}
                                         " >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>
@@ -412,69 +438,109 @@
     <x-admin.sidebar name="quick-data-view" maxWidth="sm" direction="right" header="Quick View" focusable>
         <div 
             class="p-4"
-            x-data="{flag: '', profile_picture: '', name: '', country: '', primary_phone_no: '', email: '', gender: '', alt_phone_no: '', date_of_birth: '', is_blacklisted: '', status: ''}"
-            x-on:data-flag.window="flag = $event.detail"
-            x-on:data-profile_picture.window="profile_picture = $event.detail"
-            x-on:data-name.window="name = $event.detail"
-            x-on:data-country.window="country = $event.detail"
-            x-on:data-primary_phone_no.window="primary_phone_no = $event.detail"
-            x-on:data-email.window="email = $event.detail"
-            x-on:data-gender.window="gender = $event.detail"
-            x-on:data-alt_phone_no.window="alt_phone_no = $event.detail"
-            x-on:data-date_of_birth.window="date_of_birth = $event.detail"
-            x-on:data-is_blacklisted.window="is_blacklisted = $event.detail"
-            x-on:data-status.window="status = $event.detail"
+            x-data="{
+                flag: '', country: '', order_number: '', status: '',
+                email: '', phone_no: '', total_items: '', currency_symbol: '', mrp: '', sub_total: '', total: '',
+                coupon_code: '', discount_amount: '', discount_type: '',
+                shipping_method: '', shipping_cost: '', shipping_address: '',
+                billing_address: '', same_as_shipping: '',
+                tax_amount: '', tax_type: '', tax_details: '',
+                payment_method: '', payment_charge: '', payment_discount: '', payment_status: '',
+                transaction_id: '', payment_details: '',
+                paid_at: '', processed_at: '', shipped_at: '', delivered_at: '', cancelled_at: '', cancellation_reason: '',
+                notes: '', custom_fields: ''
+            }"
+            @data-flag.window="flag = $event.detail"
+            @data-country.window="country = $event.detail"
+            @data-order_number.window="order_number = $event.detail"
+            @data-status.window="status = $event.detail"
+            @data-email.window="email = $event.detail"
+            @data-phone_no.window="phone_no = $event.detail"
+            @data-total_items.window="total_items = $event.detail"
+            @data-currency_symbol.window="currency_symbol = $event.detail"
+            @data-mrp.window="mrp = $event.detail"
+            @data-sub_total.window="sub_total = $event.detail"
+            @data-total.window="total = $event.detail"
+            @data-coupon_code.window="coupon_code = $event.detail"
+            @data-discount_amount.window="discount_amount = $event.detail"
+            @data-discount_type.window="discount_type = $event.detail"
+            @data-shipping_method.window="shipping_method = $event.detail"
+            @data-shipping_cost.window="shipping_cost = $event.detail"
+            @data-shipping_address.window="shipping_address = $event.detail"
+            @data-billing_address.window="billing_address = $event.detail"
+            @data-same_as_shipping.window="same_as_shipping = $event.detail"
+            @data-tax_amount.window="tax_amount = $event.detail"
+            @data-tax_type.window="tax_type = $event.detail"
+            @data-tax_details.window="tax_details = $event.detail"
+            @data-payment_method.window="payment_method = $event.detail"
+            @data-payment_charge.window="payment_charge = $event.detail"
+            @data-payment_discount.window="payment_discount = $event.detail"
+            @data-payment_status.window="payment_status = $event.detail"
+            @data-transaction_id.window="transaction_id = $event.detail"
+            @data-payment_details.window="payment_details = $event.detail"
+            @data-paid_at.window="paid_at = $event.detail"
+            @data-processed_at.window="processed_at = $event.detail"
+            @data-shipped_at.window="shipped_at = $event.detail"
+            @data-delivered_at.window="delivered_at = $event.detail"
+            @data-cancelled_at.window="cancelled_at = $event.detail"
+            @data-cancellation_reason.window="cancellation_reason = $event.detail"
+            @data-notes.window="notes = $event.detail"
+            @data-custom_fields.window="custom_fields = $event.detail"
         >
-            <h5 class="text-xs font-bold mb-1 text-gray-500 dark:text-gray-400">Country</h5>
-            <div>
-                <template x-if="flag">
-                    <div class="w-8 h-8" x-html="flag"></div>
-                </template>
-                <template x-if="!flag">
-                    <p class="text-sm text-orange-500 font-bold">NA</p>
-                </template>
+            <template x-for="(value, label) in {
+                'Country': country,
+                'Order #': order_number,
+                'Status': status,
+                'Email': email,
+                'Phone': phone_no,
+                'Total Items': total_items,
+                'MRP': mrp,
+                'Subtotal': sub_total,
+                'Total': total,
+                'Coupon Code': coupon_code,
+                'Discount': discount_amount,
+                'Discount Type': discount_type,
+                'Shipping Method': shipping_method,
+                'Shipping Cost': shipping_cost,
+                'Shipping Address': shipping_address,
+                'Billing Address': billing_address,
+                'Same as Shipping': same_as_shipping,
+                'Tax Amount': tax_amount,
+                'Tax Type': tax_type,
+                'Tax Details': tax_details,
+                'Payment Method': payment_method,
+                'Payment Charge': payment_charge,
+                'Payment Discount': payment_discount,
+                'Payment Status': payment_status,
+                'Transaction ID': transaction_id,
+                'Payment Details': payment_details,
+                'Paid At': paid_at,
+                'Processed At': processed_at,
+                'Shipped At': shipped_at,
+                'Delivered At': delivered_at,
+                'Cancelled At': cancelled_at,
+                'Cancellation Reason': cancellation_reason,
+                'Notes': notes,
+                'Custom Fields': custom_fields,
+            }" :key="label">
+                <div class="mb-3">
+                    <h5 class="text-xs font-bold text-gray-500 dark:text-gray-400" x-text="label"></h5>
+                    <p
+                        class="text-sm whitespace-pre-wrap"
+                        :class="!value ? 'text-red-500' : 'text-gray-900 dark:text-gray-100'"
+                        x-text="!value 
+                            ? 'NA' 
+                            : (['MRP', 'Subtotal', 'Total'].includes(label) 
+                                ? (currency_symbol + ' ' + value) 
+                                : value)"
+                    ></p>
+                </div>
+            </template>
+
+            <div x-show="flag" class="mt-4">
+                <h5 class="text-xs font-bold text-gray-500 dark:text-gray-400">Flag</h5>
+                <div class="w-8 h-8" x-html="flag"></div>
             </div>
-            <p class="text-sm mb-3 text-gray-900 dark:text-gray-100" x-text="country"></p>
-
-            <h5 class="text-xs font-bold mb-1 text-gray-500 dark:text-gray-400">Name</h5>
-            <div>
-                <template x-if="profile_picture">
-                    <img :src="profile_picture" alt="picture" class="w-8 h-8 rounded-full object-cover" />
-                </template>
-                {{-- <template x-if="!profile_picture">
-                    <p class="text-sm text-orange-500 font-bold">No Profile Picture</p>
-                </template> --}}
-            </div>
-            <p class="text-sm mb-3 text-gray-900 dark:text-gray-100" x-text="name"></p>
-
-            <h5 class="text-xs font-bold mb-1 text-gray-500 dark:text-gray-400">Phone number</h5>
-            <p class="text-sm mb-3 text-gray-900 dark:text-gray-100" x-text="primary_phone_no"></p>
-
-            <h5 class="text-xs font-bold mb-1 text-gray-500 dark:text-gray-400">Email</h5>
-            <p class="text-sm mb-3 text-gray-900 dark:text-gray-100" x-text="email"></p>
-
-            <h5 class="text-xs font-bold mb-1 text-gray-500 dark:text-gray-400">Gender</h5>
-            <p class="text-sm mb-3 text-gray-900 dark:text-gray-100" x-text="gender"></p>
-
-            <h5 class="text-xs font-bold mb-1 text-gray-500 dark:text-gray-400">Alt. Phone number</h5>
-            <p class="text-sm mb-3 text-gray-900 dark:text-gray-100" x-text="alt_phone_no"></p>
-
-            <h5 class="text-xs font-bold mb-1 text-gray-500 dark:text-gray-400">Date of Birth</h5>
-            <p class="text-sm mb-3 text-gray-900 dark:text-gray-100" x-text="date_of_birth"></p>
-
-            <h5 class="text-xs font-bold mb-1 text-gray-500 dark:text-gray-400">Blacklist</h5>
-            <p 
-                class="text-sm mb-3 font-bold"
-                :class="is_blacklisted == 1 ? 'text-red-600' : 'text-green-500'"
-                x-text="is_blacklisted == 1 ? 'BLACKLISTED' : 'NA'">
-            </p>
-
-            <h5 class="text-xs font-bold mb-1 text-gray-500 dark:text-gray-400">Status</h5>
-            <p 
-                class="text-sm mb-3 font-bold"
-                :class="status == 0 ? 'text-red-600' : 'text-green-500'"
-                x-text="status == 0 ? 'Disabled' : 'Active'">
-            </p>
         </div>
     </x-admin.sidebar>
 

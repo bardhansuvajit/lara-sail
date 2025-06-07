@@ -85,7 +85,7 @@ class CheckoutController extends Controller
             $shippingAddresses = auth()->guard('web')->user()->shippingAddresses;
             $billingAddresses = auth()->guard('web')->user()->billingAddresses;
 
-            $statesData = $this->stateRepository->list('', ['country_id' => 82], 'all', 'name', 'asc');
+            $statesData = $this->stateRepository->list('', ['country_code' => COUNTRY['country']], 'all', 'name', 'asc');
             $states = $statesData['data'];
 
             // Find Payment Methods

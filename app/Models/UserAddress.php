@@ -8,7 +8,7 @@ class UserAddress extends Model
 {
     public function countryDetail()
     {
-        return $this->belongsTo('App\Models\Country', 'country_code', 'short_name');
+        return $this->belongsTo('App\Models\Country', 'country_code', 'code');
     }
 
     public function stateDetail()

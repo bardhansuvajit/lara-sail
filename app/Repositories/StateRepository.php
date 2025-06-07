@@ -30,7 +30,7 @@ class StateRepository implements StateInterface
             // keyword
             if (!empty($keyword)) {
                 $query->where(function ($query) use ($keyword) {
-                    $query->where('short_name', 'like', '%' . $keyword . '%')
+                    $query->where('code', 'like', '%' . $keyword . '%')
                         ->orWhere('name', 'like', '%' . $keyword . '%')
                         ->orWhere('phone_code', 'like', '%' . $keyword . '%')
                         ->orWhere('currency_code', 'like', '%' . $keyword . '%')
@@ -131,7 +131,7 @@ class StateRepository implements StateInterface
     public function getByShortName(String $shortName)
     {
         try {
-            $data = State::where('short_name', $shortName)->first();
+            $data = State::where('code', $shortName)->first();
 
             if (!empty($data)) {
                 return [

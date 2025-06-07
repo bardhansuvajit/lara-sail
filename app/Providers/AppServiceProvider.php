@@ -29,12 +29,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // set a device id in cookie
+        // COOKIE - Device ID
         if (!isset($_COOKIE['device_id'])) {
             setcookie('device_id', Str::uuid());
         }
 
-        // set currency in cookie
+
+        // COOKIE - Currency & Country
         if (!isset($_COOKIE['currency'])) {
             setcookie('currency', urlencode(json_encode([
                 "country" => "IN",
@@ -47,17 +48,18 @@ class AppServiceProvider extends ServiceProvider
             ])));
         }
 
-        $countries = collect();
-        $cartData = collect();
 
+        // CACHE - Active Countries
+        $countries = collect();
         if (Schema::hasTable('countries')) {
             $countries = Cache::rememberForever('active_countries', function () {
                 return Country::active()->get();
             });
         }
 
-        // dd($countries);
 
+        // DB - Cart data
+        $cartData = collect();
         if (Schema::hasTable('carts')) {
             if (auth()->guard('web')->check()) {
                 $cartData = \App\Models\Cart::where('user_id', auth()->guard('web')->id())

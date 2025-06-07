@@ -174,7 +174,7 @@ if (!function_exists('applicationSettings')) {
     function applicationSettings(String $key) {
         $applicationSettingRepository = app(ApplicationSettingRepository::class);
         $resp = $applicationSettingRepository->getByKey($key);
-        return $resp['data']->value;
+        return $resp['data']->value ?? '';
         // return json_decode($resp['data']->value);
     }
 }

@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class City extends Model
 {
     protected $fillable = [
-        'country_id',
-        'state_id',
+        'country_code',
+        'state_code',
         'name',
         'district',
         'postal_code',
@@ -22,11 +22,11 @@ class City extends Model
 
     public function country()
     {
-        return $this->belongsTo('App\Models\Country', 'country_id', 'id');
+        return $this->belongsTo('App\Models\Country', 'country_code', 'code');
     }
 
     public function state()
     {
-        return $this->belongsTo('App\Models\State', 'state_id', 'id');
+        return $this->belongsTo('App\Models\State', 'state_code', 'id');
     }
 }
