@@ -1,6 +1,6 @@
 <x-app-layout
     screen="max-w-screen-xl"
-    title="{{ __('Address') }}">
+    title="{{ __('Edit Address') }}">
 
     <section class="bg-gray-100 dark:bg-gray-900 antialiased">
         <div class="pt-4 sm:pt-6 px-2 sm:px-2 md:px-3 lg:px-4 xl:px-4 2xl:px-0">
@@ -18,11 +18,12 @@
                     @include('front.account.includes.navbar')
 
                     <div class="bg-white dark:bg-gray-800 p-4 mb-5">
-                        @if (count($addresses) == 0)
-                            <p class="mb-4">No delivery address found. Add an address for a faster checkout.</p>
-                        @endif
 
-                        <div x-data="{ expanded: {{ ( (count($addresses) == 0) || ($errors->any()) ) ? 'true' : 'false' }}, type: 'Delivery' }" class="mb-3">
+                        <p class="inline-block text-primary-500 dark:text-primary-300">Edit {{ $address->address_type == "shipping" ? "Delivery" : "Billing"}} Address</p>
+
+                        @include('front.account.address.includes.edit', ['type' => $address->address_type])
+
+                        {{-- <div x-data="{ expanded: {{ ( (count($addresses) == 0) || ($errors->any()) ) ? 'true' : 'false' }}, type: 'Delivery' }" class="mb-3">
                             <div class="flex justify-between">
                                 <a href="javascript:void(0)" 
                                 class="inline-block text-primary-500 dark:text-primary-300"
@@ -42,7 +43,6 @@
                                     id="addressId{{$address->id}}" 
                                     name="shipping_address_id" 
                                     value="{{$address->id}}" 
-                                    {{-- :checked="$address->is_default == 1"  --}}
                                     class="shipping-address" 
                                     labelClass="mb-2" 
                                 >
@@ -69,7 +69,7 @@
 
                                             <div class="flex items-center">
                                                 <div class="flex flex-col space-y-2 items-center">
-                                                    <a href="{{ route('front.address.edit', $address->id) }}" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-400 dark:hover:text-gray-500">Edit</a>
+                                                    <a href="{{ route('front.address.edit', $address->id) }}" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-600 dark:hover:text-gray-700">Edit</a>
 
                                                     <button 
                                                         type="button" 
@@ -96,7 +96,7 @@
                                     </div>
                                 </x-front.radio-input-button>
                             @endforeach
-                        </div>
+                        </div> --}}
                     </div>
 
                 </div>

@@ -2,50 +2,33 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\OrderInterface;
-use App\Models\Order;
+use App\Interfaces\WishlistInterface;
+use App\Models\ProductWishlist;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
 use Illuminate\Database\Eloquent\Collection;
-use App\Interfaces\CartSettingInterface;
-use App\Interfaces\PaymentMethodInterface;
-use App\Interfaces\OrderItemInterface;
 
-use App\Services\OrderNumberService;
-
-use App\Exports\OrdersExport;
+use App\Exports\WishlistsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class OrderRepository implements OrderInterface
+class WishlistRepository implements WishlistInterface
 {
     private TrashInterface $trashRepository;
-    private CartSettingInterface $cartSettingRepository;
-    private PaymentMethodInterface $paymentMethodRepository;
-    private OrderItemInterface $orderItemRepository;
-    protected OrderNumberService $orderNumberService;
 
     public function __construct(
-        TrashInterface $trashRepository, 
-        CartSettingInterface $cartSettingRepository, 
-        PaymentMethodInterface $paymentMethodRepository,
-        OrderItemInterface $orderItemRepository,
-        OrderNumberService $orderNumberService
+        TrashInterface $trashRepository
     )
     {
         $this->trashRepository = $trashRepository;
-        $this->cartSettingRepository = $cartSettingRepository;
-        $this->paymentMethodRepository = $paymentMethodRepository;
-        $this->orderItemRepository = $orderItemRepository;
-        $this->orderNumberService = $orderNumberService;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
-            $query = Order::query();
+            $query = ProductWishlist::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -113,10 +96,7 @@ class OrderRepository implements OrderInterface
         DB::beginTransaction();
 
         try {
-            // Generate Order Number
-            $orderNumber = $this->orderNumberService->generate($array['email'], $array['user_first_name'], $array['user_last_name']);
-
-            $data = new Order();
+            $data = new ProductWishlist();
             $data->order_number = $orderNumber;
             $data->user_id = $array['user_id'];
             $data->device_id = $array['device_id'];
@@ -206,7 +186,7 @@ class OrderRepository implements OrderInterface
     public function getById(Int $id)
     {
         try {
-            $data = Order::with('items')->find($id);
+            $data = ProductWishlist::with('items')->find($id);
 
             if (!empty($data)) {
                 return [
@@ -236,7 +216,7 @@ class OrderRepository implements OrderInterface
     public function exists(Array $conditions)
     {
         try {
-            $data = Order::with('items', 'user', 'country', 'paymentMethod', 'shippingMethod')->where($conditions)->get();
+            $data = ProductWishlist::with('user', 'product')->where($conditions)->get();
 
             if (count($data) > 0 ) {
                 return [
@@ -307,119 +287,6 @@ class OrderRepository implements OrderInterface
                 'code' => 500,
                 'status' => 'error',
                 'message' => 'An error occurred while updating data.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function updateCartTotals($cart)
-    {
-        try {
-            // Calculate item totals
-            $itemsTotal = $cart->items()->sum('total');
-            $itemsQuantity = $cart->items()->sum('quantity');
-            $totalMrp = $cart->items->sum(fn($item) => $item->mrp * $item->quantity);
-
-            // Calculate shipping cost
-            $shippingCost = $this->calculateShippingCost($cart, $itemsTotal);
-
-            // Calculate payment method adjustments
-            $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $shippingCost);
-
-            // Update cart totals
-            $cart->update([
-                'total_items' => $itemsQuantity,
-                'mrp' => $totalMrp,
-                'sub_total' => $itemsTotal,
-                'shipping_cost' => $shippingCost,
-                'payment_method_id' => $paymentDetails['id'],
-                'payment_method_title' => $paymentDetails['title'],
-                'payment_method_charge' => $paymentDetails['charge'],
-                'payment_method_discount' => $paymentDetails['discount'],
-                'total' => $paymentDetails['grandTotal'],
-                'last_activity_at' => now(),
-            ]);
-
-            return [
-                'code' => 200,
-                'status' => 'success',
-                'message' => 'Order totals updated successfully.',
-                'data' => [
-                    'cart' => $cart,
-                    'items' => $cart->items
-                ],
-            ];
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while updating the cart totals.',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function updatePaymentMethod(int $id, Int $cartId)
-    {
-        try {
-            $cart = $this->getById($cartId);
-
-            if (!$cart) {
-                return [
-                    'code' => 404,
-                    'status' => 'error',
-                    'message' => 'Order not found.',
-                ];
-            }
-
-            $cart = $cart['data'];
-
-            // Get current cart values
-            $itemsTotal = $cart->sub_total;
-            $shippingCost = $cart->shipping_cost;
-
-            // Get payment method details
-            $paymentMethod = $this->paymentMethodRepository->getById($id);
-
-            if (!$paymentMethod['code'] == 200 || $paymentMethod['data']->status != 1) {
-                return [
-                    'code' => 400,
-                    'status' => 'error',
-                    'message' => 'Invalid or inactive payment method.',
-                ];
-            }
-
-            // Calculate payment method adjustments
-            $paymentDetails = $this->calculatePaymentAdjustments(
-                $itemsTotal, 
-                $shippingCost, 
-                $paymentMethod['data']
-            );
-
-            // Update cart with new payment method details
-            $cart->update([
-                'payment_method_id' => $paymentMethod['data']->id,
-                'payment_method_title' => $paymentDetails['title'],
-                'payment_method_charge' => $paymentDetails['charge'],
-                'payment_method_discount' => $paymentDetails['discount'],
-                'total' => $paymentDetails['grandTotal'],
-                'last_activity_at' => now(),
-            ]);
-
-            return [
-                'code' => 200,
-                'status' => 'success',
-                'message' => 'Payment method updated successfully.',
-                'data' => [
-                    'cart' => $cart,
-                    'payment_details' => $paymentDetails
-                ],
-            ];
-        } catch (\Exception $e) {
-            return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'An error occurred while updating payment method.',
                 'error' => $e->getMessage(),
             ];
         }
@@ -538,7 +405,7 @@ class OrderRepository implements OrderInterface
             if ($data['code'] == 200) {
                 // Handling trash
                 $this->trashRepository->store([
-                    'model' => 'Order',
+                    'model' => 'ProductWishlist',
                     'table_name' => 'orders',
                     'deleted_row_id' => $data['data']->id,
                     'thumbnail' => null,
@@ -571,13 +438,13 @@ class OrderRepository implements OrderInterface
     public function bulkAction(Array $array)
     {
         try {
-            $data = Order::whereIn('id', $array['ids'])->get();
+            $data = ProductWishlist::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
 
                     // Handling trash
                     $this->trashRepository->store([
-                        'model' => 'Order',
+                        'model' => 'ProductWishlist',
                         'table_name' => 'orders',
                         'deleted_row_id' => $item->id,
                         'thumbnail' => null,
@@ -618,7 +485,7 @@ class OrderRepository implements OrderInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            // $processedCount = saveToDatabase($data, 'Order');
+            // $processedCount = saveToDatabase($data, 'ProductWishlist');
 
             // save into Database
             $processedCount = 0;
@@ -628,7 +495,7 @@ class OrderRepository implements OrderInterface
                     continue; // Skip rows without a title
                 }
 
-                Order::create([
+                ProductWishlist::create([
                     'title' => $item['title'] ? $item['title'] : null,
                     'slug' => !empty($item['title']) ? Str::slug($item['title']) : null,
                     'short_description' => !empty($item['short_description']) ? $item['short_description'] : null,
@@ -671,19 +538,19 @@ class OrderRepository implements OrderInterface
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";
-                    return Excel::download(new OrdersExport($data['data']), $fileName.$fileExtension);
+                    return Excel::download(new WishlistsExport($data['data']), $fileName.$fileExtension);
                 }
                 elseif ($type == 'csv') {
                     $fileExtension = ".csv";
-                    return Excel::download(new OrdersExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
+                    return Excel::download(new WishlistsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
                 }
                 elseif ($type == 'html') {
                     $fileExtension = ".html";
-                    return Excel::download(new OrdersExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
+                    return Excel::download(new WishlistsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
                 }
                 elseif ($type == 'pdf') {
                     $fileExtension = ".pdf";
-                    return Excel::download(new OrdersExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
+                    return Excel::download(new WishlistsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
                 }
                 else {
                     return [

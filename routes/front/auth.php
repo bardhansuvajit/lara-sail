@@ -52,6 +52,7 @@ Route::name('front.')->group(function () {
         // order
         Route::prefix('order')->name('order.')->controller(OrderController::class)->group(function() {
             Route::get('/', 'index')->name('index');
+            Route::get('/invoice/{orderNumber}', 'invoice')->name('invoice');
         });
 
         // wishlist
@@ -64,6 +65,8 @@ Route::name('front.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/store', 'store')->name('store');
             Route::delete('/delete/{id}', 'delete')->name('delete');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::post('/update', 'update')->name('update');
         });
     });
 });

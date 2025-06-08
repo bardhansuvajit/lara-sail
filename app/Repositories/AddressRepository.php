@@ -175,7 +175,7 @@ class AddressRepository implements AddressInterface
         try {
             $data = UserAddress::with('countryDetail', 'stateDetail')->where($conditions)->get();
 
-            if (!empty($data)) {
+            if (count($data) > 0) {
                 return [
                     'code' => 200,
                     'status' => 'success',
@@ -205,35 +205,43 @@ class AddressRepository implements AddressInterface
         try {
             $data = $this->getById($array['id']);
 
+            // dd($data);
+
             if ($data['code'] == 200) {
-                if (isset($array['type'])) {
-                    if ($array['type'] == "asc") {
-                        $data['data']->quantity += 1;
-                    } elseif ($array['type'] == "desc") {
-                        $data['data']->quantity -= 1;
-                    } else {
-                        return [
-                            'code' => 500,
-                            'status' => 'error',
-                            'message' => 'An error occurred while updating data.'
-                        ];
-                    }
-                }
+                $data = $data['data'];
 
-                if (!empty($array['quantity']))         $data['data']->quantity = $array['quantity'];
-                if (!empty($array['total']))            $data['data']->total = $array['total'];
-                if (!empty($array['image_s']))          $data['data']->image_s = $array['image_s'];
-                if (!empty($array['image_m']))          $data['data']->image_m = $array['image_m'];
-                if (!empty($array['image_l']))          $data['data']->image_l = $array['image_l'];
+                // dd($array);
 
-                $data['data']->save();
+                // dd($data);
+
+                if (isset($array['user_id']))   $data->user_id = $array['user_id'];
+                if (isset($array['address_type']))   $data->address_type = $array['address_type'];
+
+                $data->is_default = !empty($array['is_default']) ? $array['is_default'] : 0;
+                $data->first_name = !empty($array['first_name']) ? $array['first_name'] : null;
+                $data->last_name = !empty($array['last_name']) ? $array['last_name'] : null;
+                $data->company = !empty($array['company']) ? $array['company'] : null;
+                $data->address_line_1 = !empty($array['address_line_1']) ? $array['address_line_1'] : null;
+                $data->address_line_2 = !empty($array['address_line_2']) ? $array['address_line_2'] : null;
+                $data->city = !empty($array['city']) ? $array['city'] : null;
+                $data->state = !empty($array['state']) ? $array['state'] : null;
+                $data->postal_code = !empty($array['postal_code']) ? $array['postal_code'] : null;
+                $data->country_code = !empty($array['country_code']) ? $array['country_code'] : null;
+                $data->phone_no = !empty($array['phone_no']) ? $array['phone_no'] : null;
+                $data->email = !empty($array['email']) ? $array['email'] : null;
+
+                $data->landmark = !empty($array['landmark']) ? $array['landmark'] : null;
+                $data->additional_notes = !empty($array['additional_notes']) ? $array['additional_notes'] : null;
+                $data->alt_phone_no = !empty($array['alt_phone_no']) ? $array['alt_phone_no'] : null;
+
+                $data->save();
+
+                // dd($data);
 
                 return [
                     'code' => 200,
                     'status' => 'success',
-                    'message' => 'Changes have been saved',
-                    'data' => $data,
-                    'cart' => $data['data']->cart,
+                    'message' => 'Changes have been saved'
                 ];
             } else {
                 return $data;
@@ -242,7 +250,8 @@ class AddressRepository implements AddressInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => 'An error occurred while updating data.',
+                // 'message' => 'An error occurred while updating data.',
+                'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ];
         }
@@ -279,6 +288,54 @@ class AddressRepository implements AddressInterface
                     'message' => 'Data deleted',
                     'data' => $UserAddress,
                     'cart' => $UserAddress->cart
+                ];
+            } else {
+                return $data;
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while deleting data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function deleteLoggedInUserAddress(Int $id, Int $userId)
+    {
+        try {
+            $data = $this->exists([
+                'id' => $id,
+                'user_id' => $userId,
+            ]);
+
+            // dd($data);
+
+            if ($data['code'] == 200) {
+                $userAddress = $data['data'][0];
+
+                // dd($userAddress);
+
+                // Handling trash
+                $trashData = $this->trashRepository->store([
+                    'model' => 'UserAddress',
+                    'table_name' => 'user_addresses',
+                    'deleted_row_id' => $userAddress->id,
+                    'thumbnail' => '',
+                    'title' => $userAddress->first_name.' '.$userAddress->last_name.' address',
+                    'description' => $userAddress->first_name.' '.$userAddress->last_name.' address data deleted from user addresses table',
+                    'status' => 'deleted',
+                ]);
+
+                // dd($trashData);
+
+                $userAddress->delete();
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data deleted'
                 ];
             } else {
                 return $data;

@@ -44,7 +44,11 @@
 
                             @if (count($shippingAddresses) > 1)
                             <div class="flex items-center">
-                                <p class="flex w-24 items-center justify-center {{FD['rounded']}} bg-primary-700 px-3 py-1 {{FD['text']}} font-medium text-white dark:bg-primary-600">Deliver Here</p>
+                                <div class="flex flex-col space-y-2 items-center">
+                                    <a href="{{ route('front.address.edit', $address->id) }}" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-400 dark:hover:text-gray-500">Edit</a>
+
+                                    <p class="flex w-24 items-center justify-center {{FD['rounded']}} bg-primary-700 px-3 py-1 {{FD['text']}} font-medium text-white dark:bg-primary-600">Deliver Here</p>
+                                </div>
                             </div>
                             @endif
                         </div>
@@ -81,11 +85,35 @@
                                     <div class="flex flex-col items-center">
                                         {{-- <p class="flex w-24 items-center justify-center {{FD['rounded']}} bg-primary-700 px-3 py-1 {{FD['text']}} font-medium text-white dark:bg-primary-600">Select</p> --}}
 
-                                        <form action="{{ route('front.address.delete', $billing_address->id) }}" method="post">
+                                        <div class="flex flex-col space-y-2 items-center">
+                                            <a href="{{ route('front.address.edit', $billing_address->id) }}" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-600 dark:hover:text-gray-700">Edit</a>
+
+                                            <button 
+                                                type="button" 
+                                                class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-red-500 hover:text-red-700 hover:underline dark:text-red-600 dark:hover:text-red-700"
+                                                x-data=""
+                                                x-on:click="
+                                                    $dispatch('open-modal', 'confirm-address-delete'); 
+                                                    $dispatch('data-name', @js($billing_address->first_name.' '.$billing_address->last_name));
+                                                    $dispatch('data-addressline1', @js($billing_address->address_line_1));
+                                                    $dispatch('data-addressline2', @js($billing_address->address_line_2));
+                                                    $dispatch('data-landmark', @js($billing_address->landmark ?? ''));
+                                                    $dispatch('data-city', @js($billing_address->city));
+                                                    $dispatch('data-state', @js(strtoupper($billing_address->stateDetail?->name)));
+                                                    $dispatch('data-postalcode', @js($billing_address->postal_code));
+                                                    $dispatch('data-country', @js(strtoupper($billing_address->countryDetail?->name)));
+                                                    $dispatch('data-deleteroute', @js(route('front.address.delete', $billing_address->id)));
+                                                "
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+
+                                        {{-- <form action="{{ route('front.address.delete', $billing_address->id) }}" method="post">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="flex w-24 items-center justify-center {{FD['rounded']}} text-orange-700 px-3 py-1 {{FD['text']}} font-medium text-white dark:text-orange-600">Remove</button>
-                                        </form>
+                                        </form> --}}
                                     </div>
                                 </div>
                             </div>
@@ -129,5 +157,7 @@
 
         @include('front.account.address.includes.create', ['type' => 'shipping'])
     @endif
+
+    @include('layouts.front.includes.confirm-address-delete')
 
 </div>

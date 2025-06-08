@@ -30,7 +30,9 @@ class AccountController extends Controller
      */
     public function index(Request $request): View
     {
-        return view('front.account.index');
+        return view('front.account.index', [
+            'user' => auth()->guard('web')->user()
+        ]);
     }
 
     public function edit(Request $request): View
@@ -40,6 +42,7 @@ class AccountController extends Controller
         ];
         $activeCountries = $this->countryRepository->list('', $countries_filters, 'all', 'name', 'asc');
         return view('front.account.edit', [
+            'user' => auth()->guard('web')->user(),
             'activeCountries' => $activeCountries['data']
         ]);
     }

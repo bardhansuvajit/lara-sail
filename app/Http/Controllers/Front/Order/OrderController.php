@@ -30,6 +30,19 @@ class OrderController extends Controller
         $this->orderRepository = $orderRepository;
     }
 
+    public function index(): View
+    {
+        $userId = auth()->guard('web')->id();
+        $orders = $this->orderRepository->exists([
+            'user_id' => $userId
+        ]);
+
+        return view('front.account.order.index', [
+            'user' => auth()->guard('web')->user(),
+            'orders' => $orders['data']
+        ]);
+    }
+
     public function store(Request $request)
     {
         // dd($request->all());
@@ -186,5 +199,22 @@ class OrderController extends Controller
         return view('front.checkout.thankyou', [
             'order' => $orderResponse['data']
         ]);
+    }
+
+    public function invoice(Request $request, $orderNumber): View|RedirectResponse {
+        $userId = auth()->guard('web')->id();
+        $orders = $this->orderRepository->exists([
+            'user_id' => $userId,
+            'order_number' => $orderNumber
+        ]);
+
+        if ($orders['code'] == 200) {
+            return view('front.account.invoice.index', [
+                'user' => auth()->guard('web')->user(),
+                'order' => $orders['data'][0]
+            ]);
+        } else {
+            return redirect()->back()->with($orders['status'], $orders['message']);
+        }
     }
 }

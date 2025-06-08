@@ -17,7 +17,7 @@ class Cart extends Component
     public Collection $savedItems;
     public Collection $shippingMethods;
     public Collection $cartSetting;
-    public Int $selectedShippingMethod;
+    public ?Int $selectedShippingMethod;
     private CartInterface $cartRepository;
     private CartItemInterface $cartItemRepository;
     private CartSettingInterface $cartSettingRepository;
