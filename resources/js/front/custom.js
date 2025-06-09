@@ -1101,84 +1101,117 @@ if (selectedBillAddrEl && billingAddresses.length > 0) {
     })
 }
 
-// Payment Mode selection
-/*
-function updatePaymentMode(mode, charge, discount) {
-    console.log('mode>>', mode);
-    console.log('charge>>', charge);
-    console.log('discount>>', discount);
-    
-    charge = parseFloat(charge);
-    discount = parseFloat(discount);
-
-    if (charge > 0) {
-        // Heading
-        if (document.getElementById('payment-method-summary-text'))
-            document.getElementById('payment-method-summary-text').innerText = 'Payment method Charge';
-        // Amount
-        if (document.getElementById('payment-method-summary-amount'))
-            document.getElementById('payment-method-summary-amount').innerText = charge;
-        // Icon
-        if (document.getElementById('payment-method-summary-icon'))
-            document.getElementById('payment-method-summary-icon').innerText = '';
-        // Color
-        if (document.getElementById('payment-method-summary-highlight'))
-            document.getElementById('payment-method-summary-highlight').classList.remove('text-green-600');
-
-        // Total Amount
-        if (totalAmountShowEl && totalAmountEl) {
-            let totalAmount = totalAmountEl.innerText;
-            const newAmount = parseFloat(totalAmount) + charge;
-            totalAmountShowEl.innerText = formatIndianMoney(newAmount);
-        }
-    } else if (discount > 0) {
-        // Heading
-        if (document.getElementById('payment-method-summary-text'))
-            document.getElementById('payment-method-summary-text').innerText = 'Payment method Discount';
-        // Amount
-        if (document.getElementById('payment-method-summary-amount'))
-            document.getElementById('payment-method-summary-amount').innerText = discount;
-        // Icon
-        if (document.getElementById('payment-method-summary-icon'))
-            document.getElementById('payment-method-summary-icon').innerText = '-';
-        // Color
-        if (document.getElementById('payment-method-summary-highlight'))
-            document.getElementById('payment-method-summary-highlight').classList.add('text-green-600');
-
-        // Total Amount
-        if (totalAmountShowEl && totalAmountEl) {
-            let totalAmount = totalAmountEl.innerText;
-            const newAmount = parseFloat(totalAmount) - discount;
-            totalAmountShowEl.innerText = formatIndianMoney(newAmount);
-        }
-    }
-}
-
-if (paymentMethodEl) {
-    paymentMethodEl.forEach(el => {
-        el.addEventListener('change', () => {
-            updatePaymentMode('cod', el.dataset.charge, el.dataset.discount);
-        });
-    })
-}
-
-// if (prePayEl.checked) {
-//     updatePaymentMode('prePaid', prePayEl.dataset.charge, prePayEl.dataset.discount);
-// } else if (codEl.checked) {
-//     updatePaymentMode('cod', codEl.dataset.charge, codEl.dataset.discount);
-// }
-
-// prePayEl.addEventListener('change', () => {
-//     updatePaymentMode('prePaid', prePayEl.dataset.charge, prePayEl.dataset.discount);
-// });
-// codEl.addEventListener('change', () => {
-//     updatePaymentMode('cod', codEl.dataset.charge, codEl.dataset.discount);
-// });
-*/
-
 // Payment method
 if (placeOrderForm) {
     placeOrderForm.addEventListener('submit', function () {
         window.dispatchEvent(new CustomEvent('open-modal', { detail: 'full-page-loader' }));
     });
 }
+
+// Function to check wishlist status on page load
+async function checkWishlistStatus() {
+    const wishlistButtons = document.querySelectorAll('.wishlist-btn');
+    if (!wishlistButtons.length) return;
+
+    try {
+        const productIds = Array.from(wishlistButtons).map(btn => btn.dataset.prodId);
+
+        const response = await fetch(`${baseUrl}/wishlist/check-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                product_ids: productIds
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.status === 'success') {
+            // Update heart icons for products in wishlist
+            data.data.forEach(productId => {
+                const button = document.querySelector(`.wishlist-btn[data-prod-id="${productId}"]`);
+                if (button) {
+                    const heartIcon = button.querySelector('svg');
+                    heartIcon.querySelector('path').setAttribute('fill', 'red');
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error checking wishlist status:', error);
+    }
+}
+
+// Call this on page load
+document.addEventListener('DOMContentLoaded', checkWishlistStatus);
+
+// Your existing toggle code (modified slightly)
+document.querySelectorAll('.wishlist-btn').forEach(wishlistBtn => {
+    wishlistBtn.addEventListener('click', async (e) => {
+        const button = e.currentTarget;
+        const heartIcon = button.querySelector('svg');
+        const isWishlisted = heartIcon.querySelector('path').hasAttribute('fill');
+
+        try {
+            button.disabled = true;
+            const productId = button.dataset.prodId;
+
+            // Visual feedback immediately
+            if (!isWishlisted) {
+                heartIcon.classList.add('scale-[1.2]');
+                heartIcon.querySelector('path').setAttribute('fill', 'red');
+                
+                const btnRect = button.getBoundingClientRect();
+                confetti({
+                    particleCount: 80,
+                    spread: 50,
+                    origin: { 
+                        x: (btnRect.left + btnRect.width/2) / window.innerWidth,
+                        y: (btnRect.top + btnRect.height/2) / window.innerHeight
+                    },
+                    colors: ['#ff0000', '#ff6666', '#ff9999'],
+                    scalar: 0.7
+                });
+            } else {
+                heartIcon.classList.add('scale-[1.2]');
+                setTimeout(() => {
+                    heartIcon.querySelector('path').removeAttribute('fill');
+                }, 150);
+            }
+
+            // API call
+            const response = await fetch(`${baseUrl}/wishlist/toggle/${productId}`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to Wishlist item');
+            }
+
+            showNotification(data.message, { type: data.status });
+
+        } catch (error) {
+            console.error('Wishlist item error:', error);
+            // Revert visual state if API fails
+            if (!isWishlisted) {
+                heartIcon.querySelector('path').removeAttribute('fill');
+            } else {
+                heartIcon.querySelector('path').setAttribute('fill', 'red');
+            }
+            showNotification('Failed to Wishlist item. Please try again.', { type: 'error' });
+        } finally {
+            setTimeout(() => {
+                heartIcon.classList.remove('scale-[1.2]');
+                button.disabled = false;
+            }, 300);
+        }
+    });
+});

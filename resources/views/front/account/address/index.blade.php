@@ -38,14 +38,7 @@
 
                         <div class="mt-5">
                             @foreach ($addresses as $address)
-                                <x-front.radio-input-button 
-                                    id="addressId{{$address->id}}" 
-                                    name="shipping_address_id" 
-                                    value="{{$address->id}}" 
-                                    {{-- :checked="$address->is_default == 1"  --}}
-                                    class="shipping-address" 
-                                    labelClass="mb-2" 
-                                >
+                                <div class="">
                                     <div class="{{FD['rounded']}} shadow-sm dark:border-gray-700">
                                         <div class="flex justify-between">
                                             <div>
@@ -94,7 +87,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                </x-front.radio-input-button>
+                                </div>
+
+                                @if (!$loop->last)
+                                    <hr class="border-t border-gray-300 dark:border-gray-600 my-6">
+                                @endif
                             @endforeach
                         </div>
                     </div>

@@ -96,78 +96,24 @@ class WishlistRepository implements WishlistInterface
         DB::beginTransaction();
 
         try {
+            // Get the highest current position for this user
+            $maxPosition = ProductWishlist::where('user_id', $array['user_id'])
+                                    ->max('position') ?? 0;
+
             $data = new ProductWishlist();
-            $data->order_number = $orderNumber;
+            $data->product_id = $array['product_id'];
             $data->user_id = $array['user_id'];
-            $data->device_id = $array['device_id'];
-            $data->email = $array['email'];
-            $data->phone_no = $array['phone_no'];
-
-            $data->country_code = $array['country'];
-            $data->currency_code = $array['currency_code'];
-
-            $data->total_items = $array['total_items'];
-            $data->mrp = $array['mrp'];
-            $data->sub_total = $array['sub_total'];
-            $data->total = $array['total'];
-
-            $data->coupon_code_id = $array['coupon_code_id'];
-            $data->coupon_code = $array['coupon_code'];
-            $data->discount_amount = $array['discount_amount'];
-            $data->discount_type = $array['discount_type'];
-
-            $data->shipping_method_id = $array['shipping_method_id'];
-            $data->shipping_method_name = $array['shipping_method_name'];
-            $data->shipping_cost = $array['shipping_cost'];
-            $data->shipping_address = $array['shipping_address'];
-
-            $data->billing_address = $array['billing_address'];
-            $data->same_as_shipping = $array['same_as_shipping'];
-
-            $data->tax_amount = $array['tax_amount'];
-            $data->tax_type = $array['tax_type'];
-            $data->tax_details = $array['tax_details'];
-
-            $data->payment_method_id = $array['payment_method_id'];
-            $data->payment_method_title = $array['payment_method_title'];
-            $data->payment_method_charge = $array['payment_method_charge'];
-            $data->payment_method_discount = $array['payment_method_discount'];
-            $data->payment_status = $array['payment_status'];
-            $data->transaction_id = $array['transaction_id'];
-            $data->payment_details = $array['payment_details'];
+            $data->position = $maxPosition + 1;
+            $data->status = 1;
 
             $data->save();
-
-            foreach ($array['cart_items'] as $key => $cartItem) {
-                $cartItemResp = $this->orderItemRepository->store([
-                    'order_id' => $data->id,
-                    'product_id' => $cartItem->product_id,
-                    'product_variation_id' => $cartItem->product_variation_id,
-                    'product_title' => $cartItem->product_title,
-                    'variation_attributes' => $cartItem->variation_attributes,
-                    'product_sku' => $cartItem->sku,
-                    'product_url' => $cartItem->product_url,
-                    'product_url_with_variation' => $cartItem->product_url_with_variation,
-
-                    'image_s' => $cartItem->image_s,
-                    'image_m' => $cartItem->image_m,
-                    'image_l' => $cartItem->image_l,
-
-                    'selling_price' => $cartItem->selling_price,
-                    'mrp' => $cartItem->mrp,
-                    'quantity' => $cartItem->quantity,
-                    'total' => $cartItem->total,
-
-                    'cart_availability_message' => $cartItem->availability_message,
-                ]);
-            }
 
             DB::commit();
 
             return [
                 'code' => 200,
                 'status' => 'success',
-                'message' => 'Changes have been saved',
+                'message' => 'Product added to Wishlist',
                 'data' => $data,
             ];
         } catch (\Exception $e) {
@@ -186,7 +132,40 @@ class WishlistRepository implements WishlistInterface
     public function getById(Int $id)
     {
         try {
-            $data = ProductWishlist::with('items')->find($id);
+            $data = ProductWishlist::with('user', 'product')->find($id);
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function checkStatus(Array $productIds, Int $userId)
+    {
+        try {
+            $data = ProductWishlist::with('user', 'product')->where('user_id', $userId)
+                    ->whereIn('product_id', $productIds)
+                    ->pluck('product_id')
+                    ->toArray();
 
             if (!empty($data)) {
                 return [
@@ -292,111 +271,6 @@ class WishlistRepository implements WishlistInterface
         }
     }
 
-    protected function calculatePaymentAdjustments(float $itemsTotal, float $shippingCost, object $paymentMethod): array
-    {
-        $adjustment = 0;
-        $title = null;
-        $isCharge = false;
-
-        if ($paymentMethod->charge_amount > 0) {
-            $adjustment = $this->calculateAdjustment(
-                $itemsTotal,
-                $paymentMethod->charge_amount,
-                $paymentMethod->charge_type
-            );
-            $title = $paymentMethod->charge_title;
-            $isCharge = true;
-        } elseif ($paymentMethod->discount_amount > 0) {
-            $adjustment = $this->calculateAdjustment(
-                $itemsTotal,
-                $paymentMethod->discount_amount,
-                $paymentMethod->discount_type
-            );
-            $title = $paymentMethod->discount_title;
-            $isCharge = false;
-        }
-
-        return [
-            'title' => $title,
-            'charge' => $isCharge ? $adjustment : 0,
-            'discount' => $isCharge ? 0 : $adjustment,
-            'grandTotal' => $itemsTotal + ($isCharge ? $adjustment : -$adjustment) + $shippingCost
-        ];
-    }
-
-    protected function calculateShippingCost($cart, $itemsTotal): float
-    {
-        $cartSettingResp = $this->cartSettingRepository->list('', [], 'all', 'id', 'asc');
-        $cartSettings = $cartSettingResp['data'] ?? [];
-
-        foreach ($cartSettings as $cartSetting) {
-            if ($cartSetting->country === $cart->country 
-                && $itemsTotal < $cartSetting->free_shipping_threshold) {
-                return (float) $cartSetting->shipping_charge;
-            }
-        }
-
-        return 0.0;
-    }
-
-    protected function calculatePaymentMethodAdjustments(float $itemsTotal, float $shippingCost): array
-    {
-        $paymentMethodData = $this->paymentMethodRepository->list('', [
-            'status' => 1, 
-            'country_code' => COUNTRY['country']
-        ], 'all', 'position', 'asc')['data'][0] ?? null;
-
-        if (!$paymentMethodData) {
-            return [
-                'id' => null,
-                'title' => null,
-                'charge' => 0,
-                'discount' => 0,
-                'grandTotal' => $itemsTotal + $shippingCost
-            ];
-        }
-
-        $adjustment = 0;
-        $id = null;
-        $title = null;
-        $isCharge = false;
-
-        if ($paymentMethodData->charge_amount > 0) {
-            $adjustment = $this->calculateAdjustment(
-                $itemsTotal,
-                $paymentMethodData->charge_amount,
-                $paymentMethodData->charge_type
-            );
-            $id = $paymentMethodData->id;
-            $title = $paymentMethodData->charge_title;
-            $isCharge = true;
-        } elseif ($paymentMethodData->discount_amount > 0) {
-            $adjustment = $this->calculateAdjustment(
-                $itemsTotal,
-                $paymentMethodData->discount_amount,
-                $paymentMethodData->discount_type
-            );
-            $id = $paymentMethodData->id;
-            $title = $paymentMethodData->discount_title;
-            $isCharge = false;
-        }
-
-        return [
-            'id' => $id,
-            'title' => $title,
-            'charge' => $isCharge ? $adjustment : 0,
-            'discount' => $isCharge ? 0 : $adjustment,
-            'grandTotal' => $itemsTotal + ($isCharge ? $adjustment : -$adjustment) + $shippingCost
-        ];
-    }
-
-    protected function calculateAdjustment(float $amount, float $adjustmentValue, string $type): float
-    {
-        return $type === 'fixed' 
-            ? $adjustmentValue 
-            : ($amount * $adjustmentValue) / 100;
-    }
-
     public function delete(Int $id)
     {
         try {
@@ -406,11 +280,11 @@ class WishlistRepository implements WishlistInterface
                 // Handling trash
                 $this->trashRepository->store([
                     'model' => 'ProductWishlist',
-                    'table_name' => 'orders',
+                    'table_name' => 'product_wishlists',
                     'deleted_row_id' => $data['data']->id,
                     'thumbnail' => null,
-                    'title' => $data['data']->order_number,
-                    'description' => $data['data']->order_number.' data deleted from orders table',
+                    'title' => 'Wishlist',
+                    'description' => 'Wishlist data deleted from product_wishlists table',
                     'status' => 'deleted',
                 ]);
 
@@ -419,7 +293,7 @@ class WishlistRepository implements WishlistInterface
                 return [
                     'code' => 200,
                     'status' => 'success',
-                    'message' => 'Data deleted',
+                    'message' => 'Product removed from Wishlist',
                     'data' => $data,
                 ];
             } else {
@@ -445,11 +319,11 @@ class WishlistRepository implements WishlistInterface
                     // Handling trash
                     $this->trashRepository->store([
                         'model' => 'ProductWishlist',
-                        'table_name' => 'orders',
+                        'table_name' => 'product_wishlists',
                         'deleted_row_id' => $item->id,
                         'thumbnail' => null,
                         'title' => $item->order_number,
-                        'description' => $item->order_number.' data deleted from orders table',
+                        'description' => $item->order_number.' data deleted from product_wishlists table',
                         'status' => 'deleted',
                     ]);
 

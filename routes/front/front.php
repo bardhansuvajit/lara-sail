@@ -10,6 +10,7 @@ use App\Http\Controllers\Front\Checkout\CheckoutController;
 use App\Http\Controllers\Front\Profile\LoginController;
 use App\Http\Controllers\Front\Product\ProductController;
 use App\Http\Controllers\Front\Order\OrderController;
+use App\Http\Controllers\Front\Wishlist\WishlistController;
 
 Route::name('front.')->group(function () {
     // home
@@ -25,6 +26,12 @@ Route::name('front.')->group(function () {
     // collection
     Route::name('collection.')->group(function() {
         Route::get('/collection', [CategoryController::class, 'index'])->name('index');
+    });
+
+    // wishlist
+    Route::name('wishlist.')->prefix('wishlist')->group(function() {
+        Route::post('/check-status', [WishlistController::class, 'checkStatus'])->name('check');
+        Route::get('/toggle/{productId}', [WishlistController::class, 'toggle'])->name('toggle');
     });
 
     // cart

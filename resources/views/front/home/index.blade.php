@@ -31,12 +31,15 @@
             <div class="mb-4 grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-6" id="featured-products">
 
                 @foreach ($featuredProducts as $featuredItem)
+                @php
+                    $product = $featuredItem->product;
+                @endphp
                 <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
-                    <a href="{{ route('front.product.detail', $featuredItem->product->slug) }}">
+                    <a href="{{ route('front.product.detail', $product->slug) }}">
                         <div class="h-40 w-full">
-                            @if (count($featuredItem->product->activeImages) > 0)
+                            @if (count($product->activeImages) > 0)
                                 <div class="flex items-center justify-center h-full">
-                                    <img src="{{ Storage::url($featuredItem->product->activeImages[0]->image_m) }}" alt="" class="max-w-full max-h-full">
+                                    <img src="{{ Storage::url($product->activeImages[0]->image_m) }}" alt="" class="max-w-full max-h-full">
                                 </div>
                             @else
                                 <div class="flex items-center justify-center h-full w-full">
@@ -47,8 +50,8 @@
 
                         <div class="absolute top-0 right-0 w-full h-8 p-1 overflow-hidden">
                             <div class="flex justify-between items-center">
-                                @if ($featuredItem->product->average_rating > 0)
-                                    {!! frontRatingHtml($featuredItem->product->average_rating) !!}
+                                @if ($product->average_rating > 0)
+                                    {!! frontRatingHtml($product->average_rating) !!}
                                 @endif
                                 {{-- <div class="w-10 h-5 flex space-x-1 items-center bg-gray-50 px-1 border">
                                     <p class="{{FD['text-0']}} text-gray-900 font-bold">3.9</p>
@@ -57,23 +60,27 @@
                                     </div>
                                 </div> --}}
 
-                                <button type="button" class="rounded-full w-6 h-6 p-1 hover:bg-gray-100 dark:hover:bg-gray-300">
+                                <button class="p-2 rounded-full focus:outline-none wishlist-btn" data-prod-id="{{$product->id}}">
+                                    <svg class="transition-all duration-300 ease-in-out w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path class="transition-all duration-300 ease-in-out" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                </button>
+
+                                {{-- <button type="button" class="rounded-full w-6 h-6 p-1 hover:bg-gray-100 dark:hover:bg-gray-300">
                                     <div class="{{FD['iconClass']}} text-gray-500">
                                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z" /></svg>
                                     </div>
-                                </button>
+                                </button> --}}
                             </div>
                         </div>
 
                         <p class="font-semibold text-gray-900 hover:underline dark:text-gray-400 {{FD['text-0']}} sm:text-xs block leading-4 sm:leading-5 truncate">
-                            {{ $featuredItem->product->title }}
+                            {{ $product->title }}
                         </p>
 
-                        @if (count($featuredItem->product->pricings) > 0)
+                        @if (count($product->pricings) > 0)
                             @php
-                                $singlePricing = $featuredItem->product->pricings[0];
+                                $singlePricing = $product->pricings[0];
                             @endphp
-                            {{-- @foreach ($featuredItem->product->pricings as $singlePricing) --}}
+                            {{-- @foreach ($product->pricings as $singlePricing) --}}
                                 <div class="mt-2 flex items-center gap-2">
                                     <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
                                         <span class="currency-icon">{{$singlePricing->currency_symbol}}</span> {{ formatIndianMoney($singlePricing->selling_price) }}

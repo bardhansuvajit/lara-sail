@@ -9,6 +9,7 @@ interface WishlistInterface
     public function list(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder);
     public function store(Array $array);
     public function getById(Int $id);
+    public function checkStatus(Array $productIds, Int $userId);
     public function exists(Array $conditions);
     public function update(Array $array);
     public function delete(Int $id);
