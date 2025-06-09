@@ -181,9 +181,9 @@ class UserRepository implements UserInterface
     public function exists(Array $conditions)
     {
         try {
-            $data = User::where($conditions)->get();
+            $data = User::with('country', 'shippingAddresses', 'billingAddresses')->where($conditions)->get();
 
-            if (!empty($data)) {
+            if (count($data) > 0) {
                 return [
                     'code' => 200,
                     'status' => 'success',

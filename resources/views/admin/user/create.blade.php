@@ -10,6 +10,17 @@
     <div class="w-full mt-2">
         <form action="{{ route('admin.user.store') }}" method="post" enctype="multipart/form-data">
             @csrf
+
+            @if (request()->input('redirect-to') == "offline-order")
+                <div class="mb-4">
+                    <div>
+                        <div class="bg-amber-600 text-gray-900 font-bold p-2">
+                            <p class="text-sm">No User found for Phone number {{request()->input('phone-no')}} Please create an User first, then you will be redirected to Offline Order ! </p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div>
                     <div class="grid grid-cols-[auto_1fr] gap-3 items-center">
@@ -26,7 +37,9 @@
                     <x-admin.input-select id="country_code" name="country_code" title="Select Parent" class="w-full">
                         @slot('options')
                             @foreach ($activeCountries as $country)
-                                <x-admin.input-select-option value="{{$country->code}}" :selected="COUNTRY['country']"> {{$country->name}} </x-admin.input-select-option>
+                                <x-admin.input-select-option value="{{$country->code}}" 
+                                    :selected="old('country', request()->input('country', COUNTRY['country'])) == $country->code"
+                                > {{$country->name}} </x-admin.input-select-option>
                             @endforeach
                         @endslot
                     </x-admin.input-select>
@@ -57,13 +70,13 @@
 
                 <div>
                     <x-admin.input-label for="primary_phone_no" :value="__('Phone number *')" />
-                    <x-admin.text-input id="primary_phone_no" class="block w-full" type="text" name="primary_phone_no" :value="old('primary_phone_no')" placeholder="Enter Last Name" required />
+                    <x-admin.text-input id="primary_phone_no" class="block w-full" type="tel" name="primary_phone_no" :value="old('primary_phone_no', request()->input('phone-no'))" placeholder="Enter Primary Phone Number" required />
                     <x-admin.input-error :messages="$errors->get('primary_phone_no')" class="mt-2" />
                 </div>
 
                 <div>
                     <x-admin.input-label for="alt_phone_no" :value="__('Alt. Phone number')" />
-                    <x-admin.text-input id="alt_phone_no" class="block w-full" type="text" name="alt_phone_no" :value="old('alt_phone_no')" placeholder="Enter Last Name" />
+                    <x-admin.text-input id="alt_phone_no" class="block w-full" type="text" name="alt_phone_no" :value="old('alt_phone_no')" placeholder="Enter Alt. Primary Phone Number" />
                     <x-admin.input-error :messages="$errors->get('alt_phone_no')" class="mt-2" />
                 </div>
             </div>
@@ -123,7 +136,9 @@
                 </div>
             </div>
 
-            <div class="items-center space-x-4 flex my-6">
+            <div class="items-center flex my-6">
+                <input type="hidden" name="redirect_to" value="{{ request()->input('redirect-to') }}">
+
                 <x-admin.button
                     type="submit"
                     element="button">

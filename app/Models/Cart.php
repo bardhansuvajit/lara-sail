@@ -14,8 +14,8 @@ class Cart extends Model
         'coupon_code_id','coupon_code','discount_amount','discount_type','shipping_method_id',
         'shipping_cost','tax_amount','tax_type','tax_details',
         'payment_method_id','payment_method_title','payment_method_charge','payment_method_discount','last_activity_at',
-        'abandoned_at','is_abandoned','reminder_count','converted_to_order_at',
-        'order_id','status'
+        'abandoned_at','is_abandoned','reminder_count',
+        'status'
     ];
 
     public function items()

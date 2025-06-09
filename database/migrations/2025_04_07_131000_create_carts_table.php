@@ -56,10 +56,6 @@ return new class extends Migration
             $table->boolean('is_abandoned')->default(0);
             $table->unsignedInteger('reminder_count')->default(0);
 
-            // Conversion tracking
-            $table->timestamp('converted_to_order_at')->nullable();
-            $table->unsignedBigInteger('order_id')->nullable();
-
             // status/ timestamp
             $table->tinyInteger('status')->default(1);
             $table->softDeletes();

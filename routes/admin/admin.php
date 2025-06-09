@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Admin\Order\OrderController;
+use App\Http\Controllers\Admin\Order\OfflineOrderController;
 use App\Http\Controllers\Admin\Profile\ProfileController;
 use App\Http\Controllers\Admin\Password\PasswordController;
 use App\Http\Controllers\Admin\Country\CountryController;
@@ -86,7 +87,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // order
         Route::prefix('order')->name('order.')->controller(OrderController::class)->group(function() {
             Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
             Route::post('/store', 'store')->name('store');
             Route::get('/edit/{id}', 'edit')->name('edit');
             Route::post('/update', 'update')->name('update');
@@ -94,6 +94,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/bulk', 'bulk')->name('bulk');
             Route::post('/import', 'import')->name('import');
             Route::get('/export/{type}', 'export')->name('export');
+
+            // offline order
+            Route::prefix('offline')->name('offline.')->controller(OfflineOrderController::class)->group(function() {
+                Route::get('/create', 'create')->name('create');
+                Route::get('/', 'searchUser')->name('search.user');
+            });
         });
 
         // product

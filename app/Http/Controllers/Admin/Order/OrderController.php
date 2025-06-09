@@ -60,11 +60,6 @@ class OrderController
         ]);
     }
 
-    public function create(): View
-    {
-        return view('admin.order.create');
-    }
-
     public function store(Request $request)
     {
         // dd($request->all());

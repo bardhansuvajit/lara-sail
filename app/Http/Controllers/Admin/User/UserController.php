@@ -78,7 +78,16 @@ class UserController
         ]);
 
         $resp = $this->userRepository->store($request->all());
-        return redirect()->route('admin.user.index')->with($resp['status'], $resp['message']);
+
+        if (isset($request->redirect_to) && $request->redirect_to == "offline-order") {
+            return redirect()->route('admin.order.offline.create', [
+                'country' => $request->country_code,
+                'phone-no' => $request->primary_phone_no
+            ])->with($resp['status'], $resp['message']);
+        } else {
+            return redirect()->route('admin.user.index')->with($resp['status'], $resp['message']);
+        }
+
     }
 
     public function edit(Int $id): View
