@@ -37,7 +37,12 @@ class Product extends Model
         'meta_desc',
         'type',
         'status',
-    ];    
+    ];
+
+    public function statusDetail()
+    {
+        return $this->belongsTo('App\Models\ProductStatus', 'status', 'id');
+    }
 
     public function category()
     {

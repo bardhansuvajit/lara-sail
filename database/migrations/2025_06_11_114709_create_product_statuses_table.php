@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->boolean('allow_preorder')->default(false);
             $table->boolean('allow_order')->default(false);
+            $table->string('availability_message')->nullable();
             $table->text('description')->nullable();
             $table->string('title_frontend')->nullable();
             $table->text('description_frontend')->nullable();
@@ -35,6 +36,7 @@ return new class extends Migration
                 'slug' => 'active',
                 'allow_preorder' => false,
                 'allow_order' => true,
+                'availability_message' => 'In Stock',
                 'description' => 'Product is available for purchase',
                 'title_frontend' => 'Available',
                 'description_frontend' => 'This product is ready to ship',
@@ -45,6 +47,7 @@ return new class extends Migration
                 'slug' => 'draft',
                 'allow_preorder' => false,
                 'allow_order' => false,
+                'availability_message' => 'Coming Soon',
                 'description' => 'Product is in draft mode and not visible to customers',
                 'title_frontend' => 'Coming Soon',
                 'description_frontend' => 'This product will be available soon',
@@ -55,6 +58,7 @@ return new class extends Migration
                 'slug' => 'unavailable',
                 'allow_preorder' => false,
                 'allow_order' => false,
+                'availability_message' => 'Out of Stock',
                 'description' => 'Product is temporarily unavailable',
                 'title_frontend' => 'Temporarily Unavailable',
                 'description_frontend' => 'This product is currently out of stock',
@@ -65,6 +69,7 @@ return new class extends Migration
                 'slug' => 'archived',
                 'allow_preorder' => false,
                 'allow_order' => false,
+                'availability_message' => 'Discontinued',
                 'description' => 'Product is no longer available',
                 'title_frontend' => 'Discontinued',
                 'description_frontend' => 'This product is no longer available',
@@ -75,6 +80,7 @@ return new class extends Migration
                 'slug' => 'pending',
                 'allow_preorder' => false,
                 'allow_order' => false,
+                'availability_message' => 'Pending Approval',
                 'description' => 'Product is pending approval',
                 'title_frontend' => 'Coming Soon',
                 'description_frontend' => 'This product is pending approval',
@@ -85,6 +91,7 @@ return new class extends Migration
                 'slug' => 'limited',
                 'allow_preorder' => false,
                 'allow_order' => true,
+                'availability_message' => 'Limited Stock',
                 'description' => 'Product has limited availability',
                 'title_frontend' => 'Limited Stock',
                 'description_frontend' => 'Hurry! Only a few items left',
@@ -95,6 +102,7 @@ return new class extends Migration
                 'slug' => 'coming-soon',
                 'allow_preorder' => true,
                 'allow_order' => false,
+                'availability_message' => 'Pre-order Available',
                 'description' => 'Product will be available soon',
                 'title_frontend' => 'Coming Soon',
                 'description_frontend' => 'Pre-order now for early delivery',

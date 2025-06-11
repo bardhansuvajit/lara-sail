@@ -126,8 +126,37 @@ class CartItemRepository implements CartItemInterface
     public function getById(Int $id)
     {
         try {
-            $data = CartItem::with('cart')
-            ->find($id);
+            $data = CartItem::with('cart', 'product')->find($id);
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function exists(Array $conditions)
+    {
+        try {
+            $data = CartItem::with('cart', 'product')->where($conditions)->first();
 
             if (!empty($data)) {
                 return [
@@ -192,6 +221,33 @@ class CartItemRepository implements CartItemInterface
             } else {
                 return $data;
             }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function updateAvailability(Array $conditions)
+    {
+        try {
+            dd();
+            $data = $this->exists([
+                'product_id' => $array['product_id']
+            ]);
+
+            dd($data);
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Changes have been saved',
+                'data' => $data,
+                'cart' => $data['data']->cart,
+            ];
         } catch (\Exception $e) {
             return [
                 'code' => 500,

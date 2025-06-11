@@ -507,7 +507,7 @@ class ProductListingRepository implements ProductListingInterface
                     'meta_title' => $item['meta_title'] ? $item['meta_title'] : null,
                     'meta_desc' => $item['meta_desc'] ? $item['meta_desc'] : null,
                     'type' => $item['type'] ? $item['type'] : 'physical-product',
-                    'status' => $item['status'] ? $item['status'] : 0,
+                    'status' => $item['status'] ? $item['status'] : 1,
                 ]);
 
                 // PRICING
