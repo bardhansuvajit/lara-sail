@@ -1150,6 +1150,9 @@ document.addEventListener('DOMContentLoaded', checkWishlistStatus);
 // Your existing toggle code (modified slightly)
 document.querySelectorAll('.wishlist-btn').forEach(wishlistBtn => {
     wishlistBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
         const button = e.currentTarget;
         const heartIcon = button.querySelector('svg');
         const isWishlisted = heartIcon.querySelector('path').hasAttribute('fill');

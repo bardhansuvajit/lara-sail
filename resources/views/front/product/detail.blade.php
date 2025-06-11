@@ -134,132 +134,41 @@
 
                     {{-- variation --}}
                     @if ($variation['code'] == 200)
-                    <div class="space-y-2" id="variationTab">
-                        {{-- {{ dd($variation['data']) }} --}}
-                        @foreach ($variation['data'] as $attrIndex => $attribute)
-                            <div>
-                                <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">{{ $attribute['title'] }}</h3>
+                        <div class="space-y-2" id="variationTab">
+                            @foreach ($variation['data'] as $attrIndex => $attribute)
+                                <div>
+                                    <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">{{ $attribute['title'] }}</h3>
 
-                                <div class="w-full grid grid-cols-4 lg:grid-cols-6 gap-4">
-                                    @foreach ($attribute['values'] as $valueIndex => $value)
+                                    <div class="w-full grid grid-cols-4 lg:grid-cols-6 gap-4">
+                                        @foreach ($attribute['values'] as $valueIndex => $value)
 
-                                        <x-front.radio-input-button 
-                                            id="someId{{$attrIndex}}{{$valueIndex}}" 
-                                            name="variation-{{ $attribute['slug'] }}" 
-                                            value="{{ $value['slug'] }}" 
-                                            class="attr-val-generate" 
-                                            data-prod-id="{{ $product->id }}" 
-                                            data-attr-id="{{ $attribute['id'] }}" 
-                                            data-value-id="{{ $value['id'] }}" 
-                                            {{-- onclick="sendUrlParam('{{ $attribute['slug'] }}', '{{ $value['slug'] }}')" --}}
-                                        >
-                                            <div class="text-center">
-                                                <div class="flex flex-col items-center gap-2">
-                                                    <img src="https://placehold.co/40x40" class="rounded-full">
-                                                    <div>
-                                                        <div class="{{FD['text']}} font-semibold">{{ $value['title'] }}</div>
-                                                        <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
+                                            <x-front.radio-input-button 
+                                                id="someId{{$attrIndex}}{{$valueIndex}}" 
+                                                name="variation-{{ $attribute['slug'] }}" 
+                                                value="{{ $value['slug'] }}" 
+                                                class="attr-val-generate" 
+                                                data-prod-id="{{ $product->id }}" 
+                                                data-attr-id="{{ $attribute['id'] }}" 
+                                                data-value-id="{{ $value['id'] }}" 
+                                                {{-- onclick="sendUrlParam('{{ $attribute['slug'] }}', '{{ $value['slug'] }}')" --}}
+                                            >
+                                                <div class="text-center">
+                                                    <div class="flex flex-col items-center gap-2">
+                                                        <img src="https://placehold.co/40x40" class="rounded-full">
+                                                        <div>
+                                                            <div class="{{FD['text']}} font-semibold">{{ $value['title'] }}</div>
+                                                            <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </x-front.radio-input-button>
+                                            </x-front.radio-input-button>
 
-                                    @endforeach
+                                        @endforeach
+                                    </div>
                                 </div>
-                            </div>
-                        @endforeach
-                        {{-- <div>
-                            <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">Color</h3>
-
-                            <div class="w-full grid grid-cols-4 lg:grid-cols-6 gap-4">
-                                <x-front.radio-input-button id="someId1" name="variation-color" value="Lime" onclick="sendUrlParam('color', 'Lime')">
-                                    <div class="text-center">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <img src="https://placehold.co/40x40" class="rounded-full">
-                                            <div>
-                                                <div class="{{FD['text']}} font-semibold">Lime</div>
-                                                <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </x-front.radio-input-button>
-
-                                <x-front.radio-input-button id="someId2" name="variation-color" value="Red" onclick="sendUrlParam('color', 'Red')">
-                                    <div class="text-center">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <img src="https://placehold.co/40x40" class="rounded-full">
-                                            <div>
-                                                <div class="{{FD['text']}} font-semibold">Red</div>
-                                                <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </x-front.radio-input-button>
-
-                                <x-front.radio-input-button id="someId3" name="variation-color" value="Blue" onclick="sendUrlParam('color', 'Blue')">
-                                    <div class="text-center">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <img src="https://placehold.co/40x40" class="rounded-full">
-                                            <div>
-                                                <div class="{{FD['text']}} font-semibold">Blue</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </x-front.radio-input-button>
-                            </div>
+                            @endforeach
                         </div>
-
-                        <div>
-                            <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">Size</h3>
-
-                            <div class="w-full grid grid-cols-4 lg:grid-cols-6 gap-4">
-                                <x-front.radio-input-button id="someId11" name="variation-size" value="M" onclick="sendUrlParam('size', 'M')">
-                                    <div class="text-center">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <div>
-                                                <div class="{{FD['text']}} font-semibold">M</div>
-                                                <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </x-front.radio-input-button>
-
-                                <x-front.radio-input-button id="someId22" name="variation-size" value="L" onclick="sendUrlParam('size', 'L')">
-                                    <div class="text-center">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <div>
-                                                <div class="{{FD['text']}} font-semibold">L</div>
-                                                <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </x-front.radio-input-button>
-
-                                <x-front.radio-input-button id="someId33" name="variation-size" value="XL" onclick="sendUrlParam('size', 'XL')">
-                                    <div class="text-center">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <div>
-                                                <div class="{{FD['text']}} font-semibold">XL</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </x-front.radio-input-button>
-
-                                <x-front.radio-input-button id="someId44" name="variation-size" value="2XL" onclick="sendUrlParam('size', '2XL')">
-                                    <div class="text-center">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <div>
-                                                <div class="{{FD['text']}} font-semibold">2XL</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </x-front.radio-input-button>
-                            </div>
-                        </div> --}}
-                    </div>
-
-
-                    <div class="border-t dark:border-gray-700 my-4 sm:my-4"></div>
+                        <div class="border-t dark:border-gray-700 my-4 sm:my-4"></div>
                     @endif
 
 
