@@ -36,6 +36,7 @@ use App\Interfaces\OrderInterface;
 use App\Interfaces\OrderItemInterface;
 use App\Interfaces\ShippingMethodInterface;
 use App\Interfaces\WishlistInterface;
+use App\Interfaces\ProductStatusInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -69,6 +70,7 @@ use App\Repositories\OrderRepository;
 use App\Repositories\OrderItemRepository;
 use App\Repositories\ShippingMethodRepository;
 use App\Repositories\WishlistRepository;
+use App\Repositories\ProductStatusRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -110,6 +112,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(OrderItemInterface::class, OrderItemRepository::class);
         $this->app->bind(ShippingMethodInterface::class, ShippingMethodRepository::class);
         $this->app->bind(WishlistInterface::class, WishlistRepository::class);
+        $this->app->bind(ProductStatusInterface::class, ProductStatusRepository::class);
     }
 
     /**

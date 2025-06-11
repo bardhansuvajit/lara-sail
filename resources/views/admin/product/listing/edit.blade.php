@@ -415,14 +415,14 @@
                     <x-admin.input-label for="status" :value="__('Status')" />
                     <x-admin.input-select id="status" name="status" title="Select Parent" class="w-full" form="productForm">
                         @slot('options')
-                            @foreach (developerSettings('product_status') as $statusVal)
+                            {{-- @foreach (developerSettings('product_status') as $statusVal)
                                 <x-admin.input-select-option 
                                     value="{{ $statusVal->code }}" 
                                     :selected="$statusVal->code == $data->status"
                                 > 
                                     {{ $statusVal->title }} 
                                 </x-admin.input-select-option>
-                            @endforeach
+                            @endforeach --}}
                         @endslot
                     </x-admin.input-select>
                     <x-admin.input-error :messages="$errors->get('status')" class="mt-2" />

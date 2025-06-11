@@ -308,7 +308,7 @@ class ProductListingController
 
             'images' => $request->images ? $request->images : null,
 
-            'status' => (int) $request->status ? $request->status : 0,
+            'status' => (int) $request->status ? $request->status : 2,
         ];
 
         // dd($productData);

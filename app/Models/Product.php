@@ -69,6 +69,11 @@ class Product extends Model
         return $this->hasMany('App\Models\ProductVariation', 'product_id', 'id')->orderBy('id', 'desc');
     }
 
+    public function activeVariations()
+    {
+        return $this->hasMany('App\Models\ProductVariation', 'product_id', 'id')->where('status', 1)->orderBy('position', 'asc');
+    }
+
     public function reviews()
     {
         return $this->hasMany('App\Models\ProductReview', 'product_id', 'id');

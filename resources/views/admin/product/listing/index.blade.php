@@ -286,9 +286,9 @@
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">
-                                    @livewire('toggle-status', [
-                                        'model' => 'Product',
-                                        'modelId' => $item->id,
+                                    @livewire('toggle-status-product', [
+                                        'currentStatus' => $item->status,
+                                        'productId' => $item->id,
                                     ])
 
                                     <x-admin.button-icon

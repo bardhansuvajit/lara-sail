@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Interfaces\CountryInterface;
 use App\Interfaces\UserInterface;
+use App\Interfaces\ProductListingInterface;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cookie;
@@ -16,14 +17,17 @@ class OfflineOrderController extends Controller
 {
     private CountryInterface $countryRepository;
     private UserInterface $userRepository;
+    private ProductListingInterface $productListingRepository;
 
     public function __construct(
         CountryInterface $countryRepository, 
-        UserInterface $userRepository
+        UserInterface $userRepository, 
+        ProductListingInterface $productListingRepository
     )
     {
         $this->countryRepository = $countryRepository;
         $this->userRepository = $userRepository;
+        $this->productListingRepository = $productListingRepository;
     }
 
     public function create(Request $request): View
@@ -97,6 +101,23 @@ class OfflineOrderController extends Controller
             ]);
         }
 
+        // Product data
+        $request->validate([
+            'keyword' => 'nullable|string|max:255',
+            'perPage' => 'nullable|string',
+            'sortBy' => 'nullable|string|in:id,title,level',
+            'sortOrder' => 'nullable|string|in:asc,desc',
+            'status' => 'nullable|string|in:0,1'
+        ]);
+        $perPage = $request->input('perPage', 15);
+        $keyword = $request->input('keyword', '');
+        $sortBy = $request->input('sortBy', 'id');
+        $sortOrder = $request->input('sortOrder', 'desc');
+        $filters = [
+            'status' => $request->input('status', 1),
+        ];
+        $productsResp = $this->productListingRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
+
         // when USER FOUND
         return view('admin.order.create', [
             'userId' => $userData['data'][0]->id,
@@ -106,6 +127,7 @@ class OfflineOrderController extends Controller
             'userPhoneNo' => $userData['data'][0]->primary_phone_no,
             'userCountry' => $userData['data'][0]->country->name,
             'userFlag' => $userData['data'][0]->country->flag,
+            'products' => $productsResp['data'],
         ]);
     }
 
