@@ -113,7 +113,7 @@ class WishlistRepository implements WishlistInterface
             return [
                 'code' => 200,
                 'status' => 'success',
-                'message' => 'Product added to Wishlist',
+                'message' => 'Item added to Wishlist',
                 'data' => $data,
             ];
         } catch (\Exception $e) {
@@ -293,7 +293,7 @@ class WishlistRepository implements WishlistInterface
                 return [
                     'code' => 200,
                     'status' => 'success',
-                    'message' => 'Product removed from Wishlist',
+                    'message' => 'Item removed from Wishlist',
                     'data' => $data,
                 ];
             } else {

@@ -156,7 +156,7 @@ class CartItemRepository implements CartItemInterface
     public function exists(Array $conditions)
     {
         try {
-            $data = CartItem::with('cart', 'product')->where($conditions)->first();
+            $data = CartItem::with('cart', 'product')->where($conditions)->get();
 
             if (!empty($data)) {
                 return [
@@ -208,6 +208,8 @@ class CartItemRepository implements CartItemInterface
                 if (!empty($array['image_s']))          $data['data']->image_s = $array['image_s'];
                 if (!empty($array['image_m']))          $data['data']->image_m = $array['image_m'];
                 if (!empty($array['image_l']))          $data['data']->image_l = $array['image_l'];
+                if (!empty($array['availability_message']))          $data['data']->availability_message = $array['availability_message'];
+                $data['data']->is_available = $array['is_available'];
 
                 $data['data']->save();
 
@@ -234,19 +236,35 @@ class CartItemRepository implements CartItemInterface
     public function updateAvailability(Array $conditions)
     {
         try {
-            dd();
             $data = $this->exists([
-                'product_id' => $array['product_id']
+                'product_id' => $conditions['product_id']
             ]);
 
-            dd($data);
+            if ($data['code'] != 200) {
+                return [
+                    'code' => $data['code'],
+                    'status' => $data['status'],
+                    'message' => 'Cart items not found for this product'
+                ];
+            }
+
+            $cartItems = $data['data'];
+
+            foreach($cartItems as $item) {
+                $updated = $this->update([
+                    'id' => $item->id,
+                    'is_available' => $conditions['is_available'],
+                    'availability_message' => $conditions['availability_message'],
+                    'updated_at' => now()
+                ]);
+
+                return $updated;
+            }
 
             return [
                 'code' => 200,
                 'status' => 'success',
-                'message' => 'Changes have been saved',
-                'data' => $data,
-                'cart' => $data['data']->cart,
+                'message' => 'Changes have been saved'
             ];
         } catch (\Exception $e) {
             return [

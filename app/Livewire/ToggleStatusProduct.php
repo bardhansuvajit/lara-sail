@@ -35,34 +35,57 @@ class ToggleStatusProduct extends Component
 
     public function updateStatus()
     {
+        if (empty($this->selectedStatusId)) {
+            $this->dispatch('notificationSend', [
+                'variant' => 'error',
+                'title' => 'Error',
+                'message' => 'No status selected'
+            ]);
+            return;
+        }
+
         $productListingRepository = app(ProductListingInterface::class);
         $data = $productListingRepository->getById($this->productId);
 
-        if($data['code'] == 200) {
-            $product = $data['data'];
-            $product->status = $this->selectedStatusId;
-            $product->save();
-
-            $statusDetail = $product->statusDetail;
-
-            // Update CART if product cannot be ORDERED
-            if ($statusDetail->allow_order != 1) {
-
-                $cartItemRepository = app(CartItemInterface::class);
-                $statusResp = $cartItemRepository->updateAvailability([
-                    'product_id' => $this->productId,
-                    'is_available' => 0,
-                    'availability_message' => $statusDetail->availability_message,
-                    'updated_at' => now()
-                ]);
-            }
-
+        if ($data['code'] != 200) {
             $this->dispatch('notificationSend', [
-                'variant' => 'success',
-                'title' => 'Status updated',
-                'message' => $product->title . ' is ' . $statusDetail->title
+                'variant' => 'error',
+                'title' => 'Error',
+                'message' => 'Product not found'
+            ]);
+            return;
+        }
+
+        $product = $data['data'];
+        $product->status = $this->selectedStatusId;
+        
+        if (!$product->save()) {
+            $this->dispatch('notificationSend', [
+                'variant' => 'error',
+                'title' => 'Error',
+                'message' => 'Failed to update product status'
+            ]);
+            return;
+        }
+
+        $statusDetail = $product->statusDetail;
+
+        // Update CART if product cannot be ORDERED
+        if ($statusDetail->allow_order != 1) {
+
+            $cartItemRepository = app(CartItemInterface::class);
+            $statusResp = $cartItemRepository->updateAvailability([
+                'product_id' => $this->productId,
+                'is_available' => 0,
+                'availability_message' => $statusDetail->availability_message
             ]);
         }
+
+        $this->dispatch('notificationSend', [
+            'variant' => 'success',
+            'title' => 'Status updated',
+            'message' => $product->title . ' is ' . $statusDetail->title
+        ]);
     }
 
     public function render()

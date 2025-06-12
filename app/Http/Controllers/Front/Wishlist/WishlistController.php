@@ -58,6 +58,12 @@ class WishlistController extends Controller
             }
         }
 
+        return response()->json([
+            'code' => 500,
+            'status' => 'warning',
+            'message' => 'User not logged in'
+        ]);
+
         // dd($productId, $userId);
     }
 

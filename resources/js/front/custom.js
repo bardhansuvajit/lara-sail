@@ -16,11 +16,7 @@ const orderSummaryEl = document.getElementById('order-summary');
 const numberEl = document.querySelectorAll('.digits-only');
 const placeOrderForm = document.getElementById('place-order-form');
 
-// const prePayEl = document.getElementById('online_payment');
-// const codEl = document.getElementById('pay_on_delivery');
-// const totalAmountShowEl = document.getElementById('total-amount-show');
-// const totalAmountEl = document.getElementById('total-amount');
-const paymentMethodEl = document.querySelectorAll(`[id^=paymentMethod]`);
+
 
 let lastScrollPosition = 0;
 
@@ -1161,29 +1157,6 @@ document.querySelectorAll('.wishlist-btn').forEach(wishlistBtn => {
             button.disabled = true;
             const productId = button.dataset.prodId;
 
-            // Visual feedback immediately
-            if (!isWishlisted) {
-                heartIcon.classList.add('scale-[1.2]');
-                heartIcon.querySelector('path').setAttribute('fill', 'red');
-                
-                const btnRect = button.getBoundingClientRect();
-                confetti({
-                    particleCount: 80,
-                    spread: 50,
-                    origin: { 
-                        x: (btnRect.left + btnRect.width/2) / window.innerWidth,
-                        y: (btnRect.top + btnRect.height/2) / window.innerHeight
-                    },
-                    colors: ['#ff0000', '#ff6666', '#ff9999'],
-                    scalar: 0.7
-                });
-            } else {
-                heartIcon.classList.add('scale-[1.2]');
-                setTimeout(() => {
-                    heartIcon.querySelector('path').removeAttribute('fill');
-                }, 150);
-            }
-
             // API call
             const response = await fetch(`${baseUrl}/wishlist/toggle/${productId}`, {
                 method: 'GET',
@@ -1197,6 +1170,33 @@ document.querySelectorAll('.wishlist-btn').forEach(wishlistBtn => {
 
             if (!response.ok) {
                 throw new Error(data.message || 'Failed to Wishlist item');
+            }
+
+            if (data.code == 200) {
+                // Visual feedback immediately
+                if (!isWishlisted) {
+                    heartIcon.classList.add('scale-[1.2]');
+                    heartIcon.querySelector('path').setAttribute('fill', 'red');
+                    
+                    const btnRect = button.getBoundingClientRect();
+                    confetti({
+                        particleCount: 80,
+                        spread: 50,
+                        origin: { 
+                            x: (btnRect.left + btnRect.width/2) / window.innerWidth,
+                            y: (btnRect.top + btnRect.height/2) / window.innerHeight
+                        },
+                        colors: ['#ff0000', '#ff6666', '#ff9999'],
+                        scalar: 0.7
+                    });
+                } else {
+                    heartIcon.classList.add('scale-[1.2]');
+                    setTimeout(() => {
+                        heartIcon.querySelector('path').removeAttribute('fill');
+                    }, 150);
+                }
+            } else {
+                console.log('not possible');
             }
 
             showNotification(data.message, { type: data.status });
