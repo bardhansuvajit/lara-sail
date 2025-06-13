@@ -83,53 +83,53 @@
 
                                         @if ($item['is_available'] == 1)
                                             <p class="{{FD['text-0']}} {{FD['activeClass']}} mt-1">{{$item['availability_message']}}</p>
+                                        @else
+                                            <p class="{{FD['text-1']}} text-red-500 dark:text-red-600 mt-1">{{$item['availability_message']}}</p>
                                         @endif
                                     </div>
                                 </div>
+
                                 {{-- QUANTITY && PRICING --}}
+                                @if ($item['is_available'] == 1)
                                 <div>
-                                    @if ($item['is_available'] == 1)
-                                        <div class="flex space-x-4 items-center">
-                                            <div class="flex items-center justify-between">
-                                                <div class="flex items-center">
-                                                    <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
-                                                        wire:click.prevent="updateQty({{$item['id']}}, 'desc', {{$item['quantity']}})"
-                                                    >
-                                                        <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" /></svg>
-                                                    </button>
+                                    <div class="flex space-x-4 items-center">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                                                    wire:click.prevent="updateQty({{$item['id']}}, 'desc', {{$item['quantity']}})"
+                                                >
+                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" /></svg>
+                                                </button>
 
-                                                    <input type="text" class="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="{{$item['quantity']}}" />
+                                                <input type="text" class="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="{{$item['quantity']}}" />
 
-                                                    <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
-                                                        wire:click.prevent="updateQty({{$item['id']}}, 'asc', {{$item['quantity']}})"
-                                                    >
-                                                        <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" /></svg>
-                                                    </button>
-                                                </div>
+                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                                                    wire:click.prevent="updateQty({{$item['id']}}, 'asc', {{$item['quantity']}})"
+                                                >
+                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" /></svg>
+                                                </button>
                                             </div>
+                                        </div>
 
-                                            <p class="{{FD['text-0']}} md:text-xs font-bold text-gray-900 dark:text-gray-50">
+                                        <p class="{{FD['text-0']}} md:text-xs font-bold text-gray-900 dark:text-gray-50">
+                                            <span class="currency-symbol">{{COUNTRY['icon']}}</span>
+                                            {{formatIndianMoney($item['selling_price'])}}
+                                        </p>
+
+                                        @if ($item['mrp'] > 0)
+                                            <p class="{{FD['text-0']}} md:text-xs font-bold text-gray-400 dark:text-gray-400 line-through">
                                                 <span class="currency-symbol">{{COUNTRY['icon']}}</span>
-                                                {{formatIndianMoney($item['selling_price'])}}
+                                                {{formatIndianMoney($item['mrp'])}}
                                             </p>
 
-                                            @if ($item['mrp'] > 0)
-                                                <p class="{{FD['text-0']}} md:text-xs font-bold text-gray-400 dark:text-gray-400 line-through">
-                                                    <span class="currency-symbol">{{COUNTRY['icon']}}</span>
-                                                    {{formatIndianMoney($item['mrp'])}}
-                                                </p>
-
-                                                <p class="{{FD['text-0']}} md:text-xs font-black leading-tight {{FD['activeClass']}}">
-                                                    {{discountPercentageCalc($item['selling_price'], $item['mrp'])}}% off
-                                                </p>
-                                            @endif
-                                        </div>
-                                    @else
-                                        <p class="inline-block {{FD['text']}} leading-tight font-medium text-red-500 hover:underline dark:text-red-600 mb-1 sm:mb-2">
-                                            {{ $item['availability_message'] }}
-                                        </p>
-                                    @endif
+                                            <p class="{{FD['text-0']}} md:text-xs font-black leading-tight {{FD['activeClass']}}">
+                                                {{discountPercentageCalc($item['selling_price'], $item['mrp'])}}% off
+                                            </p>
+                                        @endif
+                                    </div>
                                 </div>
+                                @endif
+
                                 {{-- UPSELL --}}
                                 {{-- <div>
                                     <div class="grid grid-cols-2 md:grid-cols-4 gap-2 border-t dark:border-gray-700 mt-2 py-2">
@@ -336,11 +336,15 @@
                                     @endif --}}
                                 </a>
 
-                                <div class="flex gap-2 mt-3">
-                                    <button class="flex-1 basis-[70%] {{ FD['rounded'] }} {{ FD['text-0'] }} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100"
-                                        wire:click="moveItemToCart({{ $saved_item->id }})">
-                                        Move to cart
-                                    </button>
+                                <div class="flex justify-between gap-2 mt-3">
+                                    @if ($saved_item->is_available == 1)
+                                        <button class="flex-1 basis-[70%] {{ FD['rounded'] }} {{ FD['text-0'] }} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100"
+                                            wire:click="moveItemToCart({{ $saved_item->id }})">
+                                            Move to cart
+                                        </button>
+                                    @else
+                                        <p class="{{FD['text-0']}} text-red-500 dark:text-red-600 mt-1">{{$saved_item->availability_message}}</p>
+                                    @endif
 
                                     <button class="basis-[30%] {{ FD['rounded'] }} {{ FD['text-0'] }} bg-orange-700 dark:bg-orange-600 hover:bg-orange-800 dark:hover:bg-orange-700 p-1 text-gray-100"
                                         wire:click="deleteItem({{ $saved_item->id }})">

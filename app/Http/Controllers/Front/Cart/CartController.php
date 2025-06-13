@@ -248,7 +248,7 @@ class CartController extends Controller
                 // Update quantity if item exists
                 $this->cartItemRepository->update([
                     'id' => $existingItem->id,
-                    'quantity' => $existingItem->quantity + $request->quantity,
+                    'quantity' => $existingItem->quantity + (int) $request->quantity,
                     'total' => ($existingItem->quantity + $request->quantity) * $existingItem->selling_price,
 
                     'image_s' => $productImage['image_s'] ? 'storage/'.$productImage['image_s'] : null,

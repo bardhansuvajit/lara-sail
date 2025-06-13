@@ -36,7 +36,7 @@
                     </div>
                 </div>
 
-                <div class="w-full mt-5">
+                {{-- <div class="w-full mt-5">
                     <div class="fixed z-[1] bottom-16 w-full -m-2 pt-3 px-2 pb-3 sm:static sm:bottom-0 sm:m-0 sm:p-0 {{FD['rounded']}} border sm:border-0 dark:sm:border-0 border-gray-200 bg-white sm:bg-transparent dark:sm:bg-transparent shadow-sm sm:shadow-none dark:sm:shadow-none dark:border-0 lg:dark:border-0 dark:bg-gray-800">
                         <div class="flex space-x-2">
                             <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-gray-300 focus:bg-gray-400 px-5 py-2.5 {{FD['text']}} font-medium text-gray=800 hover:bg-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 add-to-cart" 
@@ -55,6 +55,46 @@
                                 Add to Cart
                             </button>
                         </div>
+                    </div>
+                </div> --}}
+
+                <div class="w-full mt-5">
+                    <div class="fixed z-[1] bottom-16 w-full -m-2 pt-3 px-2 pb-3 sm:static sm:bottom-0 sm:m-0 sm:p-0 {{FD['rounded']}} border sm:border-0 dark:sm:border-0 border-gray-200 bg-white sm:bg-transparent dark:sm:bg-transparent shadow-sm sm:shadow-none dark:sm:shadow-none dark:border-0 lg:dark:border-0 dark:bg-gray-800">
+                        @if($product->statusDetail->allow_order)
+                            <div class="flex space-x-2">
+                                <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-gray-300 focus:bg-gray-400 px-5 py-2.5 {{FD['text']}} font-medium text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 add-to-cart" 
+                                    data-prod-id="{{$product->id}}" 
+                                    data-purchase-type="buy"
+                                    data-variation-data="{{ json_encode($variation['data']) }}"
+                                >
+                                    Buy Now
+                                </button>
+
+                                <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 add-to-cart" 
+                                    data-prod-id="{{$product->id}}" 
+                                    data-purchase-type="cart"
+                                    data-variation-data="{{ json_encode($variation['data']) }}"
+                                >
+                                    Add to Cart
+                                </button>
+                            </div>
+                        @else
+                            <div class="flex flex-col items-center justify-center p-3 bg-gray-100 dark:bg-gray-700 {{FD['rounded']}}">
+                                <p class="{{FD['text']}} font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    {{ $product->statusDetail->title_frontend }}
+                                </p>
+                                <p class="{{FD['text-0']}} text-gray-500 dark:text-gray-400 text-center">
+                                    {{ $product->statusDetail->description_frontend }}
+                                </p>
+                                {{-- @if($product->statusDetail->allow_preorder)
+                                    <button class="mt-3 w-full flex items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 preorder-btn"
+                                        data-prod-id="{{$product->id}}"
+                                    >
+                                        Pre-order Now
+                                    </button>
+                                @endif --}}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

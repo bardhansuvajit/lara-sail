@@ -209,7 +209,11 @@ class CartItemRepository implements CartItemInterface
                 if (!empty($array['image_m']))          $data['data']->image_m = $array['image_m'];
                 if (!empty($array['image_l']))          $data['data']->image_l = $array['image_l'];
                 if (!empty($array['availability_message']))          $data['data']->availability_message = $array['availability_message'];
-                $data['data']->is_available = $array['is_available'];
+                $data['data']->is_available = $array['is_available'] ?? 1;
+
+                if (isset($array['allow_order']) && $array['allow_order'] == 0) {
+                    $data['data']->is_saved_for_later = 1;
+                }
 
                 $data['data']->save();
 
@@ -254,7 +258,8 @@ class CartItemRepository implements CartItemInterface
                 $updated = $this->update([
                     'id' => $item->id,
                     'is_available' => $conditions['is_available'],
-                    'availability_message' => $conditions['availability_message'],
+                    'availability_message' => $conditions['title_frontend'],
+                    'allow_order' => $conditions['allow_order'],
                     'updated_at' => now()
                 ]);
 

@@ -71,15 +71,16 @@ class ToggleStatusProduct extends Component
         $statusDetail = $product->statusDetail;
 
         // Update CART if product cannot be ORDERED
-        if ($statusDetail->allow_order != 1) {
+        // if ($statusDetail->allow_order != 1) {
 
             $cartItemRepository = app(CartItemInterface::class);
             $statusResp = $cartItemRepository->updateAvailability([
                 'product_id' => $this->productId,
-                'is_available' => 0,
-                'availability_message' => $statusDetail->availability_message
+                'is_available' => $statusDetail->allow_order,
+                'title_frontend' => $statusDetail->title_frontend,
+                'allow_order' => $statusDetail->allow_order,
             ]);
-        }
+        // }
 
         $this->dispatch('notificationSend', [
             'variant' => 'success',
