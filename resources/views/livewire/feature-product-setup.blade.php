@@ -1,5 +1,5 @@
 <div>
-    <div id="sortable-container" class="grid grid-cols-2 md:grid-cols-6 gap-2 mt-4 border-4 border-red-500 p-4 relative overflow-hidden">
+    <div id="sortable-container" class="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-6 gap-2 mt-4 border-4 border-red-500 p-4 relative overflow-hidden">
         @forelse ($features as $singleFeature)
             <div class="rounded border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden"  data-id="{{ $singleFeature->id }}">
                 <a href="{{ route('admin.product.listing.edit', $singleFeature->product_id) }}" target="_blank">

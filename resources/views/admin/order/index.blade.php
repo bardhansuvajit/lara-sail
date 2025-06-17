@@ -281,7 +281,7 @@
                             {{-- Payment Details --}}
                             <th scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 <p class="text-xs text-green-500">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
-                                <p class="text-xs text-red-500">{{ strtoupper($item->paymentMethod->method).' - '.$item->payment_status }}</p>
+                                <p class="text-xs text-red-500">{{ strtoupper($item->paymentMethod->method).' '.$item->payment_status }}</p>
                             </td>
 
                             {{-- Order items --}}
