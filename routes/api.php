@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Ip\IpController;
 use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\Product\Variation\ProductVariationController;
 use App\Http\Controllers\Api\Product\Variation\ProductVariationCombinationController;
+use App\Http\Controllers\Api\Login\LoginController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -35,4 +36,17 @@ Route::prefix('variation')->group(function() {
     Route::controller(ProductVariationCombinationController::class)->group(function() {
         Route::post('/check', 'check');
     });
+});
+
+
+
+// Login
+Route::prefix('login')->group(function() {
+    Route::controller(LoginController::class)->group(function() {
+        // phone number check
+        Route::post('/check', 'check');
+        // login
+        Route::post('/login', 'login');
+    });
+
 });

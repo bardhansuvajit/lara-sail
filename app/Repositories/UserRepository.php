@@ -178,6 +178,36 @@ class UserRepository implements UserInterface
         }
     }
 
+    public function loginCheck(String $phoneNo, String $password)
+    {
+        try {
+            $data = User::where('country_code', $countryCode)->where('primary_phone_no', $phoneNo)->first();
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
     public function exists(Array $conditions)
     {
         try {
