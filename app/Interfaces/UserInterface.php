@@ -9,7 +9,7 @@ interface UserInterface
     public function store(Array $array);
     public function getById(Int $id);
     public function getByCountryPrimaryPhone(String $countryCode, String $phoneNo);
-    public function loginCheck(String $phoneNo, String $password);
+    public function loginCheck(String $countryCode, String $phoneNo, String $password);
     public function exists(Array $conditions);
     public function update(Array $array);
     public function delete(Int $id);

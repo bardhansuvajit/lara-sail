@@ -178,18 +178,26 @@ class UserRepository implements UserInterface
         }
     }
 
-    public function loginCheck(String $phoneNo, String $password)
+    public function loginCheck(String $countryCode, String $phoneNo, String $password)
     {
         try {
             $data = User::where('country_code', $countryCode)->where('primary_phone_no', $phoneNo)->first();
 
             if (!empty($data)) {
-                return [
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data found',
-                    'data' => $data,
-                ];
+                if (Hash::check($password, $data->password)) {
+                    return [
+                        'code' => 200,
+                        'status' => 'success',
+                        'message' => 'Login successfull',
+                        'data' => $data,
+                    ];
+                } else {
+                    return [
+                        'code' => 401,
+                        'status' => 'failure',
+                        'message' => 'Phone number or Password is incorrect',
+                    ];
+                }
             } else {
                 return [
                     'code' => 404,

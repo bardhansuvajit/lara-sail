@@ -13,6 +13,13 @@ use App\Http\Controllers\Api\Login\LoginController;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
+Route::get('/test', function() {
+    return response()->json([
+        'code' => 200,
+        'message' => 'API success',
+    ]);
+});
+
 // ip
 Route::prefix('ip')->group(function() {
     Route::get('/check/{ip}', [IpController::class, 'check']);
@@ -45,8 +52,9 @@ Route::prefix('login')->group(function() {
     Route::controller(LoginController::class)->group(function() {
         // phone number check
         Route::post('/check', 'check');
-        // login
-        Route::post('/login', 'login');
+        // login with password
+        Route::post('/try', 'login');
+        // register
+        Route::post('/store', 'register');
     });
-
 });
