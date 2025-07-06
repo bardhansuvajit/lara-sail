@@ -72,10 +72,11 @@ class LoginController extends Controller
     {
         // dd($request->phone);
 
-        // check if phone is not empty & 10 digits
         $validator = Validator::make($request->all(), [
             'phone' => 'required|digits:10',
-            'password' => 'required|string'
+            'name' => 'required|string|min:5|max:100',
+            'email' => 'nullable|string|email|min:5|max:100',
+            'password' => 'required|string|min:5|max:50'
         ], [
             'phone.required' => 'Phone number is required',
             'phone.digits' => 'Phone number must be exactly 10 digits'
@@ -88,8 +89,25 @@ class LoginController extends Controller
             ], 422);
         }
 
+        // Sanitize and split name
+        $fullName = trim(preg_replace('/\s+/', ' ', $request->name)); // remove extra spaces
+        $nameParts = explode(' ', $fullName);
+
+        // dd($nameParts);
+
+        $first_name = ucfirst(array_shift($nameParts)); // First word
+        $last_name = count($nameParts) > 0 ? ucfirst(implode(' ', $nameParts)) : ''; 
+
         // check if phone number exists in users table
-        $userLoginCheck = $this->userRepository->loginCheck($request->country, $request->phone, $request->password);
+        $userLoginCheck = $this->userRepository->store([
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'email' => $request->filled('email') ? trim($request->email) : null,
+            'country_code' => $request->countryCode ?? 'IN',
+            'primary_phone_no' => trim($request->phone),
+            'gender_id' => $request->genderId ?? 4,
+            'password' => $request->password,
+        ]);
 
         return $userLoginCheck;
     }

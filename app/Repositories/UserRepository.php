@@ -91,11 +91,11 @@ class UserRepository implements UserInterface
             $data = new User();
             $data->first_name = $array['first_name'];
             $data->last_name = $array['last_name'];
-            $data->email = $array['email'];
+            $data->email = $array['email'] ?? null;
             $data->country_code = $array['country_code'];
             $data->primary_phone_no = $array['primary_phone_no'];
-            $data->gender_id = $array['gender_id'];
-            $data->password = Hash::make($array['primary_phone_no']);
+            $data->gender_id = $array['gender_id'] ?? 4;
+            $data->password = $array['password'] ? Hash::make($array['password']) : Hash::make($array['primary_phone_no']);
             $data->alt_phone_no = $array['alt_phone_no'] ?? null;
             $data->date_of_birth = $array['date_of_birth'] ?? null;
             $data->profile_picture = $array['profile_picture'] ?? null;

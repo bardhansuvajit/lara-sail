@@ -55,6 +55,6 @@ Route::prefix('login')->group(function() {
         // login with password
         Route::post('/try', 'login');
         // register
-        Route::post('/store', 'register');
+        Route::post('/store', 'store');
     });
 });
