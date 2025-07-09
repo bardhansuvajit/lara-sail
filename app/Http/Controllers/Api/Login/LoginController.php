@@ -16,6 +16,7 @@ class LoginController extends Controller
         $this->userRepository = $userRepository;
     }
 
+    // Check if Phone number exists in `uers` table
     public function check(Request $request)
     {
         // dd($request->phone);
@@ -42,10 +43,9 @@ class LoginController extends Controller
         return $userExistCheck;
     }
 
+    // LOGIN with `Phone number` & `Password`
     public function login(Request $request)
     {
-        // dd($request->phone);
-
         // check if phone is not empty & 10 digits
         $validator = Validator::make($request->all(), [
             'phone' => 'required|digits:10',
@@ -68,6 +68,7 @@ class LoginController extends Controller
         return $userLoginCheck;
     }
 
+    // REGISTER
     public function store(Request $request)
     {
         // dd($request->phone);

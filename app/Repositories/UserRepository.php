@@ -185,6 +185,11 @@ class UserRepository implements UserInterface
 
             if (!empty($data)) {
                 if (Hash::check($password, $data->password)) {
+
+                    // Generate token (JWT or random string)
+                    $token = Str::random(64); // Or generate JWT
+                    $hashedToken = hash('sha256', $token);
+
                     return [
                         'code' => 200,
                         'status' => 'success',
