@@ -27,16 +27,19 @@ class UserLoginHistoryRepository implements UserLoginHistoryInterface
         // dd($array['image']);
         try {
             $data = new UserLoginHistory();
-            $data->first_name = $array['first_name'];
-            $data->last_name = $array['last_name'];
-            $data->email = $array['email'] ?? null;
-            $data->country_code = $array['country_code'];
-            $data->primary_phone_no = $array['primary_phone_no'];
-            $data->gender_id = $array['gender_id'] ?? 4;
-            $data->password = $array['password'] ? Hash::make($array['password']) : Hash::make($array['primary_phone_no']);
-            $data->alt_phone_no = $array['alt_phone_no'] ?? null;
-            $data->date_of_birth = $array['date_of_birth'] ?? null;
-            $data->profile_picture = $array['profile_picture'] ?? null;
+            $data->user_id = $array['user_id'];
+            $data->token = $array['token'];
+            $data->platform = $array['platform'] ?? null;
+            $data->device_brand = $array['device_brand'];
+            $data->os_version = $array['os_version'];
+            $data->device_model = $array['device_model'];
+            $data->app_version = $array['app_version'];
+            $data->latitude = $array['latitude'];
+            $data->longitude = $array['longitude'];
+            $data->ip_address = $array['ip_address'];
+            $data->payload = $array['payload'];
+            $data->login_at = $array['login_at'];
+            $data->last_activity_at = $array['last_activity_at'];
             $data->save();
 
             return [
