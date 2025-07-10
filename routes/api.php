@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\Product\Variation\ProductVariationController;
 use App\Http\Controllers\Api\Product\Variation\ProductVariationCombinationController;
 use App\Http\Controllers\Api\Login\LoginController;
+use App\Http\Controllers\Api\Token\TokenController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -56,5 +57,12 @@ Route::prefix('login')->group(function() {
         Route::post('/try', 'login');
         // register
         Route::post('/store', 'store');
+    });
+});
+
+// Token
+Route::prefix('token')->group(function() {
+    Route::controller(TokenController::class)->group(function() {
+        Route::get('/validate', 'validate');
     });
 });
