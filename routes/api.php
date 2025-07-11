@@ -63,6 +63,6 @@ Route::prefix('login')->group(function() {
 // Token
 Route::prefix('token')->group(function() {
     Route::controller(TokenController::class)->group(function() {
-        Route::get('/validate', 'validate');
+        Route::get('/validate/{userId}', 'validate');
     });
 });

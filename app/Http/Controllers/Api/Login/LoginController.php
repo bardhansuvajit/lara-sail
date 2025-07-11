@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Login;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Interfaces\UserInterface;
 use App\Interfaces\UserLoginHistoryInterface;
@@ -66,7 +67,7 @@ class LoginController extends Controller
             ], 422);
         }
 
-        // check if phone number exists in users table
+        // check login with Country, Phone Number & Password
         $userLoginCheck = $this->userRepository->loginCheck(
             $request->country ?? 'IN', 
             $request->phone, 
@@ -98,7 +99,8 @@ class LoginController extends Controller
 
             // Generate token
             $token = Str::random(64);
-            $hashedToken = hash('sha256', $token);
+            // $hashedToken = hash('sha256', $token);
+            $hashedToken = Hash::make($token);
 
             // Store login history with device info
             $this->userLoginHistoryRepository->store([
@@ -122,7 +124,7 @@ class LoginController extends Controller
                 'status' => 'success',
                 'message' => 'Login successful',
                 'data' => $userLoginCheck['data'],
-                'token' => $token // Return the plain token to the client
+                'token' => $token // Returning plain token
             ]);
         }
 
