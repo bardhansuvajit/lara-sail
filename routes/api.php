@@ -57,6 +57,7 @@ Route::prefix('login')->group(function() {
         Route::post('/try', 'login');
         // register
         Route::post('/store', 'store');
+        Route::post('/logout', 'logout');
     });
 });
 
