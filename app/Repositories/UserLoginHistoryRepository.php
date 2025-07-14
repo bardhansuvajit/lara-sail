@@ -25,14 +25,14 @@ class UserLoginHistoryRepository implements UserLoginHistoryInterface
     public function exists(Array $conditions)
     {
         try {
-            $record = UserLoginHistory::where($conditions)->get();
+            $records = UserLoginHistory::where($conditions)->get();
 
-            if (count($record) > 0) {
+            if (count($records) > 0) {
                 return [
                     'code' => 200,
                     'status' => 'success',
                     'message' => 'Data found',
-                    'data' => $record,
+                    'data' => $records,
                 ];
             } else {
                 return [
@@ -62,13 +62,15 @@ class UserLoginHistoryRepository implements UserLoginHistoryInterface
 
             if ($dataExists['code'] == 200) {
                 foreach($dataExists['data'] as $toUpdateData) {
-                    $this->update([
-                        'id' => $toUpdateData->id,
-                        'is_active' => 0,
-                        'last_activity_at' => now(),
-                        'expires_at' => now(),
-                        'logout_reason' => 'update existing token sessions to login with current session',
-                    ]);
+                    if ($toUpdateData->is_active == 1) {
+                        $this->update([
+                            'id' => $toUpdateData->id,
+                            'is_active' => 0,
+                            'last_activity_at' => now(),
+                            'expires_at' => now(),
+                            'logout_reason' => 'update existing token sessions to login with current session',
+                        ]);
+                    }
                 }
             }
 
@@ -118,7 +120,7 @@ class UserLoginHistoryRepository implements UserLoginHistoryInterface
                     'code' => 401,
                     'status' => 'failure',
                     'message' => 'Invalid token',
-                    'data' => [],
+                    // 'data' => [],
                 ];
             }
 

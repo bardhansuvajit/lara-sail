@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Product\Variation\ProductVariationController;
 use App\Http\Controllers\Api\Product\Variation\ProductVariationCombinationController;
 use App\Http\Controllers\Api\Login\LoginController;
 use App\Http\Controllers\Api\Token\TokenController;
+use App\Http\Controllers\Api\User\UserController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -53,17 +54,47 @@ Route::prefix('login')->group(function() {
     Route::controller(LoginController::class)->group(function() {
         // phone number check
         Route::post('/check', 'check');
+
         // login with password
         Route::post('/try', 'login');
+
         // register
         Route::post('/store', 'store');
-        Route::post('/logout', 'logout');
     });
 });
 
 // Token
-Route::prefix('token')->group(function() {
+Route::prefix('token/old')->group(function() {
     Route::controller(TokenController::class)->group(function() {
-        Route::get('/validate/{userId}', 'validate');
+        Route::get('/validate/{userId}', 'validateOld');
+    });
+});
+
+// Logout
+Route::controller(LoginController::class)->group(function() {
+    Route::post('/logout/{userId}', 'logout');
+});
+
+// API Authentication
+Route::middleware('apiAuth')->group(function () {
+    // Token
+    Route::prefix('token/validate')->group(function() {
+        Route::controller(TokenController::class)->group(function() {
+            Route::get('/', 'validate');
+        });
+    });
+
+    // User
+    Route::prefix('user')->group(function() {
+        Route::controller(UserController::class)->group(function() {
+            // get profile details
+            Route::get('/', 'index');
+
+            // update profile details
+            Route::post('/update', 'update');
+
+            // change password
+            Route::post('/password/update', 'passwordUpdate');
+        });
     });
 });

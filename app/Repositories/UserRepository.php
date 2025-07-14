@@ -258,40 +258,31 @@ class UserRepository implements UserInterface
             if ($data['code'] == 200) {
                 $data['data']->first_name = $array['first_name'];
                 $data['data']->last_name = $array['last_name'];
-                $data['data']->email = $array['email'];
+                if (!empty($array['email'])) {
+                    $data['data']->email = $array['email'];
+                }
                 $data['data']->country_code = $array['country_code'];
                 $data['data']->primary_phone_no = $array['primary_phone_no'];
                 $data['data']->gender_id = $array['gender_id'];
-                // $data['data']->password = Hash::make($array['password']);
-                $data['data']->alt_phone_no = $array['alt_phone_no'] ?? null;
-                $data['data']->date_of_birth = $array['date_of_birth'] ?? null;
+                if (!empty($array['alt_phone_no'])) {
+                    $data['data']->alt_phone_no = $array['alt_phone_no'];
+                }
+                if (!empty($array['date_of_birth'])) {
+                    $data['data']->date_of_birth = $array['date_of_birth'];
+                }
 
                 if (!empty($array['profile_picture'])) {
                     $uploadResp = fileUpload($array['profile_picture'], 'user');
-
-                    // $data['data']->profile_picture_s = $uploadResp['smallThumbName'];
                     $data['data']->profile_picture = $uploadResp['mediumThumbName'];
-                    // $data['data']->profile_picture_l = $uploadResp['largeThumbName'];
                 }
 
-                // $data['data']->profile_picture = $array['profile_picture'] ?? null;
-
-                // if (isset($array['method'])) $data['data']->method = $array['method'];
-                // if (isset($array['title'])) $data['data']->title = $array['title'];
-                // if (isset($array['subtitle'])) $data['data']->subtitle = $array['subtitle'];
-                // if (isset($array['description'])) $data['data']->description = $array['description'];
-                // if (isset($array['icon'])) $data['data']->icon = $array['icon'];
-                // if (isset($array['cost'])) $data['data']->cost = $array['cost'];
-
                 $data['data']->save();
-
-                // dd($data['data']);
 
                 return [
                     'code' => 200,
                     'status' => 'success',
                     'message' => 'Changes have been saved',
-                    'data' => $data,
+                    'data' => $data['data'],
                 ];
             } else {
                 return $data;
