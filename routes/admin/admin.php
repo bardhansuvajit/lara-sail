@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\Order\OfflineOrderController;
 use App\Http\Controllers\Admin\Profile\ProfileController;
 use App\Http\Controllers\Admin\Password\PasswordController;
 use App\Http\Controllers\Admin\Country\CountryController;
+use App\Http\Controllers\Admin\Banner\BannerController;
 use App\Http\Controllers\Admin\State\StateController;
 use App\Http\Controllers\Admin\City\CityController;
 use App\Http\Controllers\Admin\Application\ApplicationSettingsController;
@@ -266,6 +267,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/bulk', 'bulk')->name('bulk');
                 Route::post('/import', 'import')->name('import');
                 Route::get('/export/{type}', 'export')->name('export');
+            });
+        });
+
+        // website
+        Route::prefix('website')->name('website.')->group(function() {
+            // banner
+            Route::prefix('banner')->name('banner.')->controller(BannerController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+                Route::post('/bulk', 'bulk')->name('bulk');
+                Route::post('/import', 'import')->name('import');
+                Route::get('/export/{type}', 'export')->name('export');
+                Route::post('/position', 'position')->name('position');
             });
         });
 

@@ -91,7 +91,7 @@ Route::middleware('apiAuth')->group(function () {
             Route::get('/', 'index');
 
             // update profile details
-            Route::post('/update', 'update');
+            Route::put('/update', 'update');
 
             // change password
             Route::post('/password/update', 'passwordUpdate');
