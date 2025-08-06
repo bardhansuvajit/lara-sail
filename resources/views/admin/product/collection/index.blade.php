@@ -98,7 +98,7 @@
                             <x-admin.input-select 
                                 id="sortBy" 
                                 name="sortBy"
-                                :title="request()->input('sortBy') == 'id' ? 'ID' : (request()->input('sortBy') == 'title' ? 'Title' : 'ID')"
+                                :title="request()->input('sortBy') == 'id' ? 'ID' : (request()->input('sortBy') == 'title' ? 'Title' : 'Position')"
                             >
                                 @slot('options')
                                     <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('ID') }} </x-admin.input-select-option>
@@ -113,7 +113,7 @@
                             <x-admin.input-select 
                                 id="sortOrder" 
                                 name="sortOrder"
-                                :title="request()->input('sortOrder') == 'asc' ? 'ASC' : (request()->input('sortOrder') == 'desc' ? 'DESC' : 'DESC')"
+                                :title="request()->input('sortOrder') == 'asc' ? 'ASC' : (request()->input('sortOrder') == 'desc' ? 'DESC' : 'ASC')"
                             >
                                 @slot('options')
                                     <x-admin.input-select-option value="asc" :selected="request()->input('sortOrder') == 'asc'"> {{ __('ASC') }} </x-admin.input-select-option>

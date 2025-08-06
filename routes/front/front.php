@@ -5,6 +5,7 @@
 use App\Http\Controllers\Front\Ip\IpController;
 use App\Http\Controllers\Front\Home\IndexController;
 use App\Http\Controllers\Front\Category\CategoryController;
+use App\Http\Controllers\Front\Collection\CollectionController;
 use App\Http\Controllers\Front\Cart\CartController;
 use App\Http\Controllers\Front\Checkout\CheckoutController;
 use App\Http\Controllers\Front\Profile\LoginController;
@@ -20,13 +21,14 @@ Route::name('front.')->group(function () {
     });
 
     // category
-    Route::name('category.')->group(function() {
-        Route::get('/category', [CategoryController::class, 'index'])->name('index');
+    Route::name('category.')->prefix('category')->group(function() {
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+        Route::get('/{slug}', [CategoryController::class, 'detail'])->name('detail');
     });
 
     // collection
-    Route::name('collection.')->group(function() {
-        Route::get('/collection', [CategoryController::class, 'index'])->name('index');
+    Route::name('collection.')->prefix('collection')->group(function() {
+        Route::get('/{slug}', [CollectionController::class, 'detail'])->name('detail');
     });
 
     // wishlist

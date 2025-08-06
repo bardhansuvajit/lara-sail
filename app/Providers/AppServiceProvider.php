@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use App\Models\Country;
+use App\Models\ProductCollection;
 
 use App\Services\OrderNumberService;
 
@@ -58,6 +59,15 @@ class AppServiceProvider extends ServiceProvider
         }
 
 
+        // CACHE - Active Collections
+        $collections = collect();
+        if (Schema::hasTable('product_collections')) {
+            $collections = Cache::rememberForever('active_collections', function () {
+                return ProductCollection::active()->get();
+            });
+        }
+
+
         // DB - Cart data
         $cartData = collect();
         if (Schema::hasTable('carts')) {
@@ -75,6 +85,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         View::share('activeCountries', $countries);
+        View::share('activeCollections', $collections);
         View::share('cartData', $cartData);
     }
 }

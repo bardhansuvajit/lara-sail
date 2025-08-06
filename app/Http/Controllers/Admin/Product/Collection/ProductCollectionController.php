@@ -30,8 +30,8 @@ class ProductCollectionController
 
         $perPage = $request->input('perPage', 15);
         $keyword = $request->input('keyword', '');
-        $sortBy = $request->input('sortBy', 'id');
-        $sortOrder = $request->input('sortOrder', 'desc');
+        $sortBy = $request->input('sortBy', 'position');
+        $sortOrder = $request->input('sortOrder', 'asc');
         $filters = [
             'status' => $request->input('status', ''),
         ];

@@ -10,6 +10,7 @@ class CategoryController extends Controller
 {
     public function index(): View
     {
+        dd('here');
         return view('front.home.index');
     }
 }
