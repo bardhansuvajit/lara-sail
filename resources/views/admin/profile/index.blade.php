@@ -52,10 +52,6 @@
                 <dl>
                     <dt class="text-xs mb-1 font-semibold text-gray-900 dark:text-white">Payment Methods</dt>
                     <dd class="text-xs flex items-center space-x-2 text-gray-500 dark:text-gray-400">
-                        <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700">
-                            <img class="h-4 w-auto dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/visa.svg" alt="" />
-                            <img class="hidden h-4 w-auto dark:flex" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/visa-dark.svg" alt="" />
-                        </div>
                         <div>
                             <div class="text-xs">
                                 <p class="mb-0.5 font-medium text-gray-900 dark:text-white">Visa ending in 7658</p>
@@ -100,10 +96,6 @@
                 <dl>
                     <dt class="text-xs mb-1 font-semibold text-gray-900 dark:text-white">Payment Methods</dt>
                     <dd class="text-xs flex items-center space-x-2 text-gray-500 dark:text-gray-400">
-                        <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700">
-                            <img class="h-4 w-auto dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/visa.svg" alt="" />
-                            <img class="hidden h-4 w-auto dark:flex" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/visa-dark.svg" alt="" />
-                        </div>
                         <div>
                             <div class="text-xs">
                                 <p class="mb-0.5 font-medium text-gray-900 dark:text-white">Visa ending in 7658</p>

@@ -9,7 +9,7 @@
             {{ __('Are you sure?') }}
         </h2>
 
-        <h5 x-text="title" class="text-gray-500 mt-5"></h5>
+        <h5 x-html="title" class="text-gray-500 mt-5"></h5>
 
         <p class="mt-1 text-xs text-gray-600 dark:text-gray-400">
             {{ __('Once this data is deleted, it cannot be recovered') }}

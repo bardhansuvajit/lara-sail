@@ -374,11 +374,11 @@ class ProductCollectionRepository implements ProductCollectionInterface
                 ]);
             }
 
-            return [
+            return response()->json([
                 'code' => 200,
                 'status' => 'success',
                 'message' => 'Position updated'
-            ];
+            ]);
         } catch (\Exception $e) {
             return [
                 'code' => 500,

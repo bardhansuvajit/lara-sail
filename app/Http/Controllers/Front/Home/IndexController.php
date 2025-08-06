@@ -19,6 +19,7 @@ class IndexController extends Controller
     public function index(): View
     {
         $featuredProducts = $this->productFeatureRepository->list('', [], 'all', 'position', 'asc');
+
         return view('front.home.index', [
             'featuredProducts' => $featuredProducts['data'],
         ]);

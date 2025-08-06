@@ -22,7 +22,7 @@
     </section>
 
     @if (count($featuredProducts) > 0)
-    <section class="bg-gray-50 mb-4 py-4 antialiased dark:bg-gray-900">
+    <section class="bg-gray-100 mb-4 py-4 antialiased dark:bg-gray-900">
         <div class="mx-auto max-w-screen-xl px-2 sm:px-0">
             <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0">
                 <p class="{{FD['text-1']}} font-semibold text-gray-600 dark:text-gray-500">FEATURED</h2>
@@ -110,11 +110,10 @@
     @endif
 
     <section class="bg-white px-4 py-10 antialiased dark:bg-gray-900">
-        <div class="mx-auto grid max-w-screen-xl rounded-lg bg-gray-50 p-4 dark:bg-gray-800 md:p-8 lg:grid-cols-12 lg:gap-8 lg:p-16 xl:gap-16">
+        <div class="mx-auto grid max-w-screen-xl rounded-lg bg-gray-50 p-4 dark:bg-gray-800 md:p-8 lg:grid-cols-12 lg:gap-8 xl:gap-16">
             <div class="lg:col-span-5 lg:mt-0">
                 <a href="#">
-                    <img class="mb-4 h-56 w-56 dark:hidden sm:h-96 sm:w-96 md:h-full md:w-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-components.svg" alt="peripherals" />
-                    <img class="mb-4 hidden dark:block md:h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-components-dark.svg" alt="peripherals" />
+                    <svg class="mb-4 h-56 w-56 dark:hidden sm:h-96 sm:w-96 md:h-full md:w-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M205.5-323.5H282q-.5-31.5-22.75-53.75T205.5-400v76.5Zm135.5 0h55q0-79.06-55.72-134.78T205.5-514v55q56.5.5 96 39.75T341-323.5Zm114 0h55q0-62.8-23.79-118.47t-65.18-97.06q-41.39-41.39-97.06-65.18Q268.3-628 205.5-628v55.11q103.8 0 176.65 72.7Q455-427.5 455-323.5ZM326-129v-79H165q-30.94 0-52.97-22.03Q90-252.06 90-283v-473q0-30.94 22.03-52.97Q134.06-831 165-831h630q30.94 0 52.97 22.03Q870-786.94 870-756v473q0 30.94-22.03 52.97Q825.94-208 795-208H634v79H326ZM165-283h630v-473H165v473Zm0 0v-473 473Z"/></svg>
                 </a>
             </div>
             <div class="me-auto place-self-center lg:col-span-7">

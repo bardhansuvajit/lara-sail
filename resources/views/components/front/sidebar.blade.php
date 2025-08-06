@@ -93,8 +93,8 @@ $direction = $direction === 'left' ? 'left-0' : 'right-0';
             <header class="flex items-center justify-between p-2 border-b dark:border-gray-800">
                 <div class="flex-shrink-0 md:order-1">
                     <a href="{{ url('/') }}" title="" class="">
-                        <img class="w-auto sm:flex h-6 sm:h-5 dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/logo-full.svg" alt="">
-                        <img class="hidden w-auto h-6 sm:h-5 dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/logo-full-dark.svg" alt="">
+                        <img class="w-auto sm:flex h-6 sm:h-5 dark:hidden" src="{{ Storage::url('public/default/logo/logo-full.svg') }}" alt="">
+                        <img class="hidden w-auto h-6 sm:h-5 dark:block" src="{{ Storage::url('public/default/logo/logo-full-dark.svg') }}" alt="">
                     </a>
                 </div>
 

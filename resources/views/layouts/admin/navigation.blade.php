@@ -108,7 +108,7 @@
                             class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                             <div class="flex-shrink-0">
                                 <img class="w-11 h-11 rounded-full"
-                                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png"
+                                    src="https://randomuser.me/api/portraits/women/28.jpg"
                                     alt="Bonnie Green avatar" />
                                 <div
                                     class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 rounded-full border border-white bg-primary-700 dark:border-gray-700">
@@ -138,7 +138,7 @@
                             class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                             <div class="flex-shrink-0">
                                 <img class="w-11 h-11 rounded-full"
-                                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png"
+                                    src="https://randomuser.me/api/portraits/women/21.jpg"
                                     alt="Jese Leos avatar" />
                                 <div
                                     class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-gray-900 rounded-full border border-white dark:border-gray-700">
@@ -166,7 +166,7 @@
                             class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                             <div class="flex-shrink-0">
                                 <img class="w-11 h-11 rounded-full"
-                                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png"
+                                    src="https://randomuser.me/api/portraits/men/28.jpg"
                                     alt="Joseph McFall avatar" />
                                 <div
                                     class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-red-600 rounded-full border border-white dark:border-gray-700">
@@ -194,7 +194,7 @@
                             class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                             <div class="flex-shrink-0">
                                 <img class="w-11 h-11 rounded-full"
-                                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png"
+                                    src="https://randomuser.me/api/portraits/men/18.jpg"
                                     alt="Roberta Casas image" />
                                 <div
                                     class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-green-400 rounded-full border border-white dark:border-gray-700">
@@ -223,7 +223,7 @@
                         <a href="#" class="flex py-3 px-4 hover:bg-gray-100 dark:hover:bg-gray-600">
                             <div class="flex-shrink-0">
                                 <img class="w-11 h-11 rounded-full"
-                                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/robert-brown.png"
+                                    src="https://randomuser.me/api/portraits/women/8.jpg"
                                     alt="Robert image" />
                                 <div
                                     class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-purple-500 rounded-full border border-white dark:border-gray-700">
@@ -414,7 +414,7 @@
                     <div class="divide-y divide-gray-100 dark:divide-gray-600">
                         <div class="py-3 px-4">
                             <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil Sims</span>
-                            <span class="block text-sm text-gray-900 truncate dark:text-white">name@flowbite.com</span>
+                            <span class="block text-sm text-gray-900 truncate dark:text-white">name@email.com</span>
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>

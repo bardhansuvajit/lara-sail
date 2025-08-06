@@ -57,8 +57,7 @@
 
         <footer class="bg-white shadow-sm m-0 dark:bg-gray-800 mb-16">
             <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-                <span class="{{FD['text']}} text-gray-500 sm:text-center dark:text-gray-400">© {{date('Y')}} <a href="https://flowbite.com/" class="hover:underline">Flowbite™</a>. All Rights Reserved.
-                </span>
+                <span class="{{FD['text']}} text-gray-500 sm:text-center dark:text-gray-400">&copy; {{date('Y')}} <a href="https://website.com/" class="hover:underline">Website&trade;</a>. All Rights Reserved.</span>
                 <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
                     <li>
                         <a href="#" class="{{FD['text-0']}} hover:underline me-4 md:me-6">About</a>

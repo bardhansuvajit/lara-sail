@@ -11,6 +11,7 @@ use App\Http\Controllers\Front\Profile\LoginController;
 use App\Http\Controllers\Front\Product\ProductController;
 use App\Http\Controllers\Front\Order\OrderController;
 use App\Http\Controllers\Front\Wishlist\WishlistController;
+use App\Http\Controllers\Front\Search\SearchController;
 
 Route::name('front.')->group(function () {
     // home
@@ -32,6 +33,11 @@ Route::name('front.')->group(function () {
     Route::name('wishlist.')->prefix('wishlist')->group(function() {
         Route::post('/check-status', [WishlistController::class, 'checkStatus'])->name('check');
         Route::get('/toggle/{productId}', [WishlistController::class, 'toggle'])->name('toggle');
+    });
+
+    // search
+    Route::name('search.')->group(function() {
+        Route::get('/search', [SearchController::class, 'index'])->name('index');
     });
 
     // cart

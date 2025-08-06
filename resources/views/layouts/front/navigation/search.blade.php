@@ -10,7 +10,7 @@
             <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"></path></svg>
         </div>
 
-        <input type="search" id="default-search" class="block w-full px-1 py-2 {{FD['text']}} text-gray-900 border border-gray-100 {{FD['rounded']}} ps-8 bg-gray-100 focus:ring-primary-500 focus:border-primary-500  dark:bg-gray-700 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 lg:pr-24" placeholder="Search in all categories" autocomplete="off">
+        <input type="search" id="default-search" value="{{ request()->input('q') }}" class="block w-full px-1 py-2 {{FD['text']}} text-gray-900 border border-gray-100 {{FD['rounded']}} ps-8 bg-gray-100 focus:ring-primary-500 focus:border-primary-500  dark:bg-gray-700 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 lg:pr-24" placeholder="Search in all categories" autocomplete="off">
     </div>
 </div>
 
@@ -24,14 +24,14 @@
                         <h3 class="VwrSTsh__so52zqMJvws font-semibold text-gray-900 dark:text-white">Advanced search</h3>
                     </div> --}}
 
-                    <form class="w-full mx-auto pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
+                    <form class="w-full mx-auto pb-4 mb-4 border-b border-gray-200 dark:border-gray-700" action="{{ route('front.search.index') }}" method="GET">
                         {{-- <label for="default-search" class="mb-2 {{FD['text']}} font-medium text-gray-900 custom-1 dark:text-white">Search</label> --}}
                         <div class="relative">
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"></path></svg>
                             </div>
 
-                            <input type="search" id="default-search" class="block w-full p-4 ps-10 {{FD['text']}} text-gray-900 border border-gray-300 {{FD['rounded']}} bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search in all categories..." required="">
+                            <input type="search" name="q" value="{{ request()->input('q') }}" id="default-search" class="block w-full p-4 ps-10 {{FD['text']}} text-gray-900 border border-gray-300 {{FD['rounded']}} bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search in all categories..." required="">
 
                             <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-primary-700 hover:bg-primary-800 ring-4 focus:outline-none focus:ring-primary-300 font-medium {{FD['rounded']}} {{FD['text']}} px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Search</button>
                         </div>
