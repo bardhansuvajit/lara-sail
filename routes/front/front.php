@@ -28,6 +28,7 @@ Route::name('front.')->group(function () {
 
     // collection
     Route::name('collection.')->prefix('collection')->group(function() {
+        Route::get('/', [CollectionController::class, 'index'])->name('index');
         Route::get('/{slug}', [CollectionController::class, 'detail'])->name('detail');
     });
 

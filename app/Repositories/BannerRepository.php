@@ -31,10 +31,10 @@ class BannerRepository implements BannerInterface
             if (!empty($keyword)) {
                 $query->where(function ($query) use ($keyword) {
                     $query->where('title', 'like', '%' . $keyword . '%')
-                        ->orWhere('slug', 'like', '%' . $keyword . '%')
-                        ->orWhere('short_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('long_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('tags', 'like', '%' . $keyword . '%');
+                        ->orWhere('description', 'like', '%' . $keyword . '%')
+                        ->orWhere('web_redirect_url', 'like', '%' . $keyword . '%')
+                        ->orWhere('mobile_redirect_type', 'like', '%' . $keyword . '%')
+                        ->orWhere('mobile_redirect_target', 'like', '%' . $keyword . '%');
                 });
             }
 
@@ -85,15 +85,32 @@ class BannerRepository implements BannerInterface
         try {
             $data = new Banner();
             $data->title = $array['title'];
-            $data->slug = Str::slug($array['title']);
+            $data->description = $array['description'] ?? null;
+            $data->start_at = $array['start_at'];
+            $data->end_at = $array['end_at'];
+            $data->web_redirect_url = $array['web_redirect_url'];
+            $data->mobile_redirect_target = $array['mobile_redirect_target'];
+            $data->mobile_redirect_type = $array['mobile_redirect_type'];
 
-            if (!empty($array['image'])) {
-                $uploadResp = fileUpload($array['image'], 'p-clt');
+            if (!empty($array['web_image'])) {
+                $uploadResp1 = fileUpload($array['web_image'], 'bnr-w');
 
-                $data->image_s = $uploadResp['smallThumbName'];
-                $data->image_m = $uploadResp['mediumThumbName'];
-                $data->image_l = $uploadResp['largeThumbName'];
+                $data->web_image_s_path = $uploadResp1['smallThumbName'];
+                $data->web_image_m_path = $uploadResp1['mediumThumbName'];
+                $data->web_image_l_path = $uploadResp1['largeThumbName'];
             }
+
+            if (!empty($array['app_image'])) {
+                $uploadResp2 = fileUpload($array['app_image'], 'bnr-a');
+
+                $data->mobile_image_s_path = $uploadResp2['smallThumbName'];
+                $data->mobile_image_m_path = $uploadResp2['mediumThumbName'];
+                $data->mobile_image_l_path = $uploadResp2['largeThumbName'];
+            }
+
+            // get max position for given attribute_id and type
+            $lastPosition = Banner::max('position');
+            $data->position = $lastPosition ? $lastPosition + 1 : 1;
 
             $data->save();
 

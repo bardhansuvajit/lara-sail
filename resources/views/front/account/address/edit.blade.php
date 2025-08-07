@@ -10,7 +10,9 @@
 
             <div class="mt-4 sm:mt-6 md:gap-6 lg:flex lg:items-start xl:gap-8">
                 {{-- left part --}}
-                @include('front.account.includes.account-overview')
+                <div class="hidden sm:block w-full">
+                    @include('front.account.includes.account-overview')
+                </div>
 
                 {{-- right part - order summary --}}
                 <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">

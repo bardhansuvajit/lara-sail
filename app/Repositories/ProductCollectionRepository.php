@@ -144,6 +144,36 @@ class ProductCollectionRepository implements ProductCollectionInterface
         }
     }
 
+    public function getBySlug(String $slug)
+    {
+        try {
+            $data = ProductCollection::where('slug', $slug)->first();
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
     public function update(Array $array)
     {
         try {
@@ -152,6 +182,9 @@ class ProductCollectionRepository implements ProductCollectionInterface
             if ($data['code'] == 200) {
                 $data['data']->title = $array['title'];
                 $data['data']->slug = \Str::slug($array['title']);
+
+                $data['data']->short_description = $array['short_description'] ?? null;
+                $data['data']->long_description = $array['long_description'] ?? null;
 
                 if (!empty($array['image'])) {
                     $uploadResp = fileUpload($array['image'], 'p-clt');

@@ -98,7 +98,7 @@
                             <x-admin.input-select 
                                 id="sortBy" 
                                 name="sortBy"
-                                :title="request()->input('sortBy') == 'id' ? 'ID' : (request()->input('sortBy') == 'title' ? 'Title' : 'ID')"
+                                :title="request()->input('sortBy') == 'id' ? 'ID' : (request()->input('sortBy') == 'title' ? 'Title' : 'Position')"
                             >
                                 @slot('options')
                                     <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('ID') }} </x-admin.input-select-option>
@@ -113,7 +113,7 @@
                             <x-admin.input-select 
                                 id="sortOrder" 
                                 name="sortOrder"
-                                :title="request()->input('sortOrder') == 'asc' ? 'ASC' : (request()->input('sortOrder') == 'desc' ? 'DESC' : 'DESC')"
+                                :title="request()->input('sortOrder') == 'asc' ? 'ASC' : (request()->input('sortOrder') == 'desc' ? 'DESC' : 'ASC')"
                             >
                                 @slot('options')
                                     <x-admin.input-select-option value="asc" :selected="request()->input('sortOrder') == 'asc'"> {{ __('ASC') }} </x-admin.input-select-option>
@@ -221,6 +221,9 @@
                         </th>
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Title</th>
+                        <th scope="col" class="px-2 py-1">Web Image</th>
+                        <th scope="col" class="px-2 py-1">App Image</th>
+                        <th scope="col" class="px-2 py-1">Timing</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
@@ -244,18 +247,25 @@
                                 <p class="text-xs">{{ $item->id }}</p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <div class="flex space-x-2 items-center">
-                                    @if($item->image_s) <div class="h-10 overflow-hidden flex"><img src="{{ Storage::url($item->image_s) }}" alt=""></div> @endif
-                                    <div>
-                                        <p class="text-xs font-bold">{{ $item->title }}</p>
-                                        <p class="text-xs text-gray-500">{{ $item->slug }}</p>
-                                    </div>
+                                <p class="text-xs font-bold">{{ $item->title }}</p>
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                @if($item->web_image_s_path) <div class="h-10 overflow-hidden flex"><img src="{{ Storage::url($item->web_image_s_path) }}" alt=""></div> @endif
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                @if($item->mobile_image_s_path) <div class="h-10 overflow-hidden flex"><img src="{{ Storage::url($item->mobile_image_s_path) }}" alt=""></div> @endif
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                <div class="flex space-x-2">
+                                    <p class="text-xs font-bold">{{ $item->start_at }}</p>
+                                    <p class="text-xs font-bold">-</p>
+                                    <p class="text-xs font-bold">{{ $item->end_at }}</p>
                                 </div>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">
                                     @livewire('toggle-status', [
-                                        'model' => 'ProductCollection',
+                                        'model' => 'Banner',
                                         'modelId' => $item->id,
                                     ])
 

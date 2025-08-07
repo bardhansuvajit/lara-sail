@@ -189,6 +189,7 @@ class ProductVariationAttributeValueController
     public function position(Request $request)
     {
         $resp = $this->productVariationAttributeValueRepository->position($request->ids);
+        return $resp;
         // return redirect()->back()->with($resp['status'], $resp['message']);
     }
 }

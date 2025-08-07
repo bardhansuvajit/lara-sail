@@ -199,11 +199,17 @@
 	
 			<div class="mt-6 w-full md:mt-8 lg:mt-0 lg:max-w-lg">
 				<div class="space-y-5 rounded-lg bg-gray-100 p-6 dark:bg-gray-700 shadow-lg">
-					<a href="#" title="" class="{{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"> Sign In or Create Account </a>
+					@if (auth()->guard('web')->check())
+						<a href="{{ route('front.account.index') }}" title="" class="{{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"> Visit your Account </a>
+					@else
+						<a href="{{ route('front.login') }}" title="" class="{{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"> Sign In or Create Account </a>
+					@endif
 
 					<hr class="border-gray-200 dark:border-gray-600" />
 
-					<form action="#">
+					@livewire('subscription-form')
+
+					{{-- <form action="#">
 						<div class="items-end space-y-4 sm:flex sm:space-y-0">
 							<div class="relative mr-3 w-full sm:w-96 lg:w-full">
 								<label for="subscription-mail" class="mb-2 block {{FD['text']}} font-medium text-gray-900 dark:text-gray-300"> Get the latest deals and more. </label>
@@ -213,7 +219,7 @@
 								<button type="submit" class="w-full cursor-pointer rounded-lg bg-primary-700 px-5 py-3 text-center {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Subscribe</button>
 							</div>
 						</div>
-					</form>
+					</form> --}}
 
 					<hr class="border-gray-200 dark:border-gray-600" />
 

@@ -29,7 +29,7 @@ class BannerController
 
         $perPage = $request->input('perPage', 15);
         $keyword = $request->input('keyword', '');
-        $sortBy = $request->input('sortBy', 'name');
+        $sortBy = $request->input('sortBy', 'position');
         $sortOrder = $request->input('sortOrder', 'asc');
         $filters = [
             'status' => $request->input('status', ''),
@@ -51,14 +51,21 @@ class BannerController
         // dd($request->all());
 
         $request->validate([
-            'image' => 'nullable|image|max:1000',
             'title' => 'required|min:2|max:255',
-            'level' => 'required|in:1,2,3,4',
-            'parent_id' => 'nullable',
+            'description' => 'nullable|min:2|max:10000',
+            'start_at' => 'required|date',
+            'end_at' => 'required|date|after:start_at',
+
+            'web_image' => 'required|image|max:1000',
+            'app_image' => 'required|image|max:1000',
+
+            'web_redirect_url' => 'required|url|min:2',
+            'mobile_redirect_target' => 'required|min:2',
+            'mobile_redirect_type' => 'required|in:screen,deep-link,url'
         ]);
 
         $resp = $this->bannerRepository->store($request->all());
-        return redirect()->route('admin.banner.index')->with($resp['status'], $resp['message']);
+        return redirect()->route('admin.website.banner.index')->with($resp['status'], $resp['message']);
     }
 
     public function edit(Int $id): View
@@ -82,7 +89,7 @@ class BannerController
         ]);
 
         $resp = $this->bannerRepository->update($request->all());
-        return redirect()->route('admin.banner.index')->with($resp['status'], $resp['message']);
+        return redirect()->route('admin.website.banner.index')->with($resp['status'], $resp['message']);
     }
 
     public function delete(Int $id)
@@ -138,5 +145,12 @@ class BannerController
         }
 
         return redirect()->back()->with('error', $resp['message']);
+    }
+
+    public function position(Request $request)
+    {
+        $resp = $this->bannerRepository->position($request->ids);
+        return $resp;
+        // return redirect()->back()->with($resp['status'], $resp['message']);
     }
 }

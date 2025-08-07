@@ -2,47 +2,15 @@
 <x-front.sidebar name="mob-sidebar" maxWidth="2xl" direction="left" focusable>
 	<div class="p-2 w-60 ">
 		<ul class="items-center space-y-2 px-2">
-			<li class="">
-				<button type="button" title=""
-					class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
-					Best Sellers
-				</button>
-			</li>
-			<li class="">
-				<button type="button" title=""
-					class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
-					Today's Deals
-				</button>
-			</li>
-			<li class="">
-				<button type="button" title=""
-					class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
-					Gift Ideas
-				</button>
-			</li>
-			<li class="">
-				<button type="button" title=""
-					class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
-					Membership
-				</button>
-			</li>
-			<li class="">
-				<button type="button" title="" class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
-					Gift Cards
-				</button>
-			</li>
-			<li class="">
-				<button type="button" title=""
-					class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
-					Customer Service
-				</button>
-			</li>
-			<li class="">
-				<button type="button" title=""
-					class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
-					Open a Shop
-				</button>
-			</li>
+			@foreach ($activeCollections as $collection)
+				<li class="">
+                    <a href="{{ route('front.collection.detail', $collection->slug) }}">
+						<button type="button" title="{{ $collection->slug }}" class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
+							{{ $collection->title }}
+						</button>
+					</a>
+				</li>
+            @endforeach
 		</ul>
 	
 		<div id="dropdown-cta" class="p-4 mt-6 {{FD['rounded']}} bg-blue-50 dark:bg-blue-900" role="alert">

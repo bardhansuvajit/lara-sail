@@ -316,7 +316,7 @@
                                         x-on:click.prevent="
                                             $dispatch('open-sidebar', 'quick-data-view');
                                             $dispatch('data-image', '{{ $item->image_m }}');
-                                            $dispatch('data-title', '{{ $item->title }}');
+                                            $dispatch('data-title', '{{ htmlspecialchars($item->title, ENT_QUOTES) }}');
                                             $dispatch('data-slug', '{{ $item->slug }}');
                                             $dispatch('data-level', '{{ $item->level }}');
                                             $dispatch('data-parent', '{{ $item->parent_id ? $item->parentDetails?->title : '' }}');
@@ -344,8 +344,8 @@
                                         href="javascript: void(0)"
                                         x-data=""
                                         x-on:click.prevent="
-                                            $dispatch('open-modal', 'confirm-data-deletion'); 
-                                            $dispatch('data-title', '{{ $item->title }}');
+                                            $dispatch('open-modal', 'confirm-data-deletion');
+                                            $dispatch('data-title', '{{ htmlspecialchars($item->title, ENT_QUOTES) }}');
                                             $dispatch('set-delete-route', '{{ route('admin.product.category.delete', $item->id) }}')
                                         " >
                                         @slot('icon')
@@ -401,7 +401,7 @@
             </div>
 
             <h5 class="text-xs font-bold mb-1">Title</h5>
-            <p class="text-sm mb-3" x-text="title"></p>
+            <p class="text-sm mb-3" x-html="title"></p>
 
             <h5 class="text-xs font-bold mb-1">Slug</h5>
             <p class="text-sm mb-3" x-text="slug"></p>

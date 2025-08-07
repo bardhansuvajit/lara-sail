@@ -18,14 +18,14 @@ return new class extends Migration
             $table->string('web_image_s_path')->nullable();
             $table->string('web_image_m_path')->nullable();
             $table->string('web_image_l_path')->nullable();
-            $table->string('web_redirect_url')->nullable()->comment('URL to redirect when clicked on web');
+            $table->text('web_redirect_url')->nullable()->comment('URL to redirect when clicked on web');
 
             // For mobile app banners (React Native)
             $table->string('mobile_image_s_path')->nullable();
             $table->string('mobile_image_m_path')->nullable();
             $table->string('mobile_image_l_path')->nullable();
             $table->string('mobile_redirect_type')->nullable()->comment('Type of mobile redirect (screen/deep-link/url)');
-            $table->string('mobile_redirect_target')->nullable()->comment('Target screen or URL for mobile');
+            $table->text('mobile_redirect_target')->nullable()->comment('Target screen or URL for mobile');
 
             // Common fields
             $table->string('title')->nullable()->comment('Banner title for admin reference');
