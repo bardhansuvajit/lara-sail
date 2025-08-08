@@ -1,4 +1,4 @@
-<footer class="bg-gray-200 antialiased dark:bg-gray-800 mb-12 sm:mb-0">
+<footer class="bg-gray-200 antialiased dark:bg-gray-800/90 mb-12 sm:mb-0">
 	<div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
 		<div class="border-b border-gray-100 py-6 dark:border-gray-700 md:py-8 lg:py-16">
 			<div class="items-start gap-6 md:gap-8 lg:flex 2xl:gap-24">
@@ -198,7 +198,7 @@
 			</div>
 	
 			<div class="mt-6 w-full md:mt-8 lg:mt-0 lg:max-w-lg">
-				<div class="space-y-5 rounded-lg bg-gray-100 p-6 dark:bg-gray-700 shadow-lg">
+				<div class="space-y-5 rounded-lg bg-gray-100 p-6 dark:bg-gray-700/50 shadow-lg">
 					@if (auth()->guard('web')->check())
 						<a href="{{ route('front.account.index') }}" title="" class="{{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"> Visit your Account </a>
 					@else
