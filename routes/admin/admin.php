@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\Banner\BannerController;
 use App\Http\Controllers\Admin\State\StateController;
 use App\Http\Controllers\Admin\City\CityController;
 use App\Http\Controllers\Admin\Application\ApplicationSettingsController;
+use App\Http\Controllers\Admin\NewsletterEmail\NewsletterEmailController;
+use App\Http\Controllers\Admin\ContentPage\ContentPageController;
 
 use App\Http\Controllers\Admin\Product\Listing\ProductListingController;
 use App\Http\Controllers\Admin\Product\Category\ProductCategoryController;
@@ -274,6 +276,34 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('website')->name('website.')->group(function() {
             // banner
             Route::prefix('banner')->name('banner.')->controller(BannerController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+                Route::post('/bulk', 'bulk')->name('bulk');
+                Route::post('/import', 'import')->name('import');
+                Route::get('/export/{type}', 'export')->name('export');
+                Route::post('/position', 'position')->name('position');
+            });
+
+            // newsletter email
+            Route::prefix('newsletter/email')->name('newsletter.email.')->controller(NewsletterEmailController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+                Route::post('/bulk', 'bulk')->name('bulk');
+                Route::post('/import', 'import')->name('import');
+                Route::get('/export/{type}', 'export')->name('export');
+                Route::post('/position', 'position')->name('position');
+            });
+
+            // content page
+            Route::prefix('content/page')->name('content.page.')->controller(ContentPageController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');

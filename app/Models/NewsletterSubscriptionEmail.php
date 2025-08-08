@@ -13,8 +13,11 @@ class NewsletterSubscriptionEmail extends Model
         'email',
         'ip_address',
         'user_agent',
+        'unsubscribe_token',
         'source',
         'meta',
+        'unsubscribed_at',
+        'subscribed_at'
     ];
 
     protected $casts = [

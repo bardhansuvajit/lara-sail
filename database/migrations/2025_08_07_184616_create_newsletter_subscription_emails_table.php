@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('newsletter_subscription_emails', function (Blueprint $table) {
             $table->id();
             $table->string('email', 80)->unique();
-            $table->string('ip_address', 45)->nullable()->comment('User IP for analytics and spam prevention');
+            $table->string('ip_address', 45)->nullable();
             $table->string('user_agent')->nullable()->comment('User browser info');
             $table->timestamp('subscribed_at')->useCurrent();
             $table->timestamp('unsubscribed_at')->nullable();
