@@ -44,6 +44,22 @@
                 </div>
             </div>
 
+            <div class="grid gap-4 mb-4 sm:grid-cols-1">
+                <div> 
+                    <x-admin.input-label for="short_description" :value="__('Short Description')" />
+                    <x-admin.textarea id="short_description" class="block" type="text" name="short_description" :value="old('short_description', $data->short_description)" placeholder="Enter Short Description" maxlength="1000" />
+                    <x-admin.input-error :messages="$errors->get('short_description')" class="mt-2" />
+                </div>
+            </div>
+
+            <div class="grid gap-4 mb-4 sm:grid-cols-1">
+                <div> 
+                    <x-admin.input-label for="long_description" :value="__('Long Description')" />
+                    <x-admin.textarea id="long_description" class="block min-h-[6rem] max-h-[10rem]" type="text" name="long_description" :value="old('long_description', $data->long_description)" placeholder="Enter Long Description" />
+                    <x-admin.input-error :messages="$errors->get('long_description')" class="mt-2" />
+                </div>
+            </div>
+
             <div class="items-center space-x-4 flex my-6">
                 <x-admin.button
                     type="submit"
@@ -58,16 +74,16 @@
             @if (count($variations) > 0)
                 <hr class="dark:border-gray-700 mb-4">
 
-                <h3 class="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3">Variations</h3>
+                <h3 class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white mb-3">Variations</h3>
 
                 @foreach ($variations as $singleVariation)
                     @if ($singleVariation->values->count() > 0)
                         <div class="py-3 bg-white dark:bg-gray-800 border-t border-gray-500 dark:border-gray-700">
                             <div class="flex items-center justify-between mb-3">
-                                <h5 class="text-base font-medium hover:text-primary-600 transition-colors">
+                                <h5 class="text-sm font-medium hover:text-primary-600 transition-colors">
                                     <a href="{{ route('admin.product.variation.attribute.edit', $singleVariation->id) }}" 
                                     target="_blank"
-                                    class="flex items-center gap-1">
+                                    class="flex items-center gap-1 underline hover:no-underline">
                                         {{ $singleVariation->title }}
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />

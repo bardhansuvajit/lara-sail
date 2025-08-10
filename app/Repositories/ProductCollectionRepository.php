@@ -87,6 +87,9 @@ class ProductCollectionRepository implements ProductCollectionInterface
             $data->title = $array['title'];
             $data->slug = Str::slug($array['title']);
 
+            $data->short_description = $array['short_description'] ?? null;
+            $data->long_description = $array['long_description'] ?? null;
+
             if (!empty($array['image'])) {
                 $uploadResp = fileUpload($array['image'], 'p-clt');
 
@@ -98,6 +101,8 @@ class ProductCollectionRepository implements ProductCollectionInterface
             // get max position for given attribute_id and type
             $lastPosition = ProductCollection::max('position');
             $data->position = $lastPosition ? $lastPosition + 1 : 1;
+
+            $data->status = 0;
 
             $data->save();
 
@@ -317,6 +322,9 @@ class ProductCollectionRepository implements ProductCollectionInterface
                     continue; // Skip rows without a title
                 }
 
+                // get max position for given attribute_id and type
+                $lastPosition = ProductCollection::max('position');
+
                 ProductCollection::create([
                     'title' => $item['title'] ? $item['title'] : null,
                     'slug' => !empty($item['title']) ? Str::slug($item['title']) : null,
@@ -326,7 +334,8 @@ class ProductCollectionRepository implements ProductCollectionInterface
                     'meta_title' => !empty($item['meta_title']) ? $item['meta_title'] : null,
                     'meta_desc' => !empty($item['meta_desc']) ? $item['meta_desc'] : null,
                     'position' => !empty($item['position']) ? $item['position'] : 1,
-                    'status' => !empty($item['status']) ? $item['status'] : 0
+                    'status' => 0,
+                    'position' => $lastPosition ? $lastPosition + 1 : 1
                 ]);
 
                 $processedCount++;

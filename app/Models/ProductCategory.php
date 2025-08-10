@@ -41,6 +41,11 @@ class ProductCategory extends Model
         return $this->hasMany('App\Models\ProductCategoryVariationAttribute', 'category_id', 'id');
     }
 
+    public function products()
+    {
+        return $this->hasMany('App\Models\Product', 'category_id', 'id');
+    }
+
     public function variationValues()
     {
         return $this->belongsToMany(

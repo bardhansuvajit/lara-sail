@@ -239,6 +239,7 @@
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Title</th>
                         <th scope="col" class="px-2 py-1">Level</th>
+                        <th scope="col" class="px-2 py-1">Products</th>
                         <th scope="col" class="px-2 py-1">Available Variations</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
@@ -279,6 +280,17 @@
                                         No. of Sub-categories 
                                         <span class="font-medium text-gray-800 dark:text-gray-300">{{ count($item->childDetails) }}</span>
                                     </p>
+                                @endif
+                            </td>
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                @php
+                                    $productCount = count($item->products);
+                                @endphp
+
+                                @if ($productCount == 0)
+                                    <p class="text-xs text-gray-500">{{ count($item->products) }}</p>
+                                @else
+                                    <p class="text-xs">{{ count($item->products) }}</p>
                                 @endif
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">

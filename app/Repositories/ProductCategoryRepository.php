@@ -89,6 +89,9 @@ class ProductCategoryRepository implements ProductCategoryInterface
             $data->parent_id = $array['parent_id'] ?? null;
             $data->level = $array['level'];
 
+            $data->short_description = $array['short_description'] ?? null;
+            $data->long_description = $array['long_description'] ?? null;
+
             if (!empty($array['image'])) {
                 $uploadResp = fileUpload($array['image'], 'p-cat');
 
@@ -96,6 +99,12 @@ class ProductCategoryRepository implements ProductCategoryInterface
                 $data->image_m = $uploadResp['mediumThumbName'];
                 $data->image_l = $uploadResp['largeThumbName'];
             }
+
+            // get max position for given attribute_id and type
+            $lastPosition = ProductCategory::max('position');
+            $data->position = $lastPosition ? $lastPosition + 1 : 1;
+
+            $data->status = 0;
 
             $data->save();
 
@@ -156,6 +165,9 @@ class ProductCategoryRepository implements ProductCategoryInterface
                 $data['data']->slug = \Str::slug($array['title']);
                 $data['data']->level = $array['level'];
                 $data['data']->parent_id = $array['parent_id'] ?? null;
+
+                $data['data']->short_description = $array['short_description'] ?? null;
+                $data['data']->long_description = $array['long_description'] ?? null;
 
                 if (!empty($array['image'])) {
                     $uploadResp = fileUpload($array['image'], 'p-cat');
@@ -283,6 +295,9 @@ class ProductCategoryRepository implements ProductCategoryInterface
                     continue; // Skip rows without a title
                 }
 
+                // get max position for given attribute_id and type
+                $lastPosition = ProductCategory::max('position');
+
                 // dd($item['parent_id']);
 
                 ProductCategory::create([
@@ -295,7 +310,8 @@ class ProductCategoryRepository implements ProductCategoryInterface
                     'tags' => !empty($item['tags']) ? $item['tags'] : null,
                     'meta_title' => !empty($item['meta_title']) ? $item['meta_title'] : null,
                     'meta_desc' => !empty($item['meta_desc']) ? $item['meta_desc'] : null,
-                    'status' => !empty($item['status']) ? $item['status'] : 0
+                    'status' => 0,
+                    'position' => $lastPosition ? $lastPosition + 1 : 1
                 ]);
 
                 $processedCount++;

@@ -30,6 +30,22 @@
                 </div>
             </div>
 
+            <div class="grid gap-4 mb-4 sm:grid-cols-1">
+                <div> 
+                    <x-admin.input-label for="short_description" :value="__('Short Description')" />
+                    <x-admin.textarea id="short_description" class="block" type="text" name="short_description" :value="old('short_description')" placeholder="Enter Short Description" maxlength="1000" />
+                    <x-admin.input-error :messages="$errors->get('short_description')" class="mt-2" />
+                </div>
+            </div>
+
+            <div class="grid gap-4 mb-4 sm:grid-cols-1">
+                <div> 
+                    <x-admin.input-label for="long_description" :value="__('Long Description')" />
+                    <x-admin.textarea id="long_description" class="block min-h-[6rem] max-h-[10rem]" type="text" name="long_description" :value="old('long_description')" placeholder="Enter Long Description" />
+                    <x-admin.input-error :messages="$errors->get('long_description')" class="mt-2" />
+                </div>
+            </div>
+
             <div class="items-center space-x-4 flex my-6">
                 <x-admin.button
                     type="submit"

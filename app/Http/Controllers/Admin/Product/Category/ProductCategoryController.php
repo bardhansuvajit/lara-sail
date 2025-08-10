@@ -60,7 +60,9 @@ class ProductCategoryController
             'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
             'title' => 'required|min:2|max:255',
             'level' => 'required|in:1,2,3,4',
-            'parent_id' => 'required_if:level,2,3,4'
+            'parent_id' => 'required_if:level,2,3,4',
+            'short_description' => 'nullable|min:2|max:1000',
+            'long_description' => 'nullable|min:2',
         ], [
             'image.max' => 'The image field must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
         ]);
@@ -93,12 +95,14 @@ class ProductCategoryController
             'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
             'title' => 'required|min:2|max:255',
             'level' => 'required|in:1,2,3,4',
-            'parent_id' => 'required_if:level,2,3,4'
+            'parent_id' => 'required_if:level,2,3,4',
+            'short_description' => 'nullable|min:2|max:1000',
+            'long_description' => 'nullable|min:2',
         ]);
 
         $resp = $this->productCategoryRepository->update($request->all());
         // dd($resp);
-        return redirect()->route('admin.product.category.index')->with($resp['status'], $resp['message']);
+        return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
     public function delete(Int $id)
