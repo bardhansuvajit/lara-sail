@@ -36,6 +36,10 @@ class ProductCollection extends Model
             self::clearActiveCollectionsCache();
         });
 
+        static::updated(function () {
+            self::clearActiveCollectionsCache();
+        });
+
         static::deleted(function () {
             self::clearActiveCollectionsCache();
         });
@@ -47,7 +51,7 @@ class ProductCollection extends Model
 
         // Optionally re-cache immediately if needed:
         Cache::rememberForever('active_collections', function () {
-            return self::active()->get();
+            return self::active()->orderBy('position')->get();
         });
     }
 }

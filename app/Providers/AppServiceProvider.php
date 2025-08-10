@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use App\Models\Country;
 use App\Models\ProductCollection;
+use App\Models\SocialMedia;
 
 use App\Services\OrderNumberService;
 
@@ -63,7 +64,16 @@ class AppServiceProvider extends ServiceProvider
         $collections = collect();
         if (Schema::hasTable('product_collections')) {
             $collections = Cache::rememberForever('active_collections', function () {
-                return ProductCollection::active()->get();
+                return ProductCollection::active()->orderBy('position')->get();
+            });
+        }
+
+
+        // CACHE - Active Social Media Icons
+        $socialMedia = collect();
+        if (Schema::hasTable('social_media')) {
+            $socialMedia = Cache::rememberForever('active_social_media', function () {
+                return SocialMedia::active()->orderBy('position')->get();
             });
         }
 
@@ -86,6 +96,7 @@ class AppServiceProvider extends ServiceProvider
 
         View::share('activeCountries', $countries);
         View::share('activeCollections', $collections);
+        View::share('socialMedia', $socialMedia);
         View::share('cartData', $cartData);
     }
 }

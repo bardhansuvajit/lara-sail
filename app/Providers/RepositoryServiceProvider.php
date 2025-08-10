@@ -41,6 +41,7 @@ use App\Interfaces\UserLoginHistoryInterface;
 use App\Interfaces\BannerInterface;
 use App\Interfaces\NewsletterSubscriptionEmailInterface;
 use App\Interfaces\ContentPageInterface;
+use App\Interfaces\SocialMediaInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -79,6 +80,7 @@ use App\Repositories\UserLoginHistoryRepository;
 use App\Repositories\BannerRepository;
 use App\Repositories\NewsletterSubscriptionEmailRepository;
 use App\Repositories\ContentPageRepository;
+use App\Repositories\SocialMediaRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -125,6 +127,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(BannerInterface::class, BannerRepository::class);
         $this->app->bind(NewsletterSubscriptionEmailInterface::class, NewsletterSubscriptionEmailRepository::class);
         $this->app->bind(ContentPageInterface::class, ContentPageRepository::class);
+        $this->app->bind(SocialMediaInterface::class, SocialMediaRepository::class);
     }
 
     /**

@@ -2,17 +2,17 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ProductCollectionInterface;
-use App\Models\ProductCollection;
+use App\Interfaces\SocialMediaInterface;
+use App\Models\SocialMedia;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
 
-use App\Exports\ProductCollectionsExport;
+use App\Exports\SocialMediasExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ProductCollectionRepository implements ProductCollectionInterface
+class SocialMediaRepository implements SocialMediaInterface
 {
     private TrashInterface $trashRepository;
 
@@ -25,16 +25,12 @@ class ProductCollectionRepository implements ProductCollectionInterface
     {
         try {
             DB::enableQueryLog();
-            $query = ProductCollection::query();
+            $query = SocialMedia::query();
 
             // keyword
             if (!empty($keyword)) {
                 $query->where(function ($query) use ($keyword) {
-                    $query->where('title', 'like', '%' . $keyword . '%')
-                        ->orWhere('slug', 'like', '%' . $keyword . '%')
-                        ->orWhere('short_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('long_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('tags', 'like', '%' . $keyword . '%');
+                    $query->where('name', 'like', '%' . $keyword . '%');
                 });
             }
 
@@ -83,20 +79,15 @@ class ProductCollectionRepository implements ProductCollectionInterface
     {
         // dd($array['image']);
         try {
-            $data = new ProductCollection();
-            $data->title = $array['title'];
-            $data->slug = Str::slug($array['title']);
-
-            if (!empty($array['image'])) {
-                $uploadResp = fileUpload($array['image'], 'p-clt');
-
-                $data->image_s = $uploadResp['smallThumbName'];
-                $data->image_m = $uploadResp['mediumThumbName'];
-                $data->image_l = $uploadResp['largeThumbName'];
-            }
+            $data = new SocialMedia();
+            $data->name = $array['name'];
+            $data->icon_colored = $array['icon_colored'];
+            $data->icon_base = $array['icon_base'];
+            $data->url = $array['url'];
+            $data->status = 0;
 
             // get max position for given attribute_id and type
-            $lastPosition = ProductCollection::max('position');
+            $lastPosition = SocialMedia::max('position');
             $data->position = $lastPosition ? $lastPosition + 1 : 1;
 
             $data->save();
@@ -121,7 +112,7 @@ class ProductCollectionRepository implements ProductCollectionInterface
     public function getById(Int $id)
     {
         try {
-            $data = ProductCollection::find($id);
+            $data = SocialMedia::find($id);
 
             if (!empty($data)) {
                 return [
@@ -151,7 +142,7 @@ class ProductCollectionRepository implements ProductCollectionInterface
     public function getBySlug(String $slug)
     {
         try {
-            $data = ProductCollection::where('slug', $slug)->first();
+            $data = SocialMedia::where('slug', $slug)->first();
 
             if (!empty($data)) {
                 return [
@@ -184,20 +175,10 @@ class ProductCollectionRepository implements ProductCollectionInterface
             $data = $this->getById($array['id']);
 
             if ($data['code'] == 200) {
-                $data['data']->title = $array['title'];
-                $data['data']->slug = \Str::slug($array['title']);
-
-                $data['data']->short_description = $array['short_description'] ?? null;
-                $data['data']->long_description = $array['long_description'] ?? null;
-
-                if (!empty($array['image'])) {
-                    $uploadResp = fileUpload($array['image'], 'p-clt');
-
-                    $data['data']->image_s = $uploadResp['smallThumbName'];
-                    $data['data']->image_m = $uploadResp['mediumThumbName'];
-                    $data['data']->image_l = $uploadResp['largeThumbName'];
-                }
-
+                $data['data']->name = $array['name'];
+                $data['data']->icon_colored = $array['icon_colored'];
+                $data['data']->icon_base = $array['icon_base'];
+                $data['data']->url = $array['url'];
                 $data['data']->save();
 
                 return [
@@ -227,12 +208,12 @@ class ProductCollectionRepository implements ProductCollectionInterface
             if ($data['code'] == 200) {
                 // Handling trash
                 $this->trashRepository->store([
-                    'model' => 'ProductCollection',
-                    'table_name' => 'product_collections',
+                    'model' => 'SocialMedia',
+                    'table_name' => 'social_media',
                     'deleted_row_id' => $data['data']->id,
-                    'thumbnail' => $data['data']->image_s,
-                    'title' => $data['data']->title,
-                    'description' => $data['data']->title.' data deleted from product collections table',
+                    'thumbnail' => '',
+                    'title' => $data['data']->name,
+                    'description' => $data['data']->name.' data deleted from product social_media table',
                     'status' => 'deleted',
                 ]);
 
@@ -260,18 +241,18 @@ class ProductCollectionRepository implements ProductCollectionInterface
     public function bulkAction(Array $array)
     {
         try {
-            $data = ProductCollection::whereIn('id', $array['ids'])->get();
+            $data = SocialMedia::whereIn('id', $array['ids'])->get();
             if ($array['action'] == 'delete') {
                 $data->each(function ($item) {
 
                     // Handling trash
                     $this->trashRepository->store([
-                        'model' => 'ProductCollection',
-                        'table_name' => 'product_collections',
+                        'model' => 'SocialMedia',
+                        'table_name' => 'social_media',
                         'deleted_row_id' => $item->id,
-                        'thumbnail' => $item->image_s,
-                        'title' => $item->title,
-                        'description' => $item->title.' data deleted from product collections table',
+                        'thumbnail' => '',
+                        'title' => $item->name,
+                        'description' => $item->name.' data deleted from product social_media table',
                         'status' => 'deleted',
                     ]);
 
@@ -307,18 +288,18 @@ class ProductCollectionRepository implements ProductCollectionInterface
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
-            // $processedCount = saveToDatabase($data, 'ProductCollection');
+            // $processedCount = saveToDatabase($data, 'SocialMedia');
 
             // save into Database
             $processedCount = 0;
 
             foreach ($data as $item) {
-                if (!isset($item['title'])) {
-                    continue; // Skip rows without a title
+                if (!isset($item['name'])) {
+                    continue; // Skip rows without a name
                 }
 
-                ProductCollection::create([
-                    'title' => $item['title'] ? $item['title'] : null,
+                SocialMedia::create([
+                    'name' => $item['name'] ? $item['name'] : null,
                     'slug' => !empty($item['title']) ? Str::slug($item['title']) : null,
                     'short_description' => !empty($item['short_description']) ? $item['short_description'] : null,
                     'long_description' => !empty($item['long_description']) ? $item['long_description'] : null,
@@ -356,23 +337,23 @@ class ProductCollectionRepository implements ProductCollectionInterface
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
             if (count($data['data']) > 0) {
-                $fileName = "product_collections_export_" . date('Y-m-d') . '-' . time();
+                $fileName = "social_media_export_" . date('Y-m-d') . '-' . time();
 
                 if ($type == 'excel') {
                     $fileExtension = ".xlsx";
-                    return Excel::download(new ProductCollectionsExport($data['data']), $fileName.$fileExtension);
+                    return Excel::download(new SocialMediasExport($data['data']), $fileName.$fileExtension);
                 }
                 elseif ($type == 'csv') {
                     $fileExtension = ".csv";
-                    return Excel::download(new ProductCollectionsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
+                    return Excel::download(new SocialMediasExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::CSV);
                 }
                 elseif ($type == 'html') {
                     $fileExtension = ".html";
-                    return Excel::download(new ProductCollectionsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
+                    return Excel::download(new SocialMediasExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::HTML);
                 }
                 elseif ($type == 'pdf') {
                     $fileExtension = ".pdf";
-                    return Excel::download(new ProductCollectionsExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
+                    return Excel::download(new SocialMediasExport($data['data']), $fileName.$fileExtension, \Maatwebsite\Excel\Excel::TCPDF);
                 }
                 else {
                     return [
@@ -406,11 +387,11 @@ class ProductCollectionRepository implements ProductCollectionInterface
     {
         try {
             foreach ($ids as $index => $id) {
-                ProductCollection::where('id', $id)->update([
+                SocialMedia::where('id', $id)->update([
                     'position' => $index + 1
                 ]);
             }
-            ProductCollection::clearActiveCollectionsCache();
+            SocialMedia::clearActiveSocialMediaCache();
 
             return response()->json([
                 'code' => 200,
