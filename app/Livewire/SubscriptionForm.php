@@ -65,7 +65,7 @@ class SubscriptionForm extends Component
         // Customize this logic based on your needs
         return request()->has('utm_source') 
             ? request()->get('utm_source')
-            : 'website';
+            : 'website footer';
     }
 
     protected function prepareMetadata(): array
@@ -110,6 +110,8 @@ class SubscriptionForm extends Component
                 ['type' => 'success']
             );
         } else {
+            $subscription->increment('subscription_count', 1);
+
             $this->dispatch('show-notification', 
                 'You are already subscribed!', 
                 ['type' => 'info']

@@ -17,6 +17,7 @@ class NewsletterSubscriptionEmail extends Model
         'source',
         'meta',
         'unsubscribed_at',
+        'subscription_count',
         'subscribed_at'
     ];
 

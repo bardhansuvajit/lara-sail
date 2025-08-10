@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('category', 100);
             $table->string('key', 200)->unique();
             $table->longText('value');
-            $table->text('description');
+            $table->longText('pretty_value');
+            $table->text('description')->nullable();
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
@@ -28,36 +29,56 @@ return new class extends Migration
                 'category' => 'stage1',
                 'key' => 'company_domain',
                 'value' => 'core-commerce',
+                'pretty_value' => 'core-commerce',
                 'description' => 'Default domain category for company setup',
             ],
             [
                 'category' => 'stage1',
                 'key' => 'domain_name',
                 'value' => 'https://example.com',
+                'pretty_value' => 'https://example.com',
                 'description' => '',
             ],
             [
                 'category' => 'stage1',
                 'key' => 'company_name',
                 'value' => 'Example company LLP',
+                'pretty_value' => 'Example company LLP',
                 'description' => '',
             ],
             [
                 'category' => 'stage1',
                 'key' => 'company_establish_year',
                 'value' => 2000,
+                'pretty_value' => 2000,
                 'description' => '',
             ],
             [
                 'category' => 'stage2',
                 'key' => 'country_code',
                 'value' => 'IN',
+                'pretty_value' => 'core-commerce',
                 'description' => '',
             ],
             [
                 'category' => 'stage3',
                 'key' => 'support_contact',
                 'value' => '9038775709',
+                'pretty_value' => '+91 903877 5709',
+                'description' => '',
+            ],
+            [
+                'category' => 'stage3',
+                'key' => 'support_email',
+                'value' => 'support@email.com',
+                'pretty_value' => 'support@email.com',
+                'description' => '',
+            ],
+            [
+                'category' => 'stage3',
+                'key' => 'company_address1',
+                'value' => 'New Blueview, HN Road, Kolkata, WB 700066',
+                'pretty_value' => 'New Blueview, HN Road, Kolkata, WB 700066',
                 'description' => '',
             ],
         ];

@@ -13,6 +13,9 @@ use App\Http\Controllers\Front\Product\ProductController;
 use App\Http\Controllers\Front\Order\OrderController;
 use App\Http\Controllers\Front\Wishlist\WishlistController;
 use App\Http\Controllers\Front\Search\SearchController;
+use App\Http\Controllers\Front\Content\ContentPageController;
+use App\Http\Controllers\Front\Faq\FaqController;
+use App\Http\Controllers\Front\Error\ErrorPageController;
 
 Route::name('front.')->group(function () {
     // home
@@ -64,13 +67,42 @@ Route::name('front.')->group(function () {
         Route::get('/thankyou', 'thankyou')->name('thankyou');
     });
 
+    // faq
+    Route::name('faq.')->prefix('faq')->controller(FaqController::class)->group(function() {
+        Route::get('/', 'index')->name('index');
+    });
+
+    // Explicit content pages with hardcoded slugs
+    Route::name('content.')->controller(ContentPageController::class)->group(function() {
+        Route::get('/terms-and-conditions', 'showTerms')->name('terms');
+        Route::get('/privacy-policy', 'showPrivacy')->name('privacy');
+        Route::get('/return-policy', 'showReturn')->name('return');
+        Route::get('/refund-policy', 'showRefund')->name('refund');
+        Route::get('/support', 'showSupport')->name('support');
+        Route::get('/cookie-policy', 'showCookie')->name('cookie');
+        Route::get('/shipping-info', 'showShipping')->name('shipping');
+        Route::get('/size-guide', 'showSizeGuide')->name('size-guide');
+
+        Route::get('/contact-us', 'contactUs')->name('contact');
+        Route::get('/about-us', 'aboutUs')->name('about');
+    });
+
     // pages
     Route::name('error.')->group(function() {
-        Route::get('/404', [ErrorPageController::class, 'index'])->name('404');
+        Route::get('/404', [ErrorPageController::class, 'err404'])->name('404');
     });
 
     // product
+    /*
+    // OLD PRODUCT ROUTE
     Route::name('product.')->group(function() {
         Route::get('{slug}', [ProductController::class, 'detail'])->name('detail');
+    });
+    */
+    Route::name('product.')->group(function() {
+        Route::get('{slug}', [ProductController::class, 'detail'])
+            // ->where('slug', '^(?!terms-and-conditions|privacy-policy|return-policy|refund-policy|support|404).+$')
+            ->where('slug', '^(?!terms-and-conditions$|privacy-policy$|return-policy$|refund-policy$|support$|contact-us$|404$).+')
+            ->name('detail');
     });
 });

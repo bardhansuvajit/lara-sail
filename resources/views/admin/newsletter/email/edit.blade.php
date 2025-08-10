@@ -10,49 +10,12 @@
     <div class="w-full mt-2">
         <form action="{{ route('admin.website.newsletter.email.update') }}" method="post" enctype="multipart/form-data">
             @csrf
-            <div class="grid gap-4 mb-4 sm:grid-cols-3">
-                <div>
-                    <x-admin.input-label for="image" :value="__('Image')" />
-                    <x-admin.file-input id="image" name="image" />
-                    <x-admin.input-error :messages="$errors->get('image')" class="mt-2" />
-                </div>
-            </div>
 
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div> 
-                    <x-admin.input-label for="title" :value="__('Title *')" />
-                    <x-admin.text-input id="title" class="block w-full" type="text" name="title" :value="old('title') ? old('title') : $data->title" placeholder="Enter title" autofocus required />
-                    <x-admin.input-error :messages="$errors->get('title')" class="mt-2" />
-                </div>
-
-                <div>
-                    <x-admin.input-label for="level" :value="__('Level *')" />
-                    <ul class="grid w-full gap-2 grid-cols-8">
-                        <li>
-                            <x-admin.radio-input-button id="level_1" name="level" value="1" required :checked="$data->level == 1" />
-                        </li>
-                        <li>
-                            <x-admin.radio-input-button id="level_2" name="level" value="2" :checked="$data->level == 2" />
-                        </li>
-                        <li>
-                            <x-admin.radio-input-button id="level_3" name="level" value="3" :checked="$data->level == 3" />
-                        </li>
-                        <li>
-                            <x-admin.radio-input-button id="level_4" name="level" value="4" :checked="$data->level == 4" />
-                        </li>
-                    </ul>
-
-                    <x-admin.input-error :messages="$errors->get('level')" class="mt-2" />
-                </div>
-
-                <div>
-                    <x-admin.input-label for="parent_id" :value="__('Parent')" />
-                    <x-admin.input-select id="parent_id" name="parent_id" title="Select Parent" class="w-full">
-                        @slot('options')
-                            <x-admin.input-select-option value="" selected="selected"> None </x-admin.input-select-option>
-                        @endslot
-                    </x-admin.input-select>
-                    <x-admin.input-error :messages="$errors->get('parent_id')" class="mt-2" />
+                    <x-admin.input-label for="email" :value="__('Email *')" />
+                    <x-admin.text-input id="email" class="block w-full" type="text" name="email" :value="old('email', $data->email)" placeholder="Enter email" autofocus required />
+                    <x-admin.input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
             </div>
 

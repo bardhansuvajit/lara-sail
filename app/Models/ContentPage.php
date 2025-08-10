@@ -8,11 +8,11 @@ class ContentPage extends Model
 {
     protected $fillable = [
         'slug', 'title', 'content', 'meta_title', 
-        'meta_description', 'sections', 'is_active'
+        'meta_description', 'sections', 'status'
     ];
 
     protected $casts = [
         'sections' => 'array',
-        'is_active' => 'boolean'
+        'status' => 'boolean'
     ];
 }
