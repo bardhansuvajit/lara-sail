@@ -19,7 +19,7 @@
 
                 <div>
                     <x-admin.input-label for="content" :value="__('Content *')" />
-                    <x-admin.textarea id="content" class="block min-h-[12rem]" type="text" name="content" :value="old('content', $data->content)" placeholder="Enter Content" />
+                    <x-admin.textarea id="content" class="block !min-h-[12rem]" type="text" name="content" :value="old('content', $data->content)" placeholder="Enter Content" />
                     <x-admin.input-error :messages="$errors->get('content')" class="mt-2" />
                 </div>
             </div>

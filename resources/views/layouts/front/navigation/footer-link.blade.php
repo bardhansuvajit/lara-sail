@@ -29,7 +29,7 @@
                 <a href="{{ route('front.content.privacy') }}" class="{{FD['text']}} text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Privacy Policy</a>
             </li>
             <li>
-                <a href="#" class="{{FD['text']}} text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Cookie Policy</a>
+                <a href="{{ route('front.content.cookie') }}" class="{{FD['text']}} text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Cookie Policy</a>
             </li>
         </ul>
     </div>

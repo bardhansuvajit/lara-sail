@@ -53,7 +53,7 @@
             @foreach($categories as $parent)
                 {{-- Parent Category Section --}}
                 <div class="mb-6">
-                    <a href="{{ route('front.category.detail', $parent['slug']) }}" class="block mb-6 dark:hover:bg-gray-800 p-2">
+                    <a href="{{ route('front.category.detail', $parent['slug']) }}" class="block mb-6 hover:bg-gray-200 dark:hover:bg-gray-800 p-2">
                         <div class="flex items-center gap-4">
                             @if (!empty($parent['image']))
                                 <img src="{{ Storage::url($parent['image']) }}"
@@ -78,7 +78,7 @@
                             <div class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-all">
                                 <a href="{{ route('front.category.detail', $child['slug']) }}" class="block">
                                     <div class="aspect-square bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden p-3">
-                                        @if (!empty($parent['image']))
+                                        @if (!empty($child['image']))
                                             <img src="{{ Storage::url($child['image']) }}"
                                                 alt="{{ $child['slug'] }}"
                                                 class="object-contain w-full h-full group-hover:scale-105 transition-transform" />
@@ -110,7 +110,7 @@
                                 <div class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-all">
                                     <a href="{{ route('front.category.detail', $sub['slug']) }}" class="block">
                                         <div class="aspect-square bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden p-3">
-                                            @if (!empty($parent['image']))
+                                            @if (!empty($sub['image']))
                                                 <img src="{{ Storage::url($sub['image']) }}"
                                                     alt="{{ $sub['slug'] }}"
                                                     class="object-contain w-full h-full group-hover:scale-105 transition-transform" />

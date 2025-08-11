@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('title');
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('product_categories')->onDelete('SET NULL');
             $table->tinyInteger('level')->default(1);

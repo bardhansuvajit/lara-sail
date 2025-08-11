@@ -62,10 +62,18 @@
 				</a>
 
 				<ul class="flex flex-wrap items-center gap-4 {{FD['text']}} text-gray-900 dark:text-white xl:justify-center">
-					<li><a href="#" title="" class="font-medium hover:underline"> Website Express </a></li>
-					<li><a href="#" title="" class="font-medium hover:underline"> Legal Notice </a></li>
-					<li><a href="#" title="" class="font-medium hover:underline"> Product Listing Policy </a></li>
-					<li><a href="#" title="" class="font-medium hover:underline"> Terms of Use </a></li>
+					<li>
+						<a href="{{ route('front.content.legal-notice') }}" class="font-medium hover:underline">Legal Notice</a>
+					</li>
+					<li>
+						<a href="{{ route('front.content.terms-of-use') }}" class="font-medium hover:underline">Terms of Use</a>
+					</li>
+					<li>
+						<a href="{{ route('front.content.affiliate-program') }}" class="font-medium hover:underline">Affiliate Program</a>
+					</li>
+					<li>
+						<a href="{{ route('front.content.exclusive-offers') }}" class="font-medium hover:underline">Exclusive Offers</a>
+					</li>
 				</ul>
 
 				<p class="{{FD['text']}} text-gray-500 dark:text-gray-400">&copy; 2024 <a href="#" class="hover:underline">Website</a>, Inc. All rights reserved.</p>

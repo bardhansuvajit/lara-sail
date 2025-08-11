@@ -82,6 +82,10 @@ Route::name('front.')->group(function () {
         Route::get('/cookie-policy', 'showCookie')->name('cookie');
         Route::get('/shipping-info', 'showShipping')->name('shipping');
         Route::get('/size-guide', 'showSizeGuide')->name('size-guide');
+        Route::get('/legal-notice', 'showLegalNotice')->name('legal-notice');
+        Route::get('/terms-of-use', 'showTermsOfUse')->name('terms-of-use');
+        Route::get('/affiliate-program', 'showAffiliateProgram')->name('affiliate-program');
+        Route::get('/exclusive-offers', 'showExclusiveOffers')->name('exclusive-offers');
 
         Route::get('/contact-us', 'contactUs')->name('contact');
         Route::get('/about-us', 'aboutUs')->name('about');

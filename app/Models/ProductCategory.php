@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 class ProductCategory extends Model
 {
@@ -26,6 +27,36 @@ class ProductCategory extends Model
         'status',
     ];
 
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1)->orderBy('position', 'asc');
+    }
+
+    protected static function booted()
+    {
+        static::saved(function () {
+            self::clearActiveCategoriesCache();
+        });
+
+        static::updated(function () {
+            self::clearActiveCategoriesCache();
+        });
+
+        static::deleted(function () {
+            self::clearActiveCategoriesCache();
+        });
+    }
+
+    public static function clearActiveCategoriesCache()
+    {
+        Cache::forget('active_categories');
+
+        // Optionally re-cache immediately if needed:
+        Cache::rememberForever('active_categories', function () {
+            return self::active()->orderBy('position')->get();
+        });
+    }
+
     public function parentDetails()
     {
         return $this->belongsTo('App\Models\ProductCategory', 'parent_id', 'id');
@@ -34,6 +65,14 @@ class ProductCategory extends Model
     public function childDetails()
     {
         return $this->hasMany('App\Models\ProductCategory', 'parent_id', 'id');
+    }
+
+    public function activeChildrenByPosition()
+    {
+        return $this->hasMany('App\Models\ProductCategory', 'parent_id')
+            ->where('status', 1)
+            ->with('activeChildrenByPosition') // recursive load
+            ->orderBy('position');
     }
 
     public function variationAttributeValues()

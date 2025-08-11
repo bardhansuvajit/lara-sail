@@ -1,15 +1,15 @@
 <?php return array (
-  2 => 'concurrency',
-  5 => 'cors',
-  7 => 'hashing',
+  0 => 'hashing',
+  8 => 'concurrency',
   10 => 'broadcasting',
   11 => 'view',
+  12 => 'cors',
   'app' => 
   array (
     'name' => 'Laravel',
     'env' => 'local',
     'debug' => true,
-    'url' => 'http://localhost',
+    'url' => 'http://0.0.0.0',
     'frontend_url' => 'http://localhost:3000',
     'asset_url' => NULL,
     'timezone' => 'UTC',
@@ -17,7 +17,7 @@
     'fallback_locale' => 'en',
     'faker_locale' => 'en_US',
     'cipher' => 'AES-256-CBC',
-    'key' => 'base64:OWnwR2sT1YjCH+Q4rXlQ+jLWHJj1atwN1XCUF23sZdQ=',
+    'key' => 'base64:2PdjvAKKDf9Xf8OgOUgHf3co5vYZhI6Lbrp+B+h2eyo=',
     'previous_keys' => 
     array (
     ),
@@ -479,7 +479,7 @@
       array (
         'driver' => 'local',
         'root' => '/var/www/html/storage/app/public',
-        'url' => 'http://localhost/storage',
+        'url' => 'http://0.0.0.0/storage',
         'visibility' => 'public',
         'throw' => false,
       ),
@@ -659,7 +659,7 @@
         'username' => NULL,
         'password' => NULL,
         'timeout' => NULL,
-        'local_domain' => 'localhost',
+        'local_domain' => '0.0.0.0',
       ),
       'ses' => 
       array (
@@ -789,7 +789,7 @@
       2 => '127.0.0.1',
       3 => '127.0.0.1:8000',
       4 => '::1',
-      5 => 'localhost',
+      5 => '0.0.0.0',
     ),
     'guard' => 
     array (
@@ -852,38 +852,6 @@
     'same_site' => 'lax',
     'partitioned' => false,
   ),
-  'concurrency' => 
-  array (
-    'default' => 'process',
-  ),
-  'cors' => 
-  array (
-    'paths' => 
-    array (
-      0 => 'api/*',
-      1 => 'sanctum/csrf-cookie',
-    ),
-    'allowed_methods' => 
-    array (
-      0 => '*',
-    ),
-    'allowed_origins' => 
-    array (
-      0 => '*',
-    ),
-    'allowed_origins_patterns' => 
-    array (
-    ),
-    'allowed_headers' => 
-    array (
-      0 => '*',
-    ),
-    'exposed_headers' => 
-    array (
-    ),
-    'max_age' => 0,
-    'supports_credentials' => false,
-  ),
   'hashing' => 
   array (
     'driver' => 'bcrypt',
@@ -900,6 +868,10 @@
       'verify' => true,
     ),
     'rehash_on_login' => true,
+  ),
+  'concurrency' => 
+  array (
+    'default' => 'process',
   ),
   'broadcasting' => 
   array (
@@ -965,6 +937,34 @@
     ),
     'compiled' => '/var/www/html/storage/framework/views',
   ),
+  'cors' => 
+  array (
+    'paths' => 
+    array (
+      0 => 'api/*',
+      1 => 'sanctum/csrf-cookie',
+    ),
+    'allowed_methods' => 
+    array (
+      0 => '*',
+    ),
+    'allowed_origins' => 
+    array (
+      0 => '*',
+    ),
+    'allowed_origins_patterns' => 
+    array (
+    ),
+    'allowed_headers' => 
+    array (
+      0 => '*',
+    ),
+    'exposed_headers' => 
+    array (
+    ),
+    'max_age' => 0,
+    'supports_credentials' => false,
+  ),
   'debugbar' => 
   array (
     'enabled' => NULL,
@@ -987,7 +987,7 @@
     ),
     'editor' => 'phpstorm',
     'remote_sites_path' => NULL,
-    'local_sites_path' => '/home/suvajit/lara-sail',
+    'local_sites_path' => '/Users/suvajitbardhan/Documents/workspace/lara-sail',
     'include_vendors' => true,
     'capture_ajax' => true,
     'add_ajax_timing' => false,

@@ -155,6 +155,36 @@ class ProductCategoryRepository implements ProductCategoryInterface
         }
     }
 
+    public function getBySlug(String $slug)
+    {
+        try {
+            $data = ProductCategory::where('slug', $slug)->first();
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
     public function update(Array $array)
     {
         try {
@@ -384,6 +414,31 @@ class ProductCategoryRepository implements ProductCategoryInterface
                 'code' => 500,
                 'status' => 'error',
                 'message' => 'An unexpected error occurred while preparing the export.',
+            ];
+        }
+    }
+
+    public function position(Array $ids)
+    {
+        try {
+            foreach ($ids as $index => $id) {
+                ProductCategory::where('id', $id)->update([
+                    'position' => $index + 1
+                ]);
+            }
+            ProductCategory::clearActiveCategoriesCache();
+
+            return response()->json([
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Position updated'
+            ]);
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while positioning data.',
+                'error' => $e->getMessage(),
             ];
         }
     }

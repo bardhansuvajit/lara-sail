@@ -24,6 +24,10 @@ class ContentPageController extends Controller
     public function showCookie(): View { return $this->showPage('cookie-policy'); }
     public function showShipping(): View { return $this->showPage('shipping-info'); }
     public function showSizeGuide(): View { return $this->showPage('size-guide'); }
+    public function showLegalNotice(): View { return $this->showPage('legal-notice'); }
+    public function showTermsOfUse(): View { return $this->showPage('terms-of-use'); }
+    public function showAffiliateProgram(): View { return $this->showPage('affiliate-program'); }
+    public function showExclusiveOffers(): View { return $this->showPage('exclusive-offers'); }
 
     private function showPage(string $slug): View
     {

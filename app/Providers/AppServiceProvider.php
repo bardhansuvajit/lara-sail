@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use App\Models\Country;
+use App\Models\ProductCategory;
 use App\Models\ProductCollection;
 use App\Models\SocialMedia;
 
@@ -60,6 +61,21 @@ class AppServiceProvider extends ServiceProvider
         }
 
 
+        // CACHE - Active Categories
+        ProductCategory::clearActiveCategoriesCache();
+        $categories = collect();
+        if (Schema::hasTable('product_categories')) {
+            $categories = Cache::rememberForever('active_categories', function () {
+                // return ProductCategory::active()->orderBy('position')->get();
+                return ProductCategory::active()->with('activeChildrenByPosition')
+                    ->whereNull('parent_id') // Level 1
+                    ->orderBy('position')
+                    ->get()
+                    ->toArray();
+            });
+        }
+
+
         // CACHE - Active Collections
         $collections = collect();
         if (Schema::hasTable('product_collections')) {
@@ -95,6 +111,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         View::share('activeCountries', $countries);
+        View::share('activeCategories', $categories);
         View::share('activeCollections', $collections);
         View::share('socialMedia', $socialMedia);
         View::share('cartData', $cartData);
