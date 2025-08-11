@@ -19,7 +19,7 @@
                             <div class="flex items-center gap-3">
                                 <a href="{{ $item['product_url_with_variation'] ? $item['product_url_with_variation'] : $item['product_url'] }}" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center" target="_blank">
                                     @if (!empty($item['image_s']))
-                                        <img class="h-auto max-h-full w-full" src="{{Storage::url($item['image_s'])}}" alt="{{$item['product_title']}}" />
+                                        <img class="h-auto max-h-full w-full" src="{{$item['image_s']}}" alt="{{$item['product_title']}}" />
                                     @else
                                         {!! FD['brokenImageFront'] !!}
                                     @endif

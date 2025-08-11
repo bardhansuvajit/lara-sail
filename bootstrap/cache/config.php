@@ -1,9 +1,9 @@
 <?php return array (
-  6 => 'broadcasting',
-  7 => 'cors',
-  8 => 'concurrency',
-  10 => 'hashing',
-  12 => 'view',
+  2 => 'concurrency',
+  5 => 'cors',
+  7 => 'hashing',
+  10 => 'broadcasting',
+  11 => 'view',
   'app' => 
   array (
     'name' => 'Laravel',
@@ -12,12 +12,12 @@
     'url' => 'http://localhost',
     'frontend_url' => 'http://localhost:3000',
     'asset_url' => NULL,
-    'timezone' => 'Asia/Kolkata',
+    'timezone' => 'UTC',
     'locale' => 'en',
     'fallback_locale' => 'en',
     'faker_locale' => 'en_US',
     'cipher' => 'AES-256-CBC',
-    'key' => 'base64:GsyR7d0EY+XoM+2fpannA+uda7klui/ym2VT/u00pS8=',
+    'key' => 'base64:OWnwR2sT1YjCH+Q4rXlQ+jLWHJj1atwN1XCUF23sZdQ=',
     'previous_keys' => 
     array (
     ),
@@ -232,7 +232,7 @@
       array (
         'driver' => 'sqlite',
         'url' => NULL,
-        'database' => 'ls',
+        'database' => 'lara_sail',
         'prefix' => '',
         'foreign_key_constraints' => true,
         'busy_timeout' => NULL,
@@ -245,9 +245,9 @@
         'url' => NULL,
         'host' => 'mysql',
         'port' => '3306',
-        'database' => 'ls',
+        'database' => 'lara_sail',
         'username' => 'sail',
-        'password' => 'secret',
+        'password' => 'password',
         'unix_socket' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
@@ -265,9 +265,9 @@
         'url' => NULL,
         'host' => 'mysql',
         'port' => '3306',
-        'database' => 'ls',
+        'database' => 'lara_sail',
         'username' => 'sail',
-        'password' => 'secret',
+        'password' => 'password',
         'unix_socket' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
@@ -285,9 +285,9 @@
         'url' => NULL,
         'host' => 'mysql',
         'port' => '3306',
-        'database' => 'ls',
+        'database' => 'lara_sail',
         'username' => 'sail',
-        'password' => 'secret',
+        'password' => 'password',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -300,9 +300,9 @@
         'url' => NULL,
         'host' => 'mysql',
         'port' => '3306',
-        'database' => 'ls',
+        'database' => 'lara_sail',
         'username' => 'sail',
-        'password' => 'secret',
+        'password' => 'password',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -324,7 +324,7 @@
       'default' => 
       array (
         'url' => NULL,
-        'host' => 'redis',
+        'host' => '127.0.0.1',
         'username' => NULL,
         'password' => NULL,
         'port' => '6379',
@@ -333,7 +333,7 @@
       'cache' => 
       array (
         'url' => NULL,
-        'host' => 'redis',
+        'host' => '127.0.0.1',
         'username' => NULL,
         'password' => NULL,
         'port' => '6379',
@@ -646,15 +646,15 @@
   ),
   'mail' => 
   array (
-    'default' => 'smtp',
+    'default' => 'log',
     'mailers' => 
     array (
       'smtp' => 
       array (
         'transport' => 'smtp',
         'url' => NULL,
-        'host' => 'mailpit',
-        'port' => '1025',
+        'host' => '127.0.0.1',
+        'port' => '2525',
         'encryption' => NULL,
         'username' => NULL,
         'password' => NULL,
@@ -852,6 +852,55 @@
     'same_site' => 'lax',
     'partitioned' => false,
   ),
+  'concurrency' => 
+  array (
+    'default' => 'process',
+  ),
+  'cors' => 
+  array (
+    'paths' => 
+    array (
+      0 => 'api/*',
+      1 => 'sanctum/csrf-cookie',
+    ),
+    'allowed_methods' => 
+    array (
+      0 => '*',
+    ),
+    'allowed_origins' => 
+    array (
+      0 => '*',
+    ),
+    'allowed_origins_patterns' => 
+    array (
+    ),
+    'allowed_headers' => 
+    array (
+      0 => '*',
+    ),
+    'exposed_headers' => 
+    array (
+    ),
+    'max_age' => 0,
+    'supports_credentials' => false,
+  ),
+  'hashing' => 
+  array (
+    'driver' => 'bcrypt',
+    'bcrypt' => 
+    array (
+      'rounds' => '12',
+      'verify' => true,
+    ),
+    'argon' => 
+    array (
+      'memory' => 65536,
+      'threads' => 1,
+      'time' => 4,
+      'verify' => true,
+    ),
+    'rehash_on_login' => true,
+  ),
   'broadcasting' => 
   array (
     'default' => 'log',
@@ -908,55 +957,6 @@
       ),
     ),
   ),
-  'cors' => 
-  array (
-    'paths' => 
-    array (
-      0 => 'api/*',
-      1 => 'sanctum/csrf-cookie',
-    ),
-    'allowed_methods' => 
-    array (
-      0 => '*',
-    ),
-    'allowed_origins' => 
-    array (
-      0 => '*',
-    ),
-    'allowed_origins_patterns' => 
-    array (
-    ),
-    'allowed_headers' => 
-    array (
-      0 => '*',
-    ),
-    'exposed_headers' => 
-    array (
-    ),
-    'max_age' => 0,
-    'supports_credentials' => false,
-  ),
-  'concurrency' => 
-  array (
-    'default' => 'process',
-  ),
-  'hashing' => 
-  array (
-    'driver' => 'bcrypt',
-    'bcrypt' => 
-    array (
-      'rounds' => '12',
-      'verify' => true,
-    ),
-    'argon' => 
-    array (
-      'memory' => 65536,
-      'threads' => 1,
-      'time' => 4,
-      'verify' => true,
-    ),
-    'rehash_on_login' => true,
-  ),
   'view' => 
   array (
     'paths' => 
@@ -987,7 +987,7 @@
     ),
     'editor' => 'phpstorm',
     'remote_sites_path' => NULL,
-    'local_sites_path' => '/home/babai/workspace/lara-sail',
+    'local_sites_path' => '/home/suvajit/lara-sail',
     'include_vendors' => true,
     'capture_ajax' => true,
     'add_ajax_timing' => false,

@@ -790,7 +790,7 @@ async function handleCartAction(productId, quantity, selectedVariations) {
 
 function updateCartCount(count) {
     const counters = document.querySelectorAll('.cart-count');
-    
+
     if (count > 0) {
         // counters.forEach(el => el.textContent = count + (count == 1 ? ' item' : ' items'));
         counters.forEach(el => el.innerHTML = count + ` <span class='hidden md:inline-block'>${count == 1 ? 'item' : 'items'}</span>`);
@@ -813,7 +813,7 @@ function updateCartData(cartInfo, cartItems) {
                     <div class="flex items-center gap-3">
                         <a href="${item.product_url_with_variation ? item.product_url_with_variation : item.product_url}" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center">
                             ${item.image_s ? 
-                                `<img class="h-auto max-h-full w-full" src="${baseUrl}/storage/${item.image_s}" alt="${item.product_title}">` :
+                                `<img class="h-auto max-h-full w-full" src="${item.image_s}" alt="${item.product_title}">` :
                                 `${FDBrokenImage}`
                             }
                         </a>
@@ -937,7 +937,7 @@ function bindRemoveFromCartEvents() {
             const link = btn.dataset.link;
             const image = btn.dataset.image;
 
-            let imagePath = `<img class="h-auto max-h-full w-full" src="${baseUrl}/storage/${image}" alt="${title}">`;
+            let imagePath = `<img class="h-auto max-h-full w-full" src="${image}" alt="${title}">`;
 
             if (image == "not found") {
                 imagePath = FDBrokenImage;

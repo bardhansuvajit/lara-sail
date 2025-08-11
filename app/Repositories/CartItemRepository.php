@@ -8,6 +8,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
+use Illuminate\Support\Facades\Storage;
 
 use App\Exports\CartItemsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -101,9 +102,9 @@ class CartItemRepository implements CartItemInterface
             $data->options = !empty($array['options']) ? $array['options'] : null;
             $data->custom_fields = !empty($array['custom_fields']) ? $array['custom_fields'] : null;
 
-            $data->image_s = !empty($array['image_s']) ? $array['image_s'] : null;
-            $data->image_m = !empty($array['image_m']) ? $array['image_m'] : null;
-            $data->image_l = !empty($array['image_l']) ? $array['image_l'] : null;
+            $data->image_s = !empty($array['image_s']) ? url(Storage::url($array['image_s'])) : null;
+            $data->image_m = !empty($array['image_m']) ? url(Storage::url($array['image_m'])) : null;
+            $data->image_l = !empty($array['image_l']) ? url(Storage::url($array['image_l'])) : null;
             $data->save();
 
             return [
