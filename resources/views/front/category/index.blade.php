@@ -55,9 +55,16 @@
                 <div class="mb-6">
                     <a href="{{ route('front.category.detail', $parent['slug']) }}" class="block mb-6 dark:hover:bg-gray-800 p-2">
                         <div class="flex items-center gap-4">
-                            <img src="{{ Storage::url($parent['image']) }}"
-                                alt="{{ $parent['slug'] }}"
-                                class="w-12 h-12 object-contain flex-shrink-0 group-hover:scale-105" />
+                            @if (!empty($parent['image']))
+                                <img src="{{ Storage::url($parent['image']) }}"
+                                    alt="{{ $parent['slug'] }}"
+                                    class="w-12 h-12 object-contain flex-shrink-0 group-hover:scale-105" />
+                            @else
+                                <div class="w-12 h-12">
+                                    {!! FD['brokenImageFront'] !!}
+                                </div>
+                            @endif
+
                             <div>
                                 <h2 class="text-sm font-semibold text-gray-900 dark:text-white">{{ $parent['name'] }}</h2>
                                 <p class="text-xs text-gray-600 dark:text-gray-400">{{ $parent['description'] }}</p>
@@ -71,9 +78,15 @@
                             <div class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-all">
                                 <a href="{{ route('front.category.detail', $child['slug']) }}" class="block">
                                     <div class="aspect-square bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden p-3">
-                                        <img src="{{ Storage::url($child['image']) }}"
-                                            alt="{{ $child['slug'] }}"
-                                            class="object-contain w-full h-full group-hover:scale-105 transition-transform" />
+                                        @if (!empty($parent['image']))
+                                            <img src="{{ Storage::url($child['image']) }}"
+                                                alt="{{ $child['slug'] }}"
+                                                class="object-contain w-full h-full group-hover:scale-105 transition-transform" />
+                                        @else
+                                            <div class="w-12 h-12">
+                                                {!! FD['brokenImageFront'] !!}
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="p-3">
                                         <h3 class="text-xs font-medium text-gray-900 dark:text-white">{{ $child['name'] }}</h3>
@@ -97,9 +110,15 @@
                                 <div class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-all">
                                     <a href="{{ route('front.category.detail', $sub['slug']) }}" class="block">
                                         <div class="aspect-square bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden p-3">
-                                            <img src="{{ Storage::url($sub['image']) }}"
-                                                alt="{{ $sub['slug'] }}"
-                                                class="object-contain w-full h-full group-hover:scale-105 transition-transform" />
+                                            @if (!empty($parent['image']))
+                                                <img src="{{ Storage::url($sub['image']) }}"
+                                                    alt="{{ $sub['slug'] }}"
+                                                    class="object-contain w-full h-full group-hover:scale-105 transition-transform" />
+                                            @else
+                                                <div class="w-12 h-12">
+                                                    {!! FD['brokenImageFront'] !!}
+                                                </div>
+                                            @endif
                                         </div>
                                         <div class="p-3">
                                             <h3 class="text-xs font-medium text-gray-900 dark:text-white">{{ $sub['name'] }}</h3>
