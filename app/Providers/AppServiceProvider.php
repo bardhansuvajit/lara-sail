@@ -12,6 +12,7 @@ use App\Models\Country;
 use App\Models\ProductCategory;
 use App\Models\ProductCollection;
 use App\Models\SocialMedia;
+use App\Models\Cart;
 
 use App\Services\OrderNumberService;
 
@@ -97,25 +98,28 @@ class AppServiceProvider extends ServiceProvider
 
 
         // DB - Cart data
-        $cartData = collect();
-        if (Schema::hasTable('carts')) {
-            if (auth()->guard('web')->check()) {
-                $cartData = \App\Models\Cart::where('user_id', auth()->guard('web')->id())
-                    ->with('items')
-                    ->first();
-            } else {
-                if (!empty($_COOKIE['device_id'])) {
-                    $cartData = \App\Models\Cart::where('device_id', $_COOKIE['device_id'])
-                        ->with('items')
-                        ->first();
-                }
-            }
-        }
+        // $cartData = collect();
+        // if (Schema::hasTable('carts')) {
+        //     if (auth()->guard('web')->check()) {
+        //         $cartData = Cart::where('user_id', auth()->guard('web')->user()->id)
+        //             ->with('items')
+        //             ->first();
+        //     } else {
+        //         // dd($_COOKIE['device_id']);
+        //         if (!empty($_COOKIE['device_id'])) {
+        //             $cartData = Cart::where('device_id', $_COOKIE['device_id'])
+        //                 ->with('items')
+        //                 ->first();
+
+        //             // dd($cartData);
+        //         }
+        //     }
+        // }
 
         View::share('activeCountries', $countries);
         View::share('activeCategories', $categories);
         View::share('activeCollections', $collections);
         View::share('socialMedia', $socialMedia);
-        View::share('cartData', $cartData);
+        // View::share('cartData', $cartData);
     }
 }

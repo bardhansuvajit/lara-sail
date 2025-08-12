@@ -56,7 +56,7 @@ class Cart extends Component
 
         if (auth()->guard('web')->check()) {
             $cart = $cartRepository->exists([
-                'user_id' => auth()->guard('web')->id()
+                'user_id' => auth()->guard('web')->user()->id
             ]);
         } else {
             $deviceId = $_COOKIE['device_id'] ?? Str::uuid();

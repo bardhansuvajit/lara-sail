@@ -97,18 +97,30 @@ class CartRepository implements CartInterface
     public function store(Array $array)
     {
         // dd($array);
+
         try {
             // $data = Cart::firstOrCreate([
             //     'device_id' => !empty($array['device_id']) ? $array['device_id'] : null,
             //     'user_id' => !empty($array['user_id']) ? $array['user_id'] : null
             // ]);
 
-            if (!empty($array['device_id'])) {
+            // if (!empty($array['device_id'])) {
+            //     $data = Cart::firstOrCreate([
+            //         'device_id' => $array['device_id']
+            //     ]);
+            // } elseif (!empty($array['user_id'])) {
+            //     $data = Cart::firstOrCreate([
+            //         'user_id' => $array['user_id']
+            //     ]);
+            // }
+
+            if ( empty($array['user_id']) && !empty($array['device_id']) ) {
                 $data = Cart::firstOrCreate([
                     'device_id' => $array['device_id']
                 ]);
-            } elseif (!empty($array['user_id'])) {
+            } else {
                 $data = Cart::firstOrCreate([
+                    'device_id' => $array['device_id'],
                     'user_id' => $array['user_id']
                 ]);
             }

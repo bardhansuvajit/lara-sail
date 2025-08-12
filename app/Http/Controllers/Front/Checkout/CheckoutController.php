@@ -45,7 +45,7 @@ class CheckoutController extends Controller
         // Check if there are products in cart
         if (auth()->guard('web')->check()) {
             $cart = $this->cartRepository->exists([
-                'user_id' => auth()->guard('web')->id()
+                'user_id' => auth()->guard('web')->user()->id
             ]);
 
             // If NO ITEMS in Cart

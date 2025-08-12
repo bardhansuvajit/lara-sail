@@ -32,7 +32,7 @@ class OrderController extends Controller
 
     public function index(): View
     {
-        $userId = auth()->guard('web')->id();
+        $userId = auth()->guard('web')->user()->id;
         $orders = $this->orderRepository->exists([
             'user_id' => $userId
         ]);
@@ -202,7 +202,7 @@ class OrderController extends Controller
     }
 
     public function invoice(Request $request, $orderNumber): View|RedirectResponse {
-        $userId = auth()->guard('web')->id();
+        $userId = auth()->guard('web')->user()->id;
         $orders = $this->orderRepository->exists([
             'user_id' => $userId,
             'order_number' => $orderNumber

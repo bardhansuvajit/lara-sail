@@ -25,7 +25,7 @@ class WishlistController extends Controller
 
     public function index(): View
     {
-        $userId = auth()->guard('web')->id();
+        $userId = auth()->guard('web')->user()->id;
         $data = $this->wishlistRepository->exists([
             'user_id' => $userId
         ]);
@@ -40,7 +40,7 @@ class WishlistController extends Controller
     {
         if (auth()->guard('web')->check()) {
             try {
-                $userId = auth()->guard('web')->id();
+                $userId = auth()->guard('web')->user()->id;
 
                 $wishlistData = $this->wishlistRepository->checkStatus($request->product_ids, $userId);
 
@@ -77,7 +77,7 @@ class WishlistController extends Controller
             ]);
         }
 
-        $userId = auth()->guard('web')->id();
+        $userId = auth()->guard('web')->user()->id;
         $wishlistData = $this->wishlistRepository->exists([
             'product_id' => $productId,
             'user_id' => $userId

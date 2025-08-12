@@ -24,12 +24,15 @@ let lastScrollPosition = 0;
 function getUrlParams() {
     return new URLSearchParams(window.location.search);
 }
+
+// Get Page Title
 const pageTitle = () => {
     var path = window.location.pathname;
     var page = path.split("/").pop();
     return page;
 }
 
+// Format Indian Currency/ Money
 function formatIndianMoney(amount, decimalPlaces = 2) {
     amount = parseFloat(amount).toFixed(decimalPlaces);
     let [whole, fraction] = amount.split('.');
@@ -53,7 +56,6 @@ function formatIndianMoney(amount, decimalPlaces = 2) {
 
     return formattedWhole;
 }
-
 
 // Notification elements
 let notificationElement = null;

@@ -30,7 +30,7 @@ class AddressController extends Controller
 
     public function index(): View
     {
-        $userId = auth()->guard('web')->id();
+        $userId = auth()->guard('web')->user()->id;
         $addresses = $this->addressRepository->exists([
             'user_id' => $userId
         ]);
@@ -98,7 +98,7 @@ class AddressController extends Controller
 
     public function delete(Request $request, $id)
     {
-        $userId = auth()->guard('web')->id();
+        $userId = auth()->guard('web')->user()->id;
         $resp = $this->addressRepository->deleteLoggedInUserAddress($id, $userId);
 
         if ($resp['code'] == 200) {
@@ -113,7 +113,7 @@ class AddressController extends Controller
     {
         $previousUrl = url()->previous();
 
-        $userId = auth()->guard('web')->id();
+        $userId = auth()->guard('web')->user()->id;
         $address = $this->addressRepository->exists([
             'id' => $id,
             'user_id' => $userId
@@ -164,7 +164,7 @@ class AddressController extends Controller
             'alt_phone_no' => 'nullable|integer|digits:'.COUNTRY['phoneNoDigits'],
         ]);
 
-        $userId = auth()->guard('web')->id();
+        $userId = auth()->guard('web')->user()->id;
         $address = $this->addressRepository->exists([
             'id' => $request->id,
             'user_id' => $userId

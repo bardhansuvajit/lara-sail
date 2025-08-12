@@ -39,10 +39,12 @@ class CartController extends Controller
             // Get data from Cart
             if (auth()->guard('web')->check()) {
                 $cart = $this->cartRepository->exists([
-                    'user_id' => auth()->guard('web')->id()
+                    'user_id' => auth()->guard('web')->user()->id
                 ]);
             } else {
                 $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
+
+                // dd($deviceId);
 
                 $cart = $this->cartRepository->exists([
                     'device_id' => $deviceId,
@@ -102,9 +104,10 @@ class CartController extends Controller
 
             // Insert/ Get data from Cart
             if (auth()->guard('web')->check()) {
+                // dd('her', auth()->guard('web')->user()->id);
                 $cart = $this->cartRepository->store([
                     'device_id' => $deviceId,
-                    'user_id' => auth()->guard('web')->id()
+                    'user_id' => auth()->guard('web')->user()->id
                 ]);
             } else {
                 $cart = $this->cartRepository->store([
