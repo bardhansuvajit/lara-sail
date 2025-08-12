@@ -62,9 +62,11 @@ class AppServiceProvider extends ServiceProvider
 
 
         // CACHE - Active Categories
-        ProductCategory::clearActiveCategoriesCache();
+        // ProductCategory::clearActiveCategoriesCache();
         $categories = collect();
         if (Schema::hasTable('product_categories')) {
+            // Cache::pull('active_categories');
+
             $categories = Cache::rememberForever('active_categories', function () {
                 // return ProductCategory::active()->orderBy('position')->get();
                 return ProductCategory::active()->with('activeChildrenByPosition')

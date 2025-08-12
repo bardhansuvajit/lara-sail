@@ -11,7 +11,7 @@
         <div class="divide-y-2 overflow-hidden overflow-y-auto {{FD['rounded']}} bg-white antialiased dark:divide-gray-600 dark:bg-gray-700">
             <ul class="p-2 text-start {{FD['text']}} font-medium dark:text-white dark:border-gray-600">
                 <li>
-                    <a href="#" title="" class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600 dark:hover:text-white">
+                    <a href="{{ route('front.order.index') }}" title="" class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600 dark:hover:text-white">
                         <svg class="h-4 w-4 text-gray-500 dark:text-gray-400 dark:hover:text-white"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24">
@@ -23,7 +23,7 @@
                         My Orders
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="#" title=""
                         class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
                         <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
@@ -36,9 +36,9 @@
                         </svg>
                         My Wallet
                     </a>
-                </li>
+                </li> --}}
                 <li>
-                    <a href="#" title=""
+                    <a href="{{ route('front.wishlist.index') }}" title=""
                         class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
                         <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -50,7 +50,7 @@
                         Favourites Items
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="#" title=""
                         class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
                         <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
@@ -62,8 +62,8 @@
                         </svg>
                         My Returns
                     </a>
-                </li>
-                <li>
+                </li> --}}
+                {{-- <li>
                     <a href="#" title=""
                         class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
                         <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
@@ -76,8 +76,8 @@
                         </svg>
                         Gift Cards
                     </a>
-                </li>
-                <li>
+                </li> --}}
+                {{-- <li>
                     <a href="#" title=""
                         class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
                         <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
@@ -90,7 +90,7 @@
                         </svg>
                         Subscriptions
                     </a>
-                </li>
+                </li> --}}
             </ul>
 
             <ul class="p-2 text-start {{FD['text']}} font-medium dark:text-white dark:border-gray-600">
@@ -100,7 +100,7 @@
                         Account
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="#" title=""
                         class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
                         <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
@@ -116,9 +116,9 @@
                         </svg>
                         Settings
                     </a>
-                </li>
+                </li> --}}
                 <li>
-                    <a href="#" title=""
+                    <a href="{{ route('front.content.privacy') }}" title=""
                         class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
                         <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -131,7 +131,7 @@
                         Privacy
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="#" title=""
                         class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
                         <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
@@ -144,10 +144,10 @@
                         </svg>
                         Notifications
                     </a>
-                </li>
+                </li> --}}
             </ul>
 
-            <ul class="p-2 text-start {{FD['text']}} font-medium dark:text-white dark:border-gray-600">
+            {{-- <ul class="p-2 text-start {{FD['text']}} font-medium dark:text-white dark:border-gray-600">
                 <li>
                     <a href="#" title=""
                         class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
@@ -176,7 +176,7 @@
                         Help Center
                     </a>
                 </li>
-            </ul>
+            </ul> --}}
 
             <ul class="p-2 text-start {{FD['text']}} font-medium dark:text-white dark:border-gray-600">
                 <li>

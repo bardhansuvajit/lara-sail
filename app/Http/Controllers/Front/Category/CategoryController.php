@@ -18,7 +18,8 @@ class CategoryController extends Controller
             ->where('status', 1);
 
         if ($search) {
-            $query->where('title', 'like', '%' . $search . '%');
+            $query->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('tags', 'like', '%' . $search . '%');
         }
 
         $categories = $query->with([

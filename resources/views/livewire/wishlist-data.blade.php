@@ -36,10 +36,6 @@
                         {{ $product->title }}
                     </p>
 
-                    {{-- <p class="text-gray-500 dark:text-gray-400 {{FD['text-0']}} block -mt-2">
-                        {{ $product->variation_attributes }}
-                    </p> --}}
-
                     @if (count($product->pricings) > 0)
                         @php
                             $singlePricing = $product->pricings[0];

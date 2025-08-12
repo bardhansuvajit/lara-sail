@@ -104,6 +104,7 @@ class Cart extends Component
             $this->dispatch('show-notification', 
                 'Minimum cart quantity is 1', ['type' => 'warning']
             );
+            $this->dispatch('hideFullPageLoader');
             return;
         }
 
@@ -127,13 +128,17 @@ class Cart extends Component
             );
 
             $this->getCartData();
+
+            // $this->dispatch('hideFullPageLoader');
         } catch (\Throwable $th) {
             $this->dispatch('show-notification', 
                 'Cart action error', ['type' => 'error']
             );
+
+            $this->dispatch('hideFullPageLoader');
         }
 
-        $this->dispatch('hideFullPageLoader');
+        // $this->dispatch('hideFullPageLoader');
     }
 
     public function deleteItem($id)

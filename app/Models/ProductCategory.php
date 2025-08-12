@@ -53,7 +53,11 @@ class ProductCategory extends Model
 
         // Optionally re-cache immediately if needed:
         Cache::rememberForever('active_categories', function () {
-            return self::active()->orderBy('position')->get();
+            return self::active()->with('activeChildrenByPosition')
+                    ->whereNull('parent_id') // Level 1
+                    ->orderBy('position')
+                    ->get()
+                    ->toArray();
         });
     }
 

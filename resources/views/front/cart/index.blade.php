@@ -10,4 +10,6 @@
 
         </div>
     </section>
+
+    @livewire('featured-product')
 </x-guest-layout>

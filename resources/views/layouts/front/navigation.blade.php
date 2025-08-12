@@ -6,6 +6,7 @@
     <!-- Logo, Search, Cart, Account -->
     @include('layouts.front.navigation.menu')
 
+    <!-- Categories, Collections -->
     @include('layouts.front.navigation.collections')
 
     @include('layouts.front.navigation.mobile-menu')

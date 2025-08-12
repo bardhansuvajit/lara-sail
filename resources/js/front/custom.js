@@ -24,6 +24,12 @@ let lastScrollPosition = 0;
 function getUrlParams() {
     return new URLSearchParams(window.location.search);
 }
+const pageTitle = () => {
+    var path = window.location.pathname;
+    var page = path.split("/").pop();
+    return page;
+}
+
 function formatIndianMoney(amount, decimalPlaces = 2) {
     amount = parseFloat(amount).toFixed(decimalPlaces);
     let [whole, fraction] = amount.split('.');
@@ -733,6 +739,15 @@ document.querySelectorAll('.add-to-cart').forEach(cartBtn => {
 
             // Proceed with add to cart
             await handleCartAction(productId, quantity, selectedVariations);
+
+
+            // If Cart/ Checkout page -> reload Cart Items
+            if (pageTitle() == 'cart' || pageTitle() == 'checkout') {
+                if (window.Livewire) {
+                    console.log('hree');
+                    window.dispatchEvent(new CustomEvent('updateCartInfo'));
+                }
+            }
         } catch (error) {
             console.error('Add to cart error:', error);
             showNotification('Failed to add to cart. Please try again.', { type: 'error' });
@@ -777,9 +792,11 @@ async function handleCartAction(productId, quantity, selectedVariations) {
         updateCartCount(data.cart_count);
         updateCartData(data.cart_info, data.cart_items);
 
-        setTimeout(() => {
-            document.querySelector('#cart-btn').click()
-        }, 100);
+        if (pageTitle() != 'cart' && pageTitle() != 'checkout') {
+            setTimeout(() => {
+                document.querySelector('#cart-btn').click()
+            }, 100);
+        }
 
     } catch (error) {
         showNotification('Cart action error', { type: 'error' });
@@ -1051,9 +1068,11 @@ if (document.querySelector('#delete-cart-item-form')) {
             updateCartCount(data.cart_count);
             updateCartData(data.cart_info, data.cart_items);
 
-            setTimeout(() => {
-                document.querySelector('#cart-btn').click()
-            }, 100);
+            if (pageTitle() != 'cart' && pageTitle() != 'checkout') {
+                setTimeout(() => {
+                    document.querySelector('#cart-btn').click()
+                }, 100);
+            }
         } catch (error) {
             showNotification('Cart action error', { type: 'error' });
             console.error('Cart action error:', error);
