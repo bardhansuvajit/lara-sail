@@ -118,7 +118,6 @@
                                 <th scope="col" class="px-2 py-1 text-start">ID</th>
                                 <th scope="col" class="px-2 py-1">Title</th>
                                 <th scope="col" class="px-2 py-1">Status</th>
-                                <th scope="col" class="px-2 py-1">Type</th>
                                 <th scope="col" class="px-2 py-1 text-end">Action</th>
                             </tr>
                         </thead>
@@ -138,6 +137,8 @@
                                             {{-- @if($item->activeImages[0]->image_s) <div class="h-10 overflow-hidden flex"><img src="{{ Storage::url($item->image_s) }}" alt=""></div> @endif --}}
                                             <div>
                                                 <a href="{{ route('admin.product.listing.edit', $item->id) }}" target="_blank" class="text-xs font-bold underline hover:no-underline">{{ $item->title }}</a>
+
+                                                <p class="text-xs text-gray-500">{{ $item->short_description }}</p>
                                             </div>
                                         </div>
                                     </td>
@@ -146,19 +147,25 @@
                                             {{$item->status == 1 ? 'Active' : 'Disabled'}}
                                         </div>
                                     </td>
-                                    <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                        <div class="text-xs font-bold {{$item->status == 1 ? 'text-green-500' : 'text-gray-500'}}">
-                                            {{$item->status == 1 ? 'Active' : 'Disabled'}}
-                                        </div>
-                                    </td>
                                     <td scope="row" class="px-2 py-1 text-gray-500">
-                                        <div class="flex space-x-2 items-center justify-end">
+                                        <ul class="flex w-full">
+                                            <li>
+                                                <x-admin.radio-input-button class="w-auto px-2" id="type_featured" name="mobile_redirect_type" value="featured" title="Featured" required checked />
+                                            </li>
+                                            <li>
+                                                <x-admin.radio-input-button class="w-auto px-2" id="type_flash" name="mobile_redirect_type" value="flash" title="Flash" />
+                                            </li>
+                                            <li>
+                                                <x-admin.radio-input-button class="w-auto px-2" id="type_trending" name="mobile_redirect_type" value="trending" title="Trending" />
+                                            </li>
+                                        </ul>
+                                        {{-- <div class="flex space-x-2 items-center justify-end">
                                             @livewire('toggle-featured-product', [
                                                 'productTitle' => $item->title,
                                                 'productId' => $item->id,
                                                 'featureId' => $item->featured ? $item->featured->id : null,
                                             ])
-                                        </div>
+                                        </div> --}}
                                     </td>
                                 </tr>
                             @empty
