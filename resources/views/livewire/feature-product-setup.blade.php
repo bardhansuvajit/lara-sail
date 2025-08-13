@@ -1,7 +1,7 @@
 <div>
     <div id="sortable-container" class="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-6 gap-2 mt-4 border-4 border-red-500 p-4 relative overflow-hidden">
-        @forelse ($features as $singleFeature)
-            <div class="rounded border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden"  data-id="{{ $singleFeature->id }}">
+        @forelse ($featuredProducts as $singleFeature)
+            <div class="rounded h-80 border border-gray-200 bg-white p-2 pb-14 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden" data-id="{{ $singleFeature->id }}">
                 <a href="{{ route('admin.product.listing.edit', $singleFeature->product_id) }}" target="_blank">
                     <div class="h-40 w-full">
                         @if (count($singleFeature->product->activeImages) > 0)
@@ -32,10 +32,13 @@
 
                     @if (count($singleFeature->product->pricings) > 0)
                         @foreach ($singleFeature->product->pricings as $singlePricing)
-                            <div class="mt-2 flex items-center gap-2">
-                                <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
-                                    <span class="currency-icon">{{$singlePricing->currency_symbol}}</span>{{$singlePricing->selling_price}}
+                            <div class="mt-2 flex items-center gap-2 mb-1">
+                                <p class="{{FD['text-1']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
+                                    <span class="currency-icon">{{$singlePricing->currency_symbol}}</span>{{ formatIndianMoney($singlePricing->selling_price) }}
                                 </p>
+                            </div>
+
+                            <div class="flex space-x-3">
                                 @if ($singlePricing->mrp != 0)
                                     <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
                                         <span class="currency-icon">{{$singlePricing->currency_symbol}}</span>{{$singlePricing->mrp}}
@@ -54,7 +57,7 @@
                         </div>
                     @endif
 
-                    <div class="w-full mt-2 text-center">
+                    {{-- <div class="w-full mt-2 text-center">
                         <div class="handle cursor-grab flex justify between">
                             <svg class="size-4 text-gray-400 dark:text-neutral-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
                             <p class="text-xs text-gray-400 dark:text-neutral-500">Drag me</p>
@@ -69,17 +72,48 @@
                                 href="javascript: void(0)"
                                 x-data=""
                                 x-on:click.prevent="
-                                    $dispatch('open-modal', 'confirm-data-deletion'); 
-                                    $dispatch('data-title', '{{ $singleFeature->product->title }}');
+                                    $dispatch('open-modal', 'confirm-data-deletion');
+                                    $dispatch('data-title', '{{ htmlspecialchars($singleFeature->product->title, ENT_QUOTES) }}');
                                     $dispatch('set-delete-route', '{{ route('admin.product.feature.delete', $singleFeature->id) }}')" >
                                     Remove
-                                {{-- @slot('icon')
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
-                                @endslot --}}
                             </x-admin.button>
                         </div>
-                    </div>
+                    </div> --}}
                 </a>
+
+                {{-- Footer Part --}}
+                <div class="absolute bottom-0 left-0 right-0 z-10 border-t border-gray-200 dark:border-gray-700 p-2 bg-gray-50 dark:bg-gray-900/90 backdrop-blur-sm">
+                    <div class="flex space-x-2 justify-between">
+                        <!-- Drag Handle -->
+                        <div class="handle cursor-grab flex items-center space-x-1 text-gray-600 hover:text-gray-600 dark:hover:text-gray-300 transition">
+                            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="12" r="1"></circle>
+                                <circle cx="9" cy="5" r="1"></circle>
+                                <circle cx="9" cy="19" r="1"></circle>
+                                <circle cx="15" cy="12" r="1"></circle>
+                                <circle cx="15" cy="5" r="1"></circle>
+                                <circle cx="15" cy="19" r="1"></circle>
+                            </svg>
+                            <span class="text-xs">Drag</span>
+                        </div>
+
+                        <!-- Remove Button -->
+                        <x-admin.button
+                            element="a"
+                            tag="danger"
+                            href="javascript:void(0)"
+                            x-data=""
+                            x-on:click.prevent="
+                                $dispatch('open-modal', 'confirm-data-deletion'); 
+                                $dispatch('data-title', '{{ addslashes($singleFeature->product->title) }}');
+                                $dispatch('set-delete-route', '{{ route('admin.product.feature.delete', $singleFeature->id) }}')"
+                            class="text-xs px-2 py-1">
+                            Remove
+                        </x-admin.button>
+                    </div>
+                </div>
+
             </div>
         @empty
             <div class="col-span-6 h-40">

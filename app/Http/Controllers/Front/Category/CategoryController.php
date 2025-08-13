@@ -7,11 +7,52 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\ProductCategory;
 use Illuminate\Support\Facades\DB;
+use App\Interfaces\ProductFeatureInterface;
 
 class CategoryController extends Controller
 {
+    private ProductFeatureInterface $productFeatureRepository;
+
+    public function __construct(
+        ProductFeatureInterface $productFeatureRepository
+    )
+    {
+        $this->productFeatureRepository = $productFeatureRepository;
+    }
+
     public function index(Request $request): View
     {
+        $search = $request->input('search');
+
+        $query = ProductCategory::whereNull('parent_id')
+            ->where('status', 1);
+
+        if ($search) {
+            $query->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('tags', 'like', '%' . $search . '%');
+        }
+
+        $categories = $query->get();
+
+        // Featured products
+        $featuredProducts = $this->productFeatureRepository->list('', [], 'all', 'position', 'asc');
+
+        return view('front.category.index', [
+            'categories' => $categories,
+            'featuredProducts' => $featuredProducts['data']
+        ]);
+
+
+
+
+
+
+
+
+
+
+
+        /** OLD CODE */
         $search = $request->input('search');
 
         $query = ProductCategory::whereNull('parent_id')
@@ -68,5 +109,10 @@ class CategoryController extends Controller
         return view('front.category.index', [
             'categories' => $categories
         ]);
+    }
+
+    public function detail(Request $request): View
+    {
+        return view('front.category.detail');
     }
 }

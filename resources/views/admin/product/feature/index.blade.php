@@ -1,23 +1,21 @@
 <x-admin-app-layout
     screen="md:w-full"
-    title="{{ __('Product Feature') }}"
+    title="{{ __('Feature') }}"
     :breadcrumb="[
-        ['label' => 'Product feature']
+        ['label' => 'Feature']
     ]"
 >
 
     <section class="sm:rounded-lg overflow-hidden px-1 py-2">
         <div class="grid grid-cols-3 gap-4">
             <div class="col-span-2">
+                <h2 class="text-base font-bold">Featured</h2>
                 <h5 class="text-xs font-medium text-gray-500">Featured List will be displayed in Homepage, Cart page, Checkout page, Account page as Featured products</h5>
-                {{-- <div class="mt-3 border-t border-gray-200 dark:border-gray-700"></div> --}}
 
                 @livewire('feature-product-setup')
             </div>
 
             <div class="col-span-1">
-                {{-- <h5 class="text-base font-medium">Product List</h5>
-                <div class="mt-3 border-t border-gray-200 dark:border-gray-700"></div> --}}
                 {{-- filters --}}
                 <form action="" method="get">
                     <div class="grid grid-cols-1 gap-4 py-4">
@@ -120,6 +118,7 @@
                                 <th scope="col" class="px-2 py-1 text-start">ID</th>
                                 <th scope="col" class="px-2 py-1">Title</th>
                                 <th scope="col" class="px-2 py-1">Status</th>
+                                <th scope="col" class="px-2 py-1">Type</th>
                                 <th scope="col" class="px-2 py-1 text-end">Action</th>
                             </tr>
                         </thead>
@@ -140,6 +139,11 @@
                                             <div>
                                                 <a href="{{ route('admin.product.listing.edit', $item->id) }}" target="_blank" class="text-xs font-bold underline hover:no-underline">{{ $item->title }}</a>
                                             </div>
+                                        </div>
+                                    </td>
+                                    <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                        <div class="text-xs font-bold {{$item->status == 1 ? 'text-green-500' : 'text-gray-500'}}">
+                                            {{$item->status == 1 ? 'Active' : 'Disabled'}}
                                         </div>
                                     </td>
                                     <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">

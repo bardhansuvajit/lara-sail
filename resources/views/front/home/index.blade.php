@@ -117,16 +117,20 @@
             </div>
 
             <div class="max-w-7xl mx-auto py-6">
-                {{-- <h2 class="text-sm font-bold mb-3">Shop by Category</h2> --}}
-                <div class="flex gap-3 overflow-x-auto pb-2">
+                <div class="flex gap-3 pb-2 {{ count($categories) > 5 ? 'flex-wrap' : '' }}">
                     @foreach($categories as $cat)
-                        <div class="min-w-[160px] bg-white dark:bg-gray-800 {{FD['rounded']}} p-3 flex-shrink-0 shadow">
+                        <div class="
+                            bg-white dark:bg-gray-800 {{ FD['rounded'] }} p-3 shadow
+                            {{ count($categories) <= 5 ? 'flex-1 min-w-0' : 'min-w-[160px]' }}
+                        ">
                             <img src="{{ $cat['img'] }}" alt="" class="w-full h-24 rounded object-cover mb-2">
                             <p class="text-xs font-medium text-center">{{ $cat['name'] }}</p>
                         </div>
                     @endforeach
                 </div>
             </div>
+
+
         </div>
 
         {{-- Right: Flash sale card + recommended --}}
@@ -299,153 +303,131 @@
     </script>
 
     <section class="bg-white px-2 sm:px-0 py-10 antialiased dark:bg-gray-900">
-  <div class="mx-auto grid max-w-screen-xl {{FD['rounded']}} bg-gray-50 p-4 dark:bg-gray-800 md:p-8 lg:grid-cols-12 lg:gap-8 xl:gap-16">
-    <!-- IMAGE / ILLUSTRATION -->
-    <div class="lg:col-span-5 lg:mt-0 flex items-center justify-center">
-      <!-- Decorative/marketing image — replace with a Pexels or Undraw SVG as needed -->
-      <img
-        src="https://dummyimage.com/640x480/edf2f7/6d28d9&text=iMac+27%22"
-        alt="Apple iMac 27-inch product preview"
-        class="w-full max-w-md rounded-lg shadow-lg object-cover transition-transform duration-300 hover:scale-[1.02] dark:shadow-none"
-        loading="lazy"
-        role="img"
-        aria-hidden="false"
-      />
-    </div>
-
-    <!-- CONTENT -->
-    <div class="me-auto place-self-center lg:col-span-7 space-y-4">
-      <!-- small badge + urgency -->
-      <div class="flex items-center gap-3">
-        <span class="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-800 dark:bg-yellow-900/40">
-          <!-- lightning icon -->
-          <svg class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>
-          </svg>
-          Limited time offer
-        </span>
-
-        <span class="text-xs text-gray-500 dark:text-gray-400"> · Free delivery on orders ₹999+</span>
-      </div>
-
-      <!-- Main heading (big) -->
-      <h1 class="text-lg md:text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-        Save <span class="text-indigo-600 dark:text-indigo-400">₹500</span> today — pre-order the new iMac 27”
-      </h1>
-
-      <!-- short description (text-xs as requested) -->
-      <p class="text-xs text-gray-500 dark:text-gray-400">
-        Reserve your iMac now to lock in exclusive launch pricing, priority shipping and a complimentary 1-year warranty extension.
-      </p>
-
-      <!-- price & savings block -->
-      <div class="flex items-end gap-4">
-        <div class="flex items-center gap-3">
-          <div class="text-2xl font-extrabold text-gray-900 dark:text-white leading-none">₹<span class="ml-1">1,29,900</span></div>
-          <div class="flex flex-col text-xs text-gray-500 dark:text-gray-400">
-            <span class="line-through">₹1,30,400</span>
-            <span class="text-green-600 dark:text-green-400 font-medium">You save ₹500</span>
-          </div>
-        </div>
-
-        <!-- expiry (aria-live to announce changes) -->
-        <div class="ml-4 text-xs text-gray-600 dark:text-gray-300" aria-live="polite">
-          <span class="block">Offer ends in</span>
-          <time id="promo-countdown" class="font-mono text-sm">02:13:45</time>
-        </div>
-      </div>
-
-      <!-- CTA buttons -->
-      <div class="flex flex-col sm:flex-row sm:items-center sm:gap-3 gap-2">
-        <a
-          href="#"
-          class="{{FD['rounded']}} inline-flex items-center justify-center bg-primary-700 px-5 py-3 text-base font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
-          role="button"
-          aria-label="Pre-order now - iMac 27 inch"
-        >
-          Pre-order now
-        </a>
-
-        <a
-          href="#features"
-          class="inline-flex items-center justify-center {{FD['rounded']}} px-4 py-3 text-sm font-medium text-primary-700 bg-white border border-gray-200 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-700 dark:text-primary-300"
-          role="button"
-          aria-label="Learn more about the iMac 27 inch"
-        >
-          Learn more
-        </a>
-      </div>
-
-      <!-- micro-benefits -->
-      <ul class="mt-2 flex flex-wrap gap-3 text-xs text-gray-600 dark:text-gray-300">
-        <li class="inline-flex items-center gap-2">
-          <!-- truck icon -->
-          <svg class="h-4 w-4 text-gray-500 dark:text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7h13l4 4v6H3V7zM16 3v4M5 17a1 1 0 100 2 1 1 0 000-2zm12 0a1 1 0 100 2 1 1 0 000-2z"/>
-          </svg>
-          <span>Fast & insured delivery</span>
-        </li>
-
-        <li class="inline-flex items-center gap-2">
-          <!-- shield icon -->
-          <svg class="h-4 w-4 text-gray-500 dark:text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2l7 4v5c0 5-3 9-7 11-4-2-7-6-7-11V6l7-4z"/>
-          </svg>
-          <span>1-year warranty + free extended support</span>
-        </li>
-
-        <li class="inline-flex items-center gap-2">
-          <!-- refresh icon -->
-          <svg class="h-4 w-4 text-gray-500 dark:text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-3-6.7M21 3v6h-6"/>
-          </svg>
-          <span>30-day easy returns</span>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- Optional: small JS to make the countdown real (48 hours demo). Replace time as needed. -->
-  <script>
-    (function(){
-      // set expiry to 48 hours from page load (demo). Use server timestamp in production.
-      const expiry = Date.now() + 48 * 3600 * 1000;
-      const el = document.getElementById('promo-countdown');
-      function tick(){
-        const now = Date.now();
-        const diff = Math.max(0, expiry - now);
-        const h = String(Math.floor(diff / 3600000)).padStart(2,'0');
-        const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
-        const s = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
-        if(el) el.textContent = `${h}:${m}:${s}`;
-        if(diff <= 0) clearInterval(tid);
-      }
-      tick();
-      const tid = setInterval(tick, 1000);
-    })();
-  </script>
-</section>
-
-
-
-    <section class="bg-white px-2 sm:px-0 py-10 antialiased dark:bg-gray-900">
         <div class="mx-auto grid max-w-screen-xl {{FD['rounded']}} bg-gray-50 p-4 dark:bg-gray-800 md:p-8 lg:grid-cols-12 lg:gap-8 xl:gap-16">
-            <div class="lg:col-span-5 lg:mt-0">
-                <a href="#">
-                    <svg class="mb-4 h-56 w-56 dark:hidden sm:h-96 sm:w-96 md:h-full md:w-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M205.5-323.5H282q-.5-31.5-22.75-53.75T205.5-400v76.5Zm135.5 0h55q0-79.06-55.72-134.78T205.5-514v55q56.5.5 96 39.75T341-323.5Zm114 0h55q0-62.8-23.79-118.47t-65.18-97.06q-41.39-41.39-97.06-65.18Q268.3-628 205.5-628v55.11q103.8 0 176.65 72.7Q455-427.5 455-323.5ZM326-129v-79H165q-30.94 0-52.97-22.03Q90-252.06 90-283v-473q0-30.94 22.03-52.97Q134.06-831 165-831h630q30.94 0 52.97 22.03Q870-786.94 870-756v473q0 30.94-22.03 52.97Q825.94-208 795-208H634v79H326ZM165-283h630v-473H165v473Zm0 0v-473 473Z"/></svg>
+            <!-- IMAGE / ILLUSTRATION -->
+            <div class="lg:col-span-5 lg:mt-0 flex items-center justify-center">
+                <!-- Decorative/marketing image — replace with a Pexels or Undraw SVG as needed -->
+                <img
+                    src="https://dummyimage.com/640x480/edf2f7/6d28d9&text=iMac+27%22"
+                    alt="Apple iMac 27-inch product preview"
+                    class="w-full max-w-md rounded-lg shadow-lg object-cover transition-transform duration-300 hover:scale-[1.02] dark:shadow-none"
+                    loading="lazy"
+                    role="img"
+                    aria-hidden="false"
+                />
+            </div>
+
+            <!-- CONTENT -->
+            <div class="me-auto place-self-center lg:col-span-7 space-y-4">
+            <!-- small badge + urgency -->
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-800 dark:bg-yellow-900/40">
+                <!-- lightning icon -->
+                <svg class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>
+                </svg>
+                Limited time offer
+                </span>
+
+                <span class="text-xs text-gray-500 dark:text-gray-400"> · Free delivery on orders ₹999+</span>
+            </div>
+
+            <!-- Main heading (big) -->
+            <h1 class="text-lg md:text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                Save <span class="text-indigo-600 dark:text-indigo-400">₹500</span> today — pre-order the new iMac 27”
+            </h1>
+
+            <!-- short description (text-xs as requested) -->
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+                Reserve your iMac now to lock in exclusive launch pricing, priority shipping and a complimentary 1-year warranty extension.
+            </p>
+
+            <!-- price & savings block -->
+            <div class="flex items-end gap-4">
+                <div class="flex items-center gap-3">
+                <div class="text-2xl font-extrabold text-gray-900 dark:text-white leading-none">₹<span class="ml-1">1,29,900</span></div>
+                    <div class="flex flex-col text-xs text-gray-500 dark:text-gray-400">
+                        <span class="line-through">₹1,30,400</span>
+                        <span class="text-green-600 dark:text-green-400 font-medium">You save ₹500</span>
+                    </div>
+                </div>
+
+                <!-- expiry (aria-live to announce changes) -->
+                <div class="ml-4 text-xs text-gray-600 dark:text-gray-300" aria-live="polite">
+                    <span class="block">Offer ends in</span>
+                    <time id="promo-countdown" class="font-mono text-sm">02:13:45</time>
+                </div>
+            </div>
+
+            <!-- CTA buttons -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:gap-3 gap-2">
+                <a
+                    href="#"
+                    class="{{FD['rounded']}} inline-flex items-center justify-center bg-primary-700 px-5 py-3 text-base font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
+                    role="button"
+                    aria-label="Pre-order now - iMac 27 inch"
+                >
+                    Pre-order now
+                </a>
+
+                <a
+                    href="#features"
+                    class="inline-flex items-center justify-center {{FD['rounded']}} px-4 py-3 text-sm font-medium text-primary-700 bg-white border border-gray-200 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-700 dark:text-primary-300"
+                    role="button"
+                    aria-label="Learn more about the iMac 27 inch"
+                >
+                    Learn more
                 </a>
             </div>
-            <div class="me-auto place-self-center lg:col-span-7">
-                <h1 class="mb-3 text-2xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-4xl">
-                Save <span class="currency-symbol">₹</span>500 today on your purchase <br />
-                of a new iMac computer.
-                </h1>
 
-                <p class="mb-6 text-gray-500 dark:text-gray-400">Reserve your new Apple iMac 27” today and enjoy exclusive savings with qualified activation. Pre-order now to secure your discount.</p>
+            <!-- micro-benefits -->
+            <ul class="mt-2 flex flex-wrap gap-3 text-xs text-gray-600 dark:text-gray-300">
+                <li class="inline-flex items-center gap-2">
+                    <!-- truck icon -->
+                    <svg class="h-4 w-4 text-gray-500 dark:text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7h13l4 4v6H3V7zM16 3v4M5 17a1 1 0 100 2 1 1 0 000-2zm12 0a1 1 0 100 2 1 1 0 000-2z"/>
+                    </svg>
+                    <span>Fast & insured delivery</span>
+                </li>
 
-                <a href="#" class="inline-flex items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-3 text-center text-base font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"> Pre-order now </a>
+                <li class="inline-flex items-center gap-2">
+                    <!-- shield icon -->
+                    <svg class="h-4 w-4 text-gray-500 dark:text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2l7 4v5c0 5-3 9-7 11-4-2-7-6-7-11V6l7-4z"/>
+                    </svg>
+                    <span>1-year warranty + free extended support</span>
+                </li>
+
+                <li class="inline-flex items-center gap-2">
+                    <!-- refresh icon -->
+                    <svg class="h-4 w-4 text-gray-500 dark:text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-3-6.7M21 3v6h-6"/>
+                    </svg>
+                    <span>30-day easy returns</span>
+                </li>
+            </ul>
             </div>
         </div>
+
+        <!-- Optional: small JS to make the countdown real (48 hours demo). Replace time as needed. -->
+        <script>
+            (function(){
+            // set expiry to 48 hours from page load (demo). Use server timestamp in production.
+            const expiry = Date.now() + 48 * 3600 * 1000;
+            const el = document.getElementById('promo-countdown');
+            function tick(){
+                const now = Date.now();
+                const diff = Math.max(0, expiry - now);
+                const h = String(Math.floor(diff / 3600000)).padStart(2,'0');
+                const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
+                const s = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
+                if(el) el.textContent = `${h}:${m}:${s}`;
+                if(diff <= 0) clearInterval(tid);
+            }
+            tick();
+                const tid = setInterval(tick, 1000);
+            })();
+        </script>
     </section>
 
 </x-guest-layout>
