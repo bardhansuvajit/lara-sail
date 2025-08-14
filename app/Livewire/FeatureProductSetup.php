@@ -10,6 +10,8 @@ use Livewire\Attributes\On;
 class FeatureProductSetup extends Component
 {
     public collection $featuredProducts;
+    public collection $flashSaleProducts;
+    public collection $trendingProducts;
     protected $listeners = ['somethingUpdated' => 'reloadData'];
     private ProductFeatureInterface $productFeatureRepository;
 
@@ -22,8 +24,18 @@ class FeatureProductSetup extends Component
     public function reloadProducts()
     {
         $productFeatureRepository = app(ProductFeatureInterface::class);
+
+        // Featured Products
         $resp = $productFeatureRepository->list('', ['type' => 'featured'], 'all', 'position', 'asc')['data'];
         $this->featuredProducts = collect($resp);
+
+        // Flash Sale Products
+        $resp = $productFeatureRepository->list('', ['type' => 'flash'], 'all', 'position', 'asc')['data'];
+        $this->flashSaleProducts = collect($resp);
+
+        // Trending Products
+        $resp = $productFeatureRepository->list('', ['type' => 'trending'], 'all', 'position', 'asc')['data'];
+        $this->trendingProducts = collect($resp);
     }
 
     #[On('updateProductFeatureOrder')]

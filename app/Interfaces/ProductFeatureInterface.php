@@ -10,7 +10,7 @@ interface ProductFeatureInterface
     public function getByProductId(Int $productId);
     public function store(Array $array);
     // public function getByProductIdCountryId(Int $productId, Int $countryId);
-    // public function update(Int $id, Array $array);
+    public function update(Int $id, Array $array);
     public function delete(Int $id);
     // public function bulkAction(Array $array);
     // public function import(UploadedFile $file);

@@ -25,11 +25,15 @@ class IndexController extends Controller
     public function index(): View
     {
         $banners = $this->bannerRepository->list('', ['status' => 1], 'all', 'position', 'asc');
-        $featuredProducts = $this->productFeatureRepository->list('', [], 'all', 'position', 'asc');
+        $featuredProducts = $this->productFeatureRepository->list('', ['type' => 'featured'], 'all', 'position', 'asc');
+        $flashSaleProducts = $this->productFeatureRepository->list('', ['type' => 'flash'], 'all', 'position', 'asc');
+        $trendingProducts = $this->productFeatureRepository->list('', ['type' => 'trending'], 'all', 'position', 'asc');
 
         return view('front.home.index', [
             'banners' => $banners['data'],
-            'featuredProducts' => $featuredProducts['data']
+            'featuredProducts' => $featuredProducts['data'],
+            'flashSaleProducts' => $flashSaleProducts['data'],
+            'trendingProducts' => $trendingProducts['data'],
         ]);
     }
 }

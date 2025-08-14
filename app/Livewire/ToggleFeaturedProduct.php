@@ -4,55 +4,86 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Interfaces\ProductFeatureInterface;
-use Livewire\Attributes\On;
 
 class ToggleFeaturedProduct extends Component
 {
     public $productTitle;
     public $productId;
-    public $featureId;
-    private ProductFeatureInterface $productFeatureRepository;
+    public $featureType;
 
-    public function mount($productTitle, $productId, $featureId, ProductFeatureInterface $productFeatureRepository)
+    protected ProductFeatureInterface $productFeatureRepository;
+
+    public function boot(ProductFeatureInterface $productFeatureRepository)
     {
-        $this->productTitle = $productTitle;
-        $this->productId = $productId;
-        $this->featureId = $featureId;
+        $this->productFeatureRepository = $productFeatureRepository;
     }
 
-    public function toggle()
+    public function updateFeatureType(string $value)
     {
-        $productFeatureRepository = app(ProductFeatureInterface::class);
-        $data = $productFeatureRepository->getByProductId($this->productId);
+        $this->featureType = $value;
 
-        if($data['code'] == 200) {
-            // $productFeatureRepository->delete($data['data']->id);
+        // dd($value);
 
-            // $this->dispatch('notificationSend', [
-            //     'variant' => 'success',
-            //     'title' => 'Status updated',
-            //     'message' => $this->productTitle . ' is removed'
-            // ]);
+        $data = $this->productFeatureRepository->getByProductId($this->productId);
 
-            $this->dispatch('notificationSend', [
-                'variant' => 'warning',
-                'title' => 'This action cannot be performed from here',
-                // 'message' => $this->productTitle . ' is removed'
+        // If Data already Featured
+        if ($data['code'] == 200 && !empty($data['data'])) {
+            if ($value === 'off') {
+                if ($data['code'] == 200) {
+                    $this->productFeatureRepository->delete($data['data']['id']);
+
+                    // Delay dispatch to avoid DOM removal mid-request
+                    $this->dispatch('notificationSend', [
+                        'variant' => 'success',
+                        'title' => 'Status updated',
+                        'message' => "{$this->productTitle} removed from features"
+                    ]);
+
+                    $this->dispatch('productEnabled')->self(); // only to this component first
+
+                    $this->dispatch('productEnabled')->to(FeatureProductSetup::class); // trigger parent after render
+
+                    return;
+                }
+                return;
+            }
+
+            $this->productFeatureRepository->update($data['data']['id'], [
+                'type' => $value
             ]);
-        } else {
-            $createArray = [
-                'product_id' => $this->productId,
-                'position' => 1,
-            ];
-
-            $storeResp = $productFeatureRepository->store($createArray);
 
             $this->dispatch('productEnabled');
 
             $this->dispatch('notificationSend', [
                 'variant' => 'success',
                 'title' => 'Status updated',
-                'message' => $this->productTitle . ' is added'
+                'message' => "{$this->productTitle} updated to {$value}"
+            ]);
+        }
+        // If Data not featured
+        else {
+            if ($value === 'off') {
+                $this->dispatch('productEnabled');
+
+                $this->dispatch('notificationSend', [
+                    'variant' => 'warning',
+                    'title' => 'OOPS!',
+                    'message' => "This action cannot be performed!"
+                ]);
+                return;
+            }
+
+            $this->productFeatureRepository->store([
+                'product_id' => $this->productId,
+                'type' => $value
+            ]);
+
+            $this->dispatch('productEnabled');
+
+            $this->dispatch('notificationSend', [
+                'variant' => 'success',
+                'title' => 'Status updated',
+                'message' => "{$this->productTitle} added as {$value}"
             ]);
         }
     }
