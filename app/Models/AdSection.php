@@ -19,4 +19,9 @@ class AdSection extends Model
     {
         return $this->hasMany(AdItem::class);
     }
+
+    public function activeItemOnly()
+    {
+        return $this->hasOne(AdItem::class)->where('status', 1)->orderBy('position');
+    }
 }

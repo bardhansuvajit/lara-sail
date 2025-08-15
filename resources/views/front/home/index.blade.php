@@ -48,7 +48,6 @@
                 <div class="mb-4 grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-6" id="featured-products">
                     {{-- Product Card Component --}}
                     @foreach ($featuredProducts as $featuredItem)
-                        {{-- {{ dd($featuredItem) }} --}}
                         <x-front.product-card :product="$featuredItem" />
                     @endforeach
                 </div>
@@ -61,21 +60,23 @@
         {{-- Left: hero carousel / big promo --}}
         <div class="lg:col-span-8">
             <div class="bg-gradient-to-r from-indigo-50 to-white dark:from-primary-900 dark:to-primary-500 {{FD['rounded']}} p-4">
-                <div class="flex flex-col md:flex-row gap-4">
-                    <div class="flex-1 flex flex-col justify-center gap-3">
-                        <h1 class="{{ FD['text-2'] }} md:{{ FD['text-2'] }} lg:{{ FD['text-2'] }} font-extrabold leading-tight">Huge Savings. Everyday essentials. Top brands.</h1>
-                        <p class="{{ FD['text'] }} text-gray-600 dark:text-gray-400">Curated deals, fast delivery and reliable customer service — everything you expect from a marketplace leader.</p>
+                @if ($homepageAd1)
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1 flex flex-col justify-center gap-3">
+                            <h1 class="{{ FD['text-2'] }} md:{{ FD['text-2'] }} lg:{{ FD['text-2'] }} font-extrabold leading-tight">{!! $homepageAd1->items->title !!}</h1>
+                            <p class="{{ FD['text'] }} text-gray-600 dark:text-gray-400">Curated deals, fast delivery and reliable customer service — everything you expect from a marketplace leader.</p>
 
-                        <div class="flex gap-3 mt-3">
-                            <a href="#" class="text-sm bg-indigo-600 text-white px-4 py-2 rounded">Shop Bestsellers</a>
-                            <a href="#" class="text-sm bg-white dark:bg-gray-800 border dark:border-gray-700 px-4 py-2 rounded">See Deals</a>
+                            <div class="flex gap-3 mt-3">
+                                <a href="#" class="text-sm bg-indigo-600 text-white px-4 py-2 rounded">Shop Bestsellers</a>
+                                <a href="#" class="text-sm bg-white dark:bg-gray-800 border dark:border-gray-700 px-4 py-2 rounded">See Deals</a>
+                            </div>
+                        </div>
+
+                        <div class="md:w-80 flex-shrink-0">
+                            <img src="https://dummyimage.com/640x440/ede9fe/6d28d9&text=Big+Deal" alt="hero" class="{{FD['rounded']}} shadow-lg w-full h-auto object-cover">
                         </div>
                     </div>
-
-                    <div class="md:w-80 flex-shrink-0">
-                        <img src="https://dummyimage.com/640x440/ede9fe/6d28d9&text=Big+Deal" alt="hero" class="{{FD['rounded']}} shadow-lg w-full h-auto object-cover">
-                    </div>
-                </div>
+                @endif
 
                 {{-- mini promo strip --}}
                 <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">

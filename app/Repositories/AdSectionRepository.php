@@ -50,8 +50,8 @@ class AdSectionRepository implements AdSectionInterface
 
             // page
             $data = $perPage !== 'all'
-            ? $query->orderBy($sortBy, $sortOrder)->paginate($perPage)->withQueryString()
-            : $query->orderBy($sortBy, $sortOrder)->get();
+            ? $query->orderBy($sortBy, $sortOrder)->with('activeItemOnly')->paginate($perPage)->withQueryString()
+            : $query->orderBy($sortBy, $sortOrder)->with('activeItemOnly')->get();
 
             if ($data->isNotEmpty()) {
                 return [
