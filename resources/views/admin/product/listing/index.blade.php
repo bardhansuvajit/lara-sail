@@ -183,8 +183,11 @@
                         >
                             @slot('options')
                                 <x-admin.input-select-option value=""> {{ __('All') }} </x-admin.input-select-option>
-                                <x-admin.input-select-option value="1" :selected="request()->input('status') == '1'"> {{ __('Active') }} </x-admin.input-select-option>
-                                <x-admin.input-select-option value="0" :selected="request()->input('status') == '0'"> {{ __('Disabled') }} </x-admin.input-select-option>
+                                @foreach ($allStatus as $status)
+                                    <x-admin.input-select-option value="{{$status->id}}" :selected="request()->input('status') == $status->id"> {{ __($status->title) }} </x-admin.input-select-option>
+                                @endforeach
+                                {{-- <x-admin.input-select-option value="1" :selected="request()->input('status') == '1'"> {{ __('Active') }} </x-admin.input-select-option>
+                                <x-admin.input-select-option value="0" :selected="request()->input('status') == '0'"> {{ __('Disabled') }} </x-admin.input-select-option> --}}
                             @endslot
                         </x-admin.input-select>
                     </div>

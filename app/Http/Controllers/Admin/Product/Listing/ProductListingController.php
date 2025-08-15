@@ -7,6 +7,7 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use App\Interfaces\ProductStatusInterface;
 use App\Interfaces\ProductListingInterface;
 use App\Interfaces\CountryInterface;
 use App\Interfaces\DeveloperSettingInterface;
@@ -16,12 +17,19 @@ use App\Models\Product;
 
 class ProductListingController
 {
+    private ProductStatusInterface $productStatusRepository;
     private ProductListingInterface $productListingRepository;
     private CountryInterface $countryRepository;
     private DeveloperSettingInterface $developerSettingRepository;
 
-    public function __construct(ProductListingInterface $productListingRepository, CountryInterface $countryRepository, DeveloperSettingInterface $developerSettingRepository)
+    public function __construct(
+        ProductStatusInterface $productStatusRepository, 
+        ProductListingInterface $productListingRepository, 
+        CountryInterface $countryRepository, 
+        DeveloperSettingInterface $developerSettingRepository
+    )
     {
+        $this->productStatusRepository = $productStatusRepository;
         $this->productListingRepository = $productListingRepository;
         $this->countryRepository = $countryRepository;
         $this->developerSettingRepository = $developerSettingRepository;
@@ -36,7 +44,7 @@ class ProductListingController
             'perPage' => 'nullable|string',
             'sortBy' => 'nullable|string|in:id,title,level',
             'sortOrder' => 'nullable|string|in:asc,desc',
-            'status' => 'nullable|string|in:0,1'
+            'status' => 'nullable|integer'
         ]);
 
         $perPage = $request->input('perPage', 15);
@@ -48,8 +56,11 @@ class ProductListingController
         ];
         $resp = $this->productListingRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
+        $allStatusResp = $this->productStatusRepository->list('', ['status' => 1], 'all', 'position', 'asc');
+
         return view('admin.product.listing.index', [
             'data' => $resp['data'],
+            'allStatus' => $allStatusResp['data'],
         ]);
     }
 
@@ -252,7 +263,7 @@ class ProductListingController
             'images' => 'nullable|array',
             'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
 
-            'status' => 'required|integer|min:0',
+            'status' => 'required|integer|min:1',
         ], [
             'selling_price.regex' => 'The selling price accepts value upto 2 decimals.',
             'mrp.regex' => 'The selling price accepts value upto 2 decimals.',
@@ -448,7 +459,7 @@ class ProductListingController
             'perPage' => 'nullable|string',
             'sortBy' => 'nullable|string|in:id,title,slug',
             'sortOrder' => 'nullable|string|in:asc,desc',
-            'status' => 'nullable|string|in:0,1'
+            'status' => 'nullable|string'
         ]);
 
         $perPage = $request->input('perPage', 15);

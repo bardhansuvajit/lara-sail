@@ -543,8 +543,8 @@ class ProductListingRepository implements ProductListingInterface
                         'meta_title' => Arr::get($row, 'meta_title') ?: null,
                         'meta_desc' => Arr::get($row, 'meta_desc') ?: null,
                         'type' => Arr::get($row, 'type', 'physical-product') ?: 'physical-product',
-                        // use status from CSV if provided; default to 0 so it matches your CSV defaults
-                        'status' => $toIntOrNull(Arr::get($row, 'status', 0)) ?? 0,
+                        // use status from CSV if provided; default to 4 so it matches your CSV defaults
+                        'status' => $toIntOrNull(Arr::get($row, 'status', 4)) ?? 4,
                     ];
 
                     // OPTIONAL: avoid duplicate SKUs/slugs — if SKU exists, update instead of create
@@ -677,7 +677,7 @@ class ProductListingRepository implements ProductListingInterface
                     'meta_title' => $item['meta_title'] ? $item['meta_title'] : null,
                     'meta_desc' => $item['meta_desc'] ? $item['meta_desc'] : null,
                     'type' => $item['type'] ? $item['type'] : 'physical-product',
-                    'status' => $item['status'] ? $item['status'] : 1,
+                    'status' => $item['status'] ? $item['status'] : 4, // set products to DRAFT
                 ]);
 
                 // PRICING

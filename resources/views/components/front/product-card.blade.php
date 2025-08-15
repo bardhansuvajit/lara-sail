@@ -44,7 +44,7 @@
 
 			<div class="mt-3 flex items-center justify-between gap-2">
 				<div>
-					<div class="text-lg font-extrabold text-gray-900 dark:text-white leading-none">
+					<div class="{{ FD['text-2'] }} font-extrabold text-gray-900 dark:text-white leading-none">
 						<span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->selling_price) }}
 					</div>
 					<div class="mt-1 flex items-center gap-2">
