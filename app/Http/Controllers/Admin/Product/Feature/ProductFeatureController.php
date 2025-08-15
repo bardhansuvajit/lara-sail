@@ -36,7 +36,7 @@ class ProductFeatureController
         $sortBy = $request->input('sortBy', 'id');
         $sortOrder = $request->input('sortOrder', 'desc');
         $filters = [
-            'status' => $request->input('status', 1),
+            'status' => $request->input('status', ''),
         ];
         $resp = $this->productListingRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 

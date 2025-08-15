@@ -8,6 +8,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 use App\Exports\ProductCategoriesExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -311,6 +313,95 @@ class ProductCategoryRepository implements ProductCategoryInterface
     }
 
     public function import(UploadedFile $file)
+    {
+        $summary = [
+            'processed' => 0,
+            'created'   => 0,
+            'skipped'   => 0,
+            'failed'    => 0,
+            'errors'    => [],
+            'skipped_rows' => [],
+        ];
+
+        $toIntOrNull = fn($v) => ($v === '' || $v === null) ? null : (int)$v;
+
+        try {
+            $filePath = fileStore($file);
+            $rows = readCsvFile(public_path($filePath)); // array of assoc rows
+
+            foreach ($rows as $i => $row) {
+                $summary['processed']++;
+
+                $title = trim(Arr::get($row, 'title', ''));
+                if ($title === '') {
+                    $summary['failed']++;
+                    $summary['errors'][] = ['row' => $i + 1, 'reason' => 'missing title'];
+                    continue;
+                }
+
+                try {
+                    DB::beginTransaction();
+
+                    // Check if already exists
+                    $slug = Str::slug(Arr::get($row, 'slug', $title));
+                    $existing = ProductCategory::where('slug', $slug)->first();
+
+                    if ($existing) {
+                        $summary['skipped']++;
+                        $summary['skipped_rows'][] = $i + 1;
+                        DB::rollBack(); // no changes
+                        continue;
+                    }
+
+                    // Get next position (could also scope by parent_id if needed)
+                    $lastPosition = ProductCategory::max('position') ?? 0;
+
+                    ProductCategory::create([
+                        'title'             => $title,
+                        'slug'              => $slug,
+                        'parent_id'         => $toIntOrNull(Arr::get($row, 'parent_id')),
+                        'level'             => $toIntOrNull(Arr::get($row, 'level')),
+                        'short_description' => Arr::get($row, 'short_description') ?: null,
+                        'long_description'  => Arr::get($row, 'long_description') ?: null,
+                        'tags'              => Arr::get($row, 'tags') ?: null,
+                        'meta_title'        => Arr::get($row, 'meta_title') ?: null,
+                        'meta_desc'         => Arr::get($row, 'meta_desc') ?: null,
+                        'status'            => $toIntOrNull(Arr::get($row, 'status', 0)) ?? 0,
+                        'position'          => $toIntOrNull(Arr::get($row, 'position', $lastPosition + 1)),
+                    ]);
+
+                    DB::commit();
+                    $summary['created']++;
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    $summary['failed']++;
+                    $summary['errors'][] = [
+                        'row'    => $i + 1,
+                        'reason' => $e->getMessage(),
+                    ];
+                    Log::error("Category import row ".($i+1)." failed: ".$e->getMessage());
+                    continue;
+                }
+            }
+
+            return [
+                'code'    => 200,
+                'status'  => 'success',
+                'message' => "{$summary['created']} / {$summary['processed']} processed. {$summary['skipped']} skipped, {$summary['failed']} failed.",
+                'data'    => $summary,
+            ];
+        } catch (\Throwable $e) {
+            Log::error('CSV Category Import Error: ' . $e->getMessage());
+            return [
+                'code'    => 500,
+                'status'  => 'error',
+                'message' => 'Import failed: ' . $e->getMessage(),
+                'error'   => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function importOld(UploadedFile $file)
     {
         try {
             $filePath = fileStore($file);

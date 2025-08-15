@@ -46,8 +46,8 @@ class ProductFeatureRepository implements ProductFeatureInterface
 
             // page
             $data = $perPage !== 'all'
-            ? $query->orderBy($sortBy, $sortOrder)->paginate($perPage)->withQueryString()
-            : $query->orderBy($sortBy, $sortOrder)->get();
+            ? $query->orderBy($sortBy, $sortOrder)->with('product')->paginate($perPage)->withQueryString()
+            : $query->orderBy($sortBy, $sortOrder)->with('product')->get();
 
             if ($data->isNotEmpty()) {
                 return [
@@ -72,6 +72,39 @@ class ProductFeatureRepository implements ProductFeatureInterface
                 'error' => $e->getMessage(),
             ];
         }
+    }
+
+    public function listAllFeatured() {
+        $types = ['featured', 'flash', 'trending'];
+        $results = [];
+
+        $products = ProductFeature::with(['product.activeImages', 'product.pricings'])
+            ->whereIn('type', $types)
+            ->orderBy('position', 'asc')
+            ->get()
+            ->groupBy('type');
+
+        foreach ($types as $type) {
+            $results[$type] = $products->get($type, collect())->pluck('product');
+        }
+
+        if (count($products) > 0) {
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Data found',
+                'data' => $results,
+            ];
+        } else {
+            return [
+                'code' => 404,
+                'status' => 'failure',
+                'message' => 'No data found',
+                'data' => [],
+            ];
+        }
+
+        // return ['data' => $results];
     }
 
     public function getById(Int $id)

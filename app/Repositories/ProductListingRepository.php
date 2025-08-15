@@ -11,6 +11,8 @@ use App\Interfaces\TrashInterface;
 use App\Interfaces\CountryInterface;
 use App\Interfaces\ProductPricingInterface;
 use App\Interfaces\ProductImageInterface;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 use App\Exports\ProductListingsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -467,6 +469,174 @@ class ProductListingRepository implements ProductListingInterface
     }
 
     public function import(UploadedFile $file)
+    {
+        $summary = [
+            'processed' => 0,
+            'created' => 0,
+            'failed' => 0,
+            'errors' => [],
+        ];
+
+        // small helpers
+        $toBool = fn($v) => filter_var($v, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ? 1 : 0;
+        $toIntOrNull = fn($v) => ($v === '' || $v === null) ? null : (int)$v;
+        $toFloatOrNull = fn($v) => ($v === '' || $v === null) ? null : (float)$v;
+        $parseCollections = function($val) {
+            // Accept JSON strings like "[1,2]" or comma separated "1,2"
+            if ($val === null || $val === '') return null;
+            if (is_array($val)) return $val;
+            $val = trim($val);
+            // try json decode
+            $decoded = json_decode($val, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) return $decoded;
+            // fallback: remove surrounding [] then explode
+            $val = trim($val, "[] \t\n\r\0\x0B");
+            if ($val === '') return null;
+            return array_values(array_filter(array_map('trim', explode(',', $val)), fn($v) => $v !== ''));
+        };
+
+        try {
+            $filePath = fileStore($file);
+            $rows = readCsvFile(public_path($filePath)); // returns array of assoc rows
+
+            foreach ($rows as $i => $row) {
+                $summary['processed']++;
+
+                // sanitize keys using Arr::get to avoid undefined index
+                $title = trim(Arr::get($row, 'title', ''));
+                if ($title === '') {
+                    $summary['failed']++;
+                    $summary['errors'][] = ['row' => $i + 1, 'reason' => 'missing title'];
+                    continue;
+                }
+
+                // per-row try/catch so one bad row doesn't abort the whole import
+                try {
+                    DB::beginTransaction();
+
+                    // Build product data (only fields you actually have in your Product model)
+                    $collections = $parseCollections(Arr::get($row, 'collection_ids'));
+                    $productData = [
+                        'title' => $title,
+                        // if CSV contains slug, use it; otherwise slugify title
+                        'slug' => Str::slug(Arr::get($row, 'slug', $title)),
+                        'category_id' => $toIntOrNull(Arr::get($row, 'category_id')),
+                        // store collection_ids as JSON if your DB column expects JSON/text
+                        'collection_ids' => $collections ? json_encode($collections) : null,
+                        'short_description' => Arr::get($row, 'short_description') ?: null,
+                        'long_description' => Arr::get($row, 'long_description') ?: null,
+                        'sku' => Arr::get($row, 'sku') ?: null,
+                        'barcode' => Arr::get($row, 'barcode') ?: null,
+                        'has_variations' => $toBool(Arr::get($row, 'has_variations', 0)),
+                        'stock_quantity' => $toIntOrNull(Arr::get($row, 'stock_quantity')),
+                        'track_quantity' => $toBool(Arr::get($row, 'track_quantity', 0)),
+                        'allow_backorders' => $toBool(Arr::get($row, 'allow_backorders', 0)),
+                        'sold_count' => $toIntOrNull(Arr::get($row, 'sold_count', 0)),
+                        'in_cart_count' => $toIntOrNull(Arr::get($row, 'in_cart_count', 0)),
+                        'weight' => $toFloatOrNull(Arr::get($row, 'weight', 0)),
+                        'height' => $toFloatOrNull(Arr::get($row, 'height', 0)),
+                        'width' => $toFloatOrNull(Arr::get($row, 'width', 0)),
+                        'length' => $toFloatOrNull(Arr::get($row, 'length', 0)),
+                        'weight_unit' => Arr::get($row, 'weight_unit') ?: 'g',
+                        'dimension_unit' => Arr::get($row, 'dimension_unit') ?: 'cm',
+                        'tags' => Arr::get($row, 'tags') ?: null,
+                        'meta_title' => Arr::get($row, 'meta_title') ?: null,
+                        'meta_desc' => Arr::get($row, 'meta_desc') ?: null,
+                        'type' => Arr::get($row, 'type', 'physical-product') ?: 'physical-product',
+                        // use status from CSV if provided; default to 0 so it matches your CSV defaults
+                        'status' => $toIntOrNull(Arr::get($row, 'status', 0)) ?? 0,
+                    ];
+
+                    // OPTIONAL: avoid duplicate SKUs/slugs — if SKU exists, update instead of create
+                    $existing = null;
+                    if (!empty($productData['sku'])) {
+                        $existing = \App\Models\Product::where('sku', $productData['sku'])->first();
+                    }
+                    if (!$existing && !empty($productData['slug'])) {
+                        $existing = \App\Models\Product::where('slug', $productData['slug'])->first();
+                    }
+
+                    if ($existing) {
+                        // update minimal fields (or skip)
+                        $existing->fill($productData);
+                        $existing->save();
+                        $product = $existing;
+                    } else {
+                        // Ensure Product model allows mass assignment for these fields (add them to $fillable)
+                        $product = \App\Models\Product::create($productData);
+                    }
+
+                    // PRICING — do it guarded: don't let pricing errors break import
+                    $countryId = $toIntOrNull(Arr::get($row, 'currency_country_id'));
+                    if ($countryId) {
+                        try {
+                            $countryResp = $this->countryRepository->getById($countryId);
+                            if (isset($countryResp['code']) && $countryResp['code'] == 200) {
+                                $currencyCode = $countryResp['data']->currency_code;
+                                $currencySymbol = $countryResp['data']->currency_symbol;
+
+                                $selling = $toFloatOrNull(Arr::get($row, 'selling_price', 0)) ?? 0;
+                                $mrp = $toFloatOrNull(Arr::get($row, 'mrp', 0)) ?? 0;
+                                $cost = $toFloatOrNull(Arr::get($row, 'cost', 0)) ?? 0;
+
+                                $pricingData = [
+                                    'product_id' => $product->id,
+                                    'country_id' => $countryId,
+                                    'currency_code' => $currencyCode,
+                                    'currency_symbol' => $currencySymbol,
+                                    'selling_price' => $selling,
+                                    'mrp' => $mrp,
+                                    'discount' => ($selling && $mrp) ? discountPercentageCalc($selling, $mrp) : 0,
+                                    'cost' => $cost,
+                                    'profit' => ($selling && $cost) ? profitCalc($selling, $cost) : 0,
+                                    'margin' => ($selling && $cost) ? marginCalc($selling, $cost) : 0,
+                                ];
+
+                                // Protect pricing creation from throwing fatal exception
+                                try {
+                                    $this->productPricingRepository->store($pricingData);
+                                } catch (\Throwable $pe) {
+                                    Log::warning("Pricing store failed for product {$product->id} (row ".($i+1)."): ".$pe->getMessage());
+                                    // continue without stopping import
+                                }
+                            } else {
+                                Log::warning("Country not found for row ".($i+1)." country_id: {$countryId}");
+                            }
+                        } catch (\Throwable $ce) {
+                            Log::warning("Country lookup error for row ".($i+1).": ".$ce->getMessage());
+                        }
+                    }
+
+                    DB::commit();
+                    $summary['created']++;
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    $summary['failed']++;
+                    $summary['errors'][] = ['row' => $i + 1, 'reason' => $e->getMessage()];
+                    Log::error("CSV import row ".($i+1)." failed: ".$e->getMessage());
+                    // continue to next row
+                    continue;
+                }
+            }
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => "{$summary['created']} / {$summary['processed']} rows processed. {$summary['failed']} failed.",
+                'data' => $summary,
+            ];
+        } catch (\Throwable $e) {
+            Log::error('CSV Import Error: ' . $e->getMessage());
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'Import failed: ' . $e->getMessage(),
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function importOld(UploadedFile $file)
     {
         try {
             $filePath = fileStore($file);

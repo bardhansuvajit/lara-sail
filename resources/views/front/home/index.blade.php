@@ -2,6 +2,32 @@
     screen="max-w-screen-xl"
     title="{{ __('Home') }}">
 
+    @php
+        $categories = [
+            ['name' => 'Electronics', 'img' => 'https://dummyimage.com/200x140/edf2f7/94a3b8&text=Electronics'],
+            ['name' => 'Fashion', 'img' => 'https://dummyimage.com/200x140/fef3c7/d1a054&text=Fashion'],
+            ['name' => 'Home', 'img' => 'https://dummyimage.com/200x140/e6fffa/0e7490&text=Home'],
+            ['name' => 'Beauty', 'img' => 'https://dummyimage.com/200x140/fce7f3/9f1239&text=Beauty'],
+            ['name' => 'Sports', 'img' => 'https://dummyimage.com/200x140/ede9fe/6d28d9&text=Sports']
+        ];
+
+        $products = collect(range(1,4))->map(function($i){
+            return [
+                'id'=> $i,
+                'title'=> "Trending Product $i",
+                'desc'=> 'High quality, top-rated item.',
+                'price'=> rand(499,4999),
+                'mrp'=> rand(5000,9999),
+                'rating'=> round(3 + rand(0,20)/10,1),
+                'image'=> "https://dummyimage.com/400x300/fff/aaa&text=Product+{$i}",
+                'badge'=> $i%3==0 ? 'Limited' : ($i%4==0 ? 'Bestseller' : null),
+            ];
+        });
+
+        $brands = ['Nike','Apple','Samsung','Sony','Adidas','Zara'];
+    @endphp
+
+    {{-- Banner --}}
     <section class="bg-gray-100 dark:bg-gray-900 antialiased">
         <div class="swiper mySwiper">
             <div class="swiper-wrapper">
@@ -19,6 +45,7 @@
         </div>
     </section>
 
+    {{-- Featured Products --}}
     @if (count($featuredProducts) > 0)
         <section class="bg-gray-100 mb-4 py-4 antialiased dark:bg-gray-900">
             <div class="mx-auto max-w-screen-xl px-2 sm:px-0">
@@ -29,38 +56,13 @@
                 <div class="mb-4 grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-6" id="featured-products">
                     {{-- Product Card Component --}}
                     @foreach ($featuredProducts as $featuredItem)
-                        <x-front.product-card :product="$featuredItem->product" />
+                        {{-- {{ dd($featuredItem) }} --}}
+                        <x-front.product-card :product="$featuredItem" />
                     @endforeach
                 </div>
             </div>
         </section>
     @endif
-
-    @php
-    $categories = [
-        ['name' => 'Electronics', 'img' => 'https://dummyimage.com/200x140/edf2f7/94a3b8&text=Electronics'],
-        ['name' => 'Fashion', 'img' => 'https://dummyimage.com/200x140/fef3c7/d1a054&text=Fashion'],
-        ['name' => 'Home', 'img' => 'https://dummyimage.com/200x140/e6fffa/0e7490&text=Home'],
-        ['name' => 'Beauty', 'img' => 'https://dummyimage.com/200x140/fce7f3/9f1239&text=Beauty'],
-        ['name' => 'Sports', 'img' => 'https://dummyimage.com/200x140/ede9fe/6d28d9&text=Sports']
-    ];
-
-    $products = collect(range(1,4))->map(function($i){
-        return [
-            'id'=> $i,
-            'title'=> "Trending Product $i",
-            'desc'=> 'High quality, top-rated item.',
-            'price'=> rand(499,4999),
-            'mrp'=> rand(5000,9999),
-            'rating'=> round(3 + rand(0,20)/10,1),
-            'image'=> "https://dummyimage.com/400x300/fff/aaa&text=Product+{$i}",
-            'badge'=> $i%3==0 ? 'Limited' : ($i%4==0 ? 'Bestseller' : null),
-        ];
-    });
-
-    $brands = ['Nike','Apple','Samsung','Sony','Adidas','Zara'];
-    @endphp
-
 
     {{-- Hero + Spotlight --}}
     <section class="max-w-7xl px-2 sm:px-0 mx-auto pb-4 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start @if (count($featuredProducts) == 0) mt-5 @endif">
@@ -117,14 +119,17 @@
             </div>
 
             <div class="max-w-7xl mx-auto py-6">
-                <div class="flex gap-3 pb-2 {{ count($categories) > 5 ? 'flex-wrap' : '' }}">
-                    @foreach($categories as $cat)
+                <div class="flex gap-3 pb-2 {{ count($activeCategories) > 5 ? 'flex-wrap' : '' }}">
+                    @foreach($activeCategories as $cat)
                         <div class="
                             bg-white dark:bg-gray-800 {{ FD['rounded'] }} p-3 shadow
                             {{ count($categories) <= 5 ? 'flex-1 min-w-0' : 'min-w-[160px]' }}
                         ">
-                            <img src="{{ $cat['img'] }}" alt="" class="w-full h-24 rounded object-cover mb-2">
-                            <p class="text-xs font-medium text-center">{{ $cat['name'] }}</p>
+                            @if (!empty($cat['image_s']))
+                                <img src="{{ Storage::url($cat['image_s']) }}" alt="" class="w-full h-24 rounded object-cover mb-2">
+                            @endif
+                            <p class="text-xs font-medium text-center">{{ $cat['title'] }}</p>
+                            <p class="text-xs font-medium text-center">{{ $cat['short_description'] }}</p>
                         </div>
                     @endforeach
                 </div>
@@ -133,119 +138,165 @@
 
         {{-- Right: Flash sale card + recommended --}}
         <aside class="lg:col-span-4 space-y-4">
-            {{-- <div class="bg-red-50 dark:bg-red-900/70 border border-red-100 dark:border-red-800 {{FD['rounded']}} p-4"> --}}
-            <div class="bg-gradient-to-r from-amber-500 to-red-500 dark:from-red-900 dark:to-red-500 border border-red-100 dark:border-red-800 {{FD['rounded']}} p-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-sm font-bold dark:text-white">Flash Sale</h3>
-                        <p class="text-xs text-gray-200 dark:text-amber-200">Limited time - ends in</p>
+            {{-- Flash Sale Products --}}
+            @if(count($flashSaleProducts) > 0)
+                <div class="bg-gradient-to-r from-amber-500 to-red-500 dark:from-red-900 dark:to-red-500 border border-red-100 dark:border-red-800 {{FD['rounded']}} px-4 pt-4 pb-7">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-sm font-bold dark:text-white">Flash Sale</h3>
+                            <p class="text-xs text-gray-200 dark:text-amber-200">Limited time - ends in</p>
+                        </div>
+                        <div id="countdown" class="text-lg font-bold font-mono dark:text-white">00:10:00</div>
                     </div>
-                    <div id="countdown" class="text-sm font-mono">00:10:23</div>
-                </div>
 
-                <div class="mt-3 grid grid-cols-2 gap-2">
-                    @foreach($flashSaleProducts as $fp)
-                        @php
-                            $product = $fp->product;
-                        @endphp
-                        <a href="">
-                            <div class="bg-white dark:bg-gray-800 p-2 rounded shadow-sm hover:shadow-lg">
-                                {{-- Image --}}
-                                <div class="w-full h-28">
-                                    @if (count($product->activeImages) > 0)
-                                        <img
-                                            src="{{ Storage::url($product->activeImages[0]->image_m) }}"
-                                            alt="{{ $product->slug }}"
-                                            loading="lazy"
-                                            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                        />
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
-                                            {!! FD['brokenImageFront'] !!}
+                    <div class="mt-3 grid grid-cols-2 gap-2">
+                        @foreach($flashSaleProducts as $product)
+                            <a href="{{ route('front.product.detail', $product->slug) }}">
+                                <div class="bg-white dark:bg-gray-800 p-2 rounded shadow-sm hover:shadow-lg">
+                                    {{-- Image --}}
+                                    <div class="w-full h-28">
+                                        @if (count($product->activeImages) > 0)
+                                            <img
+                                                src="{{ Storage::url($product->activeImages[0]->image_m) }}"
+                                                alt="{{ $product->slug }}"
+                                                loading="lazy"
+                                                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                            />
+                                        @else
+                                            <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
+                                                {!! FD['brokenImageFront'] !!}
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    {{-- Title --}}
+                                    <p class="text-xs font-medium mt-2 mb-1">{{ $product['title'] }}</p>
+
+                                    {{-- Pricing --}}
+                                    @if (count($product->pricings) > 0)
+                                        @php $p = $product->pricings[0]; @endphp
+
+                                        <div class="text-lg font-extrabold text-gray-900 dark:text-white leading-none">
+                                            <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->selling_price) }}
+                                        </div>
+
+                                        <div class="mt-1 flex items-center gap-2">
+                                            @if($p->mrp && $p->mrp > 0)
+                                                <span class="text-xs text-gray-400 dark:text-gray-400 line-through">
+                                                    <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->mrp) }}
+                                                </span>
+                                                <span class="text-xs font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/20 px-2 py-0.5 {{ FD['rounded'] }}">
+                                                    {{ $p->discount }}% off
+                                                </span>
+                                            @endif
                                         </div>
                                     @endif
                                 </div>
-
-                                {{-- Title --}}
-                                <p class="text-xs font-medium mt-2 mb-1">{{ $product['title'] }}</p>
-
-                                {{-- Pricing --}}
-                                @if (count($product->pricings) > 0)
-                                    @php $p = $product->pricings[0]; @endphp
-
-                                    <div class="text-lg font-extrabold text-gray-900 dark:text-white leading-none">
-                                        <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->selling_price) }}
-                                    </div>
-
-                                    <div class="mt-1 flex items-center gap-2">
-                                        @if($p->mrp && $p->mrp > 0)
-                                            <span class="text-xs text-gray-400 dark:text-gray-400 line-through">
-                                                <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->mrp) }}
-                                            </span>
-                                            <span class="text-xs font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/20 px-2 py-0.5 {{ FD['rounded'] }}">
-                                                {{ $p->discount }}% off
-                                            </span>
-                                        @endif
-                                    </div>
-                                @endif
-                            </div>
-                        </a>
-                    @endforeach
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
-            </div>
+            @endif
 
-            <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 {{FD['rounded']}} p-4">
-                <h3 class="text-sm font-bold mb-2">Recommended for you</h3>
-                <div class="space-y-3">
-                    @foreach($products->shuffle()->take(3) as $p)
-                        <div class="flex items-center gap-3">
-                            <img src="{{ $p['image'] }}" alt="" class="w-16 h-12 rounded object-cover">
-                            <div class="flex-1">
-                                <p class="text-xs font-medium">{{ $p['title'] }}</p>
-                                <p class="text-xs text-gray-500">₹{{ $p['price'] }}</p>
+            {{-- Recommended Products --}}
+            {{-- Only show this section when FLASH SALE section has 2 products --}}
+            @if(count($flashSaleProducts) < 3)
+                <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 {{FD['rounded']}} p-4">
+                    <h3 class="text-sm font-bold mb-2">Recommended for you</h3>
+                    <div class="space-y-3">
+                        @foreach($products->shuffle()->take(3) as $p)
+                            <div class="flex items-center gap-3">
+                                <img src="{{ $p['image'] }}" alt="" class="w-16 h-12 rounded object-cover">
+                                <div class="flex-1">
+                                    <p class="text-xs font-medium">{{ $p['title'] }}</p>
+                                    <p class="text-xs text-gray-500">₹{{ $p['price'] }}</p>
+                                </div>
+                                <button class="text-xs bg-indigo-600 text-white px-2 py-1 rounded">Add</button>
                             </div>
-                            <button class="text-xs bg-indigo-600 text-white px-2 py-1 rounded">Add</button>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
-            </div>
+            @endif
         </aside>
     </section>
 
     {{-- Product Grid (conversion-focused) --}}
-    <section class="max-w-7xl px-2 sm:px-0 mx-auto pb-4">
-        {{-- <div class="flex items-center justify-between mb-4">
-            <h2 class="text-sm font-bold">Top picks for you</h2>
-            <div class="text-xs text-gray-500">Showing 1-12 of 200 results</div>
-        </div> --}}
+    @if (count($trendingProducts) > 0)
+        <section class="max-w-7xl px-2 sm:px-0 mx-auto pb-4">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-sm font-bold">Top picks for you</h2>
+            </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            @foreach($products as $p)
-                <article class="bg-white dark:bg-gray-900 {{FD['rounded']}} shadow hover:shadow-lg transition overflow-hidden">
-                    <div class="relative">
-                        <img src="{{ $p['image'] }}" alt="{{ $p['title'] }}" class="w-full h-48 object-cover">
-                        @if($p['badge'])
-                            <span class="absolute top-2 left-2 bg-yellow-400 text-xs px-2 py-1 rounded">{{ $p['badge'] }}</span>
-                        @endif
-                        <button class="absolute top-2 right-2 bg-white/70 dark:bg-gray-800/70 p-1 rounded" aria-label="quick view" onclick="openQuickView({{ $p['id'] }})">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        </button>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="text-sm font-semibold">{{ $p['title'] }}</h3>
-                        <p class="text-xs text-gray-500">{{ $p['desc'] }}</p>
-                        <div class="mt-2 flex items-center justify-between">
-                            <div>
-                                <div class="text-sm font-bold">₹{{ $p['price'] }}</div>
-                                <div class="text-xs line-through text-gray-400">₹{{ $p['mrp'] }}</div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                @foreach($trendingProducts as $product)
+                    <article class="bg-white dark:bg-gray-800/70 {{FD['rounded']}} shadow hover:shadow-lg transition overflow-hidden border dark:border-gray-700 group">
+                        <a href="{{ route('front.product.detail', $product->slug) }}">
+                            <div class="relative">
+                                @if (count($product->activeImages) > 0)
+                                    <img
+                                        src="{{ Storage::url($product->activeImages[0]->image_m) }}"
+                                        alt="{{ $product->slug }}"
+                                        loading="lazy"
+                                        class="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
+                                    />
+                                @else
+                                    <div class="w-full h-40 flex items-center justify-center text-gray-400 dark:text-gray-500">
+                                        {!! FD['brokenImageFront'] !!}
+                                    </div>
+                                @endif
+
+                                @if($product['badge'])
+                                    <span class="absolute top-2 left-2 bg-yellow-400 text-xs px-2 py-1 rounded">{{ $product['badge'] }}</span>
+                                @endif
+
+                                <div class="absolute top-2 right-2">
+                                    <button
+                                        type="button"
+                                        class="wishlist-btn pointer-events-auto ml-auto inline-flex items-center justify-center p-1.5 rounded-full bg-white/90 dark:bg-gray-900/60 hover:bg-red-600/10 dark:hover:bg-red-600/40 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-500"
+                                        aria-pressed="{{ !empty($product->wishlisted) ? 'true' : 'false' }}"
+                                        aria-label="Toggle wishlist for {{ $product->title }}"
+                                        data-prod-id="{{ $product->id }}"
+                                    >
+                                        <svg class="w-4 h-4 transition-colors text-red-500" viewBox="0 0 24 24" fill="{{ !empty($product->wishlisted) ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
-                            <button class="text-xs bg-indigo-600 text-white px-3 py-1 rounded">Add to cart</button>
-                        </div>
-                    </div>
-                </article>
-            @endforeach
-        </div>
-    </section>
+
+                            <div class="p-3">
+                                <h3 class="text-sm font-semibold">{{ $product['title'] }}</h3>
+                                <p class="text-xs text-gray-500">{{ $product['short_description'] }}</p>
+                                <div class="mt-2 flex items-center justify-between">
+                                    @if (count($product->pricings) > 0)
+                                        @php $p = $product->pricings[0]; @endphp
+
+                                        <div class="mt-3 flex items-center justify-between gap-2">
+                                            <div>
+                                                <div class="text-lg font-extrabold text-gray-900 dark:text-white leading-none">
+                                                    <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->selling_price) }}
+                                                </div>
+                                                <div class="mt-1 flex items-center gap-2">
+                                                    @if($p->mrp && $p->mrp > 0)
+                                                        <span class="text-xs text-gray-400 dark:text-gray-400 line-through">
+                                                            <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->mrp) }}
+                                                        </span>
+                                                        <span class="text-xs font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/20 px-2 py-0.5 {{ FD['rounded'] }}">
+                                                            {{ $p->discount }}% off
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </a>
+                    </article>
+                @endforeach
+            </div>
+        </section>
+    @endif
 
     {{-- Brands strip --}}
     <section class="max-w-7xl mx-auto px-2 sm:px-0 py-4">

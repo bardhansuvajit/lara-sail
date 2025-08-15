@@ -90,6 +90,8 @@
                                 $select_title = 'Title';
                             } elseif ($sortBy === 'level') {
                                 $select_title = 'Level';
+                            } elseif ($sortBy === 'position') {
+                                $select_title = 'Position';
                             }
                         @endphp
 
@@ -103,6 +105,7 @@
                                 @slot('options')
                                     <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('ID') }} </x-admin.input-select-option>
                                     <x-admin.input-select-option value="title" :selected="request()->input('sortBy') == 'title'"> {{ __('Title') }} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="position" :selected="request()->input('sortBy') == 'position'"> {{ __('Position') }} </x-admin.input-select-option>
                                     <x-admin.input-select-option value="level" :selected="request()->input('sortBy') == 'level'"> {{ __('Level') }} </x-admin.input-select-option>
                                 @endslot
                             </x-admin.input-select>

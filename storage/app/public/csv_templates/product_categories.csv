@@ -6,3 +6,25 @@ Womens Shoes,womens-shoes,2,2,,,,,,,4,1
 Kids Shoes,kids-shoes,2,2,,,,,,,5,1
 Electronics,electronics,,1,,,,,,electronics,6,1
 Laptop,laptop,6,2,,,,,,,7,1
+Smartphones,smartphones,6,2,,,,,,phones,8,1
+Android Phones,android-phones,8,3,,,,,,,9,1
+iPhones,iphones,8,3,,,,,,,10,1
+Tablets,tablets,6,2,,,,,,,11,1
+Smartwatches,smartwatches,6,2,,,,,,,12,1
+Gaming Consoles,gaming-consoles,6,2,,,,,,,13,1
+PlayStation,playstation,13,3,,,,,,,14,1
+Xbox,xbox,13,3,,,,,,,15,1
+Nintendo Switch,nintendo-switch,13,3,,,,,,,16,1
+Cameras,cameras,6,2,,,,,,,17,1
+DSLR Cameras,dsrl-cameras,17,3,,,,,,,18,1
+Mirrorless Cameras,mirrorless-cameras,17,3,,,,,,,19,1
+Home Appliances,home-appliances,,1,,,,,,appliances,20,1
+Refrigerators,refrigerators,20,2,,,,,,,21,1
+Washing Machines,washing-machines,20,2,,,,,,,22,1
+Air Conditioners,air-conditioners,20,2,,,,,,,23,1
+Microwaves,microwaves,20,2,,,,,,,24,1
+Furniture,furniture,,1,,,,,,furniture,25,1
+Sofas,sofas,25,2,,,,,,,26,1
+Beds,beds,25,2,,,,,,,27,1
+Wardrobes,wardrobes,25,2,,,,,,,28,1
+Dining Tables,dining-tables,25,2,,,,,,,29,1

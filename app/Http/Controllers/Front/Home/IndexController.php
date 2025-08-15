@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Interfaces\BannerInterface;
 use App\Interfaces\ProductFeatureInterface;
+use Illuminate\Support\Facades\Cache;
 
 class IndexController extends Controller
 {
@@ -24,16 +25,19 @@ class IndexController extends Controller
 
     public function index(): View
     {
+        Cache::forget('homepage_products');
+
         $banners = $this->bannerRepository->list('', ['status' => 1], 'all', 'position', 'asc');
-        $featuredProducts = $this->productFeatureRepository->list('', ['type' => 'featured'], 'all', 'position', 'asc');
-        $flashSaleProducts = $this->productFeatureRepository->list('', ['type' => 'flash'], 'all', 'position', 'asc');
-        $trendingProducts = $this->productFeatureRepository->list('', ['type' => 'trending'], 'all', 'position', 'asc');
+
+        $productFeatures = Cache::remember('homepage_products', now()->addHours(6), function() {
+            return $this->productFeatureRepository->listAllFeatured();
+        });
 
         return view('front.home.index', [
             'banners' => $banners['data'],
-            'featuredProducts' => $featuredProducts['data'],
-            'flashSaleProducts' => $flashSaleProducts['data'],
-            'trendingProducts' => $trendingProducts['data'],
+            'featuredProducts' => $productFeatures['data']['featured'] ?? [],
+            'flashSaleProducts' => $productFeatures['data']['flash'] ?? [],
+            'trendingProducts' => $productFeatures['data']['trending'] ?? [],
         ]);
     }
 }
