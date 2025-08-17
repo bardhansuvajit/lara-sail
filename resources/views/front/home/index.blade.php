@@ -307,7 +307,7 @@
 
                 <!-- Optional -->
                 <div class="hidden sm:block h-full z-0">
-                    <img src="/storage/default/testing/big-red.jpg" alt="" class="{{ $adClass3 }} object-cover flex-shrink-0 {{ $adClass2 }} z-0" aria-hidden="true" />
+                    <img src="/storage/default/testing/big-yellow.jpg" alt="" class="{{ $adClass3 }} object-cover flex-shrink-0 {{ $adClass2 }} z-0" aria-hidden="true" />
                 </div>
 
                 <div class="flex-1 flex flex-col justify-between h-full z-0 {{ $adClass4 }}">
