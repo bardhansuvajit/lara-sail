@@ -31,7 +31,7 @@ return new class extends Migration
                 'name' => 'Hero: Big Deal',
                 'slug' => 'hero-big-deal',
                 'type' => 'hero',
-                'status' => 0,
+                'status' => 1,
             ],
             [
                 'page' => 'homepage',
@@ -39,7 +39,7 @@ return new class extends Migration
                 'name' => 'Trusted marketplace',
                 'slug' => 'trusted-marketplace',
                 'type' => 'trust',
-                'status' => 0,
+                'status' => 1,
             ],
             [
                 'page' => 'homepage',
@@ -47,7 +47,7 @@ return new class extends Migration
                 'name' => 'Product Promo',
                 'slug' => 'product-promo',
                 'type' => 'product_promo',
-                'status' => 0,
+                'status' => 1,
             ],
 
             [
@@ -56,7 +56,7 @@ return new class extends Migration
                 'name' => 'Big Deal',
                 'slug' => 'big-deal',
                 'type' => 'banner',
-                'status' => 0,
+                'status' => 1,
             ],
             [
                 'page' => 'category',
@@ -64,7 +64,7 @@ return new class extends Migration
                 'name' => 'Offer Ad 1',
                 'slug' => 'offer-ad-1',
                 'type' => 'sponsored',
-                'status' => 0,
+                'status' => 1,
             ],
             [
                 'page' => 'category',
@@ -72,7 +72,7 @@ return new class extends Migration
                 'name' => 'Offer Ad 2',
                 'slug' => 'offer-ad-2',
                 'type' => 'sponsored',
-                'status' => 0,
+                'status' => 1,
             ]
         ];
 

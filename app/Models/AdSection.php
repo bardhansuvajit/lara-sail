@@ -22,6 +22,6 @@ class AdSection extends Model
 
     public function activeItemOnly()
     {
-        return $this->hasOne(AdItem::class)->where('status', 1)->orderBy('position');
+        return $this->hasOne(AdItem::class)->where('status', 1);
     }
 }

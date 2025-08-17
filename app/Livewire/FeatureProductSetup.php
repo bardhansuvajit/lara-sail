@@ -38,6 +38,28 @@ class FeatureProductSetup extends Component
         $this->trendingProducts = collect($resp);
     }
 
+    public function deleteFeature($id)
+    {
+        $productFeatureRepository = app(ProductFeatureInterface::class);
+        $productFeatureRepository->delete($id);
+        $this->reloadProducts();
+
+        $this->dispatch('updateProductListAction');
+
+        $this->dispatch('notificationSend', [
+            'variant' => 'success',
+            'message' => 'Product removed successfully!'
+        ]);
+    }
+
+    #[On('afterDeleteLoadFeaturedProducts')]
+    public function loadProductsAgain($id)
+    {
+        $productFeatureRepository = app(ProductFeatureInterface::class);
+        $productFeatureRepository->delete($id);
+        $this->reloadProducts();
+    }
+
     #[On('updateProductFeatureOrder')]
     public function updateFeatureOrder(array $ids)
     {

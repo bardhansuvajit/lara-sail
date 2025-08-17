@@ -85,6 +85,70 @@ return new class extends Migration
                     ]
                 ])
             ],
+            [
+                'ad_section_id' => 2,
+                'country_code' => 'IN',
+                'title' => 'Trusted marketplace',
+                'subtitle' => 'Secure payments, verified sellers and fast support.',
+
+                'image_s' => 'default/ad/safe.png',
+                'image_m' => 'default/ad/safe.png',
+                'image_l' => 'default/ad/safe.png',
+
+                'cta_primary_text' => 'See our Collections',
+                'cta_primary_url' => '/collection',
+                'cta_secondary_text' => 'See more',
+                'cta_secondary_url' => '/about-us',
+
+                'meta' => json_encode([])
+            ],
+            [
+                'ad_section_id' => 3,
+                'country_code' => 'IN',
+                'title' => 'Save <span class="text-indigo-600 dark:text-indigo-400">₹500</span> today — pre-order the new iMac 27”',
+                'subtitle' => 'Reserve your iMac now to lock in exclusive launch pricing, priority shipping and a complimentary 1-year warranty extension.',
+
+                'image_s' => 'default/ad/imac.jpg',
+                'image_m' => 'default/ad/imac.jpg',
+                'image_l' => 'default/ad/imac.jpg',
+
+                'cta_primary_text' => 'Pre-order Now',
+                'cta_primary_url' => '/apple-macbook-air-m4',
+                'cta_secondary_text' => 'Learn more',
+                'cta_secondary_url' => '/collection',
+
+                'meta' => json_encode([
+                    'tags' => [
+                        'tag1' => [
+                            'svg' => '<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>',
+                            'title' => 'Limited time offer',
+                        ],
+                        'tag2' => [
+                            'svg' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M296.08-188.08q-45.89 0-77.16-32.11-31.27-32.12-30.27-77.89H95.08l12.49-55.96h99.9q13.58-22.84 37.07-36.42 23.49-13.58 51.56-13.58 28.26 0 51.79 13.58 23.53 13.58 37.27 36.42h172.87l84.43-361.92h-438l2.11-9.53q3.93-20.32 19.73-33.38 15.79-13.05 37.16-13.05h449.16l-33.58 143.84h101.69l113.11 150.7-35.69 179.3h-54.69q.81 45.77-30.64 77.89-31.45 32.11-77.34 32.11t-77.09-32.11q-31.2-32.12-30.39-77.89H404.04q.81 45.77-30.64 77.89-31.44 32.11-77.32 32.11Zm339.04-250.96H829l4.73-24.77-81.54-108.31h-86.11l-30.96 133.08Zm.69-249.34 6.65-27.58-84.3 361.92 6.65-27.58 32.04-138.88 38.96-167.88ZM52.35-437.58l14.06-55.96h189.24l-14.05 55.96H52.35Zm79.69-138.88 14.19-55.96h229.12l-14.2 55.96H132.04Zm163.97 332.42q21.8 0 36.93-15.09 15.14-15.09 15.14-36.88 0-21.8-15.12-36.93-15.12-15.14-36.76-15.14-21.89 0-37.03 15.12-15.13 15.12-15.13 36.76 0 21.89 15.09 37.03 15.09 15.13 36.88 15.13Zm399.43 0q21.79 0 36.93-15.09 15.13-15.09 15.13-36.88 0-21.8-15.12-36.93-15.11-15.14-36.76-15.14-21.89 0-37.02 15.12-15.14 15.12-15.14 36.76 0 21.89 15.09 37.03 15.09 15.13 36.89 15.13Z"/></svg>',
+                            'title' => 'Free delivery on orders ₹999+',
+                        ],
+                    ],
+                    'pricing' => [
+                        'sell' => '₹ 1,29,900',
+                        'mrp' => '₹ 1,30,400',
+                        'sale_text' => 'You save ₹500',
+                    ],
+                    'highlights' => [
+                        'offer1' => [
+                            'svg' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-160q-50 0-85-35t-35-85H60l18-80h113q17-19 40-29.5t49-10.5q26 0 49 10.5t40 29.5h167l84-360H182l4-17q6-28 27.5-45.5T264-800h456l-37 160h117l120 160-40 200h-80q0 50-35 85t-85 35q-50 0-85-35t-35-85H400q0 50-35 85t-85 35Zm357-280h193l4-21-74-99h-95l-28 120Zm-19-273 2-7-84 360 2-7 34-146 46-200ZM20-427l20-80h220l-20 80H20Zm80-146 20-80h260l-20 80H100Zm180 333q17 0 28.5-11.5T320-280q0-17-11.5-28.5T280-320q-17 0-28.5 11.5T240-280q0 17 11.5 28.5T280-240Zm400 0q17 0 28.5-11.5T720-280q0-17-11.5-28.5T680-320q-17 0-28.5 11.5T640-280q0 17 11.5 28.5T680-240Z"/></svg>',
+                            'title' => 'Fast & insured delivery',
+                        ],
+                        'offer2' => [
+                            'svg' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-480Zm0 400q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 10-.5 20t-1.5 20q-9-2-18.5-3t-19.5-1q-11 0-21 1t-21 3q1-10 1.5-19.5t.5-20.5v-189l-240-90-240 90v189q0 121 68 220t172 132q21-7 41-17t39-23v94q-19 10-39 17.5T480-80Zm194 0q-14 0-24-10t-10-24v-132q0-14 10-24t24-10h6v-40q0-33 23.5-56.5T760-400q33 0 56.5 23.5T840-320v40h6q14 0 24 10t10 24v132q0 14-10 24t-24 10H674Zm46-200h80v-40q0-17-11.5-28.5T760-360q-17 0-28.5 11.5T720-320v40Z"/></svg>',
+                            'title' => '1-year warranty + free extended support',
+                        ],
+                        'offer3' => [
+                            'svg' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"/></svg>',
+                            'title' => '30-day easy returns',
+                        ],
+                    ]
+                ]),
+            ],
         ];
 
         DB::table('ad_items')->insert($data);

@@ -29,13 +29,13 @@
         @livewireStyles
     </head>
     <body class="dark:bg-gray-800 dark:text-slate-300">
-        <div class="antialiased bg-gray-100 dark:bg-gray-900">
+        <div class="antialiased bg-gray-100 dark:bg-gray-900 pb-4">
 
             <!-- navigation -->
             @include('layouts.front.navigation')
 
             <div class="mx-auto {{$screen}}">
-                <div class="mt-36 sm:mt-44">
+                <div class="mt-36 sm:mt-[11.3rem]">
                     {{ $slot }}
                 </div>
             </div>

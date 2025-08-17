@@ -33,6 +33,9 @@ class IndexController extends Controller
 
     public function index(): View
     {
+        $categoryStyleCount = 5;
+        $defaultMostSoldProductLoad = 8;
+
         Cache::forget('homepage_products');
         Cache::forget('most_sold_products');
         Cache::forget('homepage_ads');
@@ -46,9 +49,19 @@ class IndexController extends Controller
         });
 
         // Most Sold Products
-        $mostSoldFeatures = Cache::remember('most_sold_products', now()->addHours(6), function() {
-            return $this->productListingRepository->list('', ['status' => 1], '3', 'sold_count', 'asc');
-        });
+        $flashItems = data_get($productFeatures, 'data.flash', []);
+        $flashCount = is_countable($flashItems) ? count($flashItems) : 0;
+
+        if ($flashCount > 3) {
+            $mostSoldFeatures = ['data' => []];
+        } else {
+            $load = ($flashCount > 0 && $flashCount < 3) ? 3 : $defaultMostSoldProductLoad;
+            $cacheKey = "most_sold_products";
+
+            $mostSoldFeatures = Cache::remember($cacheKey, now()->addHours(6), function () use ($load) {
+                return $this->productListingRepository->list('', ['status' => 1], $load, 'sold_count', 'asc');
+            });
+        }
 
         // Ads
         $homepageAds = Cache::remember('homepage_ads', now()->addHours(6), function() {
@@ -56,16 +69,16 @@ class IndexController extends Controller
         });
 
         return view('front.home.index', [
-            'categoryStyleCount' => 5, // show max no of category
+            'categoryStyleCount' => $categoryStyleCount, // show max no of category
             'banners' => $banners['data'],
             'featuredProducts' => $productFeatures['data']['featured'] ?? [],
             'flashSaleProducts' => $productFeatures['data']['flash'] ?? [],
             'trendingProducts' => $productFeatures['data']['trending'] ?? [],
             'mostSoldFeatures' => $mostSoldFeatures['data'] ?? [],
 
-            'homepageAd1' => $homepageAds['data'][0] ?? [],
-            'homepageAd2' => $homepageAds['data'][1] ?? [],
-            'homepageAd3' => $homepageAds['data'][2] ?? [],
+            'homepageAd1' => $homepageAds['data'][0]->activeItemOnly ?? [],
+            'homepageAd2' => $homepageAds['data'][1]->activeItemOnly ?? [],
+            'homepageAd3' => $homepageAds['data'][2]->activeItemOnly ?? [],
         ]);
     }
 }

@@ -2,7 +2,7 @@
     {{-- FEATURED PRODUCTS --}}
     <div id="featured-products" class="mb-5">
         <div class="bg-red-500 px-4 py-2">
-            <h2 class="text-base font-bold text-white">Featured (Always 12 products)</h2>
+            <h2 class="text-base font-bold text-white">Featured (Min 6 products | Best 12 products)</h2>
             <h5 class="text-xs font-medium text-gray-100">Featured List will be displayed in Homepage, Cart page, Checkout page, Account page as Featured products</h5>
         </div>
 
@@ -63,29 +63,6 @@
                                 </p>
                             </div>
                         @endif
-
-                        {{-- <div class="w-full mt-2 text-center">
-                            <div class="handle cursor-grab flex justify between">
-                                <svg class="size-4 text-gray-400 dark:text-neutral-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
-                                <p class="text-xs text-gray-400 dark:text-neutral-500">Drag me</p>
-                            </div>
-                        </div>
-
-                        <div class="w-full mt-2 text-center">
-                            <div class="">
-                                <x-admin.button
-                                    element="a"
-                                    tag="danger"
-                                    href="javascript: void(0)"
-                                    x-data=""
-                                    x-on:click.prevent="
-                                        $dispatch('open-modal', 'confirm-data-deletion');
-                                        $dispatch('data-title', '{{ htmlspecialchars($singleFeature->product->title, ENT_QUOTES) }}');
-                                        $dispatch('set-delete-route', '{{ route('admin.product.feature.delete', $singleFeature->id) }}')" >
-                                        Remove
-                                </x-admin.button>
-                            </div>
-                        </div> --}}
                     </a>
 
                     {{-- Footer Part --}}
@@ -112,7 +89,7 @@
                                 href="javascript:void(0)"
                                 x-data=""
                                 x-on:click.prevent="
-                                    $dispatch('open-modal', 'confirm-data-deletion'); 
+                                    $dispatch('open-modal', 'confirm-data-delete-modal'); 
                                     $dispatch('data-title', '{{ addslashes($singleFeature->product->title) }}');
                                     $dispatch('set-delete-route', '{{ route('admin.product.feature.delete', $singleFeature->id) }}')"
                                 class="text-xs px-2 py-1">
@@ -198,29 +175,6 @@
                                 </p>
                             </div>
                         @endif
-
-                        {{-- <div class="w-full mt-2 text-center">
-                            <div class="handle cursor-grab flex justify between">
-                                <svg class="size-4 text-gray-400 dark:text-neutral-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
-                                <p class="text-xs text-gray-400 dark:text-neutral-500">Drag me</p>
-                            </div>
-                        </div>
-
-                        <div class="w-full mt-2 text-center">
-                            <div class="">
-                                <x-admin.button
-                                    element="a"
-                                    tag="danger"
-                                    href="javascript: void(0)"
-                                    x-data=""
-                                    x-on:click.prevent="
-                                        $dispatch('open-modal', 'confirm-data-deletion');
-                                        $dispatch('data-title', '{{ htmlspecialchars($singleFeature->product->title, ENT_QUOTES) }}');
-                                        $dispatch('set-delete-route', '{{ route('admin.product.feature.delete', $singleFeature->id) }}')" >
-                                        Remove
-                                </x-admin.button>
-                            </div>
-                        </div> --}}
                     </a>
 
                     {{-- Footer Part --}}
@@ -247,7 +201,7 @@
                                 href="javascript:void(0)"
                                 x-data=""
                                 x-on:click.prevent="
-                                    $dispatch('open-modal', 'confirm-data-deletion'); 
+                                    $dispatch('open-modal', 'confirm-data-delete-modal'); 
                                     $dispatch('data-title', '{{ addslashes($singleFeature->product->title) }}');
                                     $dispatch('set-delete-route', '{{ route('admin.product.feature.delete', $singleFeature->id) }}')"
                                 class="text-xs px-2 py-1">
@@ -333,29 +287,6 @@
                                 </p>
                             </div>
                         @endif
-
-                        {{-- <div class="w-full mt-2 text-center">
-                            <div class="handle cursor-grab flex justify between">
-                                <svg class="size-4 text-gray-400 dark:text-neutral-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
-                                <p class="text-xs text-gray-400 dark:text-neutral-500">Drag me</p>
-                            </div>
-                        </div>
-
-                        <div class="w-full mt-2 text-center">
-                            <div class="">
-                                <x-admin.button
-                                    element="a"
-                                    tag="danger"
-                                    href="javascript: void(0)"
-                                    x-data=""
-                                    x-on:click.prevent="
-                                        $dispatch('open-modal', 'confirm-data-deletion');
-                                        $dispatch('data-title', '{{ htmlspecialchars($singleFeature->product->title, ENT_QUOTES) }}');
-                                        $dispatch('set-delete-route', '{{ route('admin.product.feature.delete', $singleFeature->id) }}')" >
-                                        Remove
-                                </x-admin.button>
-                            </div>
-                        </div> --}}
                     </a>
 
                     {{-- Footer Part --}}
@@ -382,7 +313,7 @@
                                 href="javascript:void(0)"
                                 x-data=""
                                 x-on:click.prevent="
-                                    $dispatch('open-modal', 'confirm-data-deletion'); 
+                                    $dispatch('open-modal', 'confirm-data-delete-modal'); 
                                     $dispatch('data-title', '{{ addslashes($singleFeature->product->title) }}');
                                     $dispatch('set-delete-route', '{{ route('admin.product.feature.delete', $singleFeature->id) }}')"
                                 class="text-xs px-2 py-1">
@@ -404,7 +335,61 @@
         </div>
     </div>
 
-    @include('admin.includes.delete-confirm-modal')
+    {{-- @include('admin.includes.delete-confirm-modal') --}}
+    {{-- MODAL --}}
+    <x-modal name="confirm-data-delete-modal" maxWidth="sm" focusable>
+        <div 
+            class="p-6" 
+            x-data="{ deleteRoute: '', title: '' }" 
+            x-on:set-delete-route.window="deleteRoute = $event.detail" 
+            x-on:data-title.window="title = $event.detail"
+        >
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ __('Are you sure?') }}
+            </h2>
+
+            <h5 x-html="title" class="text-gray-500 mt-5"></h5>
+
+            <p class="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                {{ __('Once this data is deleted, it cannot be recovered') }}
+            </p>
+
+            <div class="mt-6 flex gap-2 justify-end">
+                <x-admin.button
+                    element="button"
+                    tag="secondary"
+                    href="javascript: void(0)"
+                    title="Cancel"
+                    class="border"
+                    x-on:click="$dispatch('close')"
+                >
+                    {{ __('Cancel') }}
+                </x-admin.button>
+
+                <x-admin.button
+                    element="button"
+                    tag="danger"
+                    x-on:click="$wire.deleteFeature(deleteRoute.split('/').pop()); $dispatch('close');"
+                >
+                    {{ __('Yes, Delete') }}
+                </x-admin.button>
+
+
+                {{-- <form :action="deleteRoute" method="POST" class="ms-3">
+                    @csrf
+                    @method('DELETE')
+                    <x-admin.button
+                        element="button"
+                        tag="danger"
+                        href="javascript: void(0)"
+                        title="Delete"
+                    >
+                        {{ __('Yes, Delete') }}
+                    </x-admin.button>
+                </form> --}}
+            </div>
+        </div>
+    </x-modal>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js"></script>
