@@ -8,16 +8,21 @@ use Illuminate\View\View;
 use App\Models\ProductCategory;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\ProductFeatureInterface;
+use App\Interfaces\AdSectionInterface;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryController extends Controller
 {
     private ProductFeatureInterface $productFeatureRepository;
+    private AdSectionInterface $adSectionRepository;
 
     public function __construct(
-        ProductFeatureInterface $productFeatureRepository
+        ProductFeatureInterface $productFeatureRepository,
+        AdSectionInterface $adSectionRepository
     )
     {
         $this->productFeatureRepository = $productFeatureRepository;
+        $this->adSectionRepository = $adSectionRepository;
     }
 
     public function index(Request $request): View
@@ -29,19 +34,38 @@ class CategoryController extends Controller
 
         if ($search) {
             $query->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('short_description', 'like', '%' . $search . '%')
                     ->orWhere('tags', 'like', '%' . $search . '%');
         }
 
-        $categories = $query->get();
+        $categories = $query->orderBy('position')->get();
+
+        // dd($categories->pluck('title'));
 
         // Featured products
         $featuredProducts = $this->productFeatureRepository->list('', [], 'all', 'position', 'asc');
 
-        return view('front.category.index', [
-            'categories' => $categories,
-            'featuredProducts' => $featuredProducts['data']
-        ]);
+        // Featured + Flash Sale + Trending Products
+        $productFeatures = Cache::remember('homepage_products', now()->addHours(6), function() {
+            return $this->productFeatureRepository->listAllFeatured();
+        });
 
+        // ADVERTISEMENT
+        $categoryPageAds = Cache::remember('category_ads', now()->addHours(6), function() {
+            return $this->adSectionRepository->list('', ['page' => 'category', 'status' => 1], 'all', 'position', 'asc');
+        });
+
+        return view('front.category.index', [
+            'catCount' => count($categories),
+            'categories' => $categories,
+            'featuredProducts' => $featuredProducts['data'],
+
+            'flashSaleProducts' => $productFeatures['data']['flash'] ?? [],
+
+            'categoryPageAd1' => $categoryPageAds['data'][0]->activeItemOnly ?? [],
+            'categoryPageAd2' => $categoryPageAds['data'][1]->activeItemOnly ?? [],
+            'categoryPageAd3' => $categoryPageAds['data'][2]->activeItemOnly ?? [],
+        ]);
 
 
 

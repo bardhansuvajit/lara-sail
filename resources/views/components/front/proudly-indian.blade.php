@@ -55,7 +55,7 @@ $card = [
 ];
 @endphp
 
-<section class="max-w-7xl px-2 sm:px-0">
+<section class="max-w-7xl">
     <!-- Compact Premium Card -->
     <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-100 dark:border-gray-700 {{ FD['rounded'] }} shadow-sm overflow-hidden">
         <div class="grid md:grid-cols-12">

@@ -193,8 +193,11 @@ class ProductCategoryRepository implements ProductCategoryInterface
             $data = $this->getById($array['id']);
 
             if ($data['code'] == 200) {
-                $data['data']->title = $array['title'];
-                $data['data']->slug = \Str::slug($array['title']);
+                if (!empty($array['title'])) {
+                    $data['data']->title = $array['title'];
+                    $data['data']->slug = \Str::slug($array['title']);
+                }
+
                 $data['data']->level = $array['level'];
                 $data['data']->parent_id = $array['parent_id'] ?? null;
 
@@ -208,6 +211,8 @@ class ProductCategoryRepository implements ProductCategoryInterface
                     $data['data']->image_m = $uploadResp['mediumThumbName'];
                     $data['data']->image_l = $uploadResp['largeThumbName'];
                 }
+
+                // dd($array, $data['data']->getDirty());
 
                 $data['data']->save();
 

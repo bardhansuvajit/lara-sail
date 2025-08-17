@@ -36,9 +36,9 @@ class IndexController extends Controller
         $categoryStyleCount = 5;
         $defaultMostSoldProductLoad = 8;
 
-        Cache::forget('homepage_products');
-        Cache::forget('most_sold_products');
-        Cache::forget('homepage_ads');
+        // Cache::forget('homepage_products');
+        // Cache::forget('most_sold_products');
+        // Cache::forget('homepage_ads');
 
         // Banners
         $banners = $this->bannerRepository->list('', ['status' => 1], 'all', 'position', 'asc');
@@ -63,7 +63,7 @@ class IndexController extends Controller
             });
         }
 
-        // Ads
+        // ADVERTISEMENT
         $homepageAds = Cache::remember('homepage_ads', now()->addHours(6), function() {
             return $this->adSectionRepository->list('', ['page' => 'homepage', 'status' => 1], 'all', 'position', 'asc');
         });

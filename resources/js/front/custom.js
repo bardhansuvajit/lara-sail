@@ -15,6 +15,7 @@ const orderSummaryEl = document.getElementById('order-summary');
 // const phoneNoEl = document.getElementById('phone_no');
 const numberEl = document.querySelectorAll('.digits-only');
 const placeOrderForm = document.getElementById('place-order-form');
+const mobileCartCounter = document.getElementById('mobile-menu-cart-counter-cont');
 
 
 
@@ -916,6 +917,11 @@ function updateCartData(cartInfo, cartItems) {
 
         bindCartQtyEvents();
         bindRemoveFromCartEvents();
+
+        // in mobile navigation, work on default counter
+        if (mobileCartCounter) {
+            mobileCartCounter.style.display = 'block';
+        }
     } else {
         cartProductsElements.forEach(el => {
             el.innerHTML = `
@@ -928,6 +934,11 @@ function updateCartData(cartInfo, cartItems) {
 
         if (cartRedirectElement) {
             cartRedirectElement.textContent = '';
+        }
+
+        // in mobile navigation, work on default counter
+        if (mobileCartCounter) {
+            mobileCartCounter.style.display = 'none';
         }
     }
 }

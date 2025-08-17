@@ -16,12 +16,13 @@ return new class extends Migration
             $table->foreignId('ad_section_id')->constrained('ad_sections')->cascadeOnDelete();
             $table->string('country_code', 2);
             $table->foreign('country_code')
-                ->references('code') // assuming your countries table has a 'code' column
+                ->references('code')
                 ->on('countries')
                 ->cascadeOnDelete();
 
             $table->string('title')->nullable();
             $table->text('subtitle')->nullable();
+            $table->text('url')->nullable();
 
             $table->text('image_s')->nullable();
             $table->text('image_m')->nullable();
@@ -35,9 +36,9 @@ return new class extends Migration
             $table->json('meta')->nullable();
 
             // timing control
-            $table->timestamp('start_at')->nullable();
-            $table->timestamp('end_at')->nullable();
-            $table->tinyInteger('show_offer_ends_timing')->default(0);
+            // $table->timestamp('start_at')->nullable();
+            // $table->timestamp('end_at')->nullable();
+            // $table->tinyInteger('show_offer_ends_timing')->default(0);
 
             $table->tinyInteger('status')->default(1)->comment('1: active, 0: inactive');
             $table->softDeletes();
@@ -50,6 +51,7 @@ return new class extends Migration
                 'country_code' => 'IN',
                 'title' => 'Huge Savings. Everyday essentials. Top brands.',
                 'subtitle' => 'Curated deals, fast delivery and reliable customer service — everything you expect from a marketplace leader.',
+                'url' => null,
 
                 'image_s' => 'default/ad/big-deal.png',
                 'image_m' => 'default/ad/big-deal.png',
@@ -90,6 +92,7 @@ return new class extends Migration
                 'country_code' => 'IN',
                 'title' => 'Trusted marketplace',
                 'subtitle' => 'Secure payments, verified sellers and fast support.',
+                'url' => null,
 
                 'image_s' => 'default/ad/safe.png',
                 'image_m' => 'default/ad/safe.png',
@@ -107,6 +110,7 @@ return new class extends Migration
                 'country_code' => 'IN',
                 'title' => 'Save <span class="text-indigo-600 dark:text-indigo-400">₹500</span> today — pre-order the new iMac 27”',
                 'subtitle' => 'Reserve your iMac now to lock in exclusive launch pricing, priority shipping and a complimentary 1-year warranty extension.',
+                'url' => null,
 
                 'image_s' => 'default/ad/imac.jpg',
                 'image_m' => 'default/ad/imac.jpg',
@@ -149,6 +153,60 @@ return new class extends Migration
                     ]
                 ]),
             ],
+            [
+                'ad_section_id' => 4,
+                'country_code' => 'IN',
+                'title' => 'Top Category Banner',
+                'subtitle' => null,
+                'url' => '/collection',
+
+                'image_s' => 'default/ad/category-banner-ad.png',
+                'image_m' => 'default/ad/category-banner-ad.png',
+                'image_l' => 'default/ad/category-banner-ad.png',
+
+                'cta_primary_text' => null,
+                'cta_primary_url' => null,
+                'cta_secondary_text' => null,
+                'cta_secondary_url' => null,
+
+                'meta' => json_encode([])
+            ],
+            [
+                'ad_section_id' => 5,
+                'country_code' => 'IN',
+                'title' => 'Sponsored Ad 1',
+                'subtitle' => null,
+                'url' => '/collection',
+
+                'image_s' => 'default/ad/sponsored-ad1.png',
+                'image_m' => 'default/ad/sponsored-ad1.png',
+                'image_l' => 'default/ad/sponsored-ad1.png',
+
+                'cta_primary_text' => null,
+                'cta_primary_url' => null,
+                'cta_secondary_text' => null,
+                'cta_secondary_url' => null,
+
+                'meta' => json_encode([])
+            ],
+            [
+                'ad_section_id' => 6,
+                'country_code' => 'IN',
+                'title' => 'Sponsored Ad 2',
+                'subtitle' => null,
+                'url' => '/collection',
+
+                'image_s' => 'default/ad/sponsored-ad2.png',
+                'image_m' => 'default/ad/sponsored-ad2.png',
+                'image_l' => 'default/ad/sponsored-ad2.png',
+
+                'cta_primary_text' => null,
+                'cta_primary_url' => null,
+                'cta_secondary_text' => null,
+                'cta_secondary_url' => null,
+
+                'meta' => json_encode([])
+            ]
         ];
 
         DB::table('ad_items')->insert($data);

@@ -116,6 +116,12 @@ class AppServiceProvider extends ServiceProvider
         //     }
         // }
 
+
+        Cache::forget('homepage_products');
+        Cache::forget('most_sold_products');
+        Cache::forget('homepage_ads');
+
+
         View::share('activeCountries', $countries);
         View::share('activeCategories', $categories);
         View::share('activeCollections', $collections);

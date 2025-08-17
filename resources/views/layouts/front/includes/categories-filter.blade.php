@@ -10,14 +10,14 @@
                 </div>
             </div>
 
-            <div>
+            {{-- <div>
                 <label class="block text-xs">Brands</label>
                 <div class="mt-2 flex flex-wrap gap-2">
                     @foreach($brands as $b)
                         <button class="px-2 py-1 text-xs border rounded">{{ $b }}</button>
                     @endforeach
                 </div>
-            </div>
+            </div> --}}
 
             <div>
                 <label class="block text-xs">Rating</label>
@@ -30,15 +30,27 @@
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 p-3 {{ FD['rounded'] }} shadow">
-        <h4 class="text-xs font-semibold mb-2">Sponsored</h4>
-        <a href="#" class="block {{ FD['rounded'] }} overflow-hidden mb-3">
-            <img src="{{ $ads[1]['img'] }}" alt="Sponsored ad" class="w-full h-40 object-cover {{ FD['rounded'] }}">
-        </a>
-        <a href="#" class="block {{ FD['rounded'] }} overflow-hidden">
-            <img src="{{ $ads[2]['img'] }}" alt="Sponsored ad 2" class="w-full h-40 object-cover {{ FD['rounded'] }}">
-        </a>
-    </div>
+    @if ($categoryPageAd2 || $categoryPageAd3)
+        <div class="bg-white dark:bg-gray-800 p-3 {{ FD['rounded'] }} shadow">
+            <h4 class="text-xs font-semibold mb-2">Sponsored</h4>
+
+            @if ($categoryPageAd2)
+                <a href="{{ $categoryPageAd2->url }}" class="block {{ FD['rounded'] }} overflow-hidden mb-3">
+                    <img src="{{ Storage::url($categoryPageAd2->image_l) }}" alt="Sponsored ad" class="w-full h-40 object-cover {{ FD['rounded'] }}">
+                </a>
+            @endif
+
+            @if ($categoryPageAd3)
+                <a href="{{ $categoryPageAd3->url }}" class="block {{ FD['rounded'] }} overflow-hidden">
+                    <img src="{{ Storage::url($categoryPageAd3->image_l) }}" alt="Sponsored ad 2" class="w-full h-40 object-cover {{ FD['rounded'] }}">
+                </a>
+            @endif
+        </div>
+    @endif
+
+    @if(count($flashSaleProducts) > 0)
+        @include('layouts.front.includes.flash-sale')
+    @endif
 
     {{-- <div class="bg-white dark:bg-gray-800 p-4 {{ FD['rounded'] }} shadow text-xs">
         <h4 class="font-semibold mb-2">Categories quick links</h4>

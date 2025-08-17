@@ -149,6 +149,7 @@
         </div>
     {{-- </div> --}}
 
+    <input type="hidden" name="remember" value="on">
     <input type="hidden" name="phone_country_code" value="{{COUNTRY['country']}}"> <!-- returns 'IN' -->
     <input type="hidden" name="request_path" value="{{request()->path()}}"> <!-- returns 'checkout' -->
 </form>
