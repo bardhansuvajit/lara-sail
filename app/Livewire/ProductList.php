@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Interfaces\ProductStatusInterface;
 use App\Interfaces\ProductListingInterface;
 use App\Interfaces\ProductFeatureInterface;
 use Livewire\Attributes\On;
@@ -19,20 +20,23 @@ class ProductList extends Component
     public string $sortOrder = 'asc';
     public $perPage = 15;
 
+    private ProductStatusInterface $productStatusRepository;
     private ProductListingInterface $productListingRepository;
     private ProductFeatureInterface $productFeatureRepository;
 
     public function boot(
+        ProductStatusInterface $productStatusRepository,
         ProductListingInterface $productListingRepository,
         ProductFeatureInterface $productFeatureRepository
     ) {
+        $this->productStatusRepository = $productStatusRepository;
         $this->productListingRepository = $productListingRepository;
         $this->productFeatureRepository = $productFeatureRepository;
     }
 
     public function search()
     {
-        $this->resetPage(); // ensure page resets when searching
+        $this->resetPage();
     }
 
     public function resetFilters()
@@ -67,7 +71,6 @@ class ProductList extends Component
             if ($value === 'off') {
                 // Load Featured Products
                 $this->dispatch('afterDeleteLoadFeaturedProducts', id: $data['data']['id']);
-                // $this->productFeatureRepository->delete($data['data']['id']);
 
                 $this->dispatch('notificationSend', [
                     'variant' => 'success',
@@ -88,7 +91,6 @@ class ProductList extends Component
 
                 $this->dispatch('notificationSend', [
                     'variant' => 'success',
-                    // 'title' => 'Status updated',
                     'message' => "{$productTitle} updated to {$value}"
                 ]);
             }
@@ -99,7 +101,6 @@ class ProductList extends Component
             if ($value === 'off') {
                 $this->dispatch('notificationSend', [
                     'variant' => 'warning',
-                    // 'title' => 'OOPS!',
                     'message' => "This action cannot be performed!"
                 ]);
                 return;
@@ -115,7 +116,6 @@ class ProductList extends Component
 
             $this->dispatch('notificationSend', [
                 'variant' => 'success',
-                // 'title' => 'Status updated',
                 'message' => "{$productTitle} added as {$value}"
             ]);
         }
@@ -135,11 +135,13 @@ class ProductList extends Component
 
         $products = $resp['data'];
 
-        // sync featureTypes with DB on each render
         foreach ($products as $item) {
             $this->featureTypes[$item->id] = $item->featured->type ?? 'off';
         }
 
-        return view('livewire.product-list', compact('products'));
+        $allStatusResp = $this->productStatusRepository->list('', ['status' => 1], 'all', 'position', 'asc');
+        $allStatus = $allStatusResp['data'];
+
+        return view('livewire.product-list', compact('products', 'allStatus'));
     }
 }

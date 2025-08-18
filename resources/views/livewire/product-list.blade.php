@@ -43,8 +43,11 @@
                     <x-admin.input-select id="status" wire:model="status">
                         @slot('options')
                             <x-admin.input-select-option value="">All</x-admin.input-select-option>
-                            <x-admin.input-select-option value="1">Active</x-admin.input-select-option>
-                            <x-admin.input-select-option value="0">Disabled</x-admin.input-select-option>
+                            @foreach ($allStatus as $status)
+                                <x-admin.input-select-option value="{{$status->id}}" :selected="request()->input('status') == $status->id"> {{ __($status->title) }} </x-admin.input-select-option>
+                            @endforeach
+                            {{-- <x-admin.input-select-option value="1">Active</x-admin.input-select-option>
+                            <x-admin.input-select-option value="0">Disabled</x-admin.input-select-option> --}}
                         @endslot
                     </x-admin.input-select>
                 </div>
@@ -58,7 +61,7 @@
                     {{ __('Search') }}
                 </x-admin.button>
 
-                <x-admin.button element="a" type="button" wire:click="resetFilters" tag="secondary">
+                <x-admin.button element="button" type="button" wire:click="resetFilters" tag="secondary">
                     {{ __('Clear') }}
                 </x-admin.button>
             </div>
@@ -77,7 +80,6 @@
                 </tr>
             </thead>
             <tbody>
-                {{-- {{ dd($products) }} --}}
                 @forelse ($products as $item)
                     <tr class="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <td scope="row" class="px-2 py-1 w-8 text-gray-900 dark:text-white">
@@ -98,12 +100,12 @@
                             </div>
                         </td>
                         <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                            <div class="text-xs font-bold {{$item->status == 1 ? 'text-green-500' : 'text-gray-500'}}">
-                                {{$item->status == 1 ? 'Active' : 'Disabled'}}
+                            <div class="text-xs font-bold {{ $item->statusDetail->allow_order == 1 ? 'text-green-500' : 'text-red-500'}}">
+                                {{ $item->statusDetail->title }}
                             </div>
                         </td>
                         <td scope="row" class="px-2 py-1 text-gray-500">
-                            <div class="flex">
+                            <div class="flex justify-end">
                                 @foreach (['featured' => 'Featured', 'flash' => 'Flash', 'trending' => 'Trending', 'off' => 'Off'] as $value => $label)
                                     <label class="cursor-pointer border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition {{ $loop->first ? 'rounded-l-md' : '' }} {{ $loop->last ? 'rounded-r-md -ml-px' : '-ml-px' }}">
                                         <input 

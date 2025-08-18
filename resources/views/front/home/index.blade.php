@@ -43,6 +43,7 @@
         <section class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 items-start @if (count($featuredProducts) == 0) mt-5 @endif">
             {{-- Left: Product Advertisement/ hero carousel / big promo --}}
             <div class="lg:col-span-8">
+                {{-- Homepage Ad 1 --}}
                 @if ($homepageAd1)
                     <div class="bg-gradient-to-r from-indigo-50 to-white dark:from-primary-900 dark:to-primary-500 {{FD['rounded']}} p-4">
                         <div class="flex flex-col md:flex-row gap-4">
@@ -102,22 +103,22 @@
                                         <img src="{{ Storage::url($cat['image_s']) }}" alt=""
                                             class="w-full h-16 sm:h-20 object-contain mb-4 group-hover:scale-105 transition">
                                     @else
-                                        <div class="flex-1 flex items-center justify-center mb-4 bg-gradient-to-br from-blue-500 to-purple-500 text-white overflow-hidden">
-                                            <span class="{{ FD['text'] }} sm:text-lg font-bold">{{ $cat['title'] }}</span>
+                                        <div class="flex-1 flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-500 text-white overflow-hidden">
+                                            <span class="{{ FD['text'] }} sm:text-lg font-bold text-center">{{ $cat['title'] }}</span>
                                         </div>
                                         @php $cat['title'] = null; @endphp
                                     @endif
 
                                     {{-- Title --}}
                                     @if (!empty($cat['title']))
-                                        <p class="text-[10px] sm:text-xs font-bold text-center line-clamp-2 sm:line-clamp-1 text-gray-900 dark:text-white mb-1">
+                                        <p class="text-[10px] sm:text-xs font-bold text-center line-clamp-2 sm:line-clamp-1 text-gray-900 dark:text-white">
                                             {{ $cat['title'] }}
                                         </p>
                                     @endif
 
                                     {{-- Description --}}
                                     @if (!empty($cat['short_description']))
-                                        <p class="{{ FD['text-0'] }} font-light text-center line-clamp-1 sm:line-clamp-2 text-gray-500 dark:text-gray-500 leading-none">
+                                        <p class="{{ FD['text-0'] }} mt-2 font-light text-center line-clamp-1 sm:line-clamp-2 text-gray-500 dark:text-gray-500 leading-none">
                                             {{ $cat['short_description'] }}
                                         </p>
                                     @endif
@@ -623,6 +624,7 @@
                 </div>
             </section>
         @endif
+
     </div>
 
     {{-- Minimal JS for interactions: countdown (plain, dependency-free) --}}
