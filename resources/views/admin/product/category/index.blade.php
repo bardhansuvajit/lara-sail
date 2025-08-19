@@ -287,13 +287,19 @@
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 @php
-                                    $productCount = count($item->products);
+                                    $productCount       = $item->products->count();
+                                    $allActiveCount     = $item->all_active_products->count();
                                 @endphp
 
                                 @if ($productCount == 0)
-                                    <p class="text-xs text-gray-500">{{ count($item->products) }}</p>
+                                    <p class="text-xs text-gray-500">{{ $productCount }}</p>
                                 @else
-                                    <p class="text-xs">{{ count($item->products) }}</p>
+                                    <p class="text-xs text-gray-500">
+                                        Products 
+                                        <span class="font-medium text-gray-800 dark:text-gray-300">{{ $productCount }}</span>
+                                        | Active Products (Self + Children)
+                                        <span class="font-medium text-gray-800 dark:text-gray-300">{{ $allActiveCount }}</span>
+                                    </p>
                                 @endif
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">

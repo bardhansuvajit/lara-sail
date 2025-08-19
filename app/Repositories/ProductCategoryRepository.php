@@ -160,7 +160,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
     public function getBySlug(String $slug)
     {
         try {
-            $data = ProductCategory::where('slug', $slug)->first();
+            $data = ProductCategory::with('activeProductsInChildren', 'ancestors', 'activeProducts')->where('slug', $slug)->first();
 
             if (!empty($data)) {
                 return [

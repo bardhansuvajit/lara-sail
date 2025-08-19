@@ -1250,3 +1250,19 @@ document.querySelectorAll('.wishlist-btn').forEach(wishlistBtn => {
         }
     });
 });
+
+// Flash Sale Countdown (fixed 10 minutes)
+(function(){
+    const countdownEl = document.getElementById('countdown');
+    if (countdownEl) {
+        let remaining = 10*60; // 10 minutes
+        setInterval(()=>{
+            if(remaining<=0){ countdownEl.textContent='00:00:00'; return }
+            remaining--;
+            const h = String(Math.floor(remaining/3600)).padStart(2,'0');
+            const m = String(Math.floor((remaining%3600)/60)).padStart(2,'0');
+            const s = String(remaining%60).padStart(2,'0');
+            countdownEl.textContent = `${h}:${m}:${s}`;
+        },1000);
+    }
+})();
