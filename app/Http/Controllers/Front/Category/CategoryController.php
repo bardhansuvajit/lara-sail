@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Models\ProductCategory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -32,22 +33,6 @@ class CategoryController extends Controller
 
     public function index(Request $request): View
     {
-        /*
-        $search = $request->input('search');
-
-        $query = ProductCategory::whereNull('parent_id')
-            ->where('status', 1);
-
-        if ($search) {
-            $query->where('title', 'like', '%' . $search . '%')
-                    ->orWhere('short_description', 'like', '%' . $search . '%')
-                    ->orWhere('tags', 'like', '%' . $search . '%');
-        }
-
-        $categories = $query->orderBy('position')->get();
-        */
-
-
         $search = trim((string) $request->input('search', ''));
 
         // Columns to fetch (keep minimal)
@@ -95,11 +80,6 @@ class CategoryController extends Controller
             return $this->productFeatureRepository->listAllFeatured();
         });
 
-        // ADVERTISEMENT
-        $categoryPageAds = Cache::remember('category_ads', now()->addHours(6), function() {
-            return $this->adSectionRepository->list('', ['page' => 'category', 'status' => 1], 'all', 'position', 'asc');
-        });
-
         return view('front.category.index', [
             'catCount' => count($parents),
             'parents' => $parents,
@@ -112,91 +92,80 @@ class CategoryController extends Controller
             'categoryPageAd2' => $categoryPageAds['data'][1]->activeItemOnly ?? [],
             'categoryPageAd3' => $categoryPageAds['data'][2]->activeItemOnly ?? [],
         ]);
-
-
-
-
-
-
-
-
-
-
-        /** OLD CODE */
-        /*
-        $search = $request->input('search');
-
-        $query = ProductCategory::whereNull('parent_id')
-            ->where('status', 1);
-
-        if ($search) {
-            $query->where('title', 'like', '%' . $search . '%')
-                    ->orWhere('tags', 'like', '%' . $search . '%');
-        }
-
-        $categories = $query->with([
-            'childDetails' => function ($q) {
-                $q->where('status', 1) // only active children
-                ->withCount('products')
-                ->with([
-                    'childDetails' => function ($qq) {
-                        $qq->where('status', 1) // only active sub-children
-                            ->withCount('products')
-                            ->select('id', 'title as name', 'image_m as image', 'slug', 'parent_id');
-                    }
-                ])
-                ->select('id', 'title as name', 'image_m as image', 'slug', 'parent_id');
-            },
-        ])
-        ->withCount('products')
-        ->select('id', 'title as name', 'image_m as image', 'short_description as description', 'slug')
-        ->get()
-        ->map(function ($cat) {
-            return [
-                'name' => $cat->name,
-                'slug' => $cat->slug,
-                'image' => $cat->image,
-                'description' => $cat->description,
-                'children' => $cat->childDetails->map(function ($child) {
-                    return [
-                        'name' => $child->name,
-                        'slug' => $child->slug,
-                        'image' => $child->image,
-                        'products_count' => $child->products_count ?? 0,
-                        'children' => $child->childDetails->map(function ($sub) {
-                            return [
-                                'name' => $sub->name,
-                                'slug' => $sub->slug,
-                                'image' => $sub->image,
-                                'products_count' => $sub->products_count ?? 0,
-                            ];
-                        })->toArray(),
-                    ];
-                })->toArray(),
-            ];
-        })
-        ->toArray();
-
-        return view('front.category.index', [
-            'categories' => $categories
-        ]);
-        */
     }
 
-    public function detail(Request $request, $slug): View
+    public function detail(Request $request, $slug): View|RedirectResponse
     {
         $categoryDetailData = $this->productCategoryRepository->getBySlug($slug);
-        $category = $categoryDetailData['data'];
 
-        // Load products
-        // $products = $category->getAllActiveProductsAttribute()
-        //     ->with(['brand', 'images']) // eager load for performance
-        //     ->paginate(12);
+        if ($categoryDetailData['code'] == 200) {
+            $category = $categoryDetailData['data'];
 
-        return view('front.category.detail', [
-            'category' => $category,
-            'activeProductsCount' => $category->all_active_products->count(),
-            'products' => $products
-        ]);
+            // Get paginated products from this category and all its children
+            $perPage = $request->get('per_page', 15);
+            $products = $category->getPaginatedProductsFromCategoryAndChildren($perPage);
+
+            return view('front.category.detail', [
+                'category' => $category,
+                'activeProductsCount' => $category->total_active_products_count,
+                'products' => $products
+            ]);
+        } else {
+            return redirect()->route('front.error.404');
+        }
+    }
+
+    public function showWithFilters($slug, Request $request)
+    {
+        // Find the category by slug
+        $category = ProductCategory::where('slug', $slug)
+            ->where('status', 1)
+            ->firstOrFail();
+        
+        // Get category IDs including all descendants
+        $categoryIds = $category->getDescendantCategoryIds();
+        
+        // Build the base query
+        $query = Product::whereIn('category_id', $categoryIds)
+            ->whereHas('statusDetail', function ($query) {
+                $query->where('allow_order', 1);
+            })
+            ->with(['category', 'images', 'variations']);
+        
+        // Apply filters if needed
+        if ($request->has('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+        
+        if ($request->has('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+        
+        if ($request->has('sort_by')) {
+            switch ($request->sort_by) {
+                case 'price_asc':
+                    $query->orderBy('price', 'asc');
+                    break;
+                case 'price_desc':
+                    $query->orderBy('price', 'desc');
+                    break;
+                case 'newest':
+                    $query->orderBy('created_at', 'desc');
+                    break;
+                case 'popular':
+                    $query->orderBy('views', 'desc');
+                    break;
+                default:
+                    $query->orderBy('created_at', 'desc');
+            }
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+        
+        // Get paginated results
+        $perPage = $request->get('per_page', 15);
+        $products = $query->paginate($perPage);
+        
+        return view('category.show', compact('category', 'products'));
     }
 }

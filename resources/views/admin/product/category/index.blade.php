@@ -288,7 +288,8 @@
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 @php
                                     $productCount       = $item->products->count();
-                                    $allActiveCount     = $item->all_active_products->count();
+                                    $allActiveCount     = $item->total_active_products_count;
+                                    // $allActiveCount     = $item->all_active_products->count();
                                 @endphp
 
                                 @if ($productCount == 0)

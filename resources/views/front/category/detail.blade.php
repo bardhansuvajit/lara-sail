@@ -21,6 +21,8 @@
                 (object)['name'=>'Laptops','slug'=>'laptops','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Laptops','product_count'=>86],
                 (object)['name'=>'Headphones','slug'=>'headphones','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Headphones','product_count'=>54],
                 (object)['name'=>'Cameras','slug'=>'cameras','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Cameras','product_count'=>33],
+                (object)['name'=>'Cameras','slug'=>'cameras','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Cameras','product_count'=>33],
+                (object)['name'=>'Cameras','slug'=>'cameras','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Cameras','product_count'=>33],
             ]);
         }
 
@@ -77,37 +79,36 @@
     @endphp
 
     <div class="flex flex-col gap-4 px-2 sm:px-0">
-        {{-- Breadcrumb --}}
-        <nav class="text-xs text-gray-500 mt-1" aria-label="breadcrumb">
-            <ol class="flex items-center gap-2">
-                <li><a href="{{ route('front.home.index') }}" class="hover:underline">Home</a></li>
-
-                @if ($category->ancestors)
-                    @php
-                        $parents = collect([]);
-                        $current = $category->parentDetails;
-                        while ($current) {
-                            $parents->prepend($current);
-                            $current = $current->parentDetails;
-                        }
-                    @endphp
-
-                    @foreach ($parents as $parent)
-                        <li>
-                            / <a href="{{ route('front.category.detail', $parent->slug) }}" class="hover:underline">
-                                {{ $parent->title }}
-                            </a>
-                        </li>
-                    @endforeach
-                @endif
-
-                <li> / <span class="text-gray-700 dark:text-gray-300">{{ $category->title }}</span></li>
-            </ol>
-        </nav>
-
         {{-- Hero: Category banner + quick stats --}}
-        <header class="bg-gray-100 dark:bg-gray-900 {{ FD['rounded'] }} shadow-sm">
-            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-center">
+        <header class="bg-gray-100 dark:bg-gray-900 {{ FD['rounded'] }}">
+            <nav class="{{ FD['text-0'] }} text-gray-500 mt-2 mb-1" aria-label="breadcrumb">
+                <ol class="flex items-center gap-2">
+                    <li><a href="{{ route('front.home.index') }}" class="hover:underline">Home</a></li>
+
+                    @if ($category->ancestors)
+                        @php
+                            $parents = collect([]);
+                            $current = $category->parentDetails;
+                            while ($current) {
+                                $parents->prepend($current);
+                                $current = $current->parentDetails;
+                            }
+                        @endphp
+
+                        @foreach ($parents as $parent)
+                            <li>
+                                / <a href="{{ route('front.category.detail', $parent->slug) }}" class="hover:underline">
+                                    {{ $parent->title }}
+                                </a>
+                            </li>
+                        @endforeach
+                    @endif
+
+                    <li> / <span class="text-gray-700 dark:text-gray-300">{{ $category->title }}</span></li>
+                </ol>
+            </nav>
+
+            <div class="grid grid-cols-1 items-center">
                 <div class="lg:col-span-3">
                     <h1 class="text-sm md:text-lg font-extrabold leading-tight">{{ $category->title }}</h1>
 
@@ -115,21 +116,17 @@
                         <p class="text-xs text-gray-600 dark:text-gray-400">{{ $category->short_description }}</p>
                     @endif
 
-                    <div class="flex items-center gap-4 text-xs text-gray-500">
+                    {{-- <div class="flex items-center gap-4 text-xs text-gray-500">
                         <span>{{ number_format($activeProductsCount) .' '. ( ($activeProductsCount == 1) ? 'product' : 'products' ) }}</span>
                         <span>·</span>
-                        {{-- @if(isset($category->average_rating)) --}}
                             <span>Avg. rating 4.1 ★</span>
-                        {{-- @endif --}}
-                        {{-- @if(isset($category->fastest_delivery_days)) --}}
                             <span>· Delivery in 5 days</span>
-                        {{-- @endif --}}
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
             {{-- LEFT: Filters + Subcategories + Some texts --}}
             <aside class="hidden lg:block lg:col-span-3 space-y-4">
 
@@ -152,7 +149,7 @@
                             @endforeach
                         </div>
 
-                        @if($subcategories->count() > 6)
+                        @if($subcategories->count() > 2)
                             <div class="text-center mt-2">
                                 <button id="showMoreSubcats" onclick="toggleSubcats()" class="text-xs text-indigo-600">Show more</button>
                             </div>
@@ -303,62 +300,74 @@
             </aside>
 
             {{-- RIGHT: Products list --}}
-            <main class="lg:col-span-9">
-                {{-- Top controls: sort, view toggle, result count --}}
-                <div class="flex items-center justify-between mb-4">
-                    <div class="text-xs text-gray-600">Showing <strong>{{ $products->firstItem() }}</strong>–<strong>{{ $products->lastItem() }}</strong> of <strong>{{ $products->total() }}</strong></div>
+            <main class="lg:col-span-9 space-y-4">
+                @if ($products->count() > 0)
+                    {{-- Top controls: sort, view toggle, result count --}}
+                    <div class="flex items-center justify-between">
+                        <div class="text-xs text-gray-600">Showing <strong>{{ $products->firstItem() }}</strong>–<strong>{{ $products->lastItem() }}</strong> of <strong>{{ $products->total() }}</strong></div>
 
-                    <div class="flex items-center gap-3">
-                        <!-- Mobile filters button -->
-                        <button type="button" class="lg:hidden px-3 py-2 bg-gray-100 rounded text-xs" onclick="openFilters()">Filters</button>
+                        <div class="flex items-center gap-3">
+                            <!-- Mobile filters button -->
+                            <button type="button" class="lg:hidden px-3 py-2 bg-gray-100 rounded text-xs" onclick="openFilters()">Filters</button>
 
-                        <form method="GET" id="sortForm" class="flex items-center gap-2">
-                            {{-- preserve other query params --}}
-                            @foreach(request()->except(['sort','page']) as $k=>$v)
-                                @if(is_array($v))
-                                    @foreach($v as $vv)
-                                        <input type="hidden" name="{{ $k }}[]" value="{{ $vv }}">
-                                    @endforeach
-                                @else
-                                    <input type="hidden" name="{{ $k }}" value="{{ $v }}">
-                                @endif
-                            @endforeach
+                            <form method="GET" id="sortForm" class="flex items-center gap-2">
+                                {{-- preserve other query params --}}
+                                @foreach(request()->except(['sort','page']) as $k=>$v)
+                                    @if(is_array($v))
+                                        @foreach($v as $vv)
+                                            <input type="hidden" name="{{ $k }}[]" value="{{ $vv }}">
+                                        @endforeach
+                                    @else
+                                        <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+                                    @endif
+                                @endforeach
 
-                            <label for="sort" class="text-xs">Sort</label>
-                            <select id="sort" name="sort" onchange="document.getElementById('sortForm').submit()" class="text-xs px-2 py-1 rounded border">
-                                <option value="relevance" {{ request('sort')=='relevance' ? 'selected' : '' }}>Relevance</option>
-                                <option value="price_asc" {{ request('sort')=='price_asc' ? 'selected' : '' }}>Price: Low to High</option>
-                                <option value="price_desc" {{ request('sort')=='price_desc' ? 'selected' : '' }}>Price: High to Low</option>
-                                <option value="newest" {{ request('sort')=='newest' ? 'selected' : '' }}>Newest</option>
-                                <option value="rating" {{ request('sort')=='rating' ? 'selected' : '' }}>Top rated</option>
-                            </select>
-                        </form>
+                                <div>
+                                    {{-- <x-front.input-label for="sort" :value="__('Sort')" /> --}}
+                                    <x-front.input-select 
+                                        id="sort" 
+                                        class="w-full"
+                                        name="sort" 
+                                    >
+                                        @slot('options')
+                                            <x-front.input-select-option value="relevance" :selected="request('sort')=='relevance'"> Relevance </x-front.input-select-option>
+                                            <x-front.input-select-option value="price_asc" :selected="request('sort')=='price_asc'"> Price: Low to High </x-front.input-select-option>
+                                            <x-front.input-select-option value="price_desc" :selected="request('sort')=='price_desc'"> Price: High to Low </x-front.input-select-option>
+                                        @endslot
+                                    </x-front.input-select>
+                                </div>
 
-                        <div class="inline-flex items-center gap-2 border rounded px-2 py-1">
-                            <button type="button" onclick="setView('grid')" id="gridViewBtn" class="text-xs" aria-pressed="true">Grid</button>
-                            <button type="button" onclick="setView('list')" id="listViewBtn" class="text-xs" aria-pressed="false">List</button>
+                                {{-- <label for="sort" class="text-xs">Sort</label>
+                                <select id="sort" name="sort" onchange="document.getElementById('sortForm').submit()" class="text-xs px-2 py-1 rounded border">
+                                    <option value="relevance" {{ request('sort')=='relevance' ? 'selected' : '' }}>Relevance</option>
+                                    <option value="price_asc" {{ request('sort')=='price_asc' ? 'selected' : '' }}>Price: Low to High</option>
+                                    <option value="price_desc" {{ request('sort')=='price_desc' ? 'selected' : '' }}>Price: High to Low</option>
+                                    <option value="newest" {{ request('sort')=='newest' ? 'selected' : '' }}>Newest</option>
+                                    <option value="rating" {{ request('sort')=='rating' ? 'selected' : '' }}>Top rated</option>
+                                </select> --}}
+                            </form>
                         </div>
                     </div>
-                </div>
+                @endif
 
                 {{-- Subcategory chips (quick filters) --}}
-                @if($subcategories->isNotEmpty())
+                @if($category->childDetails->isNotEmpty())
                     <div class="mb-4 flex gap-2 flex-wrap">
-                        @foreach($subcategories->take(8) as $sc)
-                            <a href="{{ route('front.category.detail', $sc->slug) }}?{{ http_build_query(request()->except('page')) }}" class="text-xs px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded">{{ $sc->name }}</a>
+                        @foreach($category->childDetails->take(8) as $sc)
+                            <a href="{{ route('front.category.detail', $sc->slug) }}?{{ http_build_query(request()->except('page')) }}" class="text-xs px-3 py-1 bg-gray-200 dark:bg-gray-800 {{ FD['rounded'] }}">{{ $sc->title }}</a>
                         @endforeach
                     </div>
                 @endif
 
                 {{-- Featured Products --}}
-                @if (count($products) > 0)
+                {{-- @if (count($products) > 0) --}}
                     <section class="bg-gray-100 antialiased dark:bg-gray-900">
                         <div class="mx-auto max-w-screen-xl">
-                            <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0">
-                                <p class="{{FD['text-1']}} font-semibold text-gray-600 dark:text-gray-500">FEATURED</h2>
-                            </div>
+                            {{-- <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0">
+                                <p class="{{FD['text-1']}} font-semibold text-gray-600 dark:text-gray-500">Products</h2>
+                            </div> --}}
 
-                            <div class="grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-6" id="featured-products">
+                            <div class="grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4" id="featured-products">
                                 {{-- Product Card Component --}}
                                 @foreach ($products as $featuredItem)
                                     <x-front.product-card :product="$featuredItem" />
@@ -366,7 +375,7 @@
                             </div>
                         </div>
                     </section>
-                @endif
+                {{-- @endif --}}
 
                 {{-- Product grid / list --}}
                 {{-- <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -443,47 +452,47 @@
 
         {{-- Minimal JS for view toggle, subcategory expand, and mobile filters --}}
         <script>
-            function setView(v){
-                const grid = document.getElementById('productsGrid');
-                const gridBtn = document.getElementById('gridViewBtn');
-                const listBtn = document.getElementById('listViewBtn');
+            // function setView(v){
+            //     const grid = document.getElementById('productsGrid');
+            //     const gridBtn = document.getElementById('gridViewBtn');
+            //     const listBtn = document.getElementById('listViewBtn');
 
-                if(v === 'list'){
-                    grid.className = 'grid grid-cols-1 gap-4';
-                    localStorage.setItem('catalogView','list');
-                    listBtn.setAttribute('aria-pressed','true');
-                    gridBtn.setAttribute('aria-pressed','false');
-                    listBtn.classList.add('bg-indigo-600','text-white');
-                    gridBtn.classList.remove('bg-indigo-600','text-white');
-                } else {
-                    grid.className = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4';
-                    localStorage.setItem('catalogView','grid');
-                    listBtn.setAttribute('aria-pressed','false');
-                    gridBtn.setAttribute('aria-pressed','true');
-                    gridBtn.classList.add('bg-indigo-600','text-white');
-                    listBtn.classList.remove('bg-indigo-600','text-white');
-                }
-            }
+            //     if(v === 'list'){
+            //         grid.className = 'grid grid-cols-1 gap-4';
+            //         localStorage.setItem('catalogView','list');
+            //         listBtn.setAttribute('aria-pressed','true');
+            //         gridBtn.setAttribute('aria-pressed','false');
+            //         listBtn.classList.add('bg-indigo-600','text-white');
+            //         gridBtn.classList.remove('bg-indigo-600','text-white');
+            //     } else {
+            //         grid.className = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4';
+            //         localStorage.setItem('catalogView','grid');
+            //         listBtn.setAttribute('aria-pressed','false');
+            //         gridBtn.setAttribute('aria-pressed','true');
+            //         gridBtn.classList.add('bg-indigo-600','text-white');
+            //         listBtn.classList.remove('bg-indigo-600','text-white');
+            //     }
+            // }
 
             // restore view on load
-            (function(){
-                const pref = localStorage.getItem('catalogView') || 'grid';
-                setView(pref);
-            })();
+            // (function(){
+            //     const pref = localStorage.getItem('catalogView') || 'grid';
+            //     setView(pref);
+            // })();
 
             // Subcategories show more/less
-            function toggleSubcats(){
-                const extra = document.getElementById('subcatsExtra');
-                const btn = document.getElementById('showMoreSubcats');
-                if(!extra) return;
-                if(extra.classList.contains('hidden')){
-                    extra.classList.remove('hidden');
-                    btn.textContent = 'Show less';
-                } else {
-                    extra.classList.add('hidden');
-                    btn.textContent = 'Show more';
-                }
-            }
+            // function toggleSubcats(){
+            //     const extra = document.getElementById('subcatsExtra');
+            //     const btn = document.getElementById('showMoreSubcats');
+            //     if(!extra) return;
+            //     if(extra.classList.contains('hidden')){
+            //         extra.classList.remove('hidden');
+            //         btn.textContent = 'Show less';
+            //     } else {
+            //         extra.classList.add('hidden');
+            //         btn.textContent = 'Show more';
+            //     }
+            // }
 
             // Mobile filters (off-canvas simple)
             function openFilters(){
