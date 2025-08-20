@@ -39,7 +39,7 @@
         <label 
             for="{{ $id }}" 
             class="ml-2 text-xs text-gray-600 dark:text-gray-300">
-            {{ $label }}
+            {!! $label !!}
         </label>
     @else
         <label 

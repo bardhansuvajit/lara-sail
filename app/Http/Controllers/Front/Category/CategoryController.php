@@ -96,17 +96,28 @@ class CategoryController extends Controller
 
     public function detail(Request $request, $slug): View|RedirectResponse
     {
+        $displayProductsPerPage = 16;
+        $sortByArr = [
+            'relevance' => 'Relevance',
+            'price_asc' => 'Price: Low to High',
+            'price_desc' => 'Price: High to Low',
+            'newest' => 'Newest',
+            'rating' => 'Top rated',
+        ];
+
         $categoryDetailData = $this->productCategoryRepository->getBySlug($slug);
 
         if ($categoryDetailData['code'] == 200) {
             $category = $categoryDetailData['data'];
 
             // Get paginated products from this category and all its children
-            $perPage = $request->get('per_page', 15);
+            $perPage = $request->get('per_page', $displayProductsPerPage);
             $products = $category->getPaginatedProductsFromCategoryAndChildren($perPage);
 
             return view('front.category.detail', [
+                'sortByArr' => $sortByArr,
                 'category' => $category,
+                'subcategories' => $category->childDetails,
                 'activeProductsCount' => $category->total_active_products_count,
                 'products' => $products
             ]);

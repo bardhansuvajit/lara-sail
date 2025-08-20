@@ -3,79 +3,78 @@
     title="{{ $category->title }}">
 
     @php
-        // --- Mock/demo data (only when controller doesn't provide real data) ---
-        if(!isset($category)){
-            $category = (object)[
-                'name' => 'Electronics',
-                'slug' => 'electronics',
-                'short_description' => 'Top electronics — phones, laptops, accessories and more.',
-                'banner_image_url' => 'https://dummyimage.com/1200x300/ede9fe/6d28d9&text=Electronics+Banner',
-                'average_rating' => 4.3,
-                'fastest_delivery_days' => 2,
-            ];
-        }
+        // if(!isset($category)){
+        //     $category = (object)[
+        //         'name' => 'Electronics',
+        //         'slug' => 'electronics',
+        //         'short_description' => 'Top electronics — phones, laptops, accessories and more.',
+        //         'banner_image_url' => 'https://dummyimage.com/1200x300/ede9fe/6d28d9&text=Electronics+Banner',
+        //         'average_rating' => 4.3,
+        //         'fastest_delivery_days' => 2,
+        //     ];
+        // }
 
-        if(!isset($subcategories)){
-            $subcategories = collect([
-                (object)['name'=>'Mobile Phones','slug'=>'mobile-phones','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Phones','product_count'=>124],
-                (object)['name'=>'Laptops','slug'=>'laptops','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Laptops','product_count'=>86],
-                (object)['name'=>'Headphones','slug'=>'headphones','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Headphones','product_count'=>54],
-                (object)['name'=>'Cameras','slug'=>'cameras','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Cameras','product_count'=>33],
-                (object)['name'=>'Cameras','slug'=>'cameras','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Cameras','product_count'=>33],
-                (object)['name'=>'Cameras','slug'=>'cameras','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Cameras','product_count'=>33],
-            ]);
-        }
+        // if(!isset($subcategories)){
+        //     $subcategories = collect([
+        //         (object)['name'=>'Mobile Phones','slug'=>'mobile-phones','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Phones','product_count'=>124],
+        //         (object)['name'=>'Laptops','slug'=>'laptops','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Laptops','product_count'=>86],
+        //         (object)['name'=>'Headphones','slug'=>'headphones','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Headphones','product_count'=>54],
+        //         (object)['name'=>'Cameras','slug'=>'cameras','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Cameras','product_count'=>33],
+        //         (object)['name'=>'Cameras','slug'=>'cameras','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Cameras','product_count'=>33],
+        //         (object)['name'=>'Cameras','slug'=>'cameras','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Cameras','product_count'=>33],
+        //     ]);
+        // }
 
-        if(!isset($brands)){
-            $brands = collect([
-                (object)['id'=>1,'name'=>'Apple'],
-                (object)['id'=>2,'name'=>'Samsung'],
-                (object)['id'=>3,'name'=>'Sony'],
-                (object)['id'=>4,'name'=>'OnePlus'],
-            ]);
-        }
+        // if(!isset($brands)){
+        //     $brands = collect([
+        //         (object)['id'=>1,'name'=>'Apple'],
+        //         (object)['id'=>2,'name'=>'Samsung'],
+        //         (object)['id'=>3,'name'=>'Sony'],
+        //         (object)['id'=>4,'name'=>'OnePlus'],
+        //     ]);
+        // }
 
-        if(!isset($attributes)){
-            $attributes = collect([
-                (object)['id'=>1,'name'=>'Color','values'=>collect([(object)['id'=>11,'value'=>'Black'],(object)['id'=>12,'value'=>'White'],(object)['id'=>13,'value'=>'Blue']])],
-                (object)['id'=>2,'name'=>'Storage','values'=>collect([(object)['id'=>21,'value'=>'64GB'],(object)['id'=>22,'value'=>'128GB'],(object)['id'=>23,'value'=>'256GB']])],
-            ]);
-        }
+        // if(!isset($attributes)){
+        //     $attributes = collect([
+        //         (object)['id'=>1,'name'=>'Color','values'=>collect([(object)['id'=>11,'value'=>'Black'],(object)['id'=>12,'value'=>'White'],(object)['id'=>13,'value'=>'Blue']])],
+        //         (object)['id'=>2,'name'=>'Storage','values'=>collect([(object)['id'=>21,'value'=>'64GB'],(object)['id'=>22,'value'=>'128GB'],(object)['id'=>23,'value'=>'256GB']])],
+        //     ]);
+        // }
 
-        if(!isset($relatedCategories)){
-            $relatedCategories = collect([
-                (object)['name'=>'Wearables','slug'=>'wearables','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Wearables'],
-                (object)['name'=>'Smart Home','slug'=>'smart-home','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Smart+Home'],
-                (object)['name'=>'Gaming','slug'=>'gaming','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Gaming'],
-            ]);
-        }
+        // if(!isset($relatedCategories)){
+        //     $relatedCategories = collect([
+        //         (object)['name'=>'Wearables','slug'=>'wearables','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Wearables'],
+        //         (object)['name'=>'Smart Home','slug'=>'smart-home','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Smart+Home'],
+        //         (object)['name'=>'Gaming','slug'=>'gaming','image_url'=>'https://dummyimage.com/320x200/fff/aaa&text=Gaming'],
+        //     ]);
+        // }
 
-        if(!isset($products)){
-            $allProducts = collect(range(1,24))->map(function($i){
-                return (object)[
-                    'id' => $i,
-                    'title' => "Product $i",
-                    'slug' => 'product-'.$i,
-                    'desc' => 'High quality product — demo description.',
-                    'price' => rand(499,49999),
-                    'mrp' => rand(1000,59999),
-                    'rating' => round(3 + rand(0,20)/10,1),
-                    'image' => "https://dummyimage.com/640x480/fff/aaa&text=Product+{$i}",
-                    'badge' => $i % 5 == 0 ? 'Bestseller' : ($i % 3 == 0 ? 'Limited' : null),
-                    'brand' => ['Apple','Samsung','Sony','OnePlus'][array_rand(['Apple','Samsung','Sony','OnePlus'])],
-                ];
-            });
+        // if(!isset($products)){
+        //     $allProducts = collect(range(1,24))->map(function($i){
+        //         return (object)[
+        //             'id' => $i,
+        //             'title' => "Product $i",
+        //             'slug' => 'product-'.$i,
+        //             'desc' => 'High quality product — demo description.',
+        //             'price' => rand(499,49999),
+        //             'mrp' => rand(1000,59999),
+        //             'rating' => round(3 + rand(0,20)/10,1),
+        //             'image' => "https://dummyimage.com/640x480/fff/aaa&text=Product+{$i}",
+        //             'badge' => $i % 5 == 0 ? 'Bestseller' : ($i % 3 == 0 ? 'Limited' : null),
+        //             'brand' => ['Apple','Samsung','Sony','OnePlus'][array_rand(['Apple','Samsung','Sony','OnePlus'])],
+        //         ];
+        //     });
 
-            $page = request('page', 1);
-            $perPage = 12;
-            $products = new \Illuminate\Pagination\LengthAwarePaginator(
-                $allProducts->forPage($page, $perPage)->values(),
-                $allProducts->count(),
-                $perPage,
-                $page,
-                ['path' => url()->current(), 'query' => request()->query()]
-            );
-        }
+        //     $page = request('page', 1);
+        //     $perPage = 12;
+        //     $products = new \Illuminate\Pagination\LengthAwarePaginator(
+        //         $allProducts->forPage($page, $perPage)->values(),
+        //         $allProducts->count(),
+        //         $perPage,
+        //         $page,
+        //         ['path' => url()->current(), 'query' => request()->query()]
+        //     );
+        // }
     @endphp
 
     <div class="flex flex-col gap-4 px-2 sm:px-0">
@@ -131,18 +130,20 @@
             <aside class="hidden lg:block lg:col-span-3 space-y-4">
 
                 {{-- Subcategories block (limits visible rows, has show more) --}}
-                @if($subcategories->isNotEmpty())
+                {{-- @if($subcategories->isNotEmpty())
                     <div class="bg-white dark:bg-gray-800 p-4 {{ FD['rounded'] }} shadow">
-                        <h3 class="text-sm font-semibold mb-3">Subcategories</h3>
+                        <h3 class="text-xs font-semibold mb-3">Subcategories</h3>
 
                         <div id="subcatsList" class="grid grid-cols-2 sm:grid-cols-1 gap-3">
-                            @foreach($subcategories->take(6) as $sub)
-                                <a href="{{ route('front.category.detail', $sub->slug) }}" class="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
-                                    <img src="{{ $sub->image_url ?? asset('images/subcat-default.png') }}" alt="{{ $sub->name }}" class="w-12 h-10 object-cover rounded">
+                            @foreach($subcategories->take(2) as $sub)
+                                <a href="{{ route('front.category.detail', $sub->slug) }}" class="flex items-center gap-3 p-1 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                                    @if ($sub->image_s)
+                                        <img src="{{ Storage::url($sub->image_s) }}" alt="{{ $sub->slug }}" class="w-auto h-8 object-cover rounded">
+                                    @endif
                                     <div>
-                                        <div class="text-xs font-medium">{{ $sub->name }}</div>
-                                        @if($sub->product_count)
-                                            <div class="text-xs text-gray-400">{{ $sub->product_count }} products</div>
+                                        <div class="text-xs font-medium">{{ $sub->title }}</div>
+                                        @if($sub->total_active_products_count)
+                                            <div class="text-xs text-gray-400">{{ $sub->total_active_products_count . ' ' . ( ($sub->total_active_products_count == 1) ? 'product' : 'products' ) }}</div>
                                         @endif
                                     </div>
                                 </a>
@@ -150,52 +151,60 @@
                         </div>
 
                         @if($subcategories->count() > 2)
-                            <div class="text-center mt-2">
-                                <button id="showMoreSubcats" onclick="toggleSubcats()" class="text-xs text-indigo-600">Show more</button>
-                            </div>
-
                             <div id="subcatsExtra" class="mt-2 grid grid-cols-2 sm:grid-cols-1 gap-3">
-                                @foreach($subcategories->slice(6) as $sub)
-                                    <a href="{{ route('front.category.detail', $sub->slug) }}" class="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
-                                        <img src="{{ $sub->image_url ?? asset('images/subcat-default.png') }}" alt="{{ $sub->name }}" class="w-12 h-10 object-cover rounded">
+                                @foreach($subcategories->slice(2) as $sub)
+                                    <a href="{{ route('front.category.detail', $sub->slug) }}" class="flex items-center gap-3 p-1 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                                        @if ($sub->image_s)
+                                            <img src="{{ Storage::url($sub->image_s) }}" alt="{{ $sub->slug }}" class="w-auto h-8 object-cover rounded">
+                                        @endif
                                         <div>
-                                            <div class="text-xs font-medium">{{ $sub->name }}</div>
-                                            @if($sub->product_count)
-                                                <div class="text-xs text-gray-400">{{ $sub->product_count }} products</div>
+                                            <div class="text-xs font-medium">{{ $sub->title }}</div>
+                                            @if($sub->total_active_products_count)
+                                                <div class="text-xs text-gray-400">{{ $sub->total_active_products_count . ' ' . ( ($sub->total_active_products_count == 1) ? 'product' : 'products' ) }}</div>
                                             @endif
                                         </div>
                                     </a>
                                 @endforeach
                             </div>
+
+                            <div class="text-center mt-2">
+                                <button id="showMoreSubcats" onclick="toggleSubcats()" class="text-xs text-indigo-600">Show more</button>
+                            </div>
                         @endif
                     </div>
-                @endif
+                @endif --}}
 
                 {{-- Filters (desktop) --}}
                 <form id="filtersForm" method="GET" action="{{ route('front.category.detail', $category->slug) }}">
-                    <input type="hidden" name="q" value="{{ request('q') }}">
+                    {{-- <input type="hidden" name="q" value="{{ request('q') }}"> --}}
 
-                    <div class="bg-white dark:bg-gray-800 p-4 {{ FD['rounded'] }} shadow">
-                        <h3 class="text-sm font-semibold mb-3">Filters</h3>
+                    <div class="bg-white dark:bg-gray-800 p-4 {{ FD['rounded'] }} shadow grid gap-4">
+                        <h3 class="text-sm font-semibold">Filters</h3>
 
                         {{-- Price range --}}
-                        <div class="mb-4">
-                            <label class="text-xs font-medium">Price</label>
+                        <div class="">
+                            <label class="text-xs font-light">Price</label>
                             <div class="flex items-center gap-2 mt-2">
                                 <input type="number" name="price_min" value="{{ request('price_min') }}" placeholder="Min" class="w-1/2 px-2 py-1 text-sm rounded border" />
                                 <input type="number" name="price_max" value="{{ request('price_max') }}" placeholder="Max" class="w-1/2 px-2 py-1 text-sm rounded border" />
                             </div>
                         </div>
 
-                        {{-- Brands --}}
-                        @if($brands->isNotEmpty())
-                            <div class="mb-4">
-                                <label class="text-xs font-medium">Brands</label>
-                                <div class="mt-2 grid gap-2 max-h-40 overflow-auto">
-                                    @foreach($brands as $brand)
+                        {{-- Subcategories --}}
+                        @if($subcategories->isNotEmpty())
+                            <div class="">
+                                <label class="text-xs font-light">Subcategories</label>
+                                <div class="mt-2 grid gap-2">
+                                    @foreach($subcategories as $subCat)
                                         <label class="inline-flex items-center text-xs">
-                                            <input type="checkbox" name="brands[]" value="{{ $brand->id }}" {{ in_array($brand->id, (array)request('brands', [])) ? 'checked' : '' }} class="mr-2">
-                                            {{ $brand->name }}
+                                            {{-- <input type="checkbox" name="brands[]" value="{{ $subCat->id }}" {{ in_array($subCat->id, (array)request('brands', [])) ? 'checked' : '' }} class="mr-2"> --}}
+                                            <x-front.input-checkbox 
+                                                id="{{$subCat->slug}}_checkbox" 
+                                                name="category[]" 
+                                                value="{{ $subCat->id }}" 
+                                                label="{{ $subCat->title }}" 
+                                                :checked="in_array($subCat->id, (array)request('brands', []))"
+                                            />
                                         </label>
                                     @endforeach
                                 </div>
@@ -203,8 +212,8 @@
                         @endif
 
                         {{-- Rating --}}
-                        <div class="mb-4">
-                            <label class="text-xs font-medium">Customer rating</label>
+                        <div class="">
+                            <label class="text-xs font-light">Customer rating</label>
                             <div class="mt-2 flex flex-col gap-2 text-xs">
                                 @foreach([4,3,2,1] as $r)
                                     <label class="inline-flex items-center">
@@ -214,6 +223,22 @@
                                 @endforeach
                             </div>
                         </div>
+
+                        {{-- Sort By --}}
+                        @if(count($sortByArr) > 0)
+                            <div class="">
+                                <label class="text-xs font-light">Sort By</label>
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    @foreach($sortByArr as $key => $value)
+                                        <x-front.radio-input-button id="someId{{$key}}" name="sortBy" value="{{$key}}" :checked="request('sortBy') == $key">
+                                            <div class="text-center">
+                                                <div class="{{FD['text']}} font-semibold">{{$value}}</div>
+                                            </div>
+                                        </x-front.radio-input-button>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
 
                         {{-- Attributes (colors, size) --}}
                         @foreach($attributes ?? [] as $attr)
@@ -230,7 +255,13 @@
                         @endforeach
 
                         <div class="flex items-center gap-2 mt-2">
-                            <button type="submit" class="px-3 py-2 bg-indigo-600 text-white text-xs rounded">Apply</button>
+                            <x-front.button
+                                type="submit"
+                                class="w-20"
+                                element="button">
+                                {{ __('Apply') }}
+                            </x-front.button>
+                            {{-- <button type="submit" class="px-3 py-2 bg-indigo-600 text-white text-xs rounded">Apply</button> --}}
                             <a href="{{ route('front.category.detail', $category->slug) }}" class="text-xs text-gray-500">Reset</a>
                         </div>
                     </div>
@@ -303,7 +334,7 @@
             <main class="lg:col-span-9 space-y-4">
                 @if ($products->count() > 0)
                     {{-- Top controls: sort, view toggle, result count --}}
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-start justify-between">
                         <div class="text-xs text-gray-600">Showing <strong>{{ $products->firstItem() }}</strong>–<strong>{{ $products->lastItem() }}</strong> of <strong>{{ $products->total() }}</strong></div>
 
                         <div class="flex items-center gap-3">
@@ -333,6 +364,8 @@
                                             <x-front.input-select-option value="relevance" :selected="request('sort')=='relevance'"> Relevance </x-front.input-select-option>
                                             <x-front.input-select-option value="price_asc" :selected="request('sort')=='price_asc'"> Price: Low to High </x-front.input-select-option>
                                             <x-front.input-select-option value="price_desc" :selected="request('sort')=='price_desc'"> Price: High to Low </x-front.input-select-option>
+                                            <x-front.input-select-option value="newest" :selected="request('sort')=='newest'"> Newest </x-front.input-select-option>
+                                            <x-front.input-select-option value="rating" :selected="request('sort')=='rating'"> Top rated </x-front.input-select-option>
                                         @endslot
                                     </x-front.input-select>
                                 </div>
@@ -351,9 +384,9 @@
                 @endif
 
                 {{-- Subcategory chips (quick filters) --}}
-                @if($category->childDetails->isNotEmpty())
+                @if($subcategories->isNotEmpty())
                     <div class="mb-4 flex gap-2 flex-wrap">
-                        @foreach($category->childDetails->take(8) as $sc)
+                        @foreach($subcategories->take(8) as $sc)
                             <a href="{{ route('front.category.detail', $sc->slug) }}?{{ http_build_query(request()->except('page')) }}" class="text-xs px-3 py-1 bg-gray-200 dark:bg-gray-800 {{ FD['rounded'] }}">{{ $sc->title }}</a>
                         @endforeach
                     </div>
@@ -424,12 +457,12 @@
                 <section class="mt-8">
                     <h3 class="text-sm font-semibold mb-3">Customers also shop</h3>
                     <div class="flex gap-4 overflow-x-auto py-2">
-                        @foreach($relatedCategories as $rc)
+                        {{-- @foreach($relatedCategories as $rc)
                             <a href="{{ route('front.category.detail', $rc->slug) }}" class="flex w-44 bg-white dark:bg-gray-800 p-3 rounded shadow">
                                 <img src="{{ $rc->image_url ?? asset('images/subcat-default.png') }}" alt="{{ $rc->name }}" class="w-full h-28 object-cover rounded mb-2">
                                 <div class="text-xs font-medium">{{ $rc->name }}</div>
                             </a>
-                        @endforeach
+                        @endforeach --}}
                     </div>
                 </section>
 
@@ -481,18 +514,18 @@
             // })();
 
             // Subcategories show more/less
-            // function toggleSubcats(){
-            //     const extra = document.getElementById('subcatsExtra');
-            //     const btn = document.getElementById('showMoreSubcats');
-            //     if(!extra) return;
-            //     if(extra.classList.contains('hidden')){
-            //         extra.classList.remove('hidden');
-            //         btn.textContent = 'Show less';
-            //     } else {
-            //         extra.classList.add('hidden');
-            //         btn.textContent = 'Show more';
-            //     }
-            // }
+            function toggleSubcats(){
+                const extra = document.getElementById('subcatsExtra');
+                const btn = document.getElementById('showMoreSubcats');
+                if(!extra) return;
+                if(extra.classList.contains('hidden')){
+                    extra.classList.remove('hidden');
+                    btn.textContent = 'Show less';
+                } else {
+                    extra.classList.add('hidden');
+                    btn.textContent = 'Show more';
+                }
+            }
 
             // Mobile filters (off-canvas simple)
             function openFilters(){
@@ -520,20 +553,6 @@
                                             <input type="number" name="price_max" value="{{ request('price_max') }}" placeholder="Max" class="w-1/2 px-2 py-1 text-sm rounded border" />
                                         </div>
                                     </div>
-
-                                    @if($brands->isNotEmpty())
-                                        <div class="mt-4">
-                                            <label class="text-xs font-medium">Brands</label>
-                                            <div class="mt-2 grid gap-2 max-h-40 overflow-auto">
-                                                @foreach($brands as $brand)
-                                                    <label class="inline-flex items-center text-xs">
-                                                        <input type="checkbox" name="brands[]" value="{{ $brand->id }}" {{ in_array($brand->id, (array)request('brands', [])) ? 'checked' : '' }} class="mr-2">
-                                                        {{ $brand->name }}
-                                                    </label>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    @endif
 
                                     <div class="mt-4">
                                         <label class="text-xs font-medium">Customer rating</label>
