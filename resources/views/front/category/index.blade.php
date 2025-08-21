@@ -58,12 +58,12 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
 
             {{-- Filters + Small Ads --}}
-            <div class="hidden sm:block">
+            {{-- <div class="hidden sm:block">
                 @include('layouts.front.includes.categories-filter')
-            </div>
+            </div> --}}
 
             {{-- Categories + Featured Products --}}
-            <main class="lg:col-span-3 space-y-4">
+            <main class="lg:col-span-4 space-y-4">
                 {{-- All categories --}}
                 <div class="bg-white dark:bg-gray-800 p-2 sm:p-4 {{ FD['rounded'] }} shadow">
                     <div class="flex items-center justify-between mb-4">

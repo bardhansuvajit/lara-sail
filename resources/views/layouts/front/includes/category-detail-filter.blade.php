@@ -58,9 +58,9 @@
                     <div>
                         <?php
                             // Customize these values
-                            $min = 0;
-                            $max = 500;
-                            $step = 25;
+                            $min = 99;
+                            $max = 5000;
+                            $step = 300;
                         ?>
                         <!-- Compact Min/Max Range (Tailwind + Vanilla JS) -->
                         <div id="rangeWrapper" class="w-full max-w-sm mx-auto" data-min="<?= $min ?>" data-max="<?= $max ?>" data-step="<?= $step ?>">

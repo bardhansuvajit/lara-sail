@@ -8,6 +8,7 @@
             <nav class="{{ FD['text-0'] }} text-gray-500 mt-2 mb-1" aria-label="breadcrumb">
                 <ol class="flex items-center gap-2">
                     <li><a href="{{ route('front.home.index') }}" class="hover:underline">Home</a></li>
+                    <li>/ <a href="{{ route('front.category.index') }}" class="hover:underline">Category</a></li>
 
                     @if ($category->ancestors)
                         @php
