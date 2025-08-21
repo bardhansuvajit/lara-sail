@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('ad_sections', function (Blueprint $table) {
             $table->id();
-            $table->string('page');
+            $table->string('pages');
             $table->unsignedSmallInteger('position')->default(1);
 
             $table->string('name');
@@ -26,7 +26,7 @@ return new class extends Migration
 
         $data = [
             [
-                'page' => 'homepage',
+                'pages' => 'homepage',
                 'position' => 1,
                 'name' => 'Hero: Big Deal',
                 'slug' => 'hero-big-deal',
@@ -34,16 +34,24 @@ return new class extends Migration
                 'status' => 1,
             ],
             [
-                'page' => 'homepage',
+                'pages' => 'homepage, category',
                 'position' => 2,
+                'name' => 'Sign In',
+                'slug' => 'sign-in',
+                'type' => 'promo_strip',
+                'status' => 1,
+            ],
+            [
+                'pages' => 'homepage, category',
+                'position' => 3,
                 'name' => 'Trusted marketplace',
                 'slug' => 'trusted-marketplace',
                 'type' => 'trust',
                 'status' => 1,
             ],
             [
-                'page' => 'homepage',
-                'position' => 3,
+                'pages' => 'homepage',
+                'position' => 4,
                 'name' => 'Product Promo',
                 'slug' => 'product-promo',
                 'type' => 'product_promo',
@@ -51,24 +59,24 @@ return new class extends Migration
             ],
 
             [
-                'page' => 'category',
-                'position' => 1,
+                'pages' => 'category',
+                'position' => 5,
                 'name' => 'Big Deal',
                 'slug' => 'big-deal',
                 'type' => 'banner',
                 'status' => 1,
             ],
             [
-                'page' => 'category',
-                'position' => 2,
+                'pages' => 'category',
+                'position' => 6,
                 'name' => 'Offer Ad 1',
                 'slug' => 'offer-ad-1',
                 'type' => 'sponsored',
                 'status' => 1,
             ],
             [
-                'page' => 'category',
-                'position' => 3,
+                'pages' => 'category',
+                'position' => 7,
                 'name' => 'Offer Ad 2',
                 'slug' => 'offer-ad-2',
                 'type' => 'sponsored',

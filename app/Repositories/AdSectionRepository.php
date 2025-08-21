@@ -30,7 +30,7 @@ class AdSectionRepository implements AdSectionInterface
             // keyword
             if (!empty($keyword)) {
                 $query->where(function ($query) use ($keyword) {
-                    $query->where('page', 'like', '%' . $keyword . '%')
+                    $query->where('pages', 'like', '%' . $keyword . '%')
                         ->orWhere('name', 'like', '%' . $keyword . '%')
                         ->orWhere('slug', 'like', '%' . $keyword . '%')
                         ->orWhere('type', 'like', '%' . $keyword . '%');

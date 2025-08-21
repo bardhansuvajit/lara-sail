@@ -65,7 +65,7 @@ class IndexController extends Controller
 
         // ADVERTISEMENT
         $homepageAds = Cache::remember('homepage_ads', now()->addHours(6), function() {
-            return $this->adSectionRepository->list('', ['page' => 'homepage', 'status' => 1], 'all', 'position', 'asc');
+            return $this->adSectionRepository->list('homepage', ['status' => 1], 'all', 'position', 'asc');
         });
 
         return view('front.home.index', [
@@ -79,6 +79,7 @@ class IndexController extends Controller
             'homepageAd1' => $homepageAds['data'][0]->activeItemOnly ?? [],
             'homepageAd2' => $homepageAds['data'][1]->activeItemOnly ?? [],
             'homepageAd3' => $homepageAds['data'][2]->activeItemOnly ?? [],
+            'homepageAd4' => $homepageAds['data'][3]->activeItemOnly ?? [],
         ]);
     }
 }

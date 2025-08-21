@@ -117,10 +117,21 @@ class AppServiceProvider extends ServiceProvider
         // }
 
 
-        Cache::forget('homepage_products');
-        Cache::forget('most_sold_products');
-        Cache::forget('homepage_ads');
+        // FOrget Cache for Testing - REMOVE CODE LATER
+        if (Schema::hasTable('cache')) {
+            $keys = [
+                'homepage_products',
+                'most_sold_products',
+                'homepage_ads',
+            ];
 
+            foreach ($keys as $key) {
+                // only forget if the key exists
+                if (Cache::has($key)) {
+                    Cache::forget($key);
+                }
+            }
+        }
 
         View::share('activeCountries', $countries);
         View::share('activeCategories', $categories);

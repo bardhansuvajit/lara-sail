@@ -2,31 +2,33 @@
     screen="max-w-screen-xl"
     title="{{ __('Home') }}">
 
-    <div class="flex flex-col gap-4 px-2 sm:px-0">
+    <div class="flex flex-col gap-2 sm:gap-4 px-2 sm:px-0">
         {{-- Banner --}}
-        <section class="bg-gray-100 dark:bg-gray-900 antialiased">
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    @foreach ($banners as $banner)
-                        <div class="swiper-slide w-full h-56 sm:h-96 bg-gray-500">
-                            <a href="{{$banner->web_redirect_url}}" target="_blank">
-                                <img src="{{ Storage::url($banner->web_image_l_path) }}" alt="{{$banner->title}}">
-                            </a>
-                        </div>
-                    @endforeach
+        @if (count($banners) > 0)
+            <section class="bg-gray-100 dark:bg-gray-900 antialiased">
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        @foreach ($banners as $banner)
+                            <div class="swiper-slide w-full h-56 sm:h-96 bg-gray-500">
+                                <a href="{{$banner->web_redirect_url}}" target="_blank">
+                                    <img src="{{ Storage::url($banner->web_image_l_path) }}" alt="{{$banner->title}}">
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
                 </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-pagination"></div>
-            </div>
-        </section>
+            </section>
+        @endif
 
         {{-- Featured Products --}}
         @if (count($featuredProducts) > 0)
             <section class="bg-gray-100 antialiased dark:bg-gray-900">
                 <div class="mx-auto max-w-screen-xl">
-                    <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0">
-                        <p class="{{FD['text-1']}} font-semibold text-gray-600 dark:text-gray-500">FEATURED</h2>
+                    <div class="mb-2 sm:mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0">
+                        <p class="{{FD['text-0']}} sm:text-sm font-semibold text-gray-600 dark:text-gray-500">FEATURED</h2>
                     </div>
 
                     <div class="grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-6" id="featured-products">
@@ -40,9 +42,10 @@
         @endif
 
         {{-- Homepage Ad 1 + Categories + Flash Sale + Top Picks --}}
-        <section class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 items-start @if (count($featuredProducts) == 0) mt-5 @endif">
+        <section class="w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 items-start @if (count($featuredProducts) == 0) mt-5 @endif">
             {{-- Left: Product Advertisement/ hero carousel / big promo --}}
-            <div class="lg:col-span-8">
+            {{-- <div class="lg:col-span-8"> --}}
+            <div class="col-span-12 @if(count($flashSaleProducts) > 0 || count($mostSoldFeatures) > 0) lg:col-span-8 @endif">
                 {{-- Homepage Ad 1 --}}
                 @if ($homepageAd1)
                     <div class="bg-gradient-to-r from-indigo-50 to-white dark:from-primary-900 dark:to-primary-500 {{FD['rounded']}} p-4">
@@ -92,349 +95,308 @@
 
 
                 {{-- Categories --}}
-                <div class="max-w-7xl mx-auto pt-4">
-                    <div class="grid gap-1 sm:gap-3"
-                        style="grid-template-columns: repeat({{ min(count($activeCategories), $categoryStyleCount) }}, minmax(0, 1fr));">
-                        @foreach(array_slice($activeCategories, 0, $categoryStyleCount) as $cat)
-                            <a href="{{ route('front.category.detail', $cat['slug']) }}">
-                                <div class="bg-white dark:bg-gray-800 {{ FD['rounded'] }} p-0.5 sm:p-3 group transition h-full flex flex-col shadow-sm hover:shadow-lg border dark:border-gray-700 overflow-hidden">
-                                    {{-- Image --}}
-                                    @if (!empty($cat['image_s']))
-                                        <img src="{{ Storage::url($cat['image_s']) }}" alt=""
-                                            class="w-full h-16 sm:h-20 object-contain mb-4 group-hover:scale-105 transition">
-                                    @else
-                                        <div class="flex-1 flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-500 text-white overflow-hidden">
-                                            <span class="{{ FD['text'] }} sm:text-lg font-bold text-center">{{ $cat['title'] }}</span>
-                                        </div>
-                                        @php $cat['title'] = null; @endphp
-                                    @endif
-
-                                    {{-- Title --}}
-                                    @if (!empty($cat['title']))
-                                        <p class="text-[10px] sm:text-xs font-bold text-center line-clamp-2 sm:line-clamp-1 text-gray-900 dark:text-white">
-                                            {{ $cat['title'] }}
-                                        </p>
-                                    @endif
-
-                                    {{-- Description --}}
-                                    @if (!empty($cat['short_description']))
-                                        <p class="{{ FD['text-0'] }} mt-2 font-light text-center line-clamp-1 sm:line-clamp-2 text-gray-500 dark:text-gray-500 leading-none">
-                                            {{ $cat['short_description'] }}
-                                        </p>
-                                    @endif
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
-
-            </div>
-
-            {{-- Right: Flash sale card + Top Picks --}}
-            <aside class="lg:col-span-4 space-y-4">
-                {{-- Flash Sale Products --}}
-                @if(count($flashSaleProducts) > 0)
-                    @include('layouts.front.includes.flash-sale')
-                @endif
-
-                {{-- Top Picks Products --}}
-                {{-- 1 Show 0 when there are 3/4 FLASH SALE --}}
-                {{-- 2 Show 3 when there are 1/2 FLASH SALE --}}
-                {{-- 3 Show 8 when there are NO FLASH SALE --}}
-                {{-- @if(count($flashSaleProducts) < 3) --}}
-                @if(count($mostSoldFeatures) > 0)
-                    <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 {{FD['rounded']}} p-4">
-                        <h3 class="text-xs font-medium mb-5 text-gray-400 dark:text-gray-500">TOP PICKS from us</h3>
-                        <div class="space-y-3">
-                            @foreach($mostSoldFeatures as $product)
-                                <a href="{{ route('front.product.detail', $product->slug) }}" class="flex items-center gap-3 group">
-                                    @if (count($product->activeImages) > 0)
-                                        <img
-                                            src="{{ Storage::url($product->activeImages[0]->image_m) }}"
-                                            alt="{{ $product->slug }}"
-                                            loading="lazy"
-                                            class="w-16 h-12 object-cover transition-transform duration-300"
-                                        />
-                                    @else
-                                        <div class="w-16 h-12 flex items-center justify-center text-gray-400 dark:text-gray-500">
-                                            {!! FD['brokenImageFront'] !!}
-                                        </div>
-                                    @endif
-
-                                    <div class="flex-1">
-                                        <p class="{{ FD['text'] }} font-medium group-hover:underline">{{ $product['title'] }}</p>
-
-                                        {{-- price row --}}
-                                        @if (count($product->pricings) > 0)
-                                            @php $p = $product->pricings[0]; @endphp
-
-                                            <div class="mt-2 flex items-center justify-between gap-2">
-                                                <div class="flex gap-2">
-                                                    <div class="{{ FD['text'] }} font-extrabold text-gray-900 dark:text-white leading-none">
-                                                        <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->selling_price) }}
-                                                    </div>
-
-                                                    @if($p->mrp && $p->mrp > 0)
-                                                        <span class="text-xs text-gray-400 dark:text-gray-400 line-through leading-none">
-                                                            <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->mrp) }}
-                                                        </span>
-                                                        <span class="text-xs font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/20 px-2 py-0.5 {{ FD['rounded'] }} leading-none">
-                                                            {{ $p->discount }}% off
-                                                        </span>
-                                                    @endif
-                                                </div>
+                @if (count($activeCategories) > 0)
+                    <div class="max-w-7xl mx-auto pt-4">
+                        <div class="grid gap-1 sm:gap-3" style="grid-template-columns: repeat({{ min(count($activeCategories), $categoryStyleCount) }}, minmax(0, 1fr));">
+                            @foreach(array_slice($activeCategories, 0, $categoryStyleCount) as $cat)
+                                <a href="{{ route('front.category.detail', $cat['slug']) }}">
+                                    <div class="bg-white dark:bg-gray-800 {{ FD['rounded'] }} p-0.5 sm:p-3 group transition h-full flex flex-col shadow-sm hover:shadow-lg border dark:border-gray-700 overflow-hidden">
+                                        @if (!empty($cat['image_s']))
+                                            <img src="{{ Storage::url($cat['image_s']) }}" alt=""
+                                                class="w-full h-16 sm:h-20 object-contain mb-4 group-hover:scale-105 transition">
+                                        @else
+                                            <div class="flex-1 flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-500 text-white overflow-hidden">
+                                                <span class="{{ FD['text'] }} sm:text-lg font-bold text-center">{{ $cat['title'] }}</span>
                                             </div>
+                                            @php $cat['title'] = null; @endphp
                                         @endif
 
+                                        @if (!empty($cat['title']))
+                                            <p class="text-[10px] sm:text-xs font-bold text-center line-clamp-2 sm:line-clamp-1 text-gray-900 dark:text-white">
+                                                {{ $cat['title'] }}
+                                            </p>
+                                        @endif
+
+                                        @if (!empty($cat['short_description']))
+                                            <p class="{{ FD['text-0'] }} mt-2 font-light text-center line-clamp-1 sm:line-clamp-2 text-gray-500 dark:text-gray-500 leading-none">
+                                                {{ $cat['short_description'] }}
+                                            </p>
+                                        @endif
                                     </div>
-                                    {{-- <button class="{{ FD['text'] }} bg-indigo-600 text-white px-2 py-1 rounded">Add</button> --}}
                                 </a>
                             @endforeach
                         </div>
                     </div>
                 @endif
-            </aside>
+
+            </div>
+
+            {{-- Right: Flash sale card + Top Picks --}}
+            @if(count($flashSaleProducts) > 0 || count($mostSoldFeatures) > 0)
+                <aside class="col-span-12 lg:col-span-4 space-y-2 sm:space-y-4">
+                    {{-- Flash Sale Products --}}
+                    @if(count($flashSaleProducts) > 0)
+                        @include('layouts.front.includes.flash-sale')
+                    @endif
+
+                    {{-- Top Picks Products --}}
+                    {{-- 1 Show 0 when there are 3/4 FLASH SALE --}}
+                    {{-- 2 Show 3 when there are 1/2 FLASH SALE --}}
+                    {{-- 3 Show 8 when there are NO FLASH SALE --}}
+                    {{-- @if(count($flashSaleProducts) < 3) --}}
+                    @if(count($mostSoldFeatures) > 0)
+                        <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 {{FD['rounded']}} p-4">
+                            <h3 class="text-xs font-medium mb-5 text-gray-400 dark:text-gray-500">TOP PICKS from us</h3>
+                            <div class="space-y-3">
+                                @foreach($mostSoldFeatures as $product)
+                                    <a href="{{ route('front.product.detail', $product->slug) }}" class="flex items-center gap-3 group hover:bg-gray-700 pe-2">
+                                        @if (count($product->activeImages) > 0)
+                                            <img
+                                                src="{{ Storage::url($product->activeImages[0]->image_m) }}"
+                                                alt="{{ $product->slug }}"
+                                                loading="lazy"
+                                                class="w-16 h-12 object-cover transition-transform duration-300"
+                                            />
+                                        @else
+                                            <div class="w-16 h-12 flex items-center justify-center text-gray-400 dark:text-gray-500">
+                                                {!! FD['brokenImageFront'] !!}
+                                            </div>
+                                        @endif
+
+                                        <div class="flex-1">
+                                            <p class="{{ FD['text'] }} font-medium">{{ $product['title'] }}</p>
+
+                                            {{-- price row --}}
+                                            @if (count($product->pricings) > 0)
+                                                @php $p = $product->pricings[0]; @endphp
+
+                                                <div class="mt-2 flex items-center justify-between gap-2">
+                                                    <div class="flex gap-2">
+                                                        <div class="{{ FD['text'] }} font-extrabold text-gray-900 dark:text-white leading-none">
+                                                            <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->selling_price) }}
+                                                        </div>
+
+                                                        @if($p->mrp && $p->mrp > 0)
+                                                            <span class="text-xs text-gray-400 dark:text-gray-400 line-through leading-none">
+                                                                <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->mrp) }}
+                                                            </span>
+                                                            <span class="text-xs font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/20 px-2 py-0.5 {{ FD['rounded'] }} leading-none">
+                                                                {{ $p->discount }}% off
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                        </div>
+
+                                        {{-- <button class="{{ FD['text'] }} bg-indigo-600 text-white px-2 py-1">Add</button> --}}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </aside>
+            @endif
         </section>
 
         {{-- Proudly Indian --}}
         <x-front.proudly-indian />
 
-        {{-- Homepage Ad 2 + Login Redirect --}}
-        <section class="max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+        {{-- Homepage Ad 2 + Homepage Ad 3 --}}
+        @if ($homepageAd2 || $homepageAd3)
+            <section class="max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4 items-stretch">
 
-            <div class="bg-indigo-600 text-white {{ FD['rounded'] }} p-4 sm:p-6 h-full flex flex-col justify-between shadow-md overflow-hidden">
-                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-white/12 text-xs font-semibold tracking-tight">
-                            <div class="{{ FD['iconClass'] }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M640-520q17 0 28.5-11.5T680-560q0-17-11.5-28.5T640-600q-17 0-28.5 11.5T600-560q0 17 11.5 28.5T640-520Zm-320-80h200v-80H320v80ZM180-120q-34-114-67-227.5T80-580q0-92 64-156t156-64h200q29-38 70.5-59t89.5-21q25 0 42.5 17.5T720-820q0 6-1.5 12t-3.5 11q-4 11-7.5 22.5T702-751l91 91h87v279l-113 37-67 224H480v-80h-80v80H180Zm60-80h80v-80h240v80h80l62-206 98-33v-141h-40L620-720q0-20 2.5-38.5T630-796q-29 8-51 27.5T547-720H300q-58 0-99 41t-41 99q0 98 27 191.5T240-200Zm240-298Z"/></svg>
-                            </div>
-                            <span class="ml-1">₹150 OFF - First order</span>
-                        </span>
+                @if ($homepageAd2)
+                    <div class="bg-indigo-600 text-white {{ FD['rounded'] }} p-4 sm:p-6 h-full flex flex-col justify-between shadow-md overflow-hidden">
+                        @if ($homepageAd2->meta['tags'])
+                            @php
+                                $tags = $homepageAd2->meta['tags'];
+                            @endphp
 
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-white/10 text-xs font-medium">
-                            <div class="{{ FD['iconClass'] }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M480-80q-24 0-46-9t-39-26q-29-29-50-38t-63-9q-50 0-85-35t-35-85q0-42-9-63t-38-50q-17-17-26-39t-9-46q0-24 9-46t26-39q29-29 38-50t9-63q0-50 35-85t85-35q42 0 63-9t50-38q17-17 39-26t46-9q24 0 46 9t39 26q29 29 50 38t63 9q50 0 85 35t35 85q0 42 9 63t38 50q17 17 26 39t9 46q0 24-9 46t-26 39q-29 29-38 50t-9 63q0 50-35 85t-85 35q-42 0-63 9t-50 38q-17 17-39 26t-46 9Zm0-80q8 0 15.5-3.5T508-172q41-41 77-55.5t93-14.5q17 0 28.5-11.5T718-282q0-58 14.5-93.5T788-452q12-12 12-28t-12-28q-41-41-55.5-77T718-678q0-17-11.5-28.5T678-718q-58 0-93.5-14.5T508-788q-5-5-12.5-8.5T480-800q-8 0-15.5 3.5T452-788q-41 41-77 55.5T282-718q-17 0-28.5 11.5T242-678q0 58-14.5 93.5T172-508q-12 12-12 28t12 28q41 41 55.5 77t14.5 93q0 17 11.5 28.5T282-242q58 0 93.5 14.5T452-172q5 5 12.5 8.5T480-160Zm100-160q25 0 42.5-17.5T640-380q0-25-17.5-42.5T580-440q-25 0-42.5 17.5T520-380q0 25 17.5 42.5T580-320Zm-202-2 260-260-56-56-260 260 56 56Zm2-198q25 0 42.5-17.5T440-580q0-25-17.5-42.5T380-640q-25 0-42.5 17.5T320-580q0 25 17.5 42.5T380-520Zm100 40Z"/></svg>
-                            </div>
-                            <span class="ml-1">Exclusive deals</span>
-                        </span>
-                    </div>
+                            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
+                                @if ($tags['left'])
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-white/12 text-xs font-semibold tracking-tight">
+                                        <div class="{{ FD['iconClass'] }}">
+                                            {!! $tags['left']['tag1']['svg'] !!}
+                                        </div>
+                                        <span class="ml-1">{!! $tags['left']['tag1']['title'] !!}</span>
+                                    </span>
 
-                    <div class="text-xs text-white/80 flex items-center gap-2 mt-2 sm:mt-0">
-                        <div class="{{ FD['iconClass'] }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M0-240v-63q0-43 44-70t116-27q13 0 25 .5t23 2.5q-14 21-21 44t-7 48v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-26-6.5-49T754-397q11-2 22.5-2.5t23.5-.5q72 0 116 26.5t44 70.5v63H780Zm-455-80h311q-10-20-55.5-35T480-370q-55 0-100.5 15T325-320ZM160-440q-33 0-56.5-23.5T80-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T160-440Zm640 0q-33 0-56.5-23.5T720-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T800-440Zm-320-40q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm0-80q17 0 28.5-11.5T520-600q0-17-11.5-28.5T480-640q-17 0-28.5 11.5T440-600q0 17 11.5 28.5T480-560Zm1 240Zm-1-280Z"/></svg>
-                        </div>
-                        <span>Trusted · 1M+ users</span>
-                    </div>
-                </div>
-
-                <div class="mt-4">
-                    <h3 class="text-lg font-bold">Sign in & save more</h3>
-                    <p class="text-xs mt-2 text-white/90 mb-3">
-                        Login to unlock personalised deals, faster checkout, wishlist sync, and early-bird access to flash sales.
-                    </p>
-
-                    <ul class="grid grid-cols-2 gap-2 text-xs">
-                        <li class="flex items-start gap-2">
-                            <div class="{{ FD['iconClass'] }} text-white/95 shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="m280-80 160-300-320-40 480-460h80L520-580l320 40L360-80h-80Zm222-247 161-154-269-34 63-117-160 154 268 33-63 118Zm-22-153Z"/></svg>
-                            </div>
-                            <span class="text-white/95">Faster checkout</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <div class="{{ FD['iconClass'] }} text-white/95 shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M160-280v80h640v-80H160Zm0-440h88q-5-9-6.5-19t-1.5-21q0-50 35-85t85-35q30 0 55.5 15.5T460-826l20 26 20-26q18-24 44-39t56-15q50 0 85 35t35 85q0 11-1.5 21t-6.5 19h88q33 0 56.5 23.5T880-640v440q0 33-23.5 56.5T800-120H160q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720Zm0 320h640v-240H596l84 114-64 46-136-184-136 184-64-46 82-114H160v240Zm200-320q17 0 28.5-11.5T400-760q0-17-11.5-28.5T360-800q-17 0-28.5 11.5T320-760q0 17 11.5 28.5T360-720Zm240 0q17 0 28.5-11.5T640-760q0-17-11.5-28.5T600-800q-17 0-28.5 11.5T560-760q0 17 11.5 28.5T600-720Z"/></svg>
-                            </div>
-                            <span class="text-white/95">Exclusive coupons</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <div class="{{ FD['iconClass'] }} text-white/95 shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M216-720h528l-34-40H250l-34 40Zm184 270 80-40 80 40v-190H400v190ZM200-120q-33 0-56.5-23.5T120-200v-499q0-14 4.5-27t13.5-24l50-61q11-14 27.5-21.5T250-840h460q18 0 34.5 7.5T772-811l50 61q9 11 13.5 24t4.5 27v139q-21 0-41.5 3T760-545v-95H640v205l-77 77-83-42-160 80v-320H200v440h280v80H200Zm440-520h120-120Zm-440 0h363-363Zm360 520v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q8 9 12.5 20t4.5 22q0 11-4 22.5T903-340L683-120H560Zm300-263-37-37 37 37ZM620-180h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z"/></svg>
-                            </div>
-                            <span class="text-white/95">Personalised picks</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <div class="{{ FD['iconClass'] }} text-white/95 shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M200-80q-33 0-56.5-23.5T120-160v-480q0-33 23.5-56.5T200-720h80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720h80q33 0 56.5 23.5T840-640v480q0 33-23.5 56.5T760-80H200Zm0-80h560v-480H200v480Zm280-240q83 0 141.5-58.5T680-600h-80q0 50-35 85t-85 35q-50 0-85-35t-35-85h-80q0 83 58.5 141.5T480-400ZM360-720h240q0-50-35-85t-85-35q-50 0-85 35t-35 85ZM200-160v-480 480Z"/></svg>
-                            </div>
-                            <span class="text-white/95">Orders saved</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="mt-4 flex flex-col sm:flex-row items-stretch gap-2">
-                    <a href="{{ route('front.login') }}"
-                    class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 {{ FD['rounded'] }} bg-white text-indigo-600 font-semibold text-sm
-                            focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-indigo-600 transition"
-                    aria-label="Login now">
-                        Login Now
-                    </a>
-
-                    <a href="{{ route('front.register') }}"
-                    class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 {{ FD['rounded'] }} border border-white/25 text-white text-sm font-medium
-                            hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-indigo-600 transition"
-                    aria-label="Create account">
-                        Create account
-                    </a>
-                </div>
-            </div>
-
-            @php
-                /** Type 1, when small image is square
-                 *  Type 2, when small image is vertical
-                 */
-                $rightSideAdType = 1; // Type 1/2
-
-                if ($rightSideAdType == 2) {
-                    $adClass1 = "p-4 sm:p-6";
-                    $adClass11 = "gap-4";
-                    $adClass2 = "rounded-md";
-                    $adClass3 = "w-20 h-20";
-                    $adClass4 = "";
-                } else {
-                    $adClass1 = "p-0";
-                    $adClass11 = "";
-                    $adClass2 = FD['rounded'];
-                    $adClass3 = "w-40 h-full";
-                    $adClass4 = "p-4 sm:p-6";
-                }
-            @endphp
-
-            <div class="bg-white dark:bg-gray-800 {{ $adClass1 }} flex {{ $adClass11 }} shadow-sm h-full {{ FD['rounded'] }} relative overflow-hidden items-center">
-                <div class="absolute inset-0 opacity-30 dark:opacity-30 z-0">
-                    <img src="/storage/default/testing/sale.jpg" alt="Indian Flag Background" class="w-full h-full object-cover object-center">
-                </div>
-
-                <!-- Optional -->
-                <div class="hidden sm:block h-full z-0">
-                    <img src="/storage/default/testing/big-yellow.jpg" alt="" class="{{ $adClass3 }} object-cover flex-shrink-0 {{ $adClass2 }} z-0" aria-hidden="true" />
-                </div>
-
-                <div class="flex-1 flex flex-col justify-between h-full z-0 {{ $adClass4 }}">
-                    <div class="flex items-start justify-between gap-2">
-                        <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-xs font-semibold">
-                                <div class="{{ FD['iconClass'] }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="m438-338 226-226-57-57-169 169-84-84-57 57 141 141Zm42 258q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Z"/></svg>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-white/10 text-xs font-medium">
+                                        <div class="{{ FD['iconClass'] }}">
+                                            {!! $tags['left']['tag2']['svg'] !!}
+                                        </div>
+                                        <span class="ml-1">{!! $tags['left']['tag2']['title'] !!}</span>
+                                    </span>
                                 </div>
-                                <span class="ml-1">Secure payments</span>
-                            </span>
+                                @endif
 
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-green-50 text-green-700 text-xs font-medium">
-                                <div class="{{ FD['iconClass'] }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="m344-60-76-128-144-32 14-148-98-112 98-112-14-148 144-32 76-128 136 58 136-58 76 128 144 32-14 148 98 112-98 112 14 148-144 32-76 128-136-58-136 58Zm34-102 102-44 104 44 56-96 110-26-10-112 74-84-74-86 10-112-110-24-58-96-102 44-104-44-56 96-110 24 10 112-74 86 74 84-10 114 110 24 58 96Zm102-318Zm-42 142 226-226-56-58-170 170-86-84-56 56 142 142Z"/></svg>
-                                </div>
-                                <span class="ml-1">Verified sellers</span>
-                            </span>
+                                @if ($tags['right'])
+                                    <div class="text-xs text-white/80 flex items-center gap-2 mt-2 sm:mt-0">
+                                        <div class="{{ FD['iconClass'] }}">
+                                            {!! $tags['right']['tag1']['svg'] !!}
+                                        </div>
+                                        <span>{!! $tags['right']['tag1']['title'] !!}</span>
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+
+                        <div class="mt-3">
+                            <h3 class="text-lg font-bold">{!! $homepageAd2->title !!}</h3>
+                            <p class="text-xs mt-2 text-white/90 mb-3">{!! $homepageAd2->subtitle !!}</p>
+
+                            @if ($homepageAd2->meta)
+                                @php
+                                    $meta = $homepageAd2->meta;
+                                @endphp
+                                <ul class="grid grid-cols-2 gap-2 text-xs">
+                                    @foreach ($meta['highlights'] as $tIndex => $tag)
+                                        <li class="flex items-start gap-2">
+                                            <div class="{{ FD['iconClass'] }} text-white/95 shrink-0">
+                                                {!! $tag['svg'] !!}
+                                            </div>
+                                            <span class="text-white/95">{{ $tag['title'] }}</span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
                         </div>
 
-                        <div class="text-xs text-gray-600 dark:text-white/80 flex items-center gap-2">
-                            <div class="{{ FD['iconClass'] }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M0-240v-63q0-43 44-70t116-27q13 0 25 .5t23 2.5q-14 21-21 44t-7 48v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-26-6.5-49T754-397q11-2 22.5-2.5t23.5-.5q72 0 116 26.5t44 70.5v63H780Zm-455-80h311q-10-20-55.5-35T480-370q-55 0-100.5 15T325-320ZM160-440q-33 0-56.5-23.5T80-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T160-440Zm640 0q-33 0-56.5-23.5T720-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T800-440Zm-320-40q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm0-80q17 0 28.5-11.5T520-600q0-17-11.5-28.5T480-640q-17 0-28.5 11.5T440-600q0 17 11.5 28.5T480-560Zm1 240Zm-1-280Z"/></svg>
-                            </div>
-                            <span>Trusted · 1M+ users</span>
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <h3 class="text-lg font-bold dark:text-gray-50">Trusted marketplace</h3>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 mt-2 mb-3">
-                            Secure checkout, verified sellers and fast support — shop confidently. Enjoy easy returns and transparent seller ratings on every order.
-                        </p>
-
-                        <ul class="grid grid-cols-2 gap-2 text-xs">
-                            <li class="flex items-start gap-2">
-                                <div class="{{ FD['iconClass'] }} shrink-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="m480-320 56-56-63-64h167v-80H473l63-64-56-56-160 160 160 160ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h168q13-36 43.5-58t68.5-22q38 0 68.5 22t43.5 58h168q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm280-590q13 0 21.5-8.5T510-820q0-13-8.5-21.5T480-850q-13 0-21.5 8.5T450-820q0 13 8.5 21.5T480-790ZM200-200v-560 560Z"/></svg>
-                                </div>
-                                <span class="text-gray-700 dark:text-gray-200">7-day easy returns</span>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <div class="{{ FD['iconClass'] }} shrink-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M280-160q-50 0-85-35t-35-85H60l18-80h113q17-19 40-29.5t49-10.5q26 0 49 10.5t40 29.5h167l84-360H262l17-80h441l-37 160h117l120 160-40 200h-80q0 50-35 85t-85 35q-50 0-85-35t-35-85H400q0 50-35 85t-85 35Zm357-280h193l4-21-74-99h-95l-28 120Zm-17-280-84 360 2-7 82-353ZM140-440v-120H40l140-200v120h100L140-440Zm140 200q17 0 28.5-11.5T320-280q0-17-11.5-28.5T280-320q-17 0-28.5 11.5T240-280q0 17 11.5 28.5T280-240Zm400 0q17 0 28.5-11.5T720-280q0-17-11.5-28.5T680-320q-17 0-28.5 11.5T640-280q0 17 11.5 28.5T680-240Z"/></svg>
-                                </div>
-                                <span class="text-gray-700 dark:text-gray-200">Fast shipping</span>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <div class="{{ FD['iconClass'] }} shrink-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M440-120v-80h320v-284q0-117-81.5-198.5T480-764q-117 0-198.5 81.5T200-484v244h-40q-33 0-56.5-23.5T80-320v-80q0-21 10.5-39.5T120-469l3-53q8-68 39.5-126t79-101q47.5-43 109-67T480-840q68 0 129 24t109 66.5Q766-707 797-649t40 126l3 52q19 9 29.5 27t10.5 38v92q0 20-10.5 38T840-249v49q0 33-23.5 56.5T760-120H440Zm-80-280q-17 0-28.5-11.5T320-440q0-17 11.5-28.5T360-480q17 0 28.5 11.5T400-440q0 17-11.5 28.5T360-400Zm240 0q-17 0-28.5-11.5T560-440q0-17 11.5-28.5T600-480q17 0 28.5 11.5T640-440q0 17-11.5 28.5T600-400Zm-359-62q-7-106 64-182t177-76q89 0 156.5 56.5T720-519q-91-1-167.5-49T435-698q-16 80-67.5 142.5T241-462Z"/></svg>
-                                </div>
-                                <span class="text-gray-700 dark:text-gray-200">24/7 support</span>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <div class="{{ FD['iconClass'] }} shrink-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280Zm80-80h400q0-33 23.5-56.5T840-480v-160q-33 0-56.5-23.5T760-720H360q0 33-23.5 56.5T280-640v160q33 0 56.5 23.5T360-400Zm440 240H120q-33 0-56.5-23.5T40-240v-440h80v440h680v80ZM280-400v-320 320Z"/></svg>
-                                </div>
-                                <span class="text-gray-700 dark:text-gray-200">Secure payments</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="mt-4 flex gap-3">
-                        <a href="/collection"
-                        class="inline-flex items-center justify-center px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold {{ FD['rounded'] }}
-                                focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-indigo-100 dark:focus-visible:ring-offset-gray-800 transition"
-                        aria-label="See our Collections">
-                            See our Collections
-                        </a>
-
-                        <a href="/about/trust"
-                        class="inline-flex items-center justify-center px-3 py-2 border border-gray-200 dark:border-gray-700 text-xs sm:text-sm text-gray-700 dark:text-gray-200 {{ FD['rounded'] }}
-                                hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 transition"
-                        aria-label="Why trust us">
-                            Why trust us
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-
-
-            {{-- @if ($homepageAd2)
-                <div class="md:col-span-1 bg-white dark:bg-gray-800 {{ FD['rounded'] }} p-4 sm:p-6 flex items-center gap-6 shadow-sm h-full border border-gray-100 dark:border-gray-700">
-                    <img src="{{ Storage::url($homepageAd2->image_l) }}" alt="trust" class="w-20 h-20 sm:w-24 sm:h-24 object-cover {{ FD['rounded'] }} flex-shrink-0">
-
-                    <div class="flex-1 flex flex-col justify-between h-full">
-                        <div>
-                            <h3 class="{{ FD['text'] }} sm:text-lg dark:text-gray-50 font-bold text-lg mb-1">{!! $homepageAd2->title !!}</h3>
-                            <p class="{{ FD['text-0'] }} sm:text-xs text-gray-600 dark:text-gray-400">{!! $homepageAd2->subtitle !!}</p>
-                        </div>
-
-                        <div class="flex gap-3 mt-4">
+                        <div class="mt-8 sm:mt-4 flex flex-row sm:flex-row items-stretch gap-2">
                             @if ($homepageAd2->cta_primary_url)
-                                <a href="{{ $homepageAd2->cta_primary_url }}" 
-                                class="text-xs sm:text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1 sm:px-4 sm:py-2 {{ FD['rounded'] }} shadow">
+                                <a href="{{ $homepageAd2->cta_primary_url }}"
+                                class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 {{ FD['rounded'] }} bg-white text-indigo-600 font-semibold text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-indigo-600 transition"
+                                aria-label="{!! $homepageAd2->cta_primary_text !!}">
                                     {!! $homepageAd2->cta_primary_text !!}
                                 </a>
                             @endif
 
                             @if ($homepageAd2->cta_secondary_url)
-                                <a href="{{ $homepageAd2->cta_secondary_url }}" 
-                                class="text-xs sm:text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 px-2 py-1 sm:px-4 sm:py-2 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-600">
+                                <a href="{{ $homepageAd2->cta_secondary_url }}"
+                                class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 {{ FD['rounded'] }} border border-white/25 text-white text-sm font-medium hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-indigo-600 transition"
+                                aria-label="{!! $homepageAd2->cta_secondary_text !!}">
                                     {!! $homepageAd2->cta_secondary_text !!}
                                 </a>
                             @endif
                         </div>
                     </div>
-                </div>
-            @endif --}}
+                @endif
 
-            {{-- @if(Auth::guard('web')->check())
-                <div class="bg-indigo-600 text-white {{ FD['rounded'] }} p-4 sm:p-6 h-full flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-sm font-bold">Welcome back</h3>
-                        <p class="{{ FD['text'] }} mb-3">Continue shopping and explore new deals.</p>
+                @if ($homepageAd3)
+                    @php
+                        /** Type 1, when small image is square
+                         *  Type 2, when small image is vertical
+                         */
+                        $rightSideAdType = 1; // Type 1/2
+
+                        if ($rightSideAdType == 2) {
+                            $adClass1 = "p-4 sm:p-6";
+                            $adClass11 = "gap-4";
+                            $adClass2 = "rounded-md";
+                            $adClass3 = "w-20 h-20";
+                            $adClass4 = "";
+                        } else {
+                            $adClass1 = "p-0";
+                            $adClass11 = "";
+                            $adClass2 = FD['rounded'];
+                            $adClass3 = "w-40 h-full";
+                            $adClass4 = "p-4 sm:p-6";
+                        }
+                    @endphp
+
+                    <div class="bg-white dark:bg-gray-800 {{ $adClass1 }} flex {{ $adClass11 }} shadow-sm h-full {{ FD['rounded'] }} relative overflow-hidden items-center">
+                        <div class="absolute inset-0 opacity-30 dark:opacity-30 z-0">
+                            <img src="{{ Storage::url($homepageAd3->meta['bgImage']) }}" alt="{{ $homepageAd3->title }}" class="w-full h-full object-cover object-center">
+                        </div>
+
+                        <div class="hidden sm:block h-full z-0">
+                            <img src="{{ Storage::url($homepageAd3->image_m) }}" alt="" class="{{ $adClass3 }} object-cover flex-shrink-0 {{ $adClass2 }} z-0" aria-hidden="true" />
+                        </div>
+
+                        <div class="flex-1 flex flex-col justify-between h-full z-0 {{ $adClass4 }}">
+                            @if ($homepageAd3->meta['tags'])
+                                @php
+                                    $tags = $homepageAd3->meta['tags'];
+                                @endphp
+
+                                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
+                                    @if ($tags['left'])
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-white/12 text-xs font-semibold tracking-tight bg-indigo-50 text-indigo-700">
+                                            <div class="{{ FD['iconClass'] }}">
+                                                {!! $tags['left']['tag1']['svg'] !!}
+                                            </div>
+                                            <span class="ml-1">{!! $tags['left']['tag1']['title'] !!}</span>
+                                        </span>
+
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-green-50 text-green-700 text-xs font-medium">
+                                            <div class="{{ FD['iconClass'] }}">
+                                                {!! $tags['left']['tag2']['svg'] !!}
+                                            </div>
+                                            <span class="ml-1">{!! $tags['left']['tag2']['title'] !!}</span>
+                                        </span>
+                                    </div>
+                                    @endif
+
+                                    @if ($tags['right'])
+                                        <div class="text-xs text-white/80 flex items-center gap-2 mt-2 sm:mt-0">
+                                            <div class="{{ FD['iconClass'] }}">
+                                                {!! $tags['right']['tag1']['svg'] !!}
+                                            </div>
+                                            <span>{!! $tags['right']['tag1']['title'] !!}</span>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+
+                            <div class="mt-3">
+                                <h3 class="text-lg font-bold dark:text-gray-50">{!! $homepageAd3->title !!}</h3>
+                                <p class="text-xs text-gray-600 dark:text-gray-300 mt-2 mb-3">{!! $homepageAd3->subtitle !!}</p>
+
+                                @if ($homepageAd3->meta)
+                                    @php
+                                        $meta = $homepageAd3->meta;
+                                    @endphp
+                                    <ul class="grid grid-cols-2 gap-2 text-xs">
+                                        @foreach ($meta['highlights'] as $tIndex => $tag)
+                                            <li class="flex items-start gap-2">
+                                                <div class="{{ FD['iconClass'] }} text-white/95 shrink-0">
+                                                    {!! $tag['svg'] !!}
+                                                </div>
+                                                <span class="text-white/95">{{ $tag['title'] }}</span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>
+
+                            <div class="mt-6 sm:mt-4 flex gap-3">
+                                @if ($homepageAd3->cta_primary_url)
+                                    <a href="{{ $homepageAd3->cta_primary_url }}"
+                                    class="inline-flex items-center justify-center px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold {{ FD['rounded'] }}
+                                            focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-indigo-100 dark:focus-visible:ring-offset-gray-800 transition"
+                                    aria-label="{!! $homepageAd3->cta_primary_text !!}">
+                                        {!! $homepageAd3->cta_primary_text !!}
+                                    </a>
+                                @endif
+
+                                @if ($homepageAd3->cta_primary_url)
+                                    <a href="{{ $homepageAd3->cta_secondary_url }}"
+                                    class="inline-flex items-center justify-center px-3 py-2 border border-gray-200 dark:border-gray-700 text-xs sm:text-sm text-gray-700 dark:text-gray-200 {{ FD['rounded'] }}
+                                            hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 transition"
+                                    aria-label="{!! $homepageAd3->cta_secondary_text !!}">
+                                        {!! $homepageAd3->cta_secondary_text !!}
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex gap-2">
-                        <a href="{{ route('front.collection.index') }}" class="px-3 py-2 bg-white text-indigo-600 {{ FD['rounded'] }} {{ FD['text'] }}">
-                            Shop Now
-                        </a>
-                    </div>
-                </div>
-            @else --}}
-                
-            {{-- @endif --}}
-        </section>
+                @endif
+            </section>
+        @endif
 
         {{-- Trending Products Grid (conversion-focused) --}}
         @if (count($trendingProducts) > 0)
@@ -514,15 +476,15 @@
             </section>
         @endif
 
-        {{-- Homepage Ad 3 --}}
-        @if ($homepageAd3)
+        {{-- Homepage Ad 4 --}}
+        @if ($homepageAd4)
             {{-- <section class="bg-gray-50 py-4 antialiased dark:bg-gray-800 shdow border dark:border-gray-700"> --}}
-            <section class= antialiased">
+            <section class="antialiased">
                 <div class="mx-auto grid max-w-screen-xl {{FD['rounded']}} bg-gray-50 p-4 dark:bg-gray-800 md:p-8 lg:grid-cols-12 lg:gap-8 xl:gap-16 border dark:border-gray-700">
                     <div class="lg:col-span-5 lg:mt-0 flex items-center justify-center">
                         <img
-                            src="{{ Storage::url($homepageAd3->image_l) }}"
-                            alt="{{ $homepageAd3->title }}"
+                            src="{{ Storage::url($homepageAd4->image_l) }}"
+                            alt="{{ $homepageAd4->title }}"
                             class="w-full max-w-md {{ FD['rounded'] }} object-cover transition-transform duration-300 hover:scale-[1.02] dark:shadow-none shadow hover:shadow-lg"
                             loading="lazy"
                             role="img"
@@ -531,13 +493,17 @@
                     </div>
 
                     <div class="me-auto place-self-center lg:col-span-7 space-y-4 mt-4 sm:mt-0">
-                        @if ($homepageAd3->meta)
+                        @if ($homepageAd4->meta)
                             @php
-                                $meta = $homepageAd3->meta;
+                                $meta = $homepageAd4->meta;
                             @endphp
                             <div class="flex items-center gap-3">
-                                @foreach ($meta['tags'] as $tag)
-                                    <span class="inline-flex items-center rounded-full px-3 py-1 {{ FD['text'] }} font-medium text-yellow-800 bg-yellow-300 dark:text-yellow-100/60 dark:bg-amber-700/60">
+                                @foreach ($meta['tags'] as $tIndex => $tag)
+                                    @php
+                                        $randomTagColors = FD['randomTagColors'];
+                                        $colorClass = $randomTagColors[array_rand($randomTagColors)];
+                                    @endphp
+                                    <span class="inline-flex items-center rounded-full px-3 py-1 {{ FD['text'] }} font-medium {{ $colorClass }}">
                                         <div class="h-4 w-4 mr-2">
                                             {!! $tag['svg'] !!}
                                         </div>
@@ -548,17 +514,17 @@
                         @endif
 
                         <h1 class="{{ FD['text-2'] }} md:text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-                            {!! $homepageAd3->title !!}
+                            {!! $homepageAd4->title !!}
                         </h1>
 
                         <p class="{{ FD['text'] }} text-gray-500 dark:text-gray-400">
-                            {!! $homepageAd3->subtitle !!}
+                            {!! $homepageAd4->subtitle !!}
                         </p>
 
                         <div class="flex items-end gap-4">
-                            @if ($homepageAd3->meta)
+                            @if ($homepageAd4->meta)
                                 @php
-                                    $meta = $homepageAd3->meta;
+                                    $meta = $homepageAd4->meta;
                                 @endphp
 
                                 <div class="flex items-center gap-3">
@@ -577,38 +543,38 @@
                         </div>
 
                         <div class="flex flex-col sm:flex-row sm:items-center sm:gap-3 gap-2">
-                            @if ($homepageAd3->cta_primary_url)
-                            <a
-                                href="{{ $homepageAd3->cta_primary_url }}"
-                                class="{{FD['rounded']}} inline-flex items-center justify-center bg-primary-700 px-5 py-3 text-base font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
-                                role="button"
-                                aria-label="{{ $homepageAd3->cta_primary_text }} - {{ $homepageAd3->title }}"
-                            >
-                                {!! $homepageAd3->cta_primary_text !!}
-                            </a>
+                            @if ($homepageAd4->cta_primary_url)
+                                <a
+                                    href="{{ $homepageAd4->cta_primary_url }}"
+                                    class="{{FD['rounded']}} inline-flex items-center justify-center bg-primary-700 px-5 py-3 text-base font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
+                                    role="button"
+                                    aria-label="{{ $homepageAd4->cta_primary_text }} - {{ $homepageAd4->title }}"
+                                >
+                                    {!! $homepageAd4->cta_primary_text !!}
+                                </a>
                             @endif
 
-                            @if ($homepageAd3->cta_secondary_url)
-                            <a
-                                href="{{ $homepageAd3->cta_secondary_url }}"
-                                class="inline-flex items-center justify-center {{FD['rounded']}} px-4 py-3 text-sm font-medium text-primary-700 bg-white border border-gray-200 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-700 dark:text-primary-300"
-                                role="button"
-                                aria-label="{{ $homepageAd3->cta_secondary_text }} about the {{ $homepageAd3->title }}"
-                            >
-                                {!! $homepageAd3->cta_secondary_text !!}
-                            </a>
+                            @if ($homepageAd4->cta_secondary_url)
+                                <a
+                                    href="{{ $homepageAd4->cta_secondary_url }}"
+                                    class="inline-flex items-center justify-center {{FD['rounded']}} px-4 py-3 text-sm font-medium text-primary-700 bg-white border border-gray-200 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-700 dark:text-primary-300"
+                                    role="button"
+                                    aria-label="{{ $homepageAd4->cta_secondary_text }} about the {{ $homepageAd4->title }}"
+                                >
+                                    {!! $homepageAd4->cta_secondary_text !!}
+                                </a>
                             @endif
                         </div>
 
-                        @if ($homepageAd3->meta)
+                        @if ($homepageAd4->meta)
                             @php
-                                $meta = $homepageAd3->meta;
+                                $meta = $homepageAd4->meta;
                             @endphp
 
                             <ul class="mt-2 flex flex-wrap gap-3 {{ FD['text'] }} text-gray-600 dark:text-gray-300">
                                 @foreach ($meta['highlights'] as $highlight)
                                     <li class="inline-flex items-center gap-2">
-                                        <div class="h-5 w-5 text-gray-500 dark:text-gray-300">
+                                        <div class="{{ FD['iconClass'] }} text-gray-500 dark:text-gray-300">
                                             {!! $highlight['svg'] !!}
                                         </div>
 

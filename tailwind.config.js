@@ -29,9 +29,19 @@ export default {
         // require('@tailwindcss/typography'),
     ],
 
+    // safelist: [
+    //     {
+    //         pattern: /bg-(amber|red|yellow|lime|teal|blue|violet|fuchsia|pink|stone|white|gray|green)-(200|300|400|500|600|700|800|900)/,
+    //     }
+    // ],
+
     safelist: [
         {
-            pattern: /bg-(amber|red|yellow|lime|teal|blue|violet|fuchsia|pink|stone|white|gray|green)-(200|300|400|500|600|700|800|900)/,
-        }
+            pattern: /(bg|text)-(amber|red|yellow|orange|lime|teal|blue|violet|fuchsia|pink|stone|white|gray|green|indigo|purple|zinc)-(100|200|300|400|500|600|700|800|900)/,
+        },
+        {
+            pattern: /dark:(bg|text)-(amber|red|yellow|orange|lime|teal|blue|violet|fuchsia|pink|stone|white|gray|green|indigo|purple|zinc)-(100|200|300|400|500|600|700|800|900)(\/[0-9]{2,3})?/,
+        },
     ],
+
 };
