@@ -59,7 +59,7 @@ class BannerController
             'web_image' => 'required|image|max:1000',
             'app_image' => 'required|image|max:1000',
 
-            'web_redirect_url' => 'required|url|min:2',
+            'web_redirect_url' => 'required|min:2',
             'mobile_redirect_target' => 'required|min:2',
             'mobile_redirect_type' => 'required|in:screen,deep-link,url'
         ]);

@@ -54,14 +54,15 @@
             {{-- Price range --}}
             <div class="">
                 <label class="text-xs font-light">Price</label>
-                <div class="mt-2">
+                <div class="mt-7">
                     <div>
-                        <?php
+                        @php
                             // Customize these values
                             $min = 99;
                             $max = 5000;
                             $step = 300;
-                        ?>
+                        @endphp
+
                         <!-- Compact Min/Max Range (Tailwind + Vanilla JS) -->
                         <div id="rangeWrapper" class="w-full max-w-sm mx-auto" data-min="<?= $min ?>" data-max="<?= $max ?>" data-step="<?= $step ?>">
 
@@ -82,29 +83,29 @@
                                     class="absolute inset-0 w-full h-6 appearance-none bg-transparent" />
 
                                 <!-- Tooltips -->
-                                <span id="minValue" class="absolute text-xs font-medium px-2 py-1 rounded-md shadow-md -mt-8 whitespace-nowrap"
+                                <span id="minValue" class="absolute z-0 text-xs font-medium px-2 py-1 rounded-md shadow-md -mt-8 whitespace-nowrap"
                                     style="background:var(--tooltip-bg,#ffffff); color:var(--tooltip-text,#0f172a); border:1px solid rgba(0,0,0,0.06)">
                                 $0
                                 </span>
-                                <span id="maxValue" class="absolute text-xs font-medium px-2 py-1 rounded-md shadow-md -mt-8 whitespace-nowrap"
+                                <span id="maxValue" class="absolute z-0 text-xs font-medium px-2 py-1 rounded-md shadow-md -mt-8 whitespace-nowrap"
                                     style="background:var(--tooltip-bg,#ffffff); color:var(--tooltip-text,#0f172a); border:1px solid rgba(0,0,0,0.06)">
                                 $0
                                 </span>
 
                                 <!-- Pips / ticks (server-rendered using PHP loop) -->
                                 <div class="relative w-full h-6 mt-1">
-                                <?php
-                                    $range = $max - $min;
-                                    if ($step <= 0) $step = 1;
-                                    for ($v = $min; $v <= $max; $v += $step) {
-                                    $pct = ($range === 0) ? 0 : (($v - $min) / $range) * 100;
-                                    // Make major markers (every 4 steps) taller for visual clarity
-                                    $isMajor = ((($v - $min) / $step) % 4 === 0);
-                                    $height = $isMajor ? 10 : 6;
-                                    $color = 'var(--pip,#cbd5e1)';
-                                    echo "<span aria-hidden='true' style='position:absolute; left:{$pct}%; top:0; transform:translateX(-50%); height:{$height}px; width:1px; background:{$color};'></span>";
-                                    }
-                                ?>
+                                    @php
+                                        $range = $max - $min;
+                                        if ($step <= 0) $step = 1;
+                                        for ($v = $min; $v <= $max; $v += $step) {
+                                            $pct = ($range === 0) ? 0 : (($v - $min) / $range) * 100;
+                                            // Make major markers (every 4 steps) taller for visual clarity
+                                            $isMajor = ((($v - $min) / $step) % 4 === 0);
+                                            $height = $isMajor ? 10 : 6;
+                                            $color = 'var(--pip,#cbd5e1)';
+                                            echo "<span aria-hidden='true' style='position:absolute; left:{$pct}%; top:0; transform:translateX(-50%); height:{$height}px; width:1px; background:{$color};'></span>";
+                                        }
+                                    @endphp
                                 </div>
                             </div>
                         </div>
@@ -174,7 +175,7 @@
                             #connect { z-index: 1; }
 
                             /* Tooltips above everything */
-                            #minValue, #maxValue { z-index: 30; transform: translateX(-50%); pointer-events: none; }
+                            #minValue, #maxValue { transform: translateX(-50%); pointer-events: none; }
 
                             /* Slightly bigger touch area while keeping small visual thumb */
                             input[type=range] { height: 28px; }
@@ -345,8 +346,8 @@
                 </div>
                 {{-- <svg class="w-5 h-5 text-green-600 mt-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/></svg> --}}
                 <div>
-                    <div class="text-xs font-medium">Lowest prices & price-match</div>
-                    <div class="text-xs text-gray-400">We match prices so you always get the best deal.</div>
+                    <div class="{{ FD['text'] }} font-medium">Lowest prices & price-match</div>
+                    <div class="{{ FD['text-0'] }} text-gray-400">We match prices so you always get the best deal.</div>
                 </div>
             </li>
 
@@ -356,8 +357,8 @@
                 </div>
                 {{-- <svg class="w-5 h-5 text-blue-600 mt-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7h13l4 4v6H3V7zM16 3v4"/></svg> --}}
                 <div>
-                    <div class="text-xs font-medium">Fast delivery</div>
-                    <div class="text-xs text-gray-400">Same/next-day delivery in select cities.</div>
+                    <div class="{{ FD['text'] }} font-medium">Fast delivery</div>
+                    <div class="{{ FD['text-0'] }} text-gray-400">Same/next-day delivery in select cities.</div>
                 </div>
             </li>
 
@@ -367,8 +368,8 @@
                 </div>
                 {{-- <svg class="w-5 h-5 text-indigo-600 mt-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2l7 4v5c0 5-3 9-7 11-4-2-7-6-7-11V6l7-4z"/></svg> --}}
                 <div>
-                    <div class="text-xs font-medium">Hassle-free returns</div>
-                    <div class="text-xs text-gray-400">30-day returns with easy pickups.</div>
+                    <div class="{{ FD['text'] }} font-medium">Hassle-free returns</div>
+                    <div class="{{ FD['text'] }} text-gray-400">30-day returns with easy pickups.</div>
                 </div>
             </li>
 
@@ -378,8 +379,8 @@
                 </div>
                 {{-- <svg class="w-5 h-5 text-gray-600 mt-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14"/></svg> --}}
                 <div>
-                    <div class="text-xs font-medium">Secure payments & BNPL</div>
-                    <div class="text-xs text-gray-400">Multiple payment methods including EMI and BNPL.</div>
+                    <div class="{{ FD['text'] }} font-medium">Secure payments & BNPL</div>
+                    <div class="{{ FD['text'] }} text-gray-400">Multiple payment methods including EMI and BNPL.</div>
                 </div>
             </li>
 
@@ -389,8 +390,8 @@
                 </div>
                 {{-- <svg class="w-5 h-5 text-yellow-600 mt-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3"/></svg> --}}
                 <div>
-                    <div class="text-xs font-medium">24/7 customer support</div>
-                    <div class="text-xs text-gray-400">Chat, call or email anytime.</div>
+                    <div class="{{ FD['text'] }} font-medium">24/7 customer support</div>
+                    <div class="{{ FD['text'] }} text-gray-400">Chat, call or email anytime.</div>
                 </div>
             </li>
         </ul>

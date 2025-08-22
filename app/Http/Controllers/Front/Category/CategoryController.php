@@ -80,6 +80,11 @@ class CategoryController extends Controller
             return $this->productFeatureRepository->listAllFeatured();
         });
 
+        // ADVERTISEMENT
+        $categoryPageAds = Cache::remember('categorypage_ads', now()->addHours(6), function() {
+            return $this->adSectionRepository->list('category', ['status' => 1], 'all', 'position', 'asc');
+        });
+
         return view('front.category.index', [
             'catCount' => count($parents),
             'parents' => $parents,

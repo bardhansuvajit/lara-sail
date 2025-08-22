@@ -66,22 +66,22 @@ return new class extends Migration
                 'type' => 'banner',
                 'status' => 1,
             ],
-            [
-                'pages' => 'category',
-                'position' => 6,
-                'name' => 'Offer Ad 1',
-                'slug' => 'offer-ad-1',
-                'type' => 'sponsored',
-                'status' => 1,
-            ],
-            [
-                'pages' => 'category',
-                'position' => 7,
-                'name' => 'Offer Ad 2',
-                'slug' => 'offer-ad-2',
-                'type' => 'sponsored',
-                'status' => 1,
-            ]
+            // [
+            //     'pages' => 'category',
+            //     'position' => 6,
+            //     'name' => 'Offer Ad 1',
+            //     'slug' => 'offer-ad-1',
+            //     'type' => 'sponsored',
+            //     'status' => 1,
+            // ],
+            // [
+            //     'pages' => 'category',
+            //     'position' => 7,
+            //     'name' => 'Offer Ad 2',
+            //     'slug' => 'offer-ad-2',
+            //     'type' => 'sponsored',
+            //     'status' => 1,
+            // ]
         ];
 
         DB::table('ad_sections')->insert($data);
