@@ -84,6 +84,7 @@ class Product extends Model
         return $this->hasMany('App\Models\ProductReview', 'product_id', 'id');
     }
 
+    /*
     public function getFinalPriceAttribute()
     {
         return $this->pricings()
@@ -92,6 +93,7 @@ class Product extends Model
             ->first()
             ?->selling_price ?? 0;
     }
+    */
 
     public function updateRating()
     {
