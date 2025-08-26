@@ -47,23 +47,42 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
             {{-- Filters --}}
-            @include('layouts.front.includes.category-detail-filter')
+            <div class="hidden lg:block lg:col-span-3">
+                @include('layouts.front.includes.category-detail-filter')
+            </div>
 
             {{-- Products --}}
             <main class="lg:col-span-9 space-y-4">
                 @if ($products->count() > 0)
                     {{-- Result count --}}
-                    <div class="flex items-start justify-between">
-                        <div class="text-xs text-gray-600">Showing <strong>{{ $products->firstItem() }}</strong>-<strong>{{ $products->lastItem() }}</strong> of <strong>{{ $products->total() }}</strong></div>
+                    <div class="flex items-center justify-between">
+                        <div class="{{ FD['text-0'] }} sm:text-xs text-gray-600">Showing <strong>{{ $products->firstItem() }}</strong>-<strong>{{ $products->lastItem() }}</strong> of <strong>{{ $products->total() }}</strong></div>
 
                         <div class="flex items-center gap-3">
-                            {{-- Mobile filters --}}
-                            <button type="button" class="lg:hidden px-3 py-2 bg-gray-100 rounded text-xs" onclick="openFilters()">Filters</button>
+                            {{-- <button type="button" class="lg:hidden px-3 py-2 {{ FD['rounded'] }} text-xs bg-gray-300 dark:bg-gray-700" onclick="openFilters()">Filters</button> --}}
+                            <div 
+                                class="relative md:hidden" 
+                                x-data=""
+                                x-on:click.prevent="
+                                    $dispatch('open-sidebar', 'mob-filter-sidebar');
+                                ">
+                                    <button type="button" class="lg:hidden px-3 py-2 {{ FD['rounded'] }} text-xs bg-gray-300 dark:bg-gray-700">Filters</button>
+                            </div>
                         </div>
+
+                        {{-- mobile device only --}}
+                        <x-front.sidebar name="mob-filter-sidebar" maxWidth="2xl" direction="right" header="Filters" focusable>
+                            <div class="w-60 ">
+                                {{-- Filters --}}
+                                <div>
+                                    @include('layouts.front.includes.category-detail-filter')
+                                </div>
+                            </div>
+                        </x-front.sidebar>
                     </div>
                 @endif
 
-                {{-- Subcategory chips --}}
+                {{-- Subcategories --}}
                 @if($subcategories->isNotEmpty())
                     <div class="mb-4 flex gap-2 flex-wrap">
                         @foreach($subcategories->take(8) as $sc)
@@ -72,6 +91,7 @@
                     </div>
                 @endif
 
+                {{-- Products --}}
                 <section class="bg-gray-100 antialiased dark:bg-gray-900">
                     <div class="mx-auto max-w-screen-xl">
                         <div class="grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4" id="featured-products">
@@ -81,38 +101,6 @@
                         </div>
                     </div>
                 </section>
-
-                {{-- Product grid / list --}}
-                {{-- <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                    @foreach($products as $product)
-                        <article class="bg-white dark:bg-gray-900 {{ FD['rounded'] }} shadow hover:shadow-lg transition overflow-hidden">
-                            @php
-                                $img = $product->image ?? data_get($product, 'activeImages.0.url') ?? data_get($product, 'images.0.url') ?? ('https://dummyimage.com/640x480/fff/aaa&text=Product+' . ($product->id ?? ''));
-                            @endphp
-
-                            <div class="relative">
-                                <img src="{{ $img }}" alt="{{ $product->title ?? 'Product' }}" class="w-full h-48 object-cover">
-                                @if(!empty($product->badge))
-                                    <span class="absolute top-2 left-2 bg-yellow-400 text-xs px-2 py-1 rounded">{{ $product->badge }}</span>
-                                @endif
-                                <button class="absolute top-2 right-2 bg-white/70 dark:bg-gray-800/70 p-1 rounded" aria-label="quick view" onclick="openQuickView({{ $product->id ?? 'null' }})">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                </button>
-                            </div>
-                            <div class="p-3">
-                                <h3 class="text-sm font-semibold">{{ $product->title ?? 'Product' }}</h3>
-                                <p class="text-xs text-gray-500">{{ Str::limit($product->desc ?? '', 60) }}</p>
-                                <div class="mt-2 flex items-center justify-between">
-                                    <div>
-                                        <div class="text-sm font-bold">₹{{ number_format($product->price ?? 0) }}</div>
-                                        <div class="text-xs line-through text-gray-400">₹{{ number_format($product->mrp ?? 0) }}</div>
-                                    </div>
-                                    <button class="text-xs bg-indigo-600 text-white px-3 py-1 rounded">Add to cart</button>
-                                </div>
-                            </div>
-                        </article>
-                    @endforeach
-                </div> --}}
 
                 {{-- Pagination --}}
                 <div class="mt-6 flex items-center justify-between">
@@ -140,8 +128,6 @@
 
             </main>
         </div>
-
-        {{-- Mobile filters panel will be created dynamically by JS when needed --}}
 
         {{-- Structured data for SEO (JSON-LD) --}}
         @push('head')

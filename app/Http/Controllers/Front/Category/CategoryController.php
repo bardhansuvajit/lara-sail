@@ -146,84 +146,86 @@ class CategoryController extends Controller
 
 
         // ---------- dynamic price range & step (place after $categoryIds) ----------
-/**
- * Compute a 'nice' step for price slider.
- */
-$niceStep = function (float $min, float $max, int $buckets = 10): float {
-    if ($max <= $min) {
-        // fallback
-        return max(1, round(($max > 0 ? $max : 100) / $buckets));
-    }
+        /**
+         * Compute a 'nice' step for price slider.
+         */
+        $niceStep = function (float $min, float $max, int $buckets = 10): float {
+            if ($max <= $min) {
+                // fallback
+                return max(1, round(($max > 0 ? $max : 100) / $buckets));
+            }
 
-    $raw = ($max - $min) / $buckets;
-    if ($raw <= 0) return 1;
+            $raw = ($max - $min) / $buckets;
+            if ($raw <= 0) return 1;
 
-    $pow = pow(10, floor(log10($raw)));
-    $f = $raw / $pow;
+            $pow = pow(10, floor(log10($raw)));
+            $f = $raw / $pow;
 
-    if ($f < 1.5) $nice = 1;
-    elseif ($f < 3) $nice = 2;
-    elseif ($f < 7) $nice = 5;
-    else $nice = 10;
+            if ($f < 1.5) $nice = 1;
+            elseif ($f < 3) $nice = 2;
+            elseif ($f < 7) $nice = 5;
+            else $nice = 10;
 
-    return $nice * $pow;
-};
+            return $nice * $pow;
+        };
 
-// Get the effective selling price for each product (country-specific preferred, then NULL)
-$effectivePrices = DB::table('product_pricings')
-    ->select('product_id', 'selling_price')
-    ->whereIn('product_id', function ($q) use ($categoryIds) {
-        $q->select('id')->from('products')->whereIn('category_id', $categoryIds);
-    })
-    ->where(function ($q) use ($countryId) {
-        $q->where('country_id', $countryId)->orWhereNull('country_id');
-    })
-    ->orderByRaw('CASE WHEN country_id = ? THEN 0 WHEN country_id IS NULL THEN 1 ELSE 2 END', [$countryId])
-    ->orderBy('selling_price')
-    ->get()
-    ->groupBy('product_id')
-    ->map(function ($prices) {
-        // For each product, take the first price (which is the preferred one)
-        return $prices->first()->selling_price;
-    });
+        /*
+        // Get the effective selling price for each product (country-specific preferred, then NULL)
+        $effectivePrices = DB::table('product_pricings')
+            ->select('product_id', 'selling_price')
+            ->whereIn('product_id', function ($q) use ($categoryIds) {
+                $q->select('id')->from('products')->whereIn('category_id', $categoryIds);
+            })
+            ->where(function ($q) use ($countryId) {
+                $q->where('country_id', $countryId)->orWhereNull('country_id');
+            })
+            ->orderByRaw('CASE WHEN country_id = ? THEN 0 WHEN country_id IS NULL THEN 1 ELSE 2 END', [$countryId])
+            ->orderBy('selling_price')
+            ->get()
+            ->groupBy('product_id')
+            ->map(function ($prices) {
+                // For each product, take the first price (which is the preferred one)
+                return $prices->first()->selling_price;
+            });
 
-// Get min and max from the effective prices
-if ($effectivePrices->isNotEmpty()) {
-    $minSelling = (float) $effectivePrices->min();
-    $maxSelling = (float) $effectivePrices->max();
-} else {
-    // fallback static values
-    $minSelling = 100.0;
-    $maxSelling = 10000.0;
-}
+        // Get min and max from the effective prices
+        if ($effectivePrices->isNotEmpty()) {
+            $minSelling = (float) $effectivePrices->min();
+            $maxSelling = (float) $effectivePrices->max();
+        } else {
+            // fallback static values
+            $minSelling = 100.0;
+            $maxSelling = 10000.0;
+        }
 
-// if min > max accidentally swap
-if ($minSelling > $maxSelling) {
-    [$minSelling, $maxSelling] = [$maxSelling, $minSelling];
-}
+        // if min > max accidentally swap
+        if ($minSelling > $maxSelling) {
+            [$minSelling, $maxSelling] = [$maxSelling, $minSelling];
+        }
 
-// compute a nice step and align min/max to multiples of step
-$step = $niceStep($minSelling, $maxSelling, 10);
+        // compute a nice step and align min/max to multiples of step
+        $step = $niceStep($minSelling, $maxSelling, 10);
 
-// avoid 0 step
-if ($step <= 0) $step = 1;
+        // avoid 0 step
+        if ($step <= 0) $step = 1;
 
-// round min down, max up to step multiples
-$minAligned = floor($minSelling / $step) * $step;
-$maxAligned = ceil($maxSelling / $step) * $step;
+        // round min down, max up to step multiples
+        $minAligned = floor($minSelling / $step) * $step;
+        $maxAligned = ceil($maxSelling / $step) * $step;
 
-// ensure minAligned < maxAligned
-if ($minAligned == $maxAligned) {
-    // expand range a bit
-    $minAligned = max(0, $minAligned - $step);
-    $maxAligned = $maxAligned + $step;
-}
+        // ensure minAligned < maxAligned
+        if ($minAligned == $maxAligned) {
+            // expand range a bit
+            $minAligned = max(0, $minAligned - $step);
+            $maxAligned = $maxAligned + $step;
+        }
 
-// cast to int if you prefer integers
-$minPriceValue = (int) $minAligned;
-$maxPriceValue = (int) $maxAligned;
-$stepPrice = (int) $step;
-// ---------- end dynamic price range & step ----------
+        // cast to int if you prefer integers
+        $minPriceValue = (int) $minAligned;
+        $maxPriceValue = (int) $maxAligned;
+        $stepPrice = (int) $step;
+        // ---------- end dynamic price range & step ----------
+        */
 
 
 
@@ -360,9 +362,11 @@ $stepPrice = (int) $step;
             'products' => $products,
             'attributes' => $attributes,
             'filters' => $request->all(),
-            'minPriceValue' => $minPriceValue,
-            'maxPriceValue' => $maxPriceValue,
-            'stepPrice' => $stepPrice,
+            // 'minPriceValue' => $minPriceValue,
+            // 'maxPriceValue' => $maxPriceValue,
+            'minPriceValue' => 0,
+            'maxPriceValue' => 20000,
+            'stepPrice' => 2000,
             // 'minPriceValue' => 100,
             // 'maxPriceValue' => 10000,
             // 'stepPrice' => 1000,

@@ -1,4 +1,4 @@
-<aside class="hidden lg:block lg:col-span-3 space-y-4">
+<aside class="space-y-2 sm:space-y-4">
     <form id="filtersForm" method="GET" action="{{ route('front.category.detail', $category->slug) }}">
         <div class="bg-white dark:bg-gray-800 p-4 {{ FD['rounded'] }} shadow grid gap-4">
             <h3 class="text-sm font-semibold">Filters</h3>
@@ -7,27 +7,47 @@
                 <label class="text-xs font-light">Price</label>
                 <div class="mt-8">
                     <div>
-                        <div id="rangeWrapper" class="w-full max-w-sm mx-auto" data-min="<?= $minPriceValue ?>" data-max="<?= $maxPriceValue ?>" data-step="<?= $stepPrice ?>">
+                        <div id="rangeWrapper" class="w-full max-w-sm mx-auto" data-min="{{ $minPriceValue }}" data-max="{{ $maxPriceValue }}" data-step="{{ $stepPrice }}">
 
                             <div class="relative">
                                 <div class="relative h-1.5 rounded-full overflow-visible" style="background:var(--track,#e5e7eb);">
                                     <div id="connect" class="absolute h-1.5 rounded-full" style="background:var(--connect,#3b82f6); left:0; width:0;"></div>
                                 </div>
 
-                                <input id="minRange" type="range" min="<?= $minPriceValue ?>" max="<?= $maxPriceValue ?>" step="<?= $stepPrice ?>" value="<?= $filters['min_price'] ?? max($minPriceValue, (int)($minPriceValue + ($maxPriceValue-$minPriceValue)*0.15)) ?>" aria-label="Minimum price" class="absolute inset-0 w-full h-6 appearance-none bg-transparent" />
+                                <input 
+                                    type="range" 
+                                    id="minRange" 
+                                    min="{{ $minPriceValue }}" 
+                                    max="{{ $maxPriceValue }}" 
+                                    step="{{ $stepPrice }}" 
+                                    value="{{ $minPriceValue }}" 
+                                    {{-- value="{{ $filters['min_price'] ?? max($minPriceValue, (int)($minPriceValue + ($maxPriceValue-$minPriceValue)*0.15)) }}"  --}}
+                                    aria-label="Minimum price" 
+                                    class="absolute inset-0 w-full h-6 appearance-none bg-transparent" 
+                                />
 
-                                <input id="maxRange" type="range" min="<?= $minPriceValue ?>" max="<?= $maxPriceValue ?>" step="<?= $stepPrice ?>" value="<?= $filters['max_price'] ?? min($maxPriceValue, (int)($maxPriceValue - ($maxPriceValue-$minPriceValue)*0.15)) ?>" aria-label="Maximum price" class="absolute inset-0 w-full h-6 appearance-none bg-transparent" />
+                                <input 
+                                    type="range" 
+                                    id="maxRange" 
+                                    min="{{ $minPriceValue }}" 
+                                    max="{{ $maxPriceValue }}" 
+                                    step="{{ $stepPrice }}" 
+                                    value="{{ $maxPriceValue }}" 
+                                    {{-- value="{{ $filters['max_price'] ?? min($maxPriceValue, (int)($maxPriceValue - ($maxPriceValue-$minPriceValue)*0.15)) }}"  --}}
+                                    aria-label="Maximum price" 
+                                    class="absolute inset-0 w-full h-6 appearance-none bg-transparent" 
+                                />
 
                                 <span id="minValue" class="absolute z-0 text-xs font-medium px-2 py-1 rounded-md shadow-md -mt-10 whitespace-nowrap" style="background:var(--tooltip-bg,#ffffff); color:var(--tooltip-text,#0f172a); border:1px solid rgba(0,0,0,0.06)">
-                                    $0
+                                    <span class="currency-symbol">₹</span>{{ $minPriceValue }}
                                 </span>
 
                                 <span id="maxValue" class="absolute z-0 text-xs font-medium px-2 py-1 rounded-md shadow-md -mt-10 whitespace-nowrap" style="background:var(--tooltip-bg,#ffffff); color:var(--tooltip-text,#0f172a); border:1px solid rgba(0,0,0,0.06)">
-                                    $0
+                                    <span class="currency-symbol">₹</span>{{ $maxPriceValue }}
                                 </span>
 
-                                <input type="hidden" id="min_price" name="min_price" value="{{ request('min_price', 100) }}">
-                                <input type="hidden" id="max_price" name="max_price" value="{{ request('max_price', 1000) }}">
+                                <input type="hidden" id="min_price" name="min_price" value="{{ request('min_price', $minPriceValue) }}">
+                                <input type="hidden" id="max_price" name="max_price" value="{{ request('max_price', $maxPriceValue) }}">
 
                                 <!-- Pips / ticks (server-rendered using PHP loop) -->
                                 <div class="relative w-full h-6 mt-1">
@@ -121,81 +141,7 @@
 
                         <script>
                             (function(){
-                                const wrapper = document.getElementById('rangeWrapper');
-                                const minRange = document.getElementById('minRange');
-                                const maxRange = document.getElementById('maxRange');
-                                const connect = document.getElementById('connect');
-                                const minValue = document.getElementById('minValue');
-                                const maxValue = document.getElementById('maxValue');
-
-                                // Read values from data attributes (set via PHP)
-                                const MIN = Number(wrapper.dataset.min || minRange.min || 0);
-                                const MAX = Number(wrapper.dataset.max || minRange.max || 500);
-                                const STEP = Number(wrapper.dataset.step || minRange.step || 1);
-                                const RANGE = MAX - MIN;
-
-                                function pct(v){ return ((v - MIN) / (RANGE)) * 100; }
-
-                                function updatePositions() {
-                                    let a = Number(minRange.value);
-                                    let b = Number(maxRange.value);
-
-                                    // Prevent crossing: clamp the actively moved thumb
-                                    if (a > b) {
-                                        if (document.activeElement === minRange) {
-                                            a = b;
-                                            minRange.value = a;
-                                        } else {
-                                            b = a;
-                                            maxRange.value = b;
-                                        }
-                                    }
-
-                                    const pA = pct(a);
-                                    const pB = pct(b);
-
-                                    connect.style.left = pA + '%';
-                                    connect.style.width = (pB - pA) + '%';
-
-                                    // Position tooltips and update text
-                                    minValue.style.left = pA + '%';
-                                    maxValue.style.left = pB + '%';
-                                    minValue.textContent = '$' + a;
-                                    maxValue.textContent = '$' + b;
-
-                                    // Update hidden inputs
-                                    document.getElementById('min_price').value = a;
-                                    document.getElementById('max_price').value = b;
-                                }
-
-                                // Ensure keyboard interaction updates visuals
-                                minRange.addEventListener('input', updatePositions);
-                                maxRange.addEventListener('input', updatePositions);
-                                minRange.addEventListener('change', updatePositions);
-                                maxRange.addEventListener('change', updatePositions);
-
-                                // Allow arrow keys to change step increment if step provided
-                                minRange.addEventListener('keydown', (e) => {
-                                if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); minRange.value = Math.max(MIN, Number(minRange.value) - STEP); updatePositions(); }
-                                if (e.key === 'ArrowRight' || e.key === 'ArrowUp')   { e.preventDefault(); minRange.value = Math.min(MAX, Number(minRange.value) + STEP); updatePositions(); }
-                                });
-                                maxRange.addEventListener('keydown', (e) => {
-                                if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); maxRange.value = Math.max(MIN, Number(maxRange.value) - STEP); updatePositions(); }
-                                if (e.key === 'ArrowRight' || e.key === 'ArrowUp')   { e.preventDefault(); maxRange.value = Math.min(MAX, Number(maxRange.value) + STEP); updatePositions(); }
-                                });
-
-                                // Init sensible defaults if server values are out of bounds
-                                if (Number(minRange.value) < MIN) minRange.value = MIN;
-                                if (Number(maxRange.value) > MAX) maxRange.value = MAX;
-
-                                // Initialize UI
-                                updatePositions();
-
-                                // Also add this to ensure form submission includes all filters
-                                document.getElementById('filtersForm').addEventListener('submit', function(e) {
-                                    // Update price inputs one more time before submission
-                                    updatePositions();
-                                });
+                                
                             })();
                         </script>
                     </div>
@@ -267,20 +213,26 @@
                 </div>
             @endforeach
 
-            <div class="flex items-center gap-2 mt-2">
+            <div class="flex justify-between items-center gap-2 mt-2">
                 <x-front.button
                     type="submit"
                     class="w-20"
                     element="button">
                     {{ __('Apply') }}
                 </x-front.button>
-                {{-- <button type="submit" class="px-3 py-2 bg-indigo-600 text-white text-xs rounded">Apply</button> --}}
-                <a href="{{ route('front.category.detail', $category->slug) }}" class="text-xs text-gray-500">Reset</a>
+
+                <div class="flex">
+                    <a href="{{ route('front.category.detail', $category->slug) }}" class="text-[10px] inline-flex gap-2 items-center text-end text-amber-800/80 hover:text-amber-800 dark:text-amber-600/80 dark:hover:text-amber-600">
+                        <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m592-481-57-57 143-182H353l-80-80h487q25 0 36 22t-4 42L592-481ZM791-56 560-287v87q0 17-11.5 28.5T520-160h-80q-17 0-28.5-11.5T400-200v-247L56-791l56-57 736 736-57 56ZM535-538Z"/></svg>
+                        Clear Filter
+                    </a>
+                </div>
+
+                {{-- <a href="{{ route('front.category.detail', $category->slug) }}" class="text-xs text-gray-500">Reset</a> --}}
             </div>
         </div>
     </form>
 
-    {{-- Upgraded competitive trust section --}}
     <div class="bg-white dark:bg-gray-800 p-4 {{ FD['rounded'] }} shadow text-xs">
         <h4 class="font-semibold mb-2 sm:mb-4">Why shop here?</h4>
         <ul class="space-y-3 text-gray-600">

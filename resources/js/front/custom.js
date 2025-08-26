@@ -1251,8 +1251,89 @@ document.querySelectorAll('.wishlist-btn').forEach(wishlistBtn => {
     });
 });
 
+// Price Range - Category page
+const wrapper = document.getElementById('rangeWrapper');
+const minRange = document.getElementById('minRange');
+const maxRange = document.getElementById('maxRange');
+const connect = document.getElementById('connect');
+const minValue = document.getElementById('minValue');
+const maxValue = document.getElementById('maxValue');
+
+if (wrapper) {
+    const MIN = Number(wrapper.dataset.min || minRange.min || 0);
+    const MAX = Number(wrapper.dataset.max || minRange.max || 500);
+    const STEP = Number(wrapper.dataset.step || minRange.step || 1);
+    const RANGE = MAX - MIN;
+
+    function pct(v){ return ((v - MIN) / (RANGE)) * 100; }
+
+    function updatePositions() {
+        let a = Number(minRange.value);
+        let b = Number(maxRange.value);
+
+        console.log(a, b);
+
+        // Prevent crossing: clamp the actively moved thumb
+        if (a > b) {
+            if (document.activeElement === minRange) {
+                a = b;
+                minRange.value = a;
+            } else {
+                b = a;
+                maxRange.value = b;
+            }
+        }
+
+        const pA = pct(a);
+        const pB = pct(b);
+
+        connect.style.left = pA + '%';
+        connect.style.width = (pB - pA) + '%';
+
+        // Position tooltips and update text
+        minValue.style.left = pA + '%';
+        maxValue.style.left = pB + '%';
+        minValue.innerHTML = '<span class="currency-symbol">₹</span>' + formatIndianMoney(a);
+        maxValue.innerHTML = '<span class="currency-symbol">₹</span>' + formatIndianMoney(b);
+
+        // Update hidden inputs
+        document.getElementById('min_price').value = a;
+        document.getElementById('max_price').value = b;
+    }
+
+    // Ensure keyboard interaction updates visuals
+    minRange.addEventListener('input', updatePositions);
+    maxRange.addEventListener('input', updatePositions);
+    minRange.addEventListener('change', updatePositions);
+    maxRange.addEventListener('change', updatePositions);
+
+    // Allow arrow keys to change step increment if step provided
+    minRange.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); minRange.value = Math.max(MIN, Number(minRange.value) - STEP); updatePositions(); }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp')   { e.preventDefault(); minRange.value = Math.min(MAX, Number(minRange.value) + STEP); updatePositions(); }
+    });
+    maxRange.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); maxRange.value = Math.max(MIN, Number(maxRange.value) - STEP); updatePositions(); }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp')   { e.preventDefault(); maxRange.value = Math.min(MAX, Number(maxRange.value) + STEP); updatePositions(); }
+    });
+
+    // Init sensible defaults if server values are out of bounds
+    if (Number(minRange.value) < MIN) minRange.value = MIN;
+    if (Number(maxRange.value) > MAX) maxRange.value = MAX;
+
+
+    // Initialize UI
+    updatePositions();
+
+    // Also add this to ensure form submission includes all filters
+    document.getElementById('filtersForm').addEventListener('submit', function(e) {
+        // Update price inputs one more time before submission
+        updatePositions();
+    });
+}
+
 // Flash Sale Countdown (fixed 10 minutes)
-(function(){
+// (function(){
     const countdownEl = document.getElementById('countdown');
     if (countdownEl) {
         let remaining = 10*60; // 10 minutes
@@ -1265,4 +1346,4 @@ document.querySelectorAll('.wishlist-btn').forEach(wishlistBtn => {
             countdownEl.textContent = `${h}:${m}:${s}`;
         },1000);
     }
-})();
+// })();
