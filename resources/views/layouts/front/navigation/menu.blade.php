@@ -6,11 +6,13 @@
             <div 
                 class="relative md:hidden" 
                 x-data=""
-                x-on:click.prevent="
-                    $dispatch('open-sidebar', 'mob-sidebar');
-                ">
+                x-on:click.prevent="$dispatch('open-sidebar', 'mob-sidebar');"
+            >
                 <button type="button" class="inline-flex items-center justify-center p-1 text-sm {{FD['rounded']}} font-medium leading-tight dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700/100">
-                    <svg class="{{FD['iconClass']}} dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"></path></svg>
+                    <div class="{{FD['iconClass']}} dark:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M120-680v-80h720v80H120Zm0 480v-80h720v80H120Zm0-240v-80h720v80H120Z"/></svg>
+                    </div>
+                    {{-- <svg class="{{FD['iconClass']}} dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"></path></svg> --}}
                 </button>
             </div>
 

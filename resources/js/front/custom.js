@@ -1332,6 +1332,38 @@ if (wrapper) {
     });
 }
 
+
+
+// Category detail page - Category FIlter load once & use twice, in Desktop & Mobile view
+const tpl = document.getElementById('category-filter-root'); // the actual node
+const desktopTarget = document.getElementById('desktop-filter-target');
+const mobileTarget = document.getElementById('mobile-filter-target');
+
+// breakpoint match for Tailwind's lg (1024px)
+const mq = window.matchMedia('(min-width:1024px)');
+
+function placeFilter() {
+    if (!tpl) return;
+    if (mq.matches) { // desktop
+        if (!desktopTarget.contains(tpl)) {
+            desktopTarget.appendChild(tpl);
+            desktopTarget.classList.remove('hidden');
+        }
+    } else { // mobile
+        if (!mobileTarget.contains(tpl)) {
+            mobileTarget.appendChild(tpl);
+        }
+    }
+}
+
+// initial placement
+placeFilter();
+
+// move on viewport changes
+mq.addEventListener ? mq.addEventListener('change', placeFilter) : mq.addListener(placeFilter);
+
+
+
 // Flash Sale Countdown (fixed 10 minutes)
 // (function(){
     const countdownEl = document.getElementById('countdown');

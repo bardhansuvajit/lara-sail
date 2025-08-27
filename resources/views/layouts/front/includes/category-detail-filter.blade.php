@@ -191,7 +191,7 @@
                         @foreach($sortByArr as $key => $value)
                             <x-front.radio-input-button id="someId{{$key}}" name="sortBy" value="{{$key}}" :checked="request('sortBy') ? request('sortBy') == $key : $loop->first">
                                 <div class="text-center">
-                                    <div class="{{FD['text']}} font-semibold">{{$value}}</div>
+                                    <div class="{{FD['text']}} font-medium text-gray-700 dark:text-gray-300">{{$value}}</div>
                                 </div>
                             </x-front.radio-input-button>
                         @endforeach

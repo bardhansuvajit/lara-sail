@@ -46,15 +46,10 @@
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            {{-- render once into a hidden template --}}
-            <div id="category-filter-template" class="hidden" aria-hidden="true">
-                <div id="category-filter-root">
-                    @include('layouts.front.includes.category-detail-filter')
-                </div>
-            </div>
-
             {{-- Filters --}}
-            <div id="desktop-filter-target" class="hidden lg:block lg:col-span-3"></div>
+            <div class="hidden lg:block lg:col-span-3">
+                @include('layouts.front.includes.category-detail-filter')
+            </div>
 
             {{-- Products --}}
             <main class="lg:col-span-9 space-y-4">
@@ -89,7 +84,9 @@
                         <x-front.sidebar name="mob-filter-sidebar" maxWidth="2xl" direction="right" focusable>
                             <div class="w-60 ">
                                 {{-- Filters --}}
-                                <div id="mobile-filter-target"></div>
+                                <div>
+                                    @include('layouts.front.includes.category-detail-filter')
+                                </div>
                             </div>
                         </x-front.sidebar>
                     </div>
