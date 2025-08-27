@@ -354,6 +354,11 @@ class CategoryController extends Controller
         // Attributes for the filter UI (if you plan to show them)
         $attributes = []; // populate if needed: $category->variationAttributeValues()->with('values')->get();
 
+        // Featured + Flash Sale + Trending Products
+        $productFeatures = Cache::remember('homepage_products', now()->addHours(6), function() {
+            return $this->productFeatureRepository->listAllFeatured();
+        });
+
         return view('front.category.detail', [
             'sortByArr' => $sortByArr,
             'category' => $category,
@@ -370,6 +375,9 @@ class CategoryController extends Controller
             // 'minPriceValue' => 100,
             // 'maxPriceValue' => 10000,
             // 'stepPrice' => 1000,
+            'featuredProducts' => $productFeatures['data']['featured'] ?? [],
+            'flashSaleProducts' => $productFeatures['data']['flash'] ?? [],
+            'trendingProducts' => $productFeatures['data']['trending'] ?? [],
         ]);
     }
 

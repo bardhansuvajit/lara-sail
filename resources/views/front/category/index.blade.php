@@ -53,6 +53,7 @@
             </a>
         @endif
 
+
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
 
             {{-- Filters + Small Ads --}}
@@ -79,7 +80,7 @@
                                             <img src="{{ Storage::url($cat->image_s) }}" alt=""
                                                 class="w-full h-12 sm:h-16 object-contain mb-2 group-hover:scale-105 transition">
                                         @else
-                                            <div class="w-full h-12 flex items-center justify-center text-gray-400 dark:text-gray-500">
+                                            <div class="w-full h-12 sm:h-16 mb-2 flex items-center justify-center text-gray-400 dark:text-gray-500">
                                                 {!! FD['brokenImageFront'] !!}
                                             </div>
 

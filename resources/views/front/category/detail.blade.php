@@ -7,8 +7,8 @@
             {{-- Breadcrumb --}}
             <nav class="{{ FD['text-0'] }} text-gray-500 mt-2 mb-1" aria-label="breadcrumb">
                 <ol class="flex items-center gap-2">
-                    <li><a href="{{ route('front.home.index') }}" class="hover:underline">Home</a></li>
-                    <li>/ <a href="{{ route('front.category.index') }}" class="hover:underline">Category</a></li>
+                    <li><a href="{{ route('front.home.index') }}" class="hover:underline text-gray-500 dark:text-gray-500">Home</a></li>
+                    <li>/ <a href="{{ route('front.category.index') }}" class="hover:underline text-gray-500 dark:text-gray-500">Category</a></li>
 
                     @if ($category->ancestors)
                         @php
@@ -22,14 +22,14 @@
 
                         @foreach ($parents as $parent)
                             <li>
-                                / <a href="{{ route('front.category.detail', $parent->slug) }}" class="hover:underline">
+                                / <a href="{{ route('front.category.detail', $parent->slug) }}" class="hover:underline text-gray-500 dark:text-gray-500">
                                     {{ $parent->title }}
                                 </a>
                             </li>
                         @endforeach
                     @endif
 
-                    <li> / <span class="text-gray-700 dark:text-gray-300">{{ $category->title }}</span></li>
+                    <li> / <span class="text-gray-800 font-medium dark:text-gray-300">{{ $category->title }}</span></li>
                 </ol>
             </nav>
 
@@ -126,18 +126,23 @@
                     </div>
                 </div>
 
-                {{-- Related categories / recommended products strip --}}
-                <section class="mt-8">
-                    <h3 class="text-sm font-semibold mb-3">Customers also shop</h3>
-                    <div class="flex gap-4 overflow-x-auto py-2">
-                        {{-- @foreach($relatedCategories as $rc)
-                            <a href="{{ route('front.category.detail', $rc->slug) }}" class="flex w-44 bg-white dark:bg-gray-800 p-3 rounded shadow">
-                                <img src="{{ $rc->image_url ?? asset('images/subcat-default.png') }}" alt="{{ $rc->name }}" class="w-full h-28 object-cover rounded mb-2">
-                                <div class="text-xs font-medium">{{ $rc->name }}</div>
-                            </a>
-                        @endforeach --}}
-                    </div>
-                </section>
+                {{-- Featured Products --}}
+                @if (count($featuredProducts) > 0)
+                    <section class="bg-gray-100 antialiased dark:bg-gray-900 mt-2 sm:mt-4">
+                        <div class="mx-auto max-w-screen-xl">
+                            <div class="mb-2 sm:mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0">
+                                <p class="{{FD['text-0']}} sm:text-sm font-semibold text-gray-600 dark:text-gray-500">FEATURED</h2>
+                            </div>
+
+                            <div class="grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4" id="featured-products">
+                                {{-- Product Card Component --}}
+                                @foreach ($featuredProducts as $featuredItem)
+                                    <x-front.product-card :product="$featuredItem" />
+                                @endforeach
+                            </div>
+                        </div>
+                    </section>
+                @endif
 
             </main>
         </div>

@@ -178,78 +178,18 @@
 
         {{-- Trending Products Grid (conversion-focused) --}}
         @if (count($trendingProducts) > 0)
-            <section class="max-w-7xl">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-sm font-bold">Trending Products for you</h2>
-                </div>
+            <section class="bg-gray-100 antialiased dark:bg-gray-900 @if (count($banners) == 0) mt-2 sm:mt-4 @endif">
+                <div class="mx-auto max-w-screen-xl">
+                    <div class="mb-2 sm:mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0">
+                        <p class="{{FD['text-0']}} sm:text-sm font-semibold text-gray-600 dark:text-gray-500">Trending Products for you</h2>
+                    </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
-                    @foreach($trendingProducts as $product)
-                        <article class="bg-white dark:bg-gray-800/70 {{FD['rounded']}} shadow hover:shadow-lg transition overflow-hidden border dark:border-gray-700 group">
-                            <a href="{{ route('front.product.detail', $product->slug) }}">
-                                <div class="relative">
-                                    @if (count($product->activeImages) > 0)
-                                        <img
-                                            src="{{ Storage::url($product->activeImages[0]->image_m) }}"
-                                            alt="{{ $product->slug }}"
-                                            loading="lazy"
-                                            class="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
-                                        />
-                                    @else
-                                        <div class="w-full h-40 flex items-center justify-center text-gray-400 dark:text-gray-500">
-                                            {!! FD['brokenImageFront'] !!}
-                                        </div>
-                                    @endif
-
-                                    @if($product['badge'])
-                                        <span class="absolute top-2 left-2 bg-yellow-400 {{ FD['text'] }} px-2 py-1 rounded">{{ $product['badge'] }}</span>
-                                    @endif
-
-                                    <div class="absolute top-2 right-2">
-                                        <button
-                                            type="button"
-                                            class="wishlist-btn pointer-events-auto ml-auto inline-flex items-center justify-center p-1.5 rounded-full bg-white/90 dark:bg-gray-900/60 hover:bg-red-600/10 dark:hover:bg-red-600/40 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-500"
-                                            aria-pressed="{{ !empty($product->wishlisted) ? 'true' : 'false' }}"
-                                            aria-label="Toggle wishlist for {{ $product->title }}"
-                                            data-prod-id="{{ $product->id }}"
-                                        >
-                                            <svg class="w-4 h-4 transition-colors text-red-500" viewBox="0 0 24 24" fill="{{ !empty($product->wishlisted) ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="p-3">
-                                    <h3 class="text-sm font-semibold">{{ $product['title'] }}</h3>
-                                    <p class="{{ FD['text'] }} text-gray-500">{{ $product['short_description'] }}</p>
-                                    <div class="mt-2 flex items-center justify-between">
-                                        @if (count($product->pricings) > 0)
-                                            @php $p = $product->pricings[0]; @endphp
-
-                                            <div class="mt-3 flex items-center justify-between gap-2">
-                                                <div>
-                                                    <div class="{{ FD['text-2'] }} font-extrabold text-gray-900 dark:text-white leading-none">
-                                                        <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->selling_price) }}
-                                                    </div>
-                                                    <div class="mt-1 flex items-center gap-2">
-                                                        @if($p->mrp && $p->mrp > 0)
-                                                            <span class="{{ FD['text'] }} text-gray-400 dark:text-gray-400 line-through">
-                                                                <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->mrp) }}
-                                                            </span>
-                                                            <span class="{{ FD['text'] }} font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/20 px-2 py-0.5 {{ FD['rounded'] }}">
-                                                                {{ $p->discount }}% off
-                                                            </span>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </a>
-                        </article>
-                    @endforeach
+                    <div class="grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-6" id="featured-products">
+                        {{-- Product Card Component --}}
+                        @foreach ($trendingProducts as $trendingItem)
+                            <x-front.product-card :product="$trendingItem" />
+                        @endforeach
+                    </div>
                 </div>
             </section>
         @endif

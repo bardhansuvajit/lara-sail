@@ -18,6 +18,11 @@ class CollectionController
         $this->productCollectionRepository = $productCollectionRepository;
     }
 
+    public function index(Request $request) : View
+    {
+        return view('front.collection.index');
+    }
+
     public function detail(Request $request, string $slug): View
     {
 
