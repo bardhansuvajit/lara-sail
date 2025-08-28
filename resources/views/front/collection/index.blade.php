@@ -100,15 +100,15 @@
 			</header>
 
 			<!-- MASONRY LAYOUT -->
-			<div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-2 sm:gap-4 bg-slate-200">
+			<div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-2 sm:gap-4">
 				<!-- MEGA DEAL -->
-				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800">
-					<img src="https://dummyimage.com/800x400/0ea5a4/ffffff&text=Mega+Deal" alt="Mega Deal" class="w-full h-auto object-cover" loading="lazy" />
+				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800 group">
+					<img src="https://dummyimage.com/800x400/0ea5a4/ffffff&text=Mega+Deal" alt="Mega Deal" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy" />
 					<div class="p-2 sm:p-4">
 						<h3 class="text-base font-semibold">Mega Deal — Up to <span class="text-yellow-300">70% OFF</span></h3>
 						<p class="text-xs text-slate-500 dark:text-slate-300 mt-1 line-clamp-2">Selected categories. Limited stock — hurry! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Natus voluptate iusto rerum voluptatem architecto nostrum cumque totam amet distinctio minus?</p>
 						<div class="mt-3 flex items-center gap-3">
-						<span class="inline-flex items-center text-xs bg-brand text-white px-3 py-2 {{ FD['rounded'] }}">
+						<span class="inline-flex items-center text-xs bg-brand text-white px-3 py-2 {{ FD['rounded'] }} bg-teal-600">
 							<svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-80q-33 0-56.5-23.5T120-160v-480q0-33 23.5-56.5T200-720h80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720h80q33 0 56.5 23.5T840-640v480q0 33-23.5 56.5T760-80H200Zm0-80h560v-480H200v480Zm280-240q83 0 141.5-58.5T680-600h-80q0 50-35 85t-85 35q-50 0-85-35t-35-85h-80q0 83 58.5 141.5T480-400ZM360-720h240q0-50-35-85t-85-35q-50 0-85 35t-35 85ZM200-160v-480 480Z"/></svg>
 							Shop now
 						</span>
@@ -118,8 +118,8 @@
 				</a>
 
 				<!-- SPONSORED BRAND -->
-				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800 mt-2 sm:mt-4">
-					<img src="https://dummyimage.com/1200x400/94a3b8/ffffff&text=Sponsored+Brand" alt="Sponsored Brand" class="w-full h-auto object-cover" loading="lazy" />
+				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800 group mt-2 sm:mt-4 mb-2 sm:mb-0">
+					<img src="https://dummyimage.com/1200x400/94a3b8/ffffff&text=Sponsored+Brand" alt="Sponsored Brand" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy" />
 					<div class="p-2 sm:p-4">
 						<h4 class="text-sm font-semibold">Sponsored brand — extra 20% off</h4>
 						<p class="text-xs text-slate-500 dark:text-slate-300 mt-1">Click to reveal limited coupons & offers.</p>
@@ -130,12 +130,12 @@
 				</a>
 
 				<!-- BRAND STORY -->
-				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800">
-					<img src="https://dummyimage.com/600x800/6366f1/ffffff&text=Brand+Story" alt="Brand Story" class="w-full h-auto object-cover" loading="lazy" />
-					<div class="p-3">
-						<h3 class="text-sm font-semibold">Brand Story — New Collection</h3>
-						<p class="{{ FD['text-0'] }} text-slate-500 dark:text-slate-300 mt-1">Sustainably made — feel good shopping.</p>
-						<div class="mt-3 flex items-center gap-2">
+				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800 group mb-2 sm:mb-0">
+					<img src="https://dummyimage.com/600x800/6366f1/ffffff&text=Brand+Story" alt="Brand Story" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+					<div class="p-2 sm:p-4">
+						{{-- <h3 class="text-base font-semibold">Brand Story — New Collection</h3> --}}
+						<p class="text-xs sm:text-[10px] text-slate-500 dark:text-slate-300">Sustainably made — feel good shopping. Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis, saepe?</p>
+						<div class="mt-[0.6rem] flex items-center gap-2">
 							<span class="text-xs px-3 py-2 border {{ FD['rounded'] }} text-slate-700 dark:text-slate-200">Explore</span>
 						</div>
 					</div>
@@ -156,7 +156,7 @@
 				</a> --}}
 
 				<!-- FLASH -->
-				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800 p-3 shadow-sm hover:shadow-md">
+				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800 p-2 sm:p-4 shadow-sm hover:shadow-md">
 					<div class="flex items-center gap-3">
 						<img src="https://dummyimage.com/150x150/10b981/ffffff&text=Flash" alt="Flash" class="w-20 h-20 object-cover {{ FD['rounded'] }}" loading="lazy" />
 						<div>
@@ -170,15 +170,15 @@
 
 				<!-- GRID COLLAGE -->
 				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800 my-2 sm:my-4">
-					<div class="grid grid-cols-2 gap-1">
+					<div class="grid grid-cols-2 gap-2 sm:gap-1">
 						<img src="https://dummyimage.com/400x300/f59e0b/ffffff&text=1" alt="1" class="w-full h-28 object-cover" loading="lazy" />
 						<img src="https://dummyimage.com/400x300/ef4444/ffffff&text=2" alt="2" class="w-full h-28 object-cover" loading="lazy" />
 						<img src="https://dummyimage.com/400x300/06b6d4/ffffff&text=3" alt="3" class="w-full h-28 object-cover" loading="lazy" />
 						<img src="https://dummyimage.com/400x300/6366f1/ffffff&text=4" alt="4" class="w-full h-28 object-cover" loading="lazy" />
 					</div>
-					<div class="p-3">
-						<h4 class="text-base font-semibold">Bundle picks — curated sets</h4>
-						<p class="{{ FD['text'] }} text-slate-500 dark:text-slate-300 mt-1">Mix & match and save more.</p>
+					<div class="p-2 sm:p-4">
+						<h4 class="text-base font-semibold text-center">Bundle picks — curated sets</h4>
+						{{-- <p class="{{ FD['text'] }} text-slate-500 dark:text-slate-300 mt-1">Mix & match and save more.</p> --}}
 						{{-- <div class="mt-3">
 							<span class="text-xs bg-brand text-white px-3 py-2 {{ FD['rounded'] }}">View bundles</span>
 						</div> --}}
@@ -186,7 +186,7 @@
 				</a>
 
 				<!-- APP DEALS -->
-				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden p-3 bg-white dark:bg-slate-800">
+				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden p-2 sm:p-4 bg-white dark:bg-slate-800 mb-2 sm:mb-0">
 					<div class="flex items-center gap-3">
 						<div class="w-12 h-12 {{ FD['rounded'] }} bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-sm font-bold">
 							App
@@ -207,152 +207,115 @@
 				</a>
 
 				<!-- NEW ARRIVALS -->
-				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800">
-					<img src="https://dummyimage.com/600x500/94a3b8/ffffff&text=New+Arrivals" alt="New Arrivals" class="w-full h-auto object-cover" loading="lazy" />
-					<div class="p-3">
-						<div class="flex items-center gap-2">
-						<span class="text-xs bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2 py-1 rounded">New</span>
-						<h4 class="text-sm font-semibold">Just dropped — trending now</h4>
-						</div>
-						<p class="text-xs text-slate-500 dark:text-slate-300 mt-2">Fresh styles added today. Free returns within 30 days.</p>
+				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800 transition-transform duration-300 group">
+					<!-- Image -->
+					<div class="relative">
+						<img src="https://dummyimage.com/600x500/94a3b8/ffffff&text=New+Arrivals"
+							alt="New Arrivals"
+							class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-300"
+							loading="lazy" />
+
+						<!-- Floating badge -->
+						<span class="absolute top-2 left-2 text-[10px] font-medium px-2 py-0.5 {{ FD['rounded'] }} bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow">
+							New
+						</span>
+					</div>
+
+					<!-- Content -->
+					<div class="p-3 sm:p-4">
+						<h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">
+							New Arrivals
+						</h3>
+						<p class="text-xs mt-[0.3rem] text-slate-500 dark:text-slate-300 leading-snug line-clamp-3">
+							Fresh styles added today. Free returns within 30 days. Lorem ipsum dolor sit amet.
+						</p>
 					</div>
 				</a>
 
+				{{-- <a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800">
+					<img src="https://dummyimage.com/600x500/94a3b8/ffffff&text=New+Arrivals" alt="New Arrivals" class="w-full h-auto object-cover" loading="lazy" />
+					<div class="p-2 sm:p-4">
+						<div class="flex items-center gap-2">
+							<span class="text-xs bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2 py-1 rounded">New</span>
+						</div>
+						<p class="text-[10px] text-slate-500 dark:text-slate-300 mt-[0.6rem] line-clamp-2">Fresh styles added today. Free returns within 30 days. Lorem ipsum dolor sit amet.</p>
+					</div>
+				</a> --}}
+
 				<!-- SAVE 50 -->
-				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800 mt-2 sm:mt-4">
-					<img src="https://dummyimage.com/600x300/94a3b8/ffffff&text=Save+50" alt="Save 50" class="w-full h-auto object-contain" loading="lazy" />
+				<a href="#" class="block break-inside-avoid {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800 group mt-2 sm:mt-4">
+					<img src="https://dummyimage.com/600x300/94a3b8/ffffff&text=Save+50" alt="Save 50" class="w-full h-auto object-contain transform group-hover:scale-105 transition-transform duration-300" loading="lazy" />
 				</a>
+			</div>
+		</section>
+
+		<section>
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+				<a href="#" class="block {{ FD['rounded'] }} overflow-hidden relative group">
+					<img src="https://dummyimage.com/1200x420/0ea5a4/ffffff&text=Mega+Summer+Sale" alt="Mega Summer Sale" class="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-300" />
+					<div class="absolute inset-0 bg-gradient-to-r from-black/30 to-black/10 dark:from-black/40 dark:to-black/10 flex items-center">
+						<div class="p-6 md:p-10 max-w-2xl">
+							<h3 class="text-lg font-bold text-white">Mega Summer Sale — Up to <span class="text-yellow-300">70% OFF</span></h3>
+							<p class="text-xs text-white/90 mt-2">Top brands, limited stock. Free express delivery on orders above ₹999.</p>
+							<div class="mt-4 flex items-center gap-3">
+								<span class="inline-flex items-center px-3 py-2 {{ FD['rounded'] }} bg-yellow-400 text-black text-sm font-semibold">Grab the Deal</span>
+								<span class="text-xs text-white/80">Use code: <strong>SUMMER70</strong></span>
+							</div>
+						</div>
+					</div>
+				</a>
+
+				<a href="#" class="block md:flex items-stretch gap-4 {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-800 hover:shadow-lg transition">
+    
+					<!-- Image -->
+					<img src="https://dummyimage.com/500x500/ef4444/ffffff&text=Top+Pick"
+						alt="Top Pick"
+						class="w-full md:w-1/3 h-full object-cover" />
+
+					<!-- Content -->
+					<div class="p-4 flex-1 flex flex-col">
+						
+						<!-- Title -->
+						<h4 class="text-sm font-semibold">Editor's Pick — Smart Wireless Earbuds</h4>
+						<p class="text-xs text-slate-500 dark:text-slate-300 mt-1">
+							Clear bass, 30hr battery, now at an unbeatable price.
+						</p>
+
+						<!-- Ratings -->
+						<div class="flex items-center gap-1 mt-2">
+							<span class="text-yellow-400">★ ★ ★ ★ ☆</span>
+							<span class="text-xs text-slate-400">(4.2k reviews)</span>
+						</div>
+
+						<!-- Pricing -->
+						<div class="mt-3 flex items-center gap-3">
+							<div class="flex gap-4">
+								<div class="text-sm font-semibold">₹ 1,499</div>
+								<div class="text-xs text-slate-400 line-through">₹ 4,299</div>
+							</div>
+							<div class="ml-auto text-xs bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2 py-1 rounded">65% OFF</div>
+						</div>
+
+						<!-- Extra Info -->
+						<div class="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500 dark:text-slate-300">
+							<span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">🚚 Free Delivery</span>
+							<span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">⏰ Only 12 left</span>
+							<span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">🛡 1-Year Warranty</span>
+						</div>
+
+						<!-- Actions -->
+						<div class="mt-4 flex items-center gap-2">
+							<span class="cursor-pointer text-xs bg-brand text-white px-3 py-2 {{ FD['rounded'] }} hover:opacity-90">Add to Cart</span>
+							<span class="cursor-pointer text-xs px-3 py-2 border {{ FD['rounded'] }} text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700">Quick View</span>
+						</div>
+					</div>
+				</a>
+
 			</div>
 		</section>
 
 
 		<div class="grid grid-cols-1 gap-6">
-			<!-- Masonry Ads: simple column-based masonry -->
-			{{-- <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-				<header class="mb-4">
-					<h2 class="text-lg font-semibold">Recommended for you</h2>
-					<p class="text-xs text-slate-500 dark:text-slate-400">Handpicked offers & promos — one glance, many irresistible deals.</p>
-				</header>
-
-				<!-- Container: columns create masonry-like layout -->
-				<div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-					<!-- Card 1: Tall hero ad -->
-					<a href="#" class="block mb-4 break-inside-avoid {{ FD['rounded'] }} overflow-hidden shadow-sm hover:shadow-lg transition-shadow bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-					<img src="https://dummyimage.com/800x500/0ea5a4/ffffff&text=Mega+Deal" alt="Mega Deal" class="w-full h-auto object-cover" loading="lazy" />
-					<div class="p-4">
-						<h3 class="text-sm font-semibold">Mega Deal — Up to <span class="text-yellow-300">70% OFF</span></h3>
-						<p class="text-xs text-slate-500 dark:text-slate-300 mt-1">Selected categories. Limited stock — hurry!</p>
-						<div class="mt-3 flex items-center gap-3">
-						<span class="inline-flex items-center text-xs bg-brand text-white px-3 py-2 {{ FD['rounded'] }}">
-							<!-- Shopping cart icon -->
-							<svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 3h2l1 7h12l3-7H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-							Shop now
-						</span>
-						<span class="text-xs text-white/90 bg-slate-900/80 dark:bg-white/10 px-2 py-1 rounded">Use code: SUMMER70</span>
-						</div>
-					</div>
-					</a>
-
-					<!-- Card 2: Tall portrait (brand story / lifestyle) -->
-					<a href="#" class="block mb-4 break-inside-avoid {{ FD['rounded'] }} overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:scale-[1.01] transition-transform">
-					<img src="https://dummyimage.com/600x900/6366f1/ffffff&text=Brand+Story" alt="Brand Story" class="w-full h-auto object-cover" loading="lazy" />
-					<div class="p-3">
-						<h3 class="text-sm font-semibold">Brand Story — New Collection</h3>
-						<p class="text-xs text-slate-500 dark:text-slate-300 mt-1">Sustainably made — feel good shopping.</p>
-						<div class="mt-3 flex items-center gap-2">
-						<span class="text-xs px-3 py-2 border {{ FD['rounded'] }} text-slate-700 dark:text-slate-200">Explore</span>
-						</div>
-					</div>
-					</a>
-
-					<!-- Card 3: Coupon strip (short) -->
-					<a href="#" class="block mb-4 break-inside-avoid {{ FD['rounded'] }} overflow-hidden p-3 bg-gradient-to-r from-amber-50 to-white dark:from-amber-900 dark:to-amber-700 border border-slate-200 dark:border-slate-700">
-					<div class="flex items-center gap-3">
-						<img src="https://dummyimage.com/200x120/94a3b8/ffffff&text=Coupon" alt="Coupon" class="w-24 h-16 object-cover rounded" loading="lazy" />
-						<div>
-						<h4 class="text-sm font-semibold">Extra 15% off — code: EXTRA15</h4>
-						<p class="text-xs text-slate-600 dark:text-slate-300 mt-1">Applies on ₹1499+. Limited time.</p>
-						</div>
-						<div class="ml-auto">
-						<span class="text-xs bg-slate-900/90 text-white px-3 py-2 rounded">Use Code</span>
-						</div>
-					</div>
-					</a>
-
-					<!-- Card 4: Small flash tile -->
-					<a href="#" class="block mb-4 break-inside-avoid {{ FD['rounded'] }} overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 shadow-sm hover:shadow-md">
-					<div class="flex items-center gap-3">
-						<img src="https://dummyimage.com/160x160/10b981/ffffff&text=Flash" alt="Flash" class="w-20 h-20 object-cover rounded" loading="lazy" />
-						<div>
-						<h5 class="text-sm font-semibold">Flash Deal — 4 hours left</h5>
-						<p class="text-xs text-slate-500 dark:text-slate-300 mt-1">Extra 25% off on essentials.</p>
-						</div>
-						<div class="ml-auto text-xs bg-red-600 text-white px-2 py-1 rounded">Buy Now</div>
-					</div>
-					</a>
-
-					<!-- Card 5: Grid collage (small images) -->
-					<a href="#" class="block mb-4 break-inside-avoid {{ FD['rounded'] }} overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-					<div class="grid grid-cols-2 gap-1">
-						<img src="https://dummyimage.com/400x300/f59e0b/ffffff&text=1" alt="1" class="w-full h-28 object-cover" loading="lazy" />
-						<img src="https://dummyimage.com/400x300/ef4444/ffffff&text=2" alt="2" class="w-full h-28 object-cover" loading="lazy" />
-						<img src="https://dummyimage.com/400x300/06b6d4/ffffff&text=3" alt="3" class="w-full h-28 object-cover" loading="lazy" />
-						<img src="https://dummyimage.com/400x300/6366f1/ffffff&text=4" alt="4" class="w-full h-28 object-cover" loading="lazy" />
-					</div>
-					<div class="p-3">
-						<h4 class="text-sm font-semibold">Bundle picks — curated sets</h4>
-						<p class="text-xs text-slate-500 dark:text-slate-300 mt-1">Mix & match and save more.</p>
-						<div class="mt-3">
-						<span class="text-xs bg-brand text-white px-3 py-2 {{ FD['rounded'] }}">View bundles</span>
-						</div>
-					</div>
-					</a>
-
-					<!-- Card 6: Vertical promo with badge -->
-					<a href="#" class="block mb-4 break-inside-avoid {{ FD['rounded'] }} overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-					<img src="https://dummyimage.com/600x700/111827/ffffff&text=New+Arrivals" alt="New Arrivals" class="w-full h-auto object-cover" loading="lazy" />
-					<div class="p-3">
-						<div class="flex items-center gap-2">
-						<span class="text-xs bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2 py-1 rounded">New</span>
-						<h4 class="text-sm font-semibold">Just dropped — trending now</h4>
-						</div>
-						<p class="text-xs text-slate-500 dark:text-slate-300 mt-2">Fresh styles added today. Free returns within 30 days.</p>
-					</div>
-					</a>
-
-					<!-- Card 7: Small CTA tile (mobile-friendly) -->
-					<a href="#" class="block mb-4 break-inside-avoid {{ FD['rounded'] }} overflow-hidden p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-					<div class="flex items-center gap-3">
-						<div class="w-12 h-12 rounded bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-sm font-bold">App</div>
-						<div class="flex-1">
-						<h5 class="text-sm font-semibold">App-only deals</h5>
-						<p class="text-xs text-slate-500 dark:text-slate-300 mt-1">Download & save extra 10%.</p>
-						</div>
-						<div>
-						<span class="text-xs bg-brand text-white px-3 py-2 {{ FD['rounded'] }} flex items-center gap-2">
-							<!-- Download icon -->
-							<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-							Get App
-						</span>
-						</div>
-					</div>
-					</a>
-
-					<!-- Card 8: Sponsored brand horizontal -->
-					<a href="#" class="block mb-4 break-inside-avoid {{ FD['rounded'] }} overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-					<img src="https://dummyimage.com/1200x400/94a3b8/ffffff&text=Sponsored+Brand" alt="Sponsored Brand" class="w-full h-auto object-cover" loading="lazy" />
-					<div class="p-3">
-						<h4 class="text-sm font-semibold">Sponsored brand — extra 20% off</h4>
-						<p class="text-xs text-slate-500 dark:text-slate-300 mt-1">Click to reveal limited coupons & offers.</p>
-						<div class="mt-3">
-						<span class="text-xs text-white bg-red-600 px-3 py-2 {{ FD['rounded'] }}">Reveal coupon</span>
-						</div>
-					</div>
-					</a>
-
-				</div>
-			</section> --}}
-
 
 			<!-- Ads container -->
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
