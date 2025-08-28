@@ -2,13 +2,15 @@
     screen="max-w-screen-xl" 
     title="{{ $category->title }}">
 
-    <div class="flex flex-col gap-4 px-2 sm:px-0">
+    <div class="flex flex-col gap-2 sm:gap-4 px-2 sm:px-0">
+
         <header class="bg-gray-100 dark:bg-gray-900 {{ FD['rounded'] }}">
             {{-- Breadcrumb --}}
             <nav class="{{ FD['text-0'] }} text-gray-500 mt-2 mb-1" aria-label="breadcrumb">
                 <ol class="flex items-center gap-2">
                     <li><a href="{{ route('front.home.index') }}" class="hover:underline text-gray-500 dark:text-gray-500">Home</a></li>
-                    <li>/ <a href="{{ route('front.category.index') }}" class="hover:underline text-gray-500 dark:text-gray-500">Category</a></li>
+                    <li>/</li>
+                    <li><a href="{{ route('front.category.index') }}" class="hover:underline text-gray-500 dark:text-gray-500">Category</a></li>
 
                     @if ($category->ancestors)
                         @php
@@ -21,20 +23,21 @@
                         @endphp
 
                         @foreach ($parents as $parent)
+                            <li>/</li>
                             <li>
-                                / <a href="{{ route('front.category.detail', $parent->slug) }}" class="hover:underline text-gray-500 dark:text-gray-500">
+                                <a href="{{ route('front.category.detail', $parent->slug) }}" class="hover:underline text-gray-500 dark:text-gray-500">
                                     {{ $parent->title }}
                                 </a>
                             </li>
                         @endforeach
                     @endif
-
-                    <li> / <span class="text-gray-800 font-medium dark:text-gray-300">{{ $category->title }}</span></li>
+                    <li>/</li>
+                    <li><span class="text-gray-800 font-medium dark:text-gray-300">{{ $category->title }}</span></li>
                 </ol>
             </nav>
 
             {{-- Title & Subtitle --}}
-            <div class="grid grid-cols-1 items-center">
+            <div class="grid grid-cols-1 items-center mt-2">
                 <div class="lg:col-span-3">
                     <h1 class="text-sm md:text-lg font-extrabold leading-tight">{{ $category->title }}</h1>
 

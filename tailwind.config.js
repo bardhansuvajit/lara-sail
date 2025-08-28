@@ -39,9 +39,9 @@ export default {
         {
             pattern: /(bg|text)-(amber|red|yellow|orange|lime|teal|blue|violet|fuchsia|pink|stone|white|gray|green|indigo|purple|zinc)-(100|200|300|400|500|600|700|800|900)/,
         },
-        {
-            pattern: /dark:(bg|text)-(amber|red|yellow|orange|lime|teal|blue|violet|fuchsia|pink|stone|white|gray|green|indigo|purple|zinc)-(100|200|300|400|500|600|700|800|900)(\/[0-9]{2,3})?/,
-        },
+        // {
+        //     pattern: /dark:(bg|text)-(amber|red|yellow|orange|lime|teal|blue|violet|fuchsia|pink|stone|white|gray|green|indigo|purple|zinc)-(100|200|300|400|500|600|700|800|900)(\/[0-9]{2,3})?/,
+        // },
     ],
 
 };
