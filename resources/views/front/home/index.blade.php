@@ -58,6 +58,32 @@
                     <div class="max-w-7xl mx-auto pt-4">
                         <div class="grid gap-1 sm:gap-3" style="grid-template-columns: repeat({{ min(count($activeCategories), $categoryStyleCount) }}, minmax(0, 1fr));">
                             @foreach(array_slice($activeCategories, 0, $categoryStyleCount) as $cat)
+                                <a href="{{ route('front.category.detail', $cat['slug']) }}" class="block">
+                                    <div class="bg-white dark:bg-gray-800 {{ FD['rounded'] }} p-1 sm:p-2 group transition h-full flex flex-col shadow-sm hover:shadow-md border dark:border-gray-700 overflow-hidden">
+                                        @if (!empty($cat['image_s']))
+                                            <img src="{{ Storage::url($cat['image_s']) }}" alt=""
+                                                class="w-full h-12 sm:h-16 object-contain mb-2 group-hover:scale-105 transition">
+                                        @else
+                                            <div class="w-full h-12 sm:h-16 mb-2 flex items-center justify-center text-gray-400 dark:text-gray-500">
+                                                {!! FD['brokenImageFront'] !!}
+                                            </div>
+                                        @endif
+
+                                        @if (!empty($cat['title']))
+                                            <p class="text-[10px] sm:text-xs font-medium text-center line-clamp-2 text-gray-900 dark:text-white mb-0.5">
+                                                {{ $cat['title'] }}
+                                            </p>
+                                        @endif
+
+                                        @if (!empty($cat['short_description']))
+                                            <p class="{{ FD['text-0'] }} sm:text-[10px] font-light text-center line-clamp-2 text-gray-500 dark:text-gray-500 leading-tight">
+                                                {{ $cat['short_description'] }}
+                                            </p>
+                                        @endif
+                                    </div>
+                                </a>
+                            @endforeach
+                            {{-- @foreach(array_slice($activeCategories, 0, $categoryStyleCount) as $cat)
                                 <a href="{{ route('front.category.detail', $cat['slug']) }}">
                                     <div class="bg-white dark:bg-gray-800 {{ FD['rounded'] }} p-0.5 sm:p-3 group transition h-full flex flex-col shadow-sm hover:shadow-lg border dark:border-gray-700 overflow-hidden">
                                         @if (!empty($cat['image_s']))
@@ -83,7 +109,7 @@
                                         @endif
                                     </div>
                                 </a>
-                            @endforeach
+                            @endforeach --}}
                         </div>
                     </div>
                 @endif

@@ -1,4 +1,4 @@
-<x-modal 
+<x-admin.modal 
     name="import" 
     maxWidth="sm" 
     {{-- :show="$errors->importForm->isNotEmpty()"  --}}
@@ -62,4 +62,4 @@
             </div>
         </form>
     </div>
-</x-modal>
+</x-admin.modal>

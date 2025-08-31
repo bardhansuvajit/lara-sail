@@ -8,7 +8,7 @@
     wire:ignore.self
 >
     <x-admin.input-label for="attribute_id" :value="__('Variation Attribute *')" />
-    <x-dropdown align="top" width="full" wire:key="dropdown-{{ $attribute_id }}">
+    <x-admin.dropdown align="top" width="full" wire:key="dropdown-{{ $attribute_id }}">
         <x-slot name="trigger">
             <x-admin.text-input-with-icon 
                 id="attribute_id" 
@@ -62,7 +62,7 @@
                 @endif
             </div>
         </x-slot>
-    </x-dropdown>
+    </x-admin.dropdown>
 
     <input type="hidden" name="attribute_id" x-model="selectedAttributeId" value="{{ $attribute_id }}" required>
     <x-admin.input-error :messages="$errors->get('attribute_id')" class="mt-2" />

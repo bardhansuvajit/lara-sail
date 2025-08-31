@@ -53,29 +53,17 @@
                         @endif
                     </form>
                 </div>
-
-                <div class="col-span-1 sm:col-span-3">
-                    <p class="{{ FD['text-0'] }} text-gray-400 dark:text-gray-500 line-clamp-3">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ex rem placeat, iure ad accusamus maiores odit, quos illum doloremque ratione repellat similique. Laudantium nesciunt natus asperiores aliquam esse est facere ullam ipsa exercitationem earum. Minima saepe vitae voluptas ducimus tempore? Consequuntur molestiae odit ipsum, architecto suscipit labore inventore a iste delectus tenetur deserunt, veniam ex! Sapiente vero, perspiciatis ab dolore fuga earum pariatur rerum quas possimus ipsa rem impedit quis culpa odio consequatur repudiandae nesciunt aspernatur. Tenetur sunt labore maiores impedit aliquid maxime hic omnis consectetur illo eaque nam cupiditate dolorum a, animi placeat voluptate numquam! Placeat odit ratione nisi ab, modi atque dolore laborum neque impedit alias, unde similique, et necessitatibus quod eum ipsa deserunt suscipit reprehenderit. Voluptatem consequuntur necessitatibus corrupti molestiae? Repudiandae, sunt perferendis odit hic enim itaque reprehenderit fuga, voluptatibus nulla placeat necessitatibus voluptatum eaque, debitis similique ratione vero atque. Magni magnam debitis et, sed ex porro in expedita, saepe rerum culpa quidem accusamus? Vel deserunt veritatis veniam reprehenderit voluptas temporibus neque atque, facere debitis cumque sit eos, reiciendis eius vero fugiat accusamus modi accusantium sint a inventore? Quam id non beatae tempore illo enim nulla placeat. Vel, adipisci. Explicabo ea laudantium nemo repellendus! Eius, molestias id laudantium voluptate, nobis illo odit harum</p>
-                </div>
             </div>
         </header>
 
         {{-- Top banner ad --}}
-        @if ($categoryPageAd3)
-            <a href="{{ $categoryPageAd3->url }}" class="block {{ FD['rounded'] }} overflow-hidden shadow">
-                <img src="{{ Storage::url($categoryPageAd3->image_l) }}" alt="Top ad" class="w-full h-auto object-cover">
+        @isset($categoryPageAds[2]->activeItemOnly)
+            <a href="{{ $categoryPageAds[2]->activeItemOnly->url }}" class="block {{ FD['rounded'] }} overflow-hidden shadow">
+                <img src="{{ Storage::url($categoryPageAds[2]->activeItemOnly->image_l) }}" alt="Top ad" class="w-full h-auto object-cover" loading="lazy">
             </a>
-        @endif
-
+        @endisset
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-
-            {{-- Filters + Small Ads --}}
-            {{-- <div class="hidden sm:block">
-                @include('layouts.front.includes.categories-filter')
-            </div> --}}
-
-            {{-- Categories + Featured Products --}}
             <main class="lg:col-span-4 space-y-2 sm:space-y-4">
                 {{-- All categories --}}
                 @if ($catCount > 0)
@@ -89,29 +77,21 @@
                             @foreach($parents as $cat)
                                 <a href="{{ route('front.category.detail', $cat->slug) }}" class="block">
                                     <div class="bg-white dark:bg-gray-800 {{ FD['rounded'] }} p-1 sm:p-2 group transition h-full flex flex-col shadow-sm hover:shadow-md border dark:border-gray-700 overflow-hidden">
-                                        {{-- Image --}}
                                         @if (!empty($cat->image_s))
-                                            <img src="{{ Storage::url($cat->image_s) }}" alt=""
-                                                class="w-full h-12 sm:h-16 object-contain mb-2 group-hover:scale-105 transition">
+                                            <img src="{{ Storage::url($cat->image_s) }}" alt="{{ $cat->title }}"
+                                                class="w-full h-12 sm:h-16 object-contain mb-2 group-hover:scale-105 transition" loading="lazy">
                                         @else
                                             <div class="w-full h-12 sm:h-16 mb-2 flex items-center justify-center text-gray-400 dark:text-gray-500">
                                                 {!! FD['brokenImageFront'] !!}
                                             </div>
-
-                                            {{-- <div class="flex-1 flex items-center justify-center mb-2 bg-gradient-to-br from-blue-500 to-purple-500 text-white overflow-hidden">
-                                                <span class="text-xs sm:text-sm font-bold">{{ $cat->title }}</span>
-                                            </div>
-                                            @php $cat->title = null; @endphp --}}
                                         @endif
 
-                                        {{-- Title --}}
                                         @if (!empty($cat->title))
                                             <p class="text-[10px] sm:text-xs font-medium text-center line-clamp-2 text-gray-900 dark:text-white mb-0.5">
                                                 {{ $cat->title }}
                                             </p>
                                         @endif
 
-                                        {{-- Description --}}
                                         @if (!empty($cat->short_description))
                                             <p class="{{ FD['text-0'] }} sm:text-[10px] font-light text-center line-clamp-2 text-gray-500 dark:text-gray-500 leading-tight">
                                                 {{ $cat->short_description }}
@@ -121,64 +101,42 @@
                                 </a>
                             @endforeach
                         </div>
+                        
+                        {{-- Pagination --}}
+                        @if($parents->hasPages())
+                            <div class="mt-4">
+                                {{ $parents->links() }}
+                            </div>
+                        @endif
                     </div>
                 @endif
 
-
                 {{-- Sub categories --}}
-                <div class="container mx-auto">
-                    <div class="grid grid-cols-3 gap-2 sm:gap-4 lg:grid-cols-8">
-                        @foreach ($children as $item)
-                            <a href="{{ route('front.category.detail', $item->slug) }}" class="group block bg-white dark:bg-gray-800 {{ FD['rounded'] }} overflow-hidden shadow-sm hover:shadow-lg transition transform">
-                                <div class="w-full h-20 overflow-hidden p-2">
-                                    @if ($item->image_m)
-                                        <img src="{{ Storage::url($item->image_m) }}" alt="{{ $item->slug }}" class="w-full h-full object-scale-down group-hover:scale-105 transition-transform duration-300">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
-                                            {!! FD['brokenImageFront'] !!}
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="p-2 text-center">
-                                    <h3 class="text-[10px] sm:text-xs font-semibold text-gray-900 dark:text-gray-100">{{ $item->title }}</h3>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ count($item->activeProducts) }} products</p>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
-
-
-                {{-- Trending categories --}}
-                {{-- <div class="bg-gradient-to-t from-sky-500 to-indigo-500 p-3 sm:p-4 {{ FD['rounded'] }} shadow">
-                    <div class="flex items-center justify-between mb-2 sm:mb-3">
-                        <h3 class="font-bold text-white text-sm sm:text-base">Trending categories</h3>
-                        <!-- <a href="#" class="text-xs text-indigo-200 hover:text-white">View more</a> -->
-                    </div>
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
-                        @foreach($categories as $ind => $trenCategory)
-                            <a href="{{ route('front.category.detail', $trenCategory->slug) }}" class="block">
-                                <div class="bg-white dark:bg-gray-800 p-2 sm:p-3 {{ FD['rounded'] }} flex items-center gap-2 sm:gap-3 group hover:shadow-md transition-shadow">
-                                    @if ($trenCategory->image_s)
-                                        <img src="{{ Storage::url($trenCategory->image_s) }}" 
-                                            alt="{{ $trenCategory->slug }}" 
-                                            class="w-auto h-10 sm:h-12 object-cover {{ FD['rounded'] }} group-hover:scale-105 transition-transform">
-                                    @endif
-
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-xs sm:text-sm font-semibold truncate">{{ $trenCategory->title }}</p>
-                                        @if ($trenCategory->short_description)
-                                            <p class="{{ FD['text-0'] }} sm:text-[10px] mt-0.5 text-gray-500 dark:text-gray-400 line-clamp-1 sm:line-clamp-2 leading-tight">
-                                                {{ $trenCategory->short_description }}
-                                            </p>
+                @if($children->count() > 0)
+                    <div class="bg-white dark:bg-gray-800 p-4 {{ FD['rounded'] }} shadow">
+                        <h3 class="font-bold text-sm sm:text-base mb-4">Sub Categories</h3>
+                        <div class="grid grid-cols-3 gap-2 sm:gap-4 lg:grid-cols-8">
+                            @foreach ($children as $item)
+                                <a href="{{ route('front.category.detail', $item->slug) }}" class="group block bg-white dark:bg-gray-800 {{ FD['rounded'] }} overflow-hidden shadow-sm hover:shadow-lg transition transform">
+                                    <div class="w-full h-20 overflow-hidden p-2">
+                                        @if ($item->image_m)
+                                            <img src="{{ Storage::url($item->image_m) }}" alt="{{ $item->title }}" class="w-full h-full object-scale-down group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                                        @else
+                                            <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
+                                                {!! FD['brokenImageFront'] !!}
+                                            </div>
                                         @endif
                                     </div>
-                                </div>
-                            </a>
-                        @endforeach
+                                    <div class="p-2 text-center">
+                                        <h3 class="text-[10px] sm:text-xs font-semibold text-gray-900 dark:text-gray-100">{{ $item->title }}</h3>
+                                        {{-- Use the count from withCount() --}}
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $item->active_products_count }} products</p>
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
-                </div> --}}
-
+                @endif
 
                 {{-- Featured products --}}
                 @if (count($featuredProducts) > 0)
@@ -191,13 +149,14 @@
                             <div class="grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-6" id="featured-products">
                                 {{-- Product Card Component --}}
                                 @foreach ($featuredProducts as $featuredItem)
-                                    <x-front.product-card :product="$featuredItem->product" />
+                                    @isset($featuredItem->product)
+                                        <x-front.product-card :product="$featuredItem->product" />
+                                    @endisset
                                 @endforeach
                             </div>
                         </div>
                     </section>
                 @endif
-
 
             </main>
         </div>
@@ -206,18 +165,15 @@
         <x-front.proudly-indian />
 
         {{-- Homepage Ad 2 + Homepage Ad 3 --}}
-        @if ($categoryPageAd1 || $categoryPageAd2)
-            <section class="max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4 items-stretch">
+        <section class="max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4 items-stretch">
+            @isset($categoryPageAds[0]->activeItemOnly)
+                <x-ads.ad-set-2 :data="$categoryPageAds[0]->activeItemOnly" />
+            @endisset
 
-                @if ($categoryPageAd1)
-                    <x-ads.ad-set-2 :data="$categoryPageAd1" />
-                @endif
-
-                @if ($categoryPageAd2)
-                    <x-ads.ad-set-3 :data="$categoryPageAd2" />
-                @endif
-            </section>
-        @endif
+            @isset($categoryPageAds[1]->activeItemOnly)
+                <x-ads.ad-set-3 :data="$categoryPageAds[1]->activeItemOnly" />
+            @endisset
+        </section>
     </div>
 
 </x-guest-layout>

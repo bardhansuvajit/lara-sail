@@ -1,4 +1,4 @@
-<x-modal name="confirm-data-deletion" maxWidth="sm" focusable>
+<x-admin.modal name="confirm-data-deletion" maxWidth="sm" focusable>
     <div 
         class="p-6" 
         x-data="{ deleteRoute: '', title: '' }" 
@@ -41,4 +41,4 @@
             </form>
         </div>
     </div>
-</x-modal>
+</x-admin.modal>

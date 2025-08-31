@@ -1,4 +1,4 @@
-<x-modal name="confirm-bulk-action" maxWidth="sm" focusable>
+<x-admin.modal name="confirm-bulk-action" maxWidth="sm" focusable>
     <div 
         class="p-6" 
         x-data="{route: '', desc: '', buttonText: ''}"
@@ -40,4 +40,4 @@
 
         </div>
     </div>
-</x-modal>
+</x-admin.modal>

@@ -337,7 +337,7 @@
 
     {{-- @include('admin.includes.delete-confirm-modal') --}}
     {{-- MODAL --}}
-    <x-modal name="confirm-data-delete-modal" maxWidth="sm" focusable>
+    <x-admin.modal name="confirm-data-delete-modal" maxWidth="sm" focusable>
         <div 
             class="p-6" 
             x-data="{ deleteRoute: '', title: '' }" 
@@ -389,7 +389,7 @@
                 </form> --}}
             </div>
         </div>
-    </x-modal>
+    </x-admin.modal>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js"></script>

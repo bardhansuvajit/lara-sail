@@ -231,7 +231,7 @@
 
 
     {{-- add variant modal --}}
-    <x-modal name="add-variant" maxWidth="7xl" focusable>
+    <x-admin.modal name="add-variant" maxWidth="7xl" focusable>
         <div class="p-4">
             @if (count($variations) > 0)
                 <div class="grid space-x-2 grid-cols-3">
@@ -441,11 +441,11 @@
                 <p class="text-sm italic">{{ __('No variations found for this Category') }}</p>
             @endif
         </div>
-    </x-modal>
+    </x-admin.modal>
 
 
     {{-- delete confirm modal --}}
-    <x-modal name="confirm-variation-deletion" maxWidth="sm" focusable>
+    <x-admin.modal name="confirm-variation-deletion" maxWidth="sm" focusable>
         <div 
             class="p-6" 
             x-data="{ variationId: null, title: '' }" 
@@ -485,7 +485,7 @@
                 </x-admin.button>
             </div>
         </div>
-    </x-modal>
+    </x-admin.modal>
 
 </div>
 

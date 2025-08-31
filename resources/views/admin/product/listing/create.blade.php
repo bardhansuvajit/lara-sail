@@ -309,7 +309,7 @@
     </section>
 
     {{-- HIGHTLIGHT MODAL --}}
-    <x-modal 
+    <x-admin.modal 
         name="highlight" 
         maxWidth="2xl" 
         {{-- show=true  --}}
@@ -403,7 +403,7 @@
                 </x-admin.button>
             </div>
         </div>
-    </x-modal>
+    </x-admin.modal>
 </x-admin-app-layout>
 
 @vite([

@@ -8,7 +8,7 @@
     wire:ignore.self
 >
     <x-admin.input-label for="product_id" :value="__('Product *')" />
-    <x-dropdown align="top" width="full" wire:key="dropdown-{{ $product_id }}">
+    <x-admin.dropdown align="top" width="full" wire:key="dropdown-{{ $product_id }}">
         <x-slot name="trigger">
             <x-admin.text-input-with-icon 
                 id="product_id" 
@@ -62,7 +62,7 @@
                 @endif
             </div>
         </x-slot>
-    </x-dropdown>
+    </x-admin.dropdown>
 
     <input type="hidden" name="product_id" x-model="selectedProductId" value="{{ $product_id }}" required>
     <x-admin.input-error :messages="$errors->get('product_id')" class="mt-2" />

@@ -6,7 +6,7 @@
     wire:ignore.self
 >
     <x-admin.input-label for="user_id" :value="__('User *')" />
-    <x-dropdown align="top" width="full" wire:key="dropdown-{{ $user_id }}">
+    <x-admin.dropdown align="top" width="full" wire:key="dropdown-{{ $user_id }}">
         <x-slot name="trigger">
             <x-admin.text-input-with-icon 
                 id="user_id" 
@@ -60,7 +60,7 @@
                 @endif
             </div>
         </x-slot>
-    </x-dropdown>
+    </x-admin.dropdown>
 
     <input type="hidden" name="user_id" x-model="selectedUserId" value="{{ $user_id }}" required>
     <x-admin.input-error :messages="$errors->get('user_id')" class="mt-2" />

@@ -34,6 +34,156 @@ class CategoryController extends Controller
     public function index(Request $request): View
     {
         $search = trim((string) $request->input('search', ''));
+        
+        // More selective eager loading
+        $parentRelations = [
+            'childDetails', // Only if actually used in the view
+            'activeProducts' => function($query) {
+                $query->select('id', 'category_id'); // Only what's needed
+            }
+        ];
+
+        $childRelations = [
+            'activeProducts' => function($query) {
+                $query->select('id', 'category_id'); // Only what's needed
+            }
+        ];
+
+        $cols = ['id', 'title', 'slug', 'short_description', 'parent_id', 'status', 'position', 'image_s', 'image_m'];
+
+        $base = ProductCategory::query()
+            ->select($cols)
+            ->where('status', 1)
+            ->when($search, function ($q) use ($search) {
+                if (method_exists($q, 'whereFullText')) {
+                    $q->whereFullText(['title', 'short_description', 'tags'], $search);
+                } else {
+                    $q->where(function ($q2) use ($search) {
+                        $like = "%{$search}%";
+                        $q2->where('title', 'like', $like)
+                        ->orWhere('short_description', 'like', $like)
+                        ->orWhere('tags', 'like', $like);
+                    });
+                }
+            });
+
+        // Use withCount instead of loading relationships for counting
+        $parentsQuery = (clone $base)
+            ->whereNull('parent_id')
+            ->with($parentRelations)
+            ->withCount(['childDetails', 'activeProducts']) // Use counts instead of loading
+            ->orderBy('position');
+
+        $childrenQuery = (clone $base)
+            ->whereNotNull('parent_id')
+            ->withCount(['activeProducts']) // Use count instead of loading
+            ->orderBy('position');
+
+        $parents = $parentsQuery->paginate(24)->appends($request->only('search'));
+        $children = $childrenQuery->paginate(100)->appends($request->only('search'));
+
+        // Cache only if not searching
+        if (empty($search)) {
+            $cachedData = Cache::remember('category_page_data', now()->addHours(6), function() {
+                return [
+                    'featured_products' => $this->productFeatureRepository->list('', [], 'all', 'position', 'asc'),
+                    'all_featured' => $this->productFeatureRepository->listAllFeatured(),
+                    'category_ads' => $this->adSectionRepository->list('category', ['status' => 1], 'all', 'position', 'asc')
+                ];
+            });
+        } else {
+            // Don't cache search results
+            $cachedData = [
+                'featured_products' => $this->productFeatureRepository->list('', [], 'all', 'position', 'asc'),
+                'all_featured' => $this->productFeatureRepository->listAllFeatured(),
+                'category_ads' => $this->adSectionRepository->list('category', ['status' => 1], 'all', 'position', 'asc')
+            ];
+        }
+
+        return view('front.category.index', [
+            'catCount' => $parents->total(),
+            'parents' => $parents,
+            'children' => $children,
+            'featuredProducts' => $cachedData['featured_products']['data'] ?? [],
+            'flashSaleProducts' => $cachedData['all_featured']['data']['flash'] ?? [],
+            'categoryPageAds' => $cachedData['category_ads']['data'] ?? [],
+            'hasSearch' => !empty($search)
+        ]);
+    }
+
+    /*
+    CHAPGPT CODE
+    public function index(Request $request): View
+    {
+        $search = trim((string) $request->input('search', ''));
+        $cols = ['id', 'title', 'slug', 'short_description', 'parent_id', 'status', 'position', 'image_s', 'image_m'];
+
+        // Base query (status + search) — keep selection to minimal columns
+        $base = ProductCategory::query()
+            ->select($cols)
+            ->where('status', 1)
+            ->when($search, function ($q) use ($search) {
+                if (method_exists($q, 'whereFullText')) {
+                    $q->whereFullText(['title', 'short_description', 'tags'], $search);
+                } else {
+                    $q->where(function ($q2) use ($search) {
+                        $like = "%{$search}%";
+                        $q2->where('title', 'like', $like)
+                        ->orWhere('short_description', 'like', $like)
+                        ->orWhere('tags', 'like', $like);
+                    });
+                }
+            });
+
+        // Parents: we need counts but don't need to hydrate child models
+        $parentsQuery = (clone $base)
+            ->whereNull('parent_id')
+            ->withCount(['childDetails', 'activeProducts']) // counts only, avoids loading full relations
+            ->orderBy('position');
+
+        // Children: get children and their active products count (avoid loading activeProducts models)
+        $childrenQuery = (clone $base)
+            ->whereNotNull('parent_id')
+            ->withCount('activeProducts') // provides active_products_count attribute
+            ->orderBy('position');
+
+        // Paginate (keep existing page sizes)
+        $parents = $parentsQuery->paginate(24)->appends($request->only('search'));
+        $children = $childrenQuery->paginate(100)->appends($request->only('search'));
+
+        // Featured products (keep existing repo calls & caching)
+        $featuredProducts = $this->productFeatureRepository->list('', [], 'all', 'position', 'asc');
+
+        // Featured + Flash Sale + Trending Products (cached)
+        $productFeatures = Cache::remember('homepage_products', now()->addHours(6), function() {
+            return $this->productFeatureRepository->listAllFeatured();
+        });
+
+        // ADVERTISEMENT (cached)
+        $categoryPageAds = Cache::remember('categorypage_ads', now()->addHours(6), function() {
+            return $this->adSectionRepository->list('category', ['status' => 1], 'all', 'position', 'asc');
+        });
+
+        return view('front.category.index', [
+            'catCount' => $parents->total(), // use paginator total() instead of count($parents)
+            'parents' => $parents,
+            'children' => $children,
+            'featuredProducts' => $featuredProducts['data'] ?? [],
+
+            'flashSaleProducts' => $productFeatures['data']['flash'] ?? [],
+
+            'categoryPageAd1' => $categoryPageAds['data'][0]->activeItemOnly ?? [],
+            'categoryPageAd2' => $categoryPageAds['data'][1]->activeItemOnly ?? [],
+            'categoryPageAd3' => $categoryPageAds['data'][2]->activeItemOnly ?? [],
+        ]);
+    }
+    */
+
+    /*
+    OLD CODE
+    public function index(Request $request): View
+    {
+        $search = trim((string) $request->input('search', ''));
 
         $cols = ['id', 'title', 'slug', 'short_description', 'parent_id', 'status', 'position', 'image_s', 'image_m'];
 
@@ -92,9 +242,12 @@ class CategoryController extends Controller
             'categoryPageAd3' => $categoryPageAds['data'][2]->activeItemOnly ?? [],
         ]);
     }
+    */
 
     public function detail(Request $request, $slug): View|RedirectResponse
     {
+        // Static Country ID
+        $countryId = 82;
         $displayProductsPerPage = 16;
 
         $sortByArr = [
@@ -114,8 +267,6 @@ class CategoryController extends Controller
 
         $category = $categoryDetailData['data'];
 
-
-
         // Products per page
         $perPage = (int) $request->get('per_page', $displayProductsPerPage);
         if ($perPage <= 0) $perPage = $displayProductsPerPage;
@@ -128,9 +279,6 @@ class CategoryController extends Controller
         $rating = $request->input('rating', null);
         $attrs = (array) $request->input('attrs', []);
 
-        // Static Country ID
-        $countryId = 82;
-
         // Descendant category ids (uses your existing model method)
         $categoryIds = $category->getDescendantCategoryIds();
 
@@ -142,109 +290,6 @@ class CategoryController extends Controller
                 $categoryIds = $selCatIds;
             }
         }
-
-
-
-        // ---------- dynamic price range & step (place after $categoryIds) ----------
-        /**
-         * Compute a 'nice' step for price slider.
-         */
-        $niceStep = function (float $min, float $max, int $buckets = 10): float {
-            if ($max <= $min) {
-                // fallback
-                return max(1, round(($max > 0 ? $max : 100) / $buckets));
-            }
-
-            $raw = ($max - $min) / $buckets;
-            if ($raw <= 0) return 1;
-
-            $pow = pow(10, floor(log10($raw)));
-            $f = $raw / $pow;
-
-            if ($f < 1.5) $nice = 1;
-            elseif ($f < 3) $nice = 2;
-            elseif ($f < 7) $nice = 5;
-            else $nice = 10;
-
-            return $nice * $pow;
-        };
-
-        /*
-        // Get the effective selling price for each product (country-specific preferred, then NULL)
-        $effectivePrices = DB::table('product_pricings')
-            ->select('product_id', 'selling_price')
-            ->whereIn('product_id', function ($q) use ($categoryIds) {
-                $q->select('id')->from('products')->whereIn('category_id', $categoryIds);
-            })
-            ->where(function ($q) use ($countryId) {
-                $q->where('country_id', $countryId)->orWhereNull('country_id');
-            })
-            ->orderByRaw('CASE WHEN country_id = ? THEN 0 WHEN country_id IS NULL THEN 1 ELSE 2 END', [$countryId])
-            ->orderBy('selling_price')
-            ->get()
-            ->groupBy('product_id')
-            ->map(function ($prices) {
-                // For each product, take the first price (which is the preferred one)
-                return $prices->first()->selling_price;
-            });
-
-        // Get min and max from the effective prices
-        if ($effectivePrices->isNotEmpty()) {
-            $minSelling = (float) $effectivePrices->min();
-            $maxSelling = (float) $effectivePrices->max();
-        } else {
-            // fallback static values
-            $minSelling = 100.0;
-            $maxSelling = 10000.0;
-        }
-
-        // if min > max accidentally swap
-        if ($minSelling > $maxSelling) {
-            [$minSelling, $maxSelling] = [$maxSelling, $minSelling];
-        }
-
-        // compute a nice step and align min/max to multiples of step
-        $step = $niceStep($minSelling, $maxSelling, 10);
-
-        // avoid 0 step
-        if ($step <= 0) $step = 1;
-
-        // round min down, max up to step multiples
-        $minAligned = floor($minSelling / $step) * $step;
-        $maxAligned = ceil($maxSelling / $step) * $step;
-
-        // ensure minAligned < maxAligned
-        if ($minAligned == $maxAligned) {
-            // expand range a bit
-            $minAligned = max(0, $minAligned - $step);
-            $maxAligned = $maxAligned + $step;
-        }
-
-        // cast to int if you prefer integers
-        $minPriceValue = (int) $minAligned;
-        $maxPriceValue = (int) $maxAligned;
-        $stepPrice = (int) $step;
-        // ---------- end dynamic price range & step ----------
-        */
-
-
-
-        // Build a subquery that resolves the product's "final" price (country-specific preferred)
-        $pricingSub = DB::table('product_pricings')
-            ->select('selling_price')
-            ->whereColumn('product_pricings.product_id', 'products.id')
-            ->where(function ($q) use ($countryId) {
-                if ($countryId) {
-                    // prefer exact country row, but allow NULL fallback
-                    $q->where('country_id', $countryId)->orWhereNull('country_id');
-                } else {
-                    // if no country context, only use the NULL-country pricing rows
-                    $q->whereNull('country_id');
-                }
-            })
-            // Ensure exact-country rows come first, then NULL rows
-            ->orderByRaw('CASE WHEN country_id = ? THEN 0 WHEN country_id IS NULL THEN 1 ELSE 2 END', [$countryId])
-            ->limit(1);
 
         // Build main products query in controller and include selling_price as a selected subquery alias
         $query = \App\Models\Product::query()
@@ -369,8 +414,8 @@ class CategoryController extends Controller
             'filters' => $request->all(),
             // 'minPriceValue' => $minPriceValue,
             // 'maxPriceValue' => $maxPriceValue,
-            'minPriceValue' => $request->min_price ?? 0,
-            'maxPriceValue' => $request->max_price ?? 20000,
+            'minPriceValue' => 0,
+            'maxPriceValue' => 20000,
             'stepPrice' => 2000,
             // 'minPriceValue' => 100,
             // 'maxPriceValue' => 10000,

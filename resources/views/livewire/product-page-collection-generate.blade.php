@@ -47,7 +47,7 @@
     }" --}}
 >
     <x-admin.input-label for="collection_id" :value="__('Collection *')" />
-    <x-dropdown align="top" width="full">
+    <x-admin.dropdown align="top" width="full">
         <x-slot name="trigger">
             <x-admin.text-input-with-icon 
                 id="collection_id" 
@@ -110,7 +110,7 @@
                 </ul>
             </div>
         </x-slot>
-    </x-dropdown>
+    </x-admin.dropdown>
 
     <input type="hidden" name="collection_name" :value="selectedCollectionTitles.join(',')" required>
     <input type="hidden" name="collection_id" :value="selectedCollectionIds.length ? selectedCollectionIds.join(',') : null" required>

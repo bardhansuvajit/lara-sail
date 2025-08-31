@@ -76,7 +76,7 @@
         </div>
 
         {{-- image delete confirm modal --}}
-        <x-modal name="confirm-image-deletion" maxWidth="sm" focusable>
+        <x-admin.modal name="confirm-image-deletion" maxWidth="sm" focusable>
             <div 
                 class="p-6" 
                 x-data="{ deleteId: '', image: '' }" 
@@ -133,7 +133,7 @@
                     </form> --}}
                 </div>
             </div>
-        </x-modal>
+        </x-admin.modal>
     @else
         <p class="text-base font-medium text-red-600 dark:text-orange-600 space-y-1">No Images found !</p>
         <p class="text-xs text-red-400 dark:text-orange-700 space-y-1">A {{ $type }} must have some images to give an idea to the customers what they are paying for.</p>

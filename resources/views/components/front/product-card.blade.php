@@ -4,7 +4,7 @@
 ])
 
 <article
-	class="{{ FD['rounded'] }} group relative overflow-hidden border bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 shadow-sm hover:shadow-lg transition border-gray-200 dark:border-gray-700"
+	class="{{ FD['rounded'] }} group relative overflow-hidden border bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 shadow-sm hover:shadow-lg transition border-gray-200 dark:border-gray-700 hover:border-slate-300 hover:dark:border-slate-600"
 	role="article"
 	aria-labelledby="product-{{ $product->id }}-title"
 >
@@ -68,16 +68,19 @@
 	</a>
 
 	{{-- badges (kept outside <a>) --}}
-	<div class="absolute inset-x-2 top-2 flex justify-between items-start z-1 pointer-events-none">
+	<div class="absolute inset-x-2 top-2 flex justify-between z-1 pointer-events-none items-center">
 		{{-- rating pill (left) --}}
-		@if(!empty($product->average_rating) && $product->average_rating > 0)
-			<span class="pointer-events-auto inline-flex items-center gap-1 bg-green-600 dark:bg-green-700 text-white text-xs font-semibold px-2 py-0.5 {{ FD['rounded'] }} shadow-sm">
+		@if ($product->average_rating > 0)
+			{!! frontRatingHtml($product->average_rating) !!}
+		@endif
+		{{-- @if(!empty($product->average_rating) && $product->average_rating > 0)
+			<span class="{{ ratingBadgeClasses($product->average_rating) }}">
 				<svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .587l3.668 7.431L23.5 9.748l-5.75 5.6L19.335 24 12 20.047 4.665 24l1.585-8.652L.5 9.748l7.832-1.73L12 .587z"/></svg>
 				<span class="text-xs">{{ number_format($product->average_rating, 1) }}</span>
 			</span>
 		@else
 			<span class="hidden"></span>
-		@endif
+		@endif --}}
 
 		{{-- wishlist (right) --}}
 		<button

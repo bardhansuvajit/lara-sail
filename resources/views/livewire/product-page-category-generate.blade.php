@@ -4,7 +4,7 @@
         "selectedCategoryTitle": @json($category_name ?? ""),
     }' >
     <x-admin.input-label for="category_id" :value="__('Category *')" />
-    <x-dropdown align="top" width="full">
+    <x-admin.dropdown align="top" width="full">
         <x-slot name="trigger">
             <x-admin.text-input-with-icon 
                 id="category_id" 
@@ -71,7 +71,7 @@
                 </ul>
             </div>
         </x-slot>
-    </x-dropdown>
+    </x-admin.dropdown>
 
     <input type="hidden" name="category_id" x-model="selectedCategoryId" value="" required>
     <x-admin.input-error :messages="$errors->get('category_id')" class="mt-2" />

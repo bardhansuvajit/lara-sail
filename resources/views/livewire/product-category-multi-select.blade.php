@@ -28,7 +28,7 @@
     }" 
 >
     <x-admin.input-label for="category_id" :value="__('Category *')" />
-    <x-dropdown align="top" width="full">
+    <x-admin.dropdown align="top" width="full">
         <x-slot name="trigger">
             <x-admin.text-input-with-icon 
                 id="category_id" 
@@ -90,7 +90,7 @@
                 </ul>
             </div>
         </x-slot>
-    </x-dropdown>
+    </x-admin.dropdown>
 
     <input type="hidden" name="category_name" :value="selectedCategoryTitles.join(',')" required>
     <input type="hidden" name="category_id" :value="selectedCategoryIds.length ? selectedCategoryIds.join(',') : null" required>

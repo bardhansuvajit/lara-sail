@@ -1,4 +1,4 @@
-<x-modal 
+<x-admin.modal 
     name="export" 
     maxWidth="md" 
 >
@@ -106,4 +106,4 @@
             </div>
         </div>
     </div>
-</x-modal>
+</x-admin.modal>

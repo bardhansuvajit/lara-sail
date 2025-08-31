@@ -156,7 +156,7 @@
         </form>
     </div>
 
-    <x-modal name="confirm-data-toggle" maxWidth="sm" focusable>
+    <x-admin.modal name="confirm-data-toggle" maxWidth="sm" focusable>
         <div 
             class="p-6" 
             x-data="{ toggleRoute: '', desc: '' }" 
@@ -218,5 +218,5 @@
                 </form>
             </div>
         </div>
-    </x-modal>
+    </x-admin.modal>
 </x-admin-app-layout>

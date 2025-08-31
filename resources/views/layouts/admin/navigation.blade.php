@@ -50,7 +50,7 @@
             </button> --}}
 
             {{-- theme --}}
-            <x-dropdown align="right" width="48">
+            <x-admin.dropdown align="right" width="48">
                 <x-slot name="trigger">
                     <button type="button" data-dropdown-toggle="notification-dropdown" class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 relative">
                         <span class="sr-only">Application Theme</span>
@@ -61,35 +61,35 @@
                 </x-slot>
 
                 <x-slot name="content">
-                    <x-dropdown-link href="javascript: void(0)" id="systemTheme">
+                    <x-admin.dropdown-link href="javascript: void(0)" id="systemTheme">
                         <button class="flex space-x-2 items-center">
                             <div class="w-4 h-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M40-120v-80h880v80H40Zm120-120q-33 0-56.5-23.5T80-320v-440q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v440q0 33-23.5 56.5T800-240H160Zm0-80h640v-440H160v440Zm0 0v-440 440Z"/></svg>
                             </div>
                             <p class="text-sm">{{ __('System theme') }}</p>
                         </button>
-                    </x-dropdown-link>
-                    <x-dropdown-link href="javascript: void(0)" id="lightTheme">
+                    </x-admin.dropdown-link>
+                    <x-admin.dropdown-link href="javascript: void(0)" id="lightTheme">
                         <button class="flex space-x-2 items-center">
                             <div class="w-4 h-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"/></svg>
                             </div>
                             <p class="text-sm">{{ __('Light mode') }}</p>
                         </button>
-                    </x-dropdown-link>
-                    <x-dropdown-link href="javascript: void(0)" id="darkTheme">
+                    </x-admin.dropdown-link>
+                    <x-admin.dropdown-link href="javascript: void(0)" id="darkTheme">
                         <button class="flex space-x-2 items-center">
                             <div class="w-4 h-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Zm0-80q88 0 158-48.5T740-375q-20 5-40 8t-40 3q-123 0-209.5-86.5T364-660q0-20 3-40t8-40q-78 32-126.5 102T200-480q0 116 82 198t198 82Zm-10-270Z"/></svg>
                             </div>
                             <p class="text-sm">{{ __('Dark mode') }}</p>
                         </button>
-                    </x-dropdown-link>
+                    </x-admin.dropdown-link>
                 </x-slot>
-            </x-dropdown>
+            </x-admin.dropdown>
 
             {{-- notification --}}
-            <x-dropdown align="right" width="96">
+            <x-admin.dropdown align="right" width="96">
                 <x-slot name="trigger">
                     <button type="button" data-dropdown-toggle="notification-dropdown" class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 relative">
                         <span class="sr-only">View notifications</span>
@@ -261,10 +261,10 @@
                         </div>
                     </a>
                 </x-slot>
-            </x-dropdown>
+            </x-admin.dropdown>
 
             {{-- apps --}}
-            <x-dropdown align="right" width="96">
+            <x-admin.dropdown align="right" width="96">
                 <x-slot name="trigger">
                     <button type="button" data-dropdown-toggle="notification-dropdown" class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 relative">
                         <span class="sr-only">Quick apps</span>
@@ -397,10 +397,10 @@
                         </a>
                     </div>
                 </x-slot>
-            </x-dropdown>
+            </x-admin.dropdown>
 
             {{-- profile --}}
-            <x-dropdown align="right" width="48">
+            <x-admin.dropdown align="right" width="48">
                 <x-slot name="trigger">
                     <button type="button" data-dropdown-toggle="notification-dropdown" class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 relative">
                         <span class="sr-only">Open user menu</span>
@@ -418,53 +418,53 @@
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <x-dropdown-link href="{{ route('admin.profile.index') }}">
+                                <x-admin.dropdown-link href="{{ route('admin.profile.index') }}">
                                     {{ __('My profile') }}
-                                </x-dropdown-link>
+                                </x-admin.dropdown-link>
                             </li>
                             <li>
-                                <x-dropdown-link href="{{ route('admin.application.settings.index', 'basic') }}">
+                                <x-admin.dropdown-link href="{{ route('admin.application.settings.index', 'basic') }}">
                                     {{ __('Application settings') }}
-                                </x-dropdown-link>
+                                </x-admin.dropdown-link>
                             </li>
                         </ul>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <x-dropdown-link href="{{ route('admin.profile.index') }}" class="flex items-center">
+                                <x-admin.dropdown-link href="{{ route('admin.profile.index') }}" class="flex items-center">
                                     <svg class="mr-2 w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
                                     {{ __('My likes') }}
-                                </x-dropdown-link>
+                                </x-admin.dropdown-link>
                             </li>
                             <li>
-                                <x-dropdown-link href="{{ route('admin.profile.index') }}" class="flex items-center">
+                                <x-admin.dropdown-link href="{{ route('admin.profile.index') }}" class="flex items-center">
                                     <svg class="mr-2 w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"> <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg>
                                     {{ __('Collections') }}
-                                </x-dropdown-link>
+                                </x-admin.dropdown-link>
                             </li>
                             <li>
-                                <x-dropdown-link href="{{ route('admin.profile.index') }}" class="flex items-center justify-between">
+                                <x-admin.dropdown-link href="{{ route('admin.profile.index') }}" class="flex items-center justify-between">
                                     <span class="flex items-center">
                                         <svg aria-hidden="true" class="mr-2 w-5 h-5 text-primary-600 dark:text-primary-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd"d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
                                         {{ __('Pro version') }}
                                     </span>
 
                                     <svg aria-hidden="true" class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                                </x-dropdown-link>
+                                </x-admin.dropdown-link>
                             </li>
                         </ul>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
                                 <form method="POST" action="{{ route('admin.logout') }}">@csrf
-                                    <x-dropdown-link href="{{ route('admin.logout') }}" class="flex items-center" onclick="event.preventDefault();this.closest('form').submit();">
+                                    <x-admin.dropdown-link href="{{ route('admin.logout') }}" class="flex items-center" onclick="event.preventDefault();this.closest('form').submit();">
                                         <svg class="mr-2 w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"> <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg>
                                         {{ __('Sign out') }}
-                                    </x-dropdown-link>
+                                    </x-admin.dropdown-link>
                                 </form>
                             </li>
                         </ul>
                     </div>
                 </x-slot>
-            </x-dropdown>
+            </x-admin.dropdown>
 
         </div>
     </div>

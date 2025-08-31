@@ -347,7 +347,7 @@ if (!function_exists('adminRatingHtml')) {
 
 if (!function_exists('frontRatingHtml')) {
     function frontRatingHtml($rating) {
-        $ratingSvg = '<div class="w-3 h-3">
+        $ratingSvg = '<div class="'.FD['iconClass'].'">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-269 314-169q-11 7-23 6t-21-8q-9-7-14-17.5t-2-23.5l44-189-147-127q-10-9-12.5-20.5T140-571q4-11 12-18t22-9l194-17 75-178q5-12 15.5-18t21.5-6q11 0 21.5 6t15.5 18l75 178 194 17q14 2 22 9t12 18q4 11 1.5 22.5T809-528L662-401l44 189q3 13-2 23.5T690-171q-9 7-21 8t-23-6L480-269Z"/></svg>
         </div>';
 
@@ -366,7 +366,7 @@ if (!function_exists('frontRatingHtml')) {
         }
 
         return '<div class="inline-flex items-center space-x-1 px-1 '.$colorCode.'">
-            <span class="font-medium text-xs">'.number_format($rating, 1).'</span>
+            <span class="font-medium text-sm">'.number_format($rating, 1).'</span>
             '.$ratingSvg.'
         </div>
         ';
@@ -407,3 +407,26 @@ if (!function_exists('formatIndianMoney')) {
         return $formatted;
     }
 }
+
+/*
+if (! function_exists('ratingBadgeClasses')) {
+    function ratingBadgeClasses(?float $rating): string
+    {
+        if (empty($rating) || $rating <= 0) {
+            return 'hidden';
+        }
+
+        $base = 'pointer-events-auto inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 shadow-sm';
+        if ($rating >= 4.5)
+            return "$base bg-green-600 dark:bg-green-700 text-white";
+        if ($rating >= 3.5)
+            return "$base bg-green-500 dark:bg-green-600 text-white";
+        if ($rating >= 2.5)
+            return "$base bg-amber-400 dark:bg-amber-500 text-black";
+        if ($rating >= 1.5)
+            return "$base bg-orange-500 dark:bg-orange-600 text-white".FD['rounded'];
+
+        return "$base bg-red-600 dark:bg-red-700 text-white";
+    }
+}
+*/
