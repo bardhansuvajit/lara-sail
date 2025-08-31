@@ -72,7 +72,7 @@
             {{-- Attributes (colors, size) --}}
             @foreach($attributes ?? [] as $attr)
                 <div class="mb-4">
-                    <label class="text-xs font-medium">{{ $attr->name }}</label>
+                    <label class="text-xs font-light">{{ $attr->name }}</label>
                     <div class="mt-2 grid gap-2 max-h-32 overflow-auto text-xs">
                         @foreach($attr->values as $val)
                             <label class="inline-flex items-center">
