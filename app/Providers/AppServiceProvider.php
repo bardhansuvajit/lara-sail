@@ -120,6 +120,7 @@ class AppServiceProvider extends ServiceProvider
         // FOrget Cache for Testing - REMOVE CODE LATER
         if (Schema::hasTable('cache')) {
             $keys = [
+                'active_countries',
                 'homepage_products',
                 'most_sold_products',
                 'homepage_ads',

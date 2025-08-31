@@ -351,7 +351,7 @@ class CategoryController extends Controller
             });
         }
 
-        // Attributes filtering (keep your existing approach)
+        // OPTIONAL - Attributes filtering (keep your existing approach)
         if (!empty($attrs)) {
             foreach ($attrs as $attrId => $values) {
                 $values = array_filter(array_map('intval', (array)$values));
@@ -365,7 +365,7 @@ class CategoryController extends Controller
             }
         }
 
-        // Rating filter uses Product::average_rating column (you have this in the model)
+        // OPTIONAL - Rating filter uses Product::average_rating column (you have this in the model)
         if (!empty($rating)) {
             $query->where('average_rating', '>=', (int)$rating);
         }
