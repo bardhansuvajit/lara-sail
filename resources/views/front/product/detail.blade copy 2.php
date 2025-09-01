@@ -14,49 +14,14 @@
                                     <div class="flex items-center justify-center h-full">
                                         <img src="{{ Storage::url($image->image_m) }}" alt="" class="max-w-full max-h-full">
                                     </div>
-                                    {{-- <div class="h-full w-full flex items-center justify-center">
-                                        <img src="{{ Storage::url($image->image_m) }}" class="h-full w-full object-down">
-                                    </div> --}}
                                 </div>
                             @endforeach
-                            {{-- <div class="swiper-slide h-full">
-                                <div class="h-full w-full flex items-center justify-center">
-                                    <img src="https://placehold.co/300x400" class="h-full w-full object-down">
-                                </div>
-                            </div>
-                            <div class="swiper-slide h-full">
-                                <div class="h-full w-full flex items-center justify-center">
-                                    <img src="https://placehold.co/800x700" class="h-full w-full object-down">
-                                </div>
-                            </div> --}}
                         </div>
                         <div class="swiper-pagination !flex justify-center gap-2"></div>
                         {{-- <button class="swiper-button-next"></button>
                         <button class="swiper-button-prev"></button> --}}
                     </div>
                 </div>
-
-                {{-- <div class="w-full mt-5">
-                    <div class="fixed z-[1] bottom-16 w-full -m-2 pt-3 px-2 pb-3 sm:static sm:bottom-0 sm:m-0 sm:p-0 {{FD['rounded']}} border sm:border-0 dark:sm:border-0 border-gray-200 bg-white sm:bg-transparent dark:sm:bg-transparent shadow-sm sm:shadow-none dark:sm:shadow-none dark:border-0 lg:dark:border-0 dark:bg-gray-800">
-                        <div class="flex space-x-2">
-                            <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-gray-300 focus:bg-gray-400 px-5 py-2.5 {{FD['text']}} font-medium text-gray=800 hover:bg-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 add-to-cart" 
-                                data-prod-id="{{$product->id}}" 
-                                data-purchase-type="buy"
-                                data-variation-data="{{ json_encode($variation['data']) }}"
-                            >
-                                Buy Now
-                            </button>
-
-                            <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 add-to-cart" 
-                                data-prod-id="{{$product->id}}" 
-                                data-purchase-type="cart"
-                                data-variation-data="{{ json_encode($variation['data']) }}"
-                            >
-                                Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div> --}}
 
                 <div class="w-full mt-5">
                     <div class="fixed z-[1] bottom-16 w-full -m-2 pt-3 px-2 pb-3 sm:static sm:bottom-0 sm:m-0 sm:p-0 {{FD['rounded']}} border sm:border-0 dark:sm:border-0 border-gray-200 bg-white sm:bg-transparent dark:sm:bg-transparent shadow-sm sm:shadow-none dark:sm:shadow-none dark:border-0 lg:dark:border-0 dark:bg-gray-800">
@@ -126,12 +91,6 @@
                                 <button class="p-2 rounded-full focus:outline-none wishlist-btn" data-prod-id="{{$product->id}}">
                                     <svg class="transition-all duration-300 ease-in-out w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path class="transition-all duration-300 ease-in-out" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                                 </button>
-
-                                {{-- <button type="button" class="rounded-full w-6 h-6 p-1 hover:bg-gray-200 dark:hover:bg-gray-800 wishlist-btn" data-prod-id="{{$product->id}}" >
-                                    <div class="{{FD['iconClass']}} text-gray-500">
-                                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z" /></svg>
-                                    </div>
-                                </button> --}}
                             </div>
                         </div>
 
@@ -194,7 +153,7 @@
                                             >
                                                 <div class="text-center">
                                                     <div class="flex flex-col items-center gap-2">
-                                                        <img src="https://placehold.co/40x40" class="rounded-full">
+                                                        {{-- <img src="https://placehold.co/40x40" class="rounded-full"> --}}
                                                         <div>
                                                             <div class="{{FD['text']}} font-semibold">{{ $value['title'] }}</div>
                                                             <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
@@ -217,114 +176,9 @@
 
                     {{-- long description --}}
                     <p class="{{FD['text']}} text-gray-500">{!! nl2br($product->long_description) !!}</p>
-
-
-                    <!-- Seller Info -->
-                    {{-- <div class="pt-4">
-                        <div class="flex items-center gap-2">
-                            <img src="https://placehold.co/40x40" class="rounded-full">
-                            <div>
-                                <div class="font-semibold">FashionHub Store</div>
-                                <div class="text-sm text-gray-600">4.8 ★ (2.5k Ratings)</div>
-                            </div>
-                        </div>
-                    </div> --}}
                 </div>
             </div>
         </div>
 
-        {{-- <div class="mt-8">
-            <div class="flex border-b" id="tabs">
-                <button class="px-4 py-2 font-medium border-b-2 border-transparent hover:border-black" data-tab="description">Description</button>
-                <button class="px-4 py-2 font-medium border-b-2 border-transparent hover:border-black" data-tab="reviews">Reviews (128)</button>
-                <button class="px-4 py-2 font-medium border-b-2 border-transparent hover:border-black" data-tab="qa">Q&A (23)</button>
-            </div>
-
-            <!-- Tab Contents -->
-            <div class="py-4" id="description">
-                <h3 class="font-semibold mb-2">Product Details</h3>
-                <p class="text-gray-600 text-sm">Floral print bodycon dress with stretchable fabric. Perfect for casual outings and parties. Available in multiple colors and sizes.</p>
-            </div>
-
-            <div class="py-4 hidden" id="reviews">
-                <div class="space-y-4">
-                    <!-- Review 1 -->
-                    <div class="border-b pb-4">
-                        <div class="flex items-center gap-2">
-                            <div class="text-yellow-400">★★★★☆</div>
-                            <div class="text-sm font-semibold">Rahul Sharma</div>
-                            <div class="text-gray-500 text-sm">2 days ago</div>
-                        </div>
-                        <p class="mt-2 text-sm">Good quality fabric but runs slightly small. Size up recommended.</p>
-                        <div class="flex gap-2 mt-2">
-                            <img src="https://placehold.co/80x80" class="w-20 h-20 object-cover">
-                            <img src="https://placehold.co/80x80" class="w-20 h-20 object-cover">
-                        </div>
-                    </div>
-                    
-                    <!-- Review Form -->
-                    <div class="mt-4">
-                        <h4 class="font-semibold mb-2">Write a Review</h4>
-                        <textarea class="w-full border p-2 rounded" rows="3" placeholder="Share your experience..."></textarea>
-                        <button class="mt-2 bg-black text-white px-4 py-2 text-sm rounded">Submit Review</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="py-4 hidden" id="qa">
-                <div class="space-y-4">
-                    <!-- Question 1 -->
-                    <div class="border-b pb-4">
-                        <div class="font-semibold">Q: Is this true to size?</div>
-                        <div class="text-sm text-gray-600 mt-1">A: We recommend sizing up for a comfortable fit.</div>
-                        <div class="text-sm text-gray-500 mt-2">Asked by Priya M • 5 days ago</div>
-                    </div>
-                    
-                    <!-- Ask Question -->
-                    <div class="mt-4">
-                        <input type="text" class="w-full border p-2 rounded" placeholder="Ask a question...">
-                        <button class="mt-2 bg-black text-white px-4 py-2 text-sm rounded">Ask Question</button>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
     </div>
-
-
-    {{-- <div class="fixed bottom-8 left-0 right-0 flex justify-center z-50">
-        <div class="text-center py-4 lg:px-4 w-full max-w-screen-md mx-4 mb-4 rounded-t-lg">
-            <div class="p-2 bg-black items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex shadow" role="alert">
-                <span class="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">New</span>
-                <span class="font-semibold mr-2 text-left flex-auto">Get the coolest t-shirts</span>
-
-                <a href="" class="text-yellow-500 hover:text-yellow-600 font-bold me-1">Go to</a>
-
-                <button type="button" class="ms-auto me-1 text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1 inline-flex items-center justify-center h-4 w-4 dark:text-gray-500 dark:hover:text-white" aria-label="Close">
-                    <span class="sr-only">Close</span>
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div> --}}
-
-    @push('scripts')
-        <script>
-            /*
-            // on select variation data, send into url parameter
-            function sendUrlParam(variationType, value) {
-                // Check if the URL already has a query string
-                const url = new URL(window.location.href);
-                const params = new URLSearchParams(url.search);
-
-                // Set the parameter
-                params.set('variation-'+variationType, value.toLowerCase());
-
-                // Update the URL without reloading the page
-                window.history.replaceState({}, '', `${url.pathname}?${params}`);
-            }
-            */
-        </script>
-    @endpush
 </x-guest-layout>
