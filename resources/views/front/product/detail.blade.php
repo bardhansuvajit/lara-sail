@@ -2,8 +2,7 @@
     screen="max-w-screen-xl"
     title="{{ __('Product') }}">
 
-
-<?php
+@php
     // Mock PHP data for Product Detail Page (PDP)
     $product = [
         'id' => 101,
@@ -44,8 +43,8 @@
             'materials' => ['mesh' => 'Mesh', 'leather' => 'PU Leather'],
             'combinations' => [
                 'black|mesh' => ['price' => 12999.00, 'stock' => 12],
-                'grey|mesh'  => ['price' => 12999.00, 'stock' => 7],
-                'blue|mesh'  => ['price' => 12999.00, 'stock' => 5],
+                'grey|mesh'  => ['price' => 13499.00, 'stock' => 7],
+                'blue|mesh'  => ['price' => 13999.00, 'stock' => 5],
                 'black|leather' => ['price' => 14999.00, 'stock' => 3],
                 'grey|leather'  => ['price' => 14999.00, 'stock' => 0]
             ]
@@ -80,40 +79,28 @@
         ['q'=>'Does it support heavy users?','a'=>'Rated up to 120 kg. For heavier needs, check our XL range.']
     ];
 
-    function safe_json($data){
-        // return htmlspecialchars(json_encode($data, JSON_HEX_APOS|JSON_HEX_QUOT), ENT_QUOTES, 'UTF-8');
-        return htmlspecialchars(json_encode($data, true), ENT_QUOTES, 'UTF-8');
-    }
-
-    $variations = $product['variations'];
-
-    // helper: compute availability per color/material (true if any combination with stock>0)
-    $avail_color = [];
-    $avail_material = [];
-    foreach($variations['colors'] as $c_key => $c_label) {
-        $ok = false;
-        foreach($variations['materials'] as $m_key => $m_label) {
-            $k = $c_key . '|' . $m_key;
-            if(isset($variations['combinations'][$k]) && ($variations['combinations'][$k]['stock'] ?? 0) > 0) $ok = true;
-        }
-        $avail_color[$c_key] = $ok;
-    }
-    foreach($variations['materials'] as $m_key => $m_label) {
-        $ok = false;
-        foreach($variations['colors'] as $c_key => $c_label) {
-            $k = $c_key . '|' . $m_key;
-            if(isset($variations['combinations'][$k]) && ($variations['combinations'][$k]['stock'] ?? 0) > 0) $ok = true;
-        }
-        $avail_material[$m_key] = $ok;
-    }
-
-    // simple swatch color map (use your brand palette or images instead)
+    // swatch map for color visual rendering
     $swatch_map = [
         'black' => '#111827',
         'grey'  => '#6B7280',
         'blue'  => '#1E3A8A'
     ];
-?>
+
+    // create variant groups and stable order (excludes 'combinations')
+    $variations = $product['variations'];
+    $variant_groups = $variations;
+    if (isset($variant_groups['combinations'])) unset($variant_groups['combinations']);
+    $variant_order = array_keys($variant_groups);
+
+    // helper: is an option available (any combination with stock>0 that contains this option)
+    function option_available($groupKey, $optKey, $variations){
+        foreach($variations['combinations'] as $comboKey => $info){
+            $parts = explode('|', $comboKey);
+            if (in_array($optKey, $parts, true) && ($info['stock'] ?? 0) > 0) return true;
+        }
+        return false;
+    }
+@endphp
 
 <!-- Product Detail Page (no header/footer) -->
 <div class="pt-4">
@@ -126,15 +113,8 @@
                 <!-- Main image area -->
                 <div class="relative {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
                     <div class="aspect-w-4 aspect-h-3 {{ FD['rounded'] }} overflow-hidden">
-                        <img id="mainImage" src="<?= $product['images'][0] ?>" alt="Main product image" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
+                        <img id="mainImage" src="@php echo $product['images'][0] @endphp" alt="Main product image" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
                     </div>
-
-                    <!-- badges -->
-                    {{-- <div class="absolute left-3 top-3 flex items-center gap-2">
-                        <?php foreach($product['badges'] as $badge): ?>
-                            <span class="px-3 py-1 {{ FD['rounded'] }} text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 shadow-sm"><?= $badge ?></span>
-                        <?php endforeach; ?>
-                    </div> --}}
 
                     <!-- zoom / gallery -->
                     <button id="openGallery" class="absolute right-3 top-3 p-2 {{ FD['rounded'] }} bg-white/80 dark:bg-slate-800/80 hover:shadow text-xs" aria-label="Open gallery">🔍 View</button>
@@ -143,33 +123,15 @@
                 <!-- Thumbnails (bottom) -->
                 <div class="flex items-center gap-2">
                     <div id="thumbs" class="flex gap-2 overflow-x-auto no-scrollbar py-1">
-                        <?php foreach($product['images'] as $i => $img): ?>
-                            <button type="button" class="thumb-item flex-none w-20 h-16 sm:w-24 sm:h-20 {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700" data-img="<?= $img ?>" aria-label="View image <?= $i+1 ?>">
-                                <img src="<?= $img ?>" alt="Thumb <?= $i+1 ?>" class="w-full h-full object-cover" />
+                        @php foreach($product['images'] as $i => $img): @endphp
+                            <button type="button" class="thumb-item flex-none w-20 h-16 sm:w-24 sm:h-20 {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700" data-img="@php echo $img @endphp" aria-label="View image @php echo $i+1 @endphp">
+                                <img src="@php echo $img @endphp" alt="Thumb @php echo $i+1 @endphp" class="w-full h-full object-cover" loading="lazy" />
                             </button>
-                        <?php endforeach; ?>
+                        @php endforeach; @endphp
                     </div>
                 </div>
 
             </div>
-
-            <!-- Upsells / Deals -->
-            {{-- <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <?php foreach($upsells as $up): ?>
-                    <div class="flex items-center gap-3 p-3 {{ FD['rounded'] }} border dark:border-slate-700 bg-white dark:bg-slate-800">
-                        <img src="<?= $up['img'] ?>" alt="<?= htmlspecialchars($up['title']) ?>" class="w-20 h-16 object-cover {{ FD['rounded'] }} flex-none" />
-                        <div class="flex-1 text-xs">
-                            <div class="font-semibold text-sm"><?= htmlspecialchars($up['title']) ?></div>
-                            <div class="text-xs text-slate-500 dark:text-slate-400"><?= $product['currency'] . number_format($up['price'],2) ?></div>
-                            <div class="mt-2">
-                                <button class="upsell-add px-2 py-1 text-xs {{ FD['rounded'] }} bg-amber-600 text-white" data-id="<?= $up['id'] ?>">Add</button>
-                                <button class="ml-2 px-2 py-1 text-xs {{ FD['rounded'] }} border dark:border-slate-700 upsell-view" data-id="<?= $up['id'] ?>">View</button>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div> --}}
-
         </div>
 
         <!-- Right: Product Info & Actions -->
@@ -177,34 +139,28 @@
             <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm">
                 <div class="flex items-start justify-between gap-4">
                     <div class="flex-1">
-                        <h1 class="text-lg sm:text-xl font-semibold leading-tight"><?= htmlspecialchars($product['title']) ?></h1>
+                        <h1 class="text-lg sm:text-xl font-semibold leading-tight">@php echo htmlspecialchars($product['title']) @endphp</h1>
 
                         <div class="flex items-center gap-2 mt-2 text-xs text-slate-500 dark:text-slate-300">
                             <span class="flex items-center gap-1">
                                 <div class="{{ FD['iconClass'] }} inline-block">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="m305-704 112-145q12-16 28.5-23.5T480-880q18 0 34.5 7.5T543-849l112 145 170 57q26 8 41 29.5t15 47.5q0 12-3.5 24T866-523L756-367l4 164q1 35-23 59t-56 24q-2 0-22-3l-179-50-179 50q-5 2-11 2.5t-11 .5q-32 0-56-24t-23-59l4-165L95-523q-8-11-11.5-23T80-570q0-25 14.5-46.5T135-647l170-57Zm49 69-194 64 124 179-4 191 200-55 200 56-4-192 124-177-194-66-126-165-126 165Zm126 135Z"/></svg>
                                 </div>
-                                <span class="font-medium"><?= number_format($product['rating'], 1) ?></span>
+                                <span class="font-medium">@php echo number_format($product['rating'], 1) @endphp</span>
                             </span>
                             <span>·</span>
-                            <span><?= number_format($product['review_count']) ?> reviews</span>
+                            <span>@php echo number_format($product['review_count']) @endphp reviews</span>
                             <span>·</span>
-                            <span class="text-slate-400 dark:text-slate-400">By <strong><?= htmlspecialchars($product['brand']) ?></strong></span>
+                            <span class="text-slate-400 dark:text-slate-400">By <strong>@php echo htmlspecialchars($product['brand']) @endphp</strong></span>
                         </div>
 
                         <div class="flex items-center gap-2 my-4">
-                            <?php foreach($product['badges'] as $badge): ?>
-                                <span class="px-3 py-1 {{ FD['rounded'] }} text-xs font-semibold bg-amber-200 text-amber-800 dark:bg-amber-900 dark:text-amber-200 shadow-sm"><?= $badge ?></span>
-                            <?php endforeach; ?>
+                            @php foreach($product['badges'] as $badge): @endphp
+                                <span class="px-3 py-1 {{ FD['rounded'] }} text-xs font-semibold bg-amber-200 text-amber-800 dark:bg-amber-900 dark:text-amber-200 shadow-sm">@php echo $badge @endphp</span>
+                            @php endforeach; @endphp
                         </div>
 
-                        <p class="mt-3 text-xs text-slate-600 dark:text-slate-300"><?= htmlspecialchars($product['short_desc']) ?></p>
-
-                        {{-- <ul class="mt-3 text-xs space-y-1 text-slate-600 dark:text-slate-300">
-                            <?php foreach($product['highlights'] as $h): ?>
-                                <li>• <?= htmlspecialchars($h) ?></li>
-                            <?php endforeach; ?>
-                        </ul> --}}
+                        <p class="mt-3 text-xs text-slate-600 dark:text-slate-300">@php echo htmlspecialchars($product['short_desc']) @endphp</p>
 
                     </div>
 
@@ -224,97 +180,51 @@
                 <!-- Price block -->
                 <div class="mt-4 flex items-center gap-4">
                     <div>
-                        <div class="text-xl sm:text-2xl font-bold"><?= $product['currency'] . number_format($product['price'], 2) ?></div>
-                        <div class="text-xs text-slate-500 dark:text-slate-400 line-through"><?= $product['currency'] . number_format($product['mrp'], 2) ?></div>
-                        <div class="text-xs text-emerald-700 dark:text-emerald-300 font-medium mt-1">You save <?= $product['currency'] . number_format($product['mrp'] - $product['price'], 2) ?> (<?= round((($product['mrp'] - $product['price'])/$product['mrp'])*100) ?>% off)</div>
-                    </div>
-
-                    <!-- Quick bullet features -->
-                    <div class="ml-auto text-xs text-slate-600 dark:text-slate-300 flex flex-col items-end gap-2">
-                        <div class="flex items-center gap-2">
-                            <div class="{{ FD['iconClass'] }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M620-163 450-333l56-56 114 114 226-226 56 56-282 282Zm220-397h-80v-200h-80v120H280v-120h-80v560h240v80H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h167q11-35 43-57.5t70-22.5q40 0 71.5 22.5T594-840h166q33 0 56.5 23.5T840-760v200ZM480-760q17 0 28.5-11.5T520-800q0-17-11.5-28.5T480-840q-17 0-28.5 11.5T440-800q0 17 11.5 28.5T480-760Z"/></svg>
-                            </div>
-                            In Stock
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="{{ FD['iconClass'] }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M200-120q-33 0-56.5-23.5T120-200v-500q0-14 4.5-26.5T138-750l56-68q9-11 20.5-16.5T240-840h480q14 0 25.5 5.5T766-818l56 68q9 11 13.5 23.5T840-700v500q0 33-23.5 56.5T760-120H200Zm16-600h528l-34-40H250l-34 40Zm-16 520h560v-440H200v440Zm382-78 142-142-142-142-58 58 84 84-84 84 58 58Zm-202 0 58-58-84-84 84-84-58-58-142 142 142 142Zm-180 78v-440 440Z"/></svg>
-                            </div>
-                            Free assembly kit
-                        </div>
+                        <div id="sellingPriceEl" class="text-xl sm:text-2xl font-bold">@php echo $product['currency'] . number_format($product['price'], 2) @endphp</div>
+                        <div id="mrpEl" class="text-xs text-slate-500 dark:text-slate-400 line-through">@php echo $product['currency'] . number_format($product['mrp'], 2) @endphp</div>
+                        <div id="savingsEl" class="text-xs text-emerald-700 dark:text-emerald-300 font-medium mt-1">You save @php echo $product['currency'] . number_format($product['mrp'] - $product['price'], 2) @endphp (@php echo round((($product['mrp'] - $product['price'])/$product['mrp'])*100) @endphp% off)</div>
                     </div>
                 </div>
 
-                <!-- Variations -->
-                <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                    <!-- Colors -->
-                    <div>
-                        <label class="text-xs font-semibold block mb-1">Color</label>
+                <!-- Variations (dynamic) -->
+                <div class="mt-4">
+                    @php foreach($variant_groups as $groupKey => $options): @endphp
+                    <div class="mb-3">
+                        <label class="text-xs font-semibold block mb-1">@php echo htmlspecialchars(ucfirst(str_replace('_',' ',$groupKey))) @endphp</label>
 
-                        <div role="radiogroup" aria-label="Choose color" class="flex items-center gap-3">
-                        <?php foreach($variations['colors'] as $val => $label): 
-                            $disabled = $avail_color[$val] ? '' : 'disabled';
-                        ?>
+                        <div data-variant-group="@php echo htmlspecialchars($groupKey) @endphp" class="flex items-center gap-3" role="radiogroup" aria-label="Choose @php echo htmlspecialchars($groupKey) @endphp">
+                        @php foreach($options as $optKey => $optLabel):
+                                $disabled = option_available($groupKey, $optKey, $variations) ? '' : 'disabled';
+                                $isColor = $groupKey === 'colors';
+                        @endphp
                             <button
-                            type="button"
-                            role="radio"
-                            aria-checked="false"
-                            <?= $disabled ? 'aria-disabled="true"' : '' ?>
-                            class="color-swatch relative w-10 h-10 rounded-full border dark:border-slate-700 flex items-center justify-center focus:outline-none transform transition-shadow text-xs"
-                            data-key="color"
-                            data-value="<?= $val ?>"
-                            style="background: <?= $swatch_map[$val] ?? '#ccc' ?>;"
-                            title="<?= htmlspecialchars($label) ?>"
-                            <?= $disabled ? 'tabindex="-1" disabled' : 'tabindex="0"' ?>
+                                type="button"
+                                role="radio"
+                                aria-checked="false"
+                                @php echo $disabled ? 'aria-disabled="true"' : '' @endphp
+                                class="variant-option p-1 {{ FD['rounded'] }} border dark:border-slate-700 flex items-center justify-center text-xs focus:outline-none"
+                                data-variant-value="@php echo htmlspecialchars($optKey) @endphp"
+                                title="@php echo htmlspecialchars($optLabel) @endphp"
+                                @php echo $disabled ? 'tabindex="-1" disabled' : 'tabindex="0"' @endphp
+                                @php if($isColor): @endphp style="background: @php echo $swatch_map[$optKey] ?? '#ccc' @endphp; width:2.4rem; height:2.4rem; border-radius:9999px;" @php endif; @endphp
                             >
-                            <!-- low-contrast label for screenreaders -->
-                            <span class="sr-only"><?= htmlspecialchars($label) ?></span>
-
-                            <?php if(!$avail_color[$val]): ?>
-                                <span class="absolute -right-1 -top-1 bg-red-600 text-white text-[10px] px-1 rounded">Out</span>
-                            <?php endif; ?>
+                            @php if(!$isColor): @endphp<span class="text-xs">@php echo htmlspecialchars($optLabel) @endphp</span>@php endif; @endphp
+                            @php if(!$disabled): /* nothing */ else: @endphp
+                                <span class="sr-only">Unavailable</span>
+                            @php endif; @endphp
                             </button>
-                        <?php endforeach; ?>
+                        @php endforeach; @endphp
                         </div>
                     </div>
-
-                    <!-- Materials -->
-                    <div>
-                        <label class="text-xs font-semibold block mb-1">Material</label>
-
-                        <div role="radiogroup" aria-label="Choose material" class="flex items-center gap-3">
-                        <?php foreach($variations['materials'] as $val => $label):
-                            $disabled = $avail_material[$val] ? '' : 'disabled';
-                            // small placeholder image per material (replace with your icons)
-                            $img = $val === 'leather' ? 'https://dummyimage.com/64x64/8b5cf6/fff&text=L' : 'https://dummyimage.com/64x64/94a3b8/fff&text=M';
-                        ?>
-                            <button
-                            type="button"
-                            role="radio"
-                            aria-checked="false"
-                            <?= $disabled ? 'aria-disabled="true"' : '' ?>
-                            class="material-tile flex flex-col items-center gap-1 p-1 {{ FD['rounded'] }} border dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none text-xs"
-                            data-key="material"
-                            data-value="<?= $val ?>"
-                            <?= $disabled ? 'tabindex="-1" disabled' : 'tabindex="0"' ?>
-                            >
-                            <img src="<?= $img ?>" alt="" class="w-10 h-10 object-cover {{ FD['rounded'] }}" />
-                            <span class="text-xs"><?= htmlspecialchars($label) ?></span>
-                            <?php if(!$avail_material[$val]): ?>
-                                <span class="text-[10px] text-red-600">Unavailable</span>
-                            <?php endif; ?>
-                            </button>
-                        <?php endforeach; ?>
-                        </div>
-                    </div>
+                    @php endforeach; @endphp
 
                     <!-- Selected summary (full-width) -->
                     <div class="col-span-1 sm:col-span-2 mt-2">
                         <label class="text-xs font-semibold block mb-1">Selected</label>
-                        {{-- <div class="text-xs text-slate-600 dark:text-slate-300">Selected:</div> --}}
-                        <div id="selectedSummary" class="mt-1 font-semibold text-sm text-slate-900 dark:text-slate-100">— / —</div>
-                        <div id="variantNote" class="mt-1 text-xs text-amber-700 hidden">Low stock for this combination</div>
+                        <div class="flex justify-between">
+                            <div id="selectedSummary" class="mt-1 font-semibold text-sm text-slate-900 dark:text-slate-100">— / —</div>
+                            <div id="variantNote" class="mt-1 text-xs text-amber-700 hidden" aria-live="polite">Low stock for this combination</div>
+                        </div>
                     </div>
                 </div>
 
@@ -322,7 +232,6 @@
                 <div class="mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-3">
                     <div class="items-center gap-2">
                         <label class="text-xs font-semibold block mb-1">Qty</label>
-                        {{-- <label class="text-xs mr-2">Qty</label> --}}
                         <div class="flex items-center border {{ FD['rounded'] }} overflow-hidden">
                             <button id="qtyDec" class="w-9 h-9 px-3 py-2 text-sm" aria-label="Decrease">
                                 <div class="{{ FD['iconClass'] }}">
@@ -330,7 +239,7 @@
                                 </div>
                             </button>
 
-                            <input id="qtyInput" type="text" min="1" value="1" class="w-9 text-center text-sm bg-white dark:bg-slate-800 outline-none" />
+                            <input id="qtyInput" type="number" min="1" value="1" class="max-w-12 text-center text-sm bg-white dark:bg-slate-800 outline-none" />
 
                             <button id="qtyInc" class="w-9 h-9 px-3 py-2 text-sm" aria-label="Increase">
                                 <div class="{{ FD['iconClass'] }}">
@@ -338,7 +247,7 @@
                                 </div>
                             </button>
                         </div>
-                        <div class="ml-3 text-xs text-slate-500 dark:text-slate-400" id="stockInfo">Available: <?= $product['stock'] ?></div>
+                        <div class="ml-3 text-xs text-slate-500 dark:text-slate-400" id="stockHelper" aria-hidden="true"></div>
                     </div>
 
                     <div class="flex-1 flex gap-2 w-full sm:w-auto justify-end">
@@ -351,29 +260,35 @@
                     </div>
                 </div>
 
-                <!-- Shipping & Offers -->
-                <div class="mt-4 text-xs text-slate-600 dark:text-slate-300 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <div class="flex items-center gap-2"><svg class="{{ FD['iconClass'] }}" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h18v13H3z"/></svg> Delivery in <?= $product['shipping']['estimate_days'][0] ?>-<?= $product['shipping']['estimate_days'][1] ?> days</div>
-                    <div class="flex items-center gap-2"><svg class="{{ FD['iconClass'] }}" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v6"/></svg> Cash on Delivery: <?= $product['cod_available'] ? 'Available' : 'Not available' ?></div>
-                </div>
+                <!-- dynamic product badges: fast delivery, warranty, COD -->
+                <div id="productBadges" class="mt-3 flex flex-wrap gap-2">
+                    @php
+                        $fastDelivery = $product['shipping']['estimate_days'][0] <= 2;
+                        $warrantyText = $product['specs']['Warranty'] ?? null;
+                        $cod = $product['cod_available'];
+                    @endphp
 
-                <!-- Offers -->
-                <div class="mt-4">
-                    <?php foreach($product['offers'] as $offer): ?>
-                        <div class="p-2 {{ FD['rounded'] }} bg-slate-50 dark:bg-slate-800 text-xs mb-2">
-                            <strong class="text-sm"><?= htmlspecialchars($offer['title']) ?>:</strong>
-                            <span class="ml-2"><?= htmlspecialchars($offer['desc']) ?></span>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
+                    @if($fastDelivery)
+                        <span class="px-2 py-1 text-xs font-semibold bg-slate-100 dark:bg-slate-900 {{ FD['rounded'] }}">⚡ Fast delivery</span>
+                    @endif
 
+                    @if($warrantyText)
+                        <span class="px-2 py-1 text-xs font-semibold bg-slate-100 dark:bg-slate-900 {{ FD['rounded'] }}">🛡️ {{ $warrantyText }}</span>
+                    @endif
+
+                    @if($cod)
+                        <span class="px-2 py-1 text-xs font-semibold bg-slate-100 dark:bg-slate-900 {{ FD['rounded'] }}">💵 Cash on Delivery</span>
+                    @endif
+
+                    <span class="px-2 py-1 text-xs font-semibold bg-slate-100 dark:bg-slate-900 {{ FD['rounded'] }}">🧰 Free assembly kit</span>
+                </div>
             </div>
 
             <!-- Right side small cards: Ads / Quick specs -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="{{ FD['rounded'] }} p-3 bg-gradient-to-tr from-amber-50 to-white dark:from-amber-900 dark:to-slate-800 shadow-sm">
                     <div class="text-xs font-semibold mb-2">Deal of the Day</div>
-                    <div class="text-sm font-bold text-amber-700 dark:text-amber-300">Flat <?= $product['currency'] ?>2,000 off</div>
+                    <div class="text-sm font-bold text-amber-700 dark:text-amber-300">Flat @php echo $product['currency'] @endphp2,000 off</div>
                     <div class="mt-2 text-xs">Limited time — makes this chair irresistible. Free priority shipping.</div>
                     <div class="mt-3">
                         <button class="px-3 py-1 {{ FD['rounded'] }} bg-amber-600 text-white text-sm">Claim Deal</button>
@@ -385,9 +300,9 @@
                         <div>
                             <div class="text-xs font-semibold">Quick Specs</div>
                             <ul class="mt-2 text-xs text-slate-600 dark:text-slate-300 space-y-1">
-                                <?php foreach($product['specs'] as $k => $v): ?>
-                                    <li><strong class="text-xs"><?= htmlspecialchars($k) ?>:</strong> <?= htmlspecialchars($v) ?></li>
-                                <?php endforeach; ?>
+                                @php foreach($product['specs'] as $k => $v): @endphp
+                                    <li><strong class="text-xs">@php echo htmlspecialchars($k) @endphp:</strong> @php echo htmlspecialchars($v) @endphp</li>
+                                @php endforeach; @endphp
                             </ul>
                         </div>
                         <div class="text-xs text-slate-500">Free 2-day assembly</div>
@@ -400,35 +315,35 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <div class="text-xs font-semibold">Customer Reviews</div>
-                        <div class="text-sm font-bold"><?= number_format($product['rating'],1) ?> <span class="text-xs text-slate-500">/5</span></div>
+                        <div class="text-sm font-bold">@php echo number_format($product['rating'],1) @endphp <span class="text-xs text-slate-500">/5</span></div>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="text-xs text-slate-500"><?= number_format($product['review_count']) ?> ratings</div>
+                        <div class="text-xs text-slate-500">@php echo number_format($product['review_count']) @endphp ratings</div>
                         <button id="openReviewModal" class="px-3 py-1 text-xs {{ FD['rounded'] }} bg-amber-600 text-white">Add Review</button>
                     </div>
                 </div>
 
                 <div id="reviewsList" class="mt-3 space-y-3 text-xs text-slate-600 dark:text-slate-300">
-                    <?php foreach($reviews as $r): ?>
+                    @php foreach($reviews as $r): @endphp
                         <div class="p-3 {{ FD['rounded'] }} border dark:border-slate-700">
                             <div class="flex items-center justify-between">
-                                <div class="font-semibold"><?= htmlspecialchars($r['name']) ?> <span class="text-xs text-slate-400">· <?= htmlspecialchars($r['date']) ?></span></div>
+                                <div class="font-semibold">@php echo htmlspecialchars($r['name']) @endphp <span class="text-xs text-slate-400">· @php echo htmlspecialchars($r['date']) @endphp</span></div>
                                 <div class="flex items-center gap-1">
-                                    <?php for($i=0;$i<5;$i++): ?>
-                                        <?php if($i < $r['rating']): ?>
+                                    @php for($i=0;$i<5;$i++): @endphp
+                                        @php if($i < $r['rating']): @endphp
                                             <svg class="w-3 h-3 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>
-                                        <?php else: ?>
+                                        @php else: @endphp
                                             <svg class="w-3 h-3 text-slate-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>
-                                        <?php endif; ?>
-                                    <?php endfor; ?>
+                                        @php endif; @endphp
+                                    @php endfor; @endphp
                                 </div>
                             </div>
                             <div class="mt-2">
-                                <div class="font-semibold text-sm"><?= htmlspecialchars($r['title']) ?></div>
-                                <div class="mt-1 text-xs"><?= htmlspecialchars($r['body']) ?></div>
+                                <div class="font-semibold text-sm">@php echo htmlspecialchars($r['title']) @endphp</div>
+                                <div class="mt-1 text-xs">@php echo htmlspecialchars($r['body']) @endphp</div>
                             </div>
                         </div>
-                    <?php endforeach; ?>
+                    @php endforeach; @endphp
                 </div>
 
             </div>
@@ -443,22 +358,22 @@
 
                 <div id="tabContent" class="mt-4 text-sm text-slate-700 dark:text-slate-300">
                     <div data-panel="desc">
-                        <p class="text-sm"><?= htmlspecialchars($product['long_desc']) ?></p>
+                        <p class="text-sm">@php echo htmlspecialchars($product['long_desc']) @endphp</p>
                     </div>
                     <div data-panel="specs" class="hidden">
                         <ul class="text-xs space-y-1">
-                            <?php foreach($product['specs'] as $k => $v): ?>
-                                <li><strong><?= htmlspecialchars($k) ?>:</strong> <?= htmlspecialchars($v) ?></li>
-                            <?php endforeach; ?>
+                            @php foreach($product['specs'] as $k => $v): @endphp
+                                <li><strong>@php echo htmlspecialchars($k) @endphp:</strong> @php echo htmlspecialchars($v) @endphp</li>
+                            @php endforeach; @endphp
                         </ul>
                     </div>
                     <div data-panel="faqs" class="hidden">
-                        <?php foreach($faqs as $f): ?>
+                        @php foreach($faqs as $f): @endphp
                             <div class="border-b dark:border-slate-700 py-3">
-                                <button class="faq-q w-full text-left text-xs font-semibold" type="button"><?= htmlspecialchars($f['q']) ?></button>
-                                <div class="faq-a mt-2 text-xs hidden"><?= htmlspecialchars($f['a']) ?></div>
+                                <button class="faq-q w-full text-left text-xs font-semibold" type="button">@php echo htmlspecialchars($f['q']) @endphp</button>
+                                <div class="faq-a mt-2 text-xs hidden">@php echo htmlspecialchars($f['a']) @endphp</div>
                             </div>
-                        <?php endforeach; ?>
+                        @php endforeach; @endphp
                     </div>
                 </div>
             </div>
@@ -470,9 +385,9 @@
 
 <!-- Review modal -->
 <div id="reviewModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
-    <div class="max-w-xl w-full {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-900 p-4">
+    <div class="max-w-xl w-full {{ FD['rounded'] }} overflow-hidden bg-white dark:bg-slate-900 p-4" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
         <div class="flex items-center justify-between mb-3">
-            <div class="text-sm font-semibold">Write a Review</div>
+            <div id="reviewModalTitle" class="text-sm font-semibold">Write a Review</div>
             <button id="closeReviewModal" class="p-2 {{ FD['rounded'] }} hover:bg-slate-100 dark:hover:bg-slate-800">Close</button>
         </div>
         <form id="reviewForm" class="space-y-3 text-xs">
@@ -505,331 +420,245 @@
     </div>
 </div>
 
-
-<!-- Lightweight JS for interactions (no external libs) -->
 <script>
-    (function(){
-        // const variations = JSON.parse('<?= safe_json($product['variations']) ?>');
-        // const variations = <?= json_encode($product['variations'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
-        // const combinations = variations.combinations;
-        const variations = <?= json_encode($variations, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) ?>;
-        const combos = variations.combinations || {};
+(function(){
+  // server-provided data (raw json, NOT escaped)
+  const variants = @php echo json_encode($variations, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) @endphp;
+  const variantOrder = @php echo json_encode($variant_order, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) @endphp;
+  const combos = variants.combinations || {};
 
-        // thumbnails -> change main image
-        document.querySelectorAll('.thumb-item').forEach(btn => {
-            btn.addEventListener('click', ()=>{
-            document.getElementById('mainImage').src = btn.dataset.img;
-            });
-        });
+  // thumbnails -> change main image
+  document.querySelectorAll('.thumb-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('mainImage').src = btn.dataset.img;
+    });
+  });
 
-        // open gallery (lightbox)
-        document.getElementById('openGallery').addEventListener('click', ()=>{
-            const light = document.createElement('div');
-            light.className = 'fixed inset-0 z-60 bg-black/80 flex items-center justify-center p-4';
-            light.innerHTML = `<div class="max-w-4xl w-full"><img src="${document.getElementById('mainImage').src}" class="w-full h-auto rounded" alt="preview"/></div>`;
-            light.addEventListener('click', ()=> document.body.removeChild(light));
-            document.body.appendChild(light);
-        });
+  // open gallery (lightbox) - simple
+  document.getElementById('openGallery').addEventListener('click', () => {
+    const light = document.createElement('div');
+    light.className = 'fixed inset-0 z-60 bg-black/80 flex items-center justify-center p-4';
+    light.innerHTML = `<div class="max-w-4xl w-full"><img src="${document.getElementById('mainImage').src}" class="w-full h-auto rounded" alt="preview"/></div>`;
+    light.addEventListener('click', ()=> document.body.removeChild(light));
+    document.body.appendChild(light);
+    const escHandler = e => { if (e.key === 'Escape') { if (document.body.contains(light)) document.body.removeChild(light); document.removeEventListener('keydown', escHandler); } };
+    document.addEventListener('keydown', escHandler);
+  });
 
-        // upsell add buttons
-        document.querySelectorAll('.upsell-add').forEach(b=>{
-            b.addEventListener('click', ()=>{
-            const id = b.dataset.id;
-            alert('Added upsell to cart (demo): '+id);
-            });
-        });
+  // helper: build combo key based on variantOrder
+  function comboKeyFromSelected(selected){ return variantOrder.map(g => selected[g] ?? '').join('|'); }
 
-        // variant selection
-        let selected = {
-            color: Object.keys(variations.colors)[0],
-            material: Object.keys(variations.materials)[0]
-        };
+  // selected state
+  const selected = {};
 
-        // utility to get combination info
-        function comboKey(c,m){ return c + '|' + m; }
-        function comboInfo(c,m){ return combos[comboKey(c,m)] || null; }
+  // mark active in a group element
+  function markActiveForGroup(groupEl, value){
+    groupEl.querySelectorAll('[data-variant-value]').forEach(btn=>{
+      const v = btn.dataset.variantValue;
+      const active = v === value;
+      btn.setAttribute('aria-checked', active ? 'true' : 'false');
+      btn.classList.toggle('ring-2', active);
+      btn.classList.toggle('ring-amber-500', active);
+      btn.classList.toggle('opacity-60', btn.disabled && !active);
+    });
+  }
 
-        // UI elements
-        const colorBtns = Array.from(document.querySelectorAll('[data-key="color"]'));
-        const materialBtns = Array.from(document.querySelectorAll('[data-key="material"]'));
-        const summaryEl = document.getElementById('selectedSummary');
-        const noteEl = document.getElementById('variantNote');
+  // update UI: summary, note, price and enable/disable actions
+  function updateVariantUI(){
+    // summary
+    const summaryEl = document.getElementById('selectedSummary');
+    if (summaryEl) {
+      const parts = variantOrder.map(g => (variants[g] && variants[g][selected[g]]) ? variants[g][selected[g]] : (selected[g] || '—'));
+      summaryEl.textContent = parts.join(' / ');
+    }
 
-        // set ARIA/active state for a group
-        function markActive(groupBtns, value){
-            groupBtns.forEach(b=>{
-            const v = b.dataset.value;
-            const active = v === value;
-            b.setAttribute('aria-checked', active ? 'true' : 'false');
-            if(active){
-                b.classList.add('ring-2','ring-amber-500');
-                b.classList.remove('opacity-60');
-            } else {
-                b.classList.remove('ring-2','ring-amber-500');
-            }
-            });
+    // find combo info
+    const key = comboKeyFromSelected(selected);
+    const info = combos[key] || null;
+    const noteEl = document.getElementById('variantNote');
+    const stockHelper = document.getElementById('stockHelper');
+    const priceEl = document.getElementById('sellingPriceEl');
+    const mrpEl = document.getElementById('mrpEl');
+    const savingsEl = document.getElementById('savingsEl');
+    const addToCart = document.getElementById('addToCart');
+    const buyNow = document.getElementById('buyNow');
+
+    if (!info) {
+      if (noteEl) { noteEl.textContent = 'This combination is unavailable'; noteEl.classList.remove('hidden'); }
+      if (stockHelper) stockHelper.textContent = '';
+      if (priceEl) priceEl.innerHTML = '<span class="text-amber-700">Unavailable</span>';
+      if (addToCart) { addToCart.disabled = true; addToCart.classList.add('opacity-60'); }
+      if (buyNow) { buyNow.disabled = true; buyNow.classList.add('opacity-60'); }
+      return;
+    }
+
+    // set price & stock-based states
+    if (priceEl) priceEl.textContent = '@php echo $product["currency"] @endphp' + Number(info.price).toFixed(2);
+    if (mrpEl) mrpEl.textContent = '@php echo $product["currency"] . number_format($product["mrp"], 2) @endphp';
+    if (savingsEl) savingsEl.textContent = 'You save @php echo $product["currency"] . number_format($product["mrp"] - $product["price"], 2) @endphp (@php echo round((($product["mrp"] - $product["price"])/$product["mrp"])*100) @endphp% off)';
+
+    if (info.stock <= 2) {
+      if (noteEl){ noteEl.textContent = 'Low stock for this combination'; noteEl.classList.remove('hidden'); }
+    } else {
+      if (noteEl) noteEl.classList.add('hidden');
+    }
+
+    if (stockHelper) {
+      stockHelper.textContent = (info.stock > 0) ? (`${info.stock} left`) : ('Out of stock');
+      stockHelper.setAttribute('aria-hidden', info.stock > 0 ? 'false' : 'true');
+    }
+
+    if (addToCart) { addToCart.disabled = info.stock <= 0; addToCart.classList.toggle('opacity-60', info.stock <= 0); }
+    if (buyNow) { buyNow.disabled = info.stock <= 0; buyNow.classList.toggle('opacity-60', info.stock <= 0); }
+  }
+
+  // wire variant groups: set initial selected and attach handlers
+  document.querySelectorAll('[data-variant-group]').forEach(groupEl => {
+    const groupKey = groupEl.getAttribute('data-variant-group');
+
+    // initial: pick first enabled option
+    const first = groupEl.querySelector('[data-variant-value]:not([disabled])');
+    selected[groupKey] = first ? first.dataset.variantValue : null;
+    markActiveForGroup(groupEl, selected[groupKey]);
+
+    // click delegation
+    groupEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-variant-value]');
+      if (!btn || btn.disabled) return;
+      selected[groupKey] = btn.dataset.variantValue;
+      markActiveForGroup(groupEl, selected[groupKey]);
+      updateVariantUI();
+    });
+
+    // keyboard navigation
+    const buttons = Array.from(groupEl.querySelectorAll('[data-variant-value]'));
+    buttons.forEach((btn, idx) => {
+      btn.addEventListener('keydown', ev => {
+        if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') {
+          ev.preventDefault();
+          const next = buttons[(idx + 1) % buttons.length];
+          if (!next.disabled) next.focus();
+        } else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') {
+          ev.preventDefault();
+          const prev = buttons[(idx - 1 + buttons.length) % buttons.length];
+          if (!prev.disabled) prev.focus();
+        } else if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          btn.click();
         }
+      });
+    });
+  });
 
-        // update summary and stock note, and call external hook if exists
-        function updateVariantUI(){
-            summaryEl.textContent = (variations.colors[selected.color] || selected.color) + ' / ' + (variations.materials[selected.material] || selected.material);
-            const info = comboInfo(selected.color, selected.material);
-            if(info){
-            if(info.stock <= 2){
-                noteEl.textContent = 'Low stock for this combination';
-                noteEl.classList.remove('hidden');
-            } else {
-                noteEl.classList.add('hidden');
-            }
-            } else {
-            noteEl.textContent = 'This combination is unavailable';
-            noteEl.classList.remove('hidden');
-            }
+  // get current combo key
+  function getCurrentComboKey(){ return comboKeyFromSelected(selected); }
 
-            // call external price/stock updater if present (keeps integration easy)
-            if(typeof updatePriceAndStock === 'function') {
-            // `updatePriceAndStock` in your page expects selected to be set globally; we set window.__selectedVariant
-            window.__selectedVariant = selected;
-            updatePriceAndStock();
-            } else {
-            // fallback: update .text-xl price element if present
-            const priceEl = document.querySelector('.text-xl');
-            if(priceEl && info && info.price) priceEl.textContent = '<?= $product['currency'] ?>' + Number(info.price).toFixed(2);
-            }
-        }
+  // qty handlers (clamp by stock)
+  const qtyInput = document.getElementById('qtyInput');
+  function clampQty(){
+    let v = parseInt(qtyInput.value || 1, 10);
+    if (isNaN(v) || v < 1) v = 1;
+    const key = getCurrentComboKey();
+    const info = combos[key];
+    if (info && info.stock) v = Math.min(v, info.stock);
+    qtyInput.value = v;
+  }
+  document.getElementById('qtyInc').addEventListener('click', ()=>{
+    qtyInput.value = Math.max(1, parseInt(qtyInput.value||1,10)+1);
+    clampQty();
+    updateVariantUI();
+  });
+  document.getElementById('qtyDec').addEventListener('click', ()=>{
+    qtyInput.value = Math.max(1, parseInt(qtyInput.value||1,10)-1);
+    clampQty();
+    updateVariantUI();
+  });
+  qtyInput.addEventListener('input', ()=>{ clampQty(); updateVariantUI(); });
 
-        // click & keyboard handlers for groups
-        function attachGroupHandlers(groupBtns, keyName){
-            groupBtns.forEach((btn, idx) => {
-            // skip disabled
-            if(btn.disabled) return;
+  // init UI
+  updateVariantUI();
 
-            btn.addEventListener('click', ()=>{
-                selected[keyName] = btn.dataset.value;
-                markActive(groupBtns, selected[keyName]);
-                updateVariantUI();
-            });
+  // Tabs
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('[data-panel]').forEach(p=>p.classList.add('hidden'));
+      const panel = document.querySelector('[data-panel="'+btn.dataset.tab+'"]');
+      if(panel) panel.classList.remove('hidden');
+    });
+  });
 
-            // keyboard: left/right/up/down + Enter/Space
-            btn.addEventListener('keydown', (e)=>{
-                const code = e.key;
-                let nextIdx = null;
-                if(code === 'ArrowRight' || code === 'ArrowDown') nextIdx = (idx + 1) % groupBtns.length;
-                if(code === 'ArrowLeft'  || code === 'ArrowUp')   nextIdx = (idx - 1 + groupBtns.length) % groupBtns.length;
-                if(nextIdx !== null){
-                e.preventDefault();
-                const next = groupBtns[nextIdx];
-                if(!next.disabled) next.focus();
-                }
-                if(code === 'Enter' || code === ' '){
-                e.preventDefault();
-                btn.click();
-                }
-            });
-            });
-        }
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(q=>{
+    q.addEventListener('click', ()=>{
+      const a = q.nextElementSibling;
+      a.classList.toggle('hidden');
+    });
+  });
 
-        // init: mark available defaults (first enabled)
-        (function init(){
-            // find first available color/material (in case first has no combos)
-            const firstColor = colorBtns.find(b => !b.disabled);
-            const firstMaterial = materialBtns.find(b => !b.disabled);
-            if(firstColor) selected.color = firstColor.dataset.value;
-            if(firstMaterial) selected.material = firstMaterial.dataset.value;
+  // Reviews modal (focus management)
+  const reviewModal = document.getElementById('reviewModal');
+  const openReviewBtn = document.getElementById('openReviewModal');
+  const closeReviewBtn = document.getElementById('closeReviewModal');
+  openReviewBtn.addEventListener('click', ()=>{
+    reviewModal.classList.remove('hidden');
+    reviewModal.querySelector('input, textarea, select')?.focus();
+    reviewModal.setAttribute('aria-hidden','false');
+  });
+  closeReviewBtn.addEventListener('click', ()=>{
+    reviewModal.classList.add('hidden');
+    reviewModal.setAttribute('aria-hidden','true');
+    openReviewBtn.focus();
+  });
 
-            markActive(colorBtns, selected.color);
-            markActive(materialBtns, selected.material);
+  // submit review (client demo)
+  document.getElementById('reviewForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const newRev = {
+      name: document.getElementById('revName').value || 'Anonymous',
+      rating: parseInt(document.getElementById('revRating').value||5, 10),
+      title: document.getElementById('revTitle').value || '',
+      body: document.getElementById('revBody').value || '',
+      date: new Date().toISOString().slice(0,10)
+    };
+    const container = document.getElementById('reviewsList');
+    const node = document.createElement('div');
+    node.className = 'p-3 border dark:border-slate-700';
+    node.innerHTML = `<div class="flex items-center justify-between"><div class="font-semibold">${newRev.name} <span class="text-xs text-slate-400">· ${newRev.date}</span></div><div class="flex items-center gap-1">${Array.from({length:5}).map((_,i)=> i < newRev.rating ? '<svg class="w-3 h-3 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' : '<svg class="w-3 h-3 text-slate-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>').join('')}</div></div><div class="mt-2"><div class="font-semibold text-sm">${newRev.title}</div><div class="mt-1 text-xs">${newRev.body}</div></div>`;
+    container.prepend(node);
+    reviewModal.classList.add('hidden');
+    document.getElementById('reviewForm').reset();
+    openReviewBtn.focus();
+  });
 
-            attachGroupHandlers(colorBtns, 'color');
-            attachGroupHandlers(materialBtns, 'material');
+  // Add to cart: include variant key and qty with validations
+  document.getElementById('addToCart').addEventListener('click', ()=>{
+    clampQty();
+    const key = getCurrentComboKey();
+    const info = combos[key];
+    const qty = parseInt(qtyInput.value||1, 10);
+    if (!info) { alert('Selected combination is unavailable. Please choose another option.'); return; }
+    if (info.stock <= 0) { alert('Selected variant is out of stock.'); return; }
+    if (qty > info.stock) { alert(`Only ${info.stock} unit(s) available for this variant.`); qtyInput.value = info.stock; return; }
+    const payload = { productId: @php echo $product['id'] @endphp, qty, variant: key };
+    // Replace alert with real cart API call
+    alert('Added to cart: ' + JSON.stringify(payload));
+  });
 
-            updateVariantUI();
-        })();
+  // Buy Now: similar validation, then redirect (demo = alert)
+  document.getElementById('buyNow').addEventListener('click', ()=>{
+    clampQty();
+    const key = getCurrentComboKey();
+    const info = combos[key];
+    const qty = parseInt(qtyInput.value||1, 10);
+    if (!info) { alert('Selected combination is unavailable. Please choose another option.'); return; }
+    if (info.stock <= 0) { alert('Selected variant is out of stock.'); return; }
+    if (qty > info.stock) { alert(`Only ${info.stock} unit(s) available for this variant.`); qtyInput.value = info.stock; return; }
+    const payload = { productId: @php echo $product['id'] @endphp, qty, variant: key, buyNow: true };
+    // demo behavior: in production you would redirect to checkout with payload
+    alert('Proceeding to checkout (demo): ' + JSON.stringify(payload));
+  });
 
-        // qty controls
-        const qtyInput = document.getElementById('qtyInput');
-        document.getElementById('qtyInc').addEventListener('click', ()=>{ qtyInput.value = Math.max(1, parseInt(qtyInput.value||1)+1); updatePriceAndStock(); });
-        document.getElementById('qtyDec').addEventListener('click', ()=>{ qtyInput.value = Math.max(1, parseInt(qtyInput.value||1)-1); updatePriceAndStock(); });
-
-        function updatePriceAndStock(){
-            const key = comboKey();
-            const info = combos[key];
-            const stockInfo = document.getElementById('stockInfo');
-            const addToCart = document.getElementById('addToCart');
-            if(!info && stockInfo){
-                stockInfo.textContent = 'Combination unavailable';
-                addToCart.disabled = true; addToCart.classList.add('opacity-60');
-                return;
-            }
-
-            stockInfo.textContent = 'Available: ' + info.stock;
-            addToCart.disabled = info.stock <= 0;
-            addToCart.classList.toggle('opacity-60', info.stock <= 0);
-
-            const priceEl = document.querySelector('.text-xl');
-            if(priceEl){ priceEl.textContent = '<?= $product['currency'] ?>' + Number(info.price).toFixed(2); }
-        }
-        updatePriceAndStock();
-
-        // Tabs
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', ()=>{
-            document.querySelectorAll('[data-panel]').forEach(p=>p.classList.add('hidden'));
-            const panel = document.querySelector('[data-panel="'+btn.dataset.tab+'"]');
-            if(panel) panel.classList.remove('hidden');
-            });
-        });
-
-        // FAQ accordion
-        document.querySelectorAll('.faq-q').forEach(q=>{
-            q.addEventListener('click', ()=>{
-            const a = q.nextElementSibling;
-            a.classList.toggle('hidden');
-            });
-        });
-
-        // Reviews modal
-        const reviewModal = document.getElementById('reviewModal');
-        document.getElementById('openReviewModal').addEventListener('click', ()=> reviewModal.classList.remove('hidden'));
-        document.getElementById('closeReviewModal').addEventListener('click', ()=> reviewModal.classList.add('hidden'));
-
-        // submit review (client demo)
-        document.getElementById('reviewForm').addEventListener('submit', (e)=>{
-            e.preventDefault();
-            const newRev = { name: document.getElementById('revName').value || 'Anonymous', rating: parseInt(document.getElementById('revRating').value||5), title: document.getElementById('revTitle').value || '', body: document.getElementById('revBody').value || '', date: new Date().toISOString().slice(0,10) };
-            const container = document.getElementById('reviewsList');
-            const node = document.createElement('div');
-            node.className = 'p-3 {{ FD['rounded'] }} border dark:border-slate-700';
-            node.innerHTML = `<div class="flex items-center justify-between"><div class="font-semibold">${newRev.name} <span class="text-xs text-slate-400">· ${newRev.date}</span></div><div class="flex items-center gap-1">${Array.from({length:5}).map((_,i)=> i < newRev.rating ? '<svg class="w-3 h-3 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' : '<svg class="w-3 h-3 text-slate-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>').join('')}</div></div><div class="mt-2"><div class="font-semibold text-sm">${newRev.title}</div><div class="mt-1 text-xs">${newRev.body}</div></div>`;
-            container.prepend(node);
-            reviewModal.classList.add('hidden');
-            document.getElementById('reviewForm').reset();
-        });
-
-        // Add to cart demo
-        document.getElementById('addToCart').addEventListener('click', ()=>{
-            const payload = { productId: <?= $product['id'] ?>, qty: parseInt(qtyInput.value||1), variant: comboKey() };
-            alert('Added to cart:' + JSON.stringify(payload));
-        });
-
-    })();
-
-
-
-
-    (function(){
-        // // variations object (safe JS literal)
-        // const variations = <?= json_encode($variations, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) ?>;
-        // const combos = variations.combinations || {};
-
-        // // initial selected (first available)
-        // let selected = {
-        //     color: Object.keys(variations.colors)[0],
-        //     material: Object.keys(variations.materials)[0]
-        // };
-
-        // // utility to get combination info
-        // function comboKey(c,m){ return c + '|' + m; }
-        // function comboInfo(c,m){ return combos[comboKey(c,m)] || null; }
-
-        // // UI elements
-        // const colorBtns = Array.from(document.querySelectorAll('[data-key="color"]'));
-        // const materialBtns = Array.from(document.querySelectorAll('[data-key="material"]'));
-        // const summaryEl = document.getElementById('selectedSummary');
-        // const noteEl = document.getElementById('variantNote');
-
-        // // set ARIA/active state for a group
-        // function markActive(groupBtns, value){
-        //     groupBtns.forEach(b=>{
-        //     const v = b.dataset.value;
-        //     const active = v === value;
-        //     b.setAttribute('aria-checked', active ? 'true' : 'false');
-        //     if(active){
-        //         b.classList.add('ring-2','ring-amber-500');
-        //         b.classList.remove('opacity-60');
-        //     } else {
-        //         b.classList.remove('ring-2','ring-amber-500');
-        //     }
-        //     });
-        // }
-
-        // // update summary and stock note, and call external hook if exists
-        // function updateVariantUI(){
-        //     summaryEl.textContent = (variations.colors[selected.color] || selected.color) + ' / ' + (variations.materials[selected.material] || selected.material);
-        //     const info = comboInfo(selected.color, selected.material);
-        //     if(info){
-        //     if(info.stock <= 2){
-        //         noteEl.textContent = 'Low stock for this combination';
-        //         noteEl.classList.remove('hidden');
-        //     } else {
-        //         noteEl.classList.add('hidden');
-        //     }
-        //     } else {
-        //     noteEl.textContent = 'This combination is unavailable';
-        //     noteEl.classList.remove('hidden');
-        //     }
-
-        //     // call external price/stock updater if present (keeps integration easy)
-        //     if(typeof updatePriceAndStock === 'function') {
-        //     // `updatePriceAndStock` in your page expects selected to be set globally; we set window.__selectedVariant
-        //     window.__selectedVariant = selected;
-        //     updatePriceAndStock();
-        //     } else {
-        //     // fallback: update .text-xl price element if present
-        //     const priceEl = document.querySelector('.text-xl');
-        //     if(priceEl && info && info.price) priceEl.textContent = '<?= $product['currency'] ?>' + Number(info.price).toFixed(2);
-        //     }
-        // }
-
-        // // click & keyboard handlers for groups
-        // function attachGroupHandlers(groupBtns, keyName){
-        //     groupBtns.forEach((btn, idx) => {
-        //     // skip disabled
-        //     if(btn.disabled) return;
-
-        //     btn.addEventListener('click', ()=>{
-        //         selected[keyName] = btn.dataset.value;
-        //         markActive(groupBtns, selected[keyName]);
-        //         updateVariantUI();
-        //     });
-
-        //     // keyboard: left/right/up/down + Enter/Space
-        //     btn.addEventListener('keydown', (e)=>{
-        //         const code = e.key;
-        //         let nextIdx = null;
-        //         if(code === 'ArrowRight' || code === 'ArrowDown') nextIdx = (idx + 1) % groupBtns.length;
-        //         if(code === 'ArrowLeft'  || code === 'ArrowUp')   nextIdx = (idx - 1 + groupBtns.length) % groupBtns.length;
-        //         if(nextIdx !== null){
-        //         e.preventDefault();
-        //         const next = groupBtns[nextIdx];
-        //         if(!next.disabled) next.focus();
-        //         }
-        //         if(code === 'Enter' || code === ' '){
-        //         e.preventDefault();
-        //         btn.click();
-        //         }
-        //     });
-        //     });
-        // }
-
-        // // init: mark available defaults (first enabled)
-        // (function init(){
-        //     // find first available color/material (in case first has no combos)
-        //     const firstColor = colorBtns.find(b => !b.disabled);
-        //     const firstMaterial = materialBtns.find(b => !b.disabled);
-        //     if(firstColor) selected.color = firstColor.dataset.value;
-        //     if(firstMaterial) selected.material = firstMaterial.dataset.value;
-
-        //     markActive(colorBtns, selected.color);
-        //     markActive(materialBtns, selected.material);
-
-        //     attachGroupHandlers(colorBtns, 'color');
-        //     attachGroupHandlers(materialBtns, 'material');
-
-        //     updateVariantUI();
-        // })();
-
-    })();
+})();
 </script>
 
 </x-guest-layout>
