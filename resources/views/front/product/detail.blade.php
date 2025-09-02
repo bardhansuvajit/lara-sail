@@ -186,11 +186,11 @@
                     </div>
                 </div>
 
-                <!-- Variations (dynamic) -->
+                <!-- Variations -->
                 <div class="mt-4">
                     @php foreach($variant_groups as $groupKey => $options): @endphp
                     <div class="mb-3">
-                        <label class="text-xs font-semibold block mb-1">@php echo htmlspecialchars(ucfirst(str_replace('_',' ',$groupKey))) @endphp</label>
+                        <label class="text-xs font-semibold block mb-2">@php echo htmlspecialchars(ucfirst(str_replace('_',' ',$groupKey))) @endphp</label>
 
                         <div data-variant-group="@php echo htmlspecialchars($groupKey) @endphp" class="flex items-center gap-3" role="radiogroup" aria-label="Choose @php echo htmlspecialchars($groupKey) @endphp">
                         @php foreach($options as $optKey => $optLabel):
@@ -232,14 +232,14 @@
                 <div class="mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-3">
                     <div class="items-center gap-2">
                         <label class="text-xs font-semibold block mb-1">Qty</label>
-                        <div class="flex items-center border {{ FD['rounded'] }} overflow-hidden">
+                        <div class="flex items-center {{ FD['rounded'] }} overflow-hidden border border-gray-300 dark:border-gray-400">
                             <button id="qtyDec" class="w-9 h-9 px-3 py-2 text-sm" aria-label="Decrease">
                                 <div class="{{ FD['iconClass'] }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M200-440v-80h560v80H200Z"/></svg>
                                 </div>
                             </button>
 
-                            <input id="qtyInput" type="number" min="1" value="1" class="max-w-12 text-center text-sm bg-white dark:bg-slate-800 outline-none" />
+                            <input id="qtyInput" type="number" min="1" value="1" class="max-w-12 text-center text-sm bg-white dark:bg-slate-800 outline-none border-t-0 border-b-0 border-l-1 border-r-1 border-gray-300 dark:border-gray-400" />
 
                             <button id="qtyInc" class="w-9 h-9 px-3 py-2 text-sm" aria-label="Increase">
                                 <div class="{{ FD['iconClass'] }}">
@@ -260,35 +260,170 @@
                     </div>
                 </div>
 
-                <!-- dynamic product badges: fast delivery, warranty, COD -->
-                <div id="productBadges" class="mt-3 flex flex-wrap gap-2">
+                <!-- productBadges (fixed & matched to page styles) -->
+                <div id="productBadges" class="mt-3">
                     @php
-                        $fastDelivery = $product['shipping']['estimate_days'][0] <= 2;
+                        $fastDelivery = isset($product['shipping']['estimate_days']) && $product['shipping']['estimate_days'][0] <= 2;
                         $warrantyText = $product['specs']['Warranty'] ?? null;
-                        $cod = $product['cod_available'];
+                        $cod = $product['cod_available'] ?? false;
+                        $freeShipping = (isset($product['shipping']['free_over']) && ($product['price'] >= $product['shipping']['free_over']));
+                        $minDays = $product['shipping']['estimate_days'][0] ?? null;
+                        $maxDays = $product['shipping']['estimate_days'][1] ?? null;
                     @endphp
 
-                    @if($fastDelivery)
-                        <span class="px-2 py-1 text-xs font-semibold bg-slate-100 dark:bg-slate-900 {{ FD['rounded'] }}">⚡ Fast delivery</span>
-                    @endif
+                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+                        <!-- Badge: Delivery -->
+                        <div role="listitem" class="flex flex-col items-center text-center p-3 bg-white dark:bg-slate-800 {{ FD['rounded'] }} shadow-sm">
+                            <div class="w-8 h-8 flex items-center justify-center mb-2 text-gray-600 dark:text-gray-300" aria-hidden="true">
+                                <!-- truck icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                    <path d="M3 3h13v4h5l2 4v7a1 1 0 0 1-1 1h-1a2 2 0 1 1-4 0H8a2 2 0 1 1-4 0H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm16 7h-4V5H5v10h14V10z"/>
+                                </svg>
+                            </div>
+                            <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Delivery</h5>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                @if($minDays && $maxDays)
+                                    {{ $minDays }}–{{ $maxDays }} business days
+                                @else
+                                    Standard delivery
+                                @endif
+                                @if($freeShipping)
+                                    <span class="block text-xxs text-slate-400">Free over {{ $product['currency'] . number_format($product['shipping']['free_over'], 2) }}</span>
+                                @endif
+                            </p>
+                        </div>
 
-                    @if($warrantyText)
-                        <span class="px-2 py-1 text-xs font-semibold bg-slate-100 dark:bg-slate-900 {{ FD['rounded'] }}">🛡️ {{ $warrantyText }}</span>
-                    @endif
+                        <!-- Badge: Cash on Delivery -->
+                        <div role="listitem" class="flex flex-col items-center text-center p-3 bg-white dark:bg-slate-800 {{ FD['rounded'] }} shadow-sm">
+                            <div class="w-8 h-8 flex items-center justify-center mb-2 text-gray-600 dark:text-gray-300" aria-hidden="true">
+                                @if (COUNTRY['currency'] == 'INR')
+                                    <!-- rupee / cash icon -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                        <path d="M12 3v2h4v1h-4v3.5c0 .83.67 1.5 1.5 1.5H17v2h-2.5A3.5 3.5 0 0 1 11 9.5V6H7v1H5V6a1 1 0 0 1 1-1h6V3zM6 13v5a2 2 0 0 0 2 2h8v-2H8v-5H6z"/>
+                                    </svg>
+                                @else
+                                    <!-- card icon -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                        <path d="M2 7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3H2V7zm0 5h20v5a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5z"/>
+                                    </svg>
+                                @endif
+                            </div>
+                            <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Cash on Delivery</h5>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                @if($cod)
+                                    Available in many pin codes — select at checkout
+                                @else
+                                    Not available at checkout
+                                @endif
+                            </p>
+                        </div>
 
-                    @if($cod)
-                        <span class="px-2 py-1 text-xs font-semibold bg-slate-100 dark:bg-slate-900 {{ FD['rounded'] }}">💵 Cash on Delivery</span>
-                    @endif
+                        <!-- Badge: Easy Returns -->
+                        <div role="listitem" class="flex flex-col items-center text-center p-3 bg-white dark:bg-slate-800 {{ FD['rounded'] }} shadow-sm">
+                            <div class="w-8 h-8 flex items-center justify-center mb-2 text-gray-600 dark:text-gray-300" aria-hidden="true">
+                                <!-- return icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                    <path d="M12 5V1L7 6l5 5V7c4.97 0 9 4.03 9 9 0 1.38-.31 2.69-.87 3.86l1.46 1.46C22.78 19.45 23 17.76 23 16c0-6.08-4.92-11-11-11z"/><!-- simplified -->
+                                </svg>
+                            </div>
+                            <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Easy Returns</h5>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">7-day hassle-free returns on eligible items</p>
+                        </div>
 
-                    <span class="px-2 py-1 text-xs font-semibold bg-slate-100 dark:bg-slate-900 {{ FD['rounded'] }}">🧰 Free assembly kit</span>
+                        <!-- Badge: Secure Payments -->
+                        <div role="listitem" class="flex flex-col items-center text-center p-3 bg-white dark:bg-slate-800 {{ FD['rounded'] }} shadow-sm">
+                            <div class="w-8 h-8 flex items-center justify-center mb-2 text-gray-600 dark:text-gray-300" aria-hidden="true">
+                                <!-- shield icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                    <path d="M12 1l8 3v5c0 5-3.5 9-8 11-4.5-2-8-6-8-11V4l8-3zM11 10h2v5h-2v-5z"/>
+                                </svg>
+                            </div>
+                            <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Secure Payments</h5>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">SSL encrypted • Trusted payment gateways</p>
+                        </div>
+
+                        <!-- Optional placeholders to keep grid balanced on large screens -->
+                        <div class="hidden lg:block"></div>
+                        <div class="hidden lg:block"></div>
+                    </div>
+
+                    <!-- small utility chips (warranty / fast delivery / free assembly) -->
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        @if($fastDelivery)
+                            <span class="px-2 py-1 text-xs font-semibold bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 {{ FD['rounded'] }}">⚡ Fast delivery</span>
+                        @endif
+
+                        @if($warrantyText)
+                            <span class="px-2 py-1 text-xs font-semibold bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 {{ FD['rounded'] }}">🛡️ {{ $warrantyText }}</span>
+                        @endif
+
+                        @if($cod)
+                            <span class="px-2 py-1 text-xs font-semibold bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 {{ FD['rounded'] }}">💵 Cash on Delivery</span>
+                        @endif
+
+                        <span class="px-2 py-1 text-xs font-semibold bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 {{ FD['rounded'] }}">🧰 Free assembly kit</span>
+
+                        @if($freeShipping)
+                            <span class="px-2 py-1 text-xs font-semibold bg-emerald-50 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-200 {{ FD['rounded'] }}">🚚 Free shipping</span>
+                        @endif
+                    </div>
                 </div>
+
+                <!-- dynamic product badges: fast delivery, warranty, COD -->
+                {{-- <div id="productBadges" class="mt-3 flex flex-wrap gap-2">
+                    <div role="list" class="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-4 gap-4">
+                        <!-- Badge 1: Delivery -->
+                        <div role="listitem" class="flex flex-col items-center text-center p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div class="w-4 h-4 flex items-center justify-center mb-2 text-gray-600 dark:text-gray-300" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M280-160q-50 0-85-35t-35-85H60l18-80h113q17-19 40-29.5t49-10.5q26 0 49 10.5t40 29.5h167l84-360H182l4-17q6-28 27.5-45.5T264-800h456l-37 160h117l120 160-40 200h-80q0 50-35 85t-85 35q-50 0-85-35t-35-85H400q0 50-35 85t-85 35Zm357-280h193l4-21-74-99h-95l-28 120Zm-19-273 2-7-84 360 2-7 34-146 46-200ZM20-427l20-80h220l-20 80H20Zm80-146 20-80h260l-20 80H100Zm180 333q17 0 28.5-11.5T320-280q0-17-11.5-28.5T280-320q-17 0-28.5 11.5T240-280q0 17 11.5 28.5T280-240Zm400 0q17 0 28.5-11.5T720-280q0-17-11.5-28.5T680-320q-17 0-28.5 11.5T640-280q0 17 11.5 28.5T680-240Z"/></svg>
+                            </div>
+                            <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Delivery</h5>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">2-5 business days (standard)</p>
+                        </div>
+
+                        <!-- Badge 2: Cash on Delivery (currency-aware) -->
+                        <div role="listitem" class="flex flex-col items-center text-center p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div class="w-4 h-4 flex items-center justify-center mb-2 text-gray-600 dark:text-gray-300" aria-hidden="true">
+                                @if (COUNTRY['currency'] == 'INR')
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M549-120 280-400v-80h140q53 0 91.5-34.5T558-600H240v-80h306q-17-35-50.5-57.5T420-760H240v-80h480v80H590q14 17 25 37t17 43h88v80h-81q-8 85-70 142.5T420-400h-29l269 280H549Z"/></svg>
+                                @else
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M441-120v-86q-53-12-91.5-46T293-348l74-30q15 48 44.5 73t77.5 25q41 0 69.5-18.5T587-356q0-35-22-55.5T463-458q-86-27-118-64.5T313-614q0-65 42-101t86-41v-84h80v84q50 8 82.5 36.5T651-650l-74 32q-12-32-34-48t-60-16q-44 0-67 19.5T393-614q0 33 30 52t104 40q69 20 104.5 63.5T667-358q0 71-42 108t-104 46v84h-80Z"/></svg>
+                                @endif
+                            </div>
+                            <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Cash on Delivery</h5>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Available in many pin codes — select at checkout</p>
+                        </div>
+
+                        <!-- Badge 3: Easy returns -->
+                        <div role="listitem" class="flex flex-col items-center text-center p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div class="w-4 h-4 flex items-center justify-center mb-2 text-gray-600 dark:text-gray-300" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"/></svg>
+                            </div>
+                            <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Easy Returns</h5>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">7-day hassle-free returns on eligible items</p>
+                        </div>
+
+                        <!-- Badge 4: Secure payments -->
+                        <div role="listitem" class="flex flex-col items-center text-center p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div class="w-4 h-4 flex items-center justify-center mb-2 text-gray-600 dark:text-gray-300" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Z"/></svg>
+                            </div>
+                            <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Secure Payments</h5>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">SSL encrypted • Trusted payment gateways</p>
+                        </div>
+
+                        <!-- optional: keep layout balance by inserting invisible placeholders on very small screens -->
+                        <div class="hidden lg:block"></div>
+                        <div class="hidden lg:block"></div>
+                    </div>
+                </div> --}}
             </div>
 
             <!-- Right side small cards: Ads / Quick specs -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="{{ FD['rounded'] }} p-3 bg-gradient-to-tr from-amber-50 to-white dark:from-amber-900 dark:to-slate-800 shadow-sm">
                     <div class="text-xs font-semibold mb-2">Deal of the Day</div>
-                    <div class="text-sm font-bold text-amber-700 dark:text-amber-300">Flat @php echo $product['currency'] @endphp2,000 off</div>
+                    <div class="text-sm font-bold text-amber-700 dark:text-amber-300">Flat @php echo $product['currency'] @endphp 2,000 off</div>
                     <div class="mt-2 text-xs">Limited time — makes this chair irresistible. Free priority shipping.</div>
                     <div class="mt-3">
                         <button class="px-3 py-1 {{ FD['rounded'] }} bg-amber-600 text-white text-sm">Claim Deal</button>
