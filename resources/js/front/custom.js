@@ -16,6 +16,7 @@ const orderSummaryEl = document.getElementById('order-summary');
 const numberEl = document.querySelectorAll('.digits-only');
 const placeOrderForm = document.getElementById('place-order-form');
 const mobileCartCounter = document.getElementById('mobile-menu-cart-counter-cont');
+const pdpAsideQuickBar = document.getElementById('pdpAsideQuickBar');
 
 
 
@@ -341,6 +342,11 @@ function handleNavbarScroll() {
         if (orderSummaryCont) {
             orderSummaryCont.style.top = '9rem';
         }
+
+        // product detail page aside bar container
+        if (pdpAsideQuickBar) {
+            pdpAsideQuickBar.style.top = '8.1rem';
+        }
     } 
     // Scrolling up or at top of page
     else {
@@ -349,6 +355,11 @@ function handleNavbarScroll() {
         // cart page order summary container
         if (orderSummaryCont) {
             orderSummaryCont.style.top = '13rem';
+        }
+
+        // product detail page aside bar container
+        if (pdpAsideQuickBar) {
+            pdpAsideQuickBar.style.top = '12.1rem';
         }
     }
 
