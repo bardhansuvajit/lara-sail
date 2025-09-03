@@ -58,8 +58,8 @@
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                             <a href="#" class="block {{FD['rounded']}} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
                                 <div>
-                                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" class="dark:hidden h-16" alt="">
-                                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg" class="hidden dark:block h-16" alt="">
+                                    <img src="https://dummyimage.com/400x400/000/fff" class="dark:hidden h-16" alt="">
+                                    <img src="https://dummyimage.com/400x400/fff/000" class="hidden dark:block h-16" alt="">
                                 </div>
 
                                 <h4 class="n1tXEtF2vB0vuuhfmfgM {{FD['text']}} font-medium dark:text-white text-gray-900">Apple Imac 2024, 27”, 256GB</h4>
@@ -108,8 +108,8 @@
 
                             <a href="#" class="block {{FD['rounded']}} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
                                 <div>
-                                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-light.svg" class="dark:hidden h-16" alt="">
-                                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-dark.svg" class="hidden dark:block h-16" alt="">
+                                    <img src="https://dummyimage.com/400x400/000/fff" class="dark:hidden h-16" alt="">
+                                    <img src="https://dummyimage.com/400x400/000/fff" class="hidden dark:block h-16" alt="">
                                 </div>
 
                                 <h4 class="n1tXEtF2vB0vuuhfmfgM {{FD['text']}} font-medium dark:text-white text-gray-900">Apple iPad PRO, 12”, Space Gray</h4>
@@ -154,8 +154,8 @@
                             </a>
                             <a href="#" class="block {{FD['rounded']}} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
                                 <div>
-                                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/macbook-pro-light.svg" class="dark:hidden h-16" alt="">
-                                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/macbook-pro-dark.svg" class="hidden dark:block h-16" alt="">
+                                    <img src="https://dummyimage.com/400x400/000/fff" class="dark:hidden h-16" alt="">
+                                    <img src="https://dummyimage.com/400x400/000/fff" class="hidden dark:block h-16" alt="">
                                 </div>
 
                                 <h4 class="n1tXEtF2vB0vuuhfmfgM {{FD['text']}} font-medium dark:text-white text-gray-900">Apple MacBook PRO, 1TB</h4>
@@ -206,8 +206,8 @@
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                             <a href="#" class="block {{FD['rounded']}} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
                                 <div>
-                                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" class="dark:hidden h-16" alt="">
-                                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg" class="hidden dark:block h-16" alt="">
+                                    <img src="https://dummyimage.com/400x400/000/fff" class="dark:hidden h-16" alt="">
+                                    <img src="https://dummyimage.com/400x400/fff/000" class="hidden dark:block h-16" alt="">
                                 </div>
 
                                 <h4 class="n1tXEtF2vB0vuuhfmfgM {{FD['text']}} font-medium dark:text-white text-gray-900">Apple Imac 2024, 27”, 256GB</h4>
@@ -254,9 +254,9 @@
                             <a href="#"
                                 class="block {{FD['rounded']}} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
                                 <div>
-                                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-light.svg"
+                                    <img src="https://dummyimage.com/400x400/000/fff"
                                         class="dark:hidden h-16" alt="">
-                                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-dark.svg"
+                                    <img src="https://dummyimage.com/400x400/000/fff"
                                         class="hidden dark:block h-16" alt="">
                                 </div>
                                 <h4
@@ -305,9 +305,9 @@
                             <a href="#"
                                 class="block {{FD['rounded']}} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
                                 <div>
-                                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/macbook-pro-light.svg"
+                                    <img src="https://dummyimage.com/400x400/000/fff"
                                         class="dark:hidden h-16" alt="">
-                                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/macbook-pro-dark.svg"
+                                    <img src="https://dummyimage.com/400x400/000/fff"
                                         class="hidden dark:block h-16" alt="">
                                 </div>
                                 <h4 class="n1tXEtF2vB0vuuhfmfgM {{FD['text']}} font-medium dark:text-white text-gray-900">Apple MacBook PRO, 1TB</h4>

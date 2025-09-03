@@ -102,11 +102,10 @@
     }
 @endphp
 
-<!-- Product Detail Page (no header/footer) -->
 <div class="pt-4">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 md:gap-4 items-start">
         <!-- Left: Images (thumbnails at bottom) -->
-        <div class="lg:col-span-5 bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm">
+        <div class="lg:col-span-5 bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm md:sticky md:top-[130px] md:mb-4">
             <div class="flex flex-col gap-4">
 
                 <!-- Main image area -->
@@ -134,7 +133,7 @@
         </div>
 
         <!-- Right: Product Info & Actions -->
-        <div class="lg:col-span-7 flex flex-col gap-4">
+        <div class="lg:col-span-7 flex flex-col gap-4 md:mb-4">
             <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm">
                 <div class="flex items-start justify-between gap-4">
                     <div class="flex-1">
@@ -396,279 +395,637 @@
         </div>
     </div>
 
-    <!-- Redesigned Right Section: Product Info & Actions (Blade/Tailwind) -->
-    <div class="lg:col-span-7 flex flex-col gap-4 lg:top-20" id="pdpRight" data-variants='@json($variations, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)'>
-
-        <!-- Card: Seller, Warranty, Policies & Trust -->
-        <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm text-sm">
-            <div class="flex items-start justify-between">
-                <div>
-                    <div class="text-xs text-slate-500">Seller</div>
-                    <div class="font-semibold">Official Store</div>
-                    <div class="text-xxs text-slate-400">Rated 4.7 • 1.2k ratings</div>
-                </div>
-                <div class="text-right">
-                    <a href="#" class="text-xs text-amber-600 font-semibold">Visit store</a>
-                </div>
-            </div>
-
-            <div class="mt-3 grid grid-cols-2 gap-2 text-xs text-slate-600">
-                <div><strong>Warranty</strong><div class="text-xxs">@php echo $product['specs']['Warranty'] ?? '—' @endphp</div></div>
-                <div><strong>Return</strong><div class="text-xxs">7 days (if eligible)</div></div>
-                <div><strong>Support</strong><div class="text-xxs">Chat / Call available</div></div>
-                <div><strong>Ships from</strong><div class="text-xxs">India</div></div>
-            </div>
-        </div>
-
-        <!-- Card: Upsells / Accessories -->
+    <div class="flex flex-col gap-4">
+        {{-- UPSELL --}}
         <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm">
-            <h3 class="text-sm font-semibold mb-3">Frequently bought together</h3>
-            <div class="flex gap-3 overflow-x-auto no-scrollbar py-1">
+            <div class="flex items-start justify-between mb-3">
+                <h3 class="text-sm font-semibold">Frequently bought together</h3>
+
+                {{-- Top-level CTAs --}}
+                <div class="flex gap-2 items-center">
+                    <button
+                        type="button"
+                        id="buy-together"
+                        class="inline-flex items-center text-xs font-medium px-3 py-1.5 rounded-2xl shadow-sm bg-sky-600 text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                        aria-label="Buy these items together"
+                        data-action="buy-together"
+                    >
+                        Buy together
+                    </button>
+
+                    <button
+                        type="button"
+                        id="add-selected"
+                        class="inline-flex items-center text-xs font-medium px-3 py-1.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300"
+                        aria-label="Add selected upsells to cart"
+                        data-action="add-selected"
+                    >
+                        Add selected
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex gap-3 overflow-x-auto no-scrollbar py-1 items-start">
+                {{-- Base product card (same height as upsells) --}}
+                <div class="flex-shrink-0 w-40 p-2 border dark:border-slate-700 {{ FD['rounded'] }} bg-white dark:bg-slate-900 h-64 flex flex-col justify-between">
+                    <div class="relative">
+                        <img src="https://dummyimage.com/800x600/eeeeee/888888&text=First+image"
+                            alt="Base product title and some other texts"
+                            class="w-full h-32 object-cover {{ FD['rounded'] }}"/>
+
+                        {{-- Optional discount badge for base product (if you want) --}}
+                        @php
+                            $base_mrp = $product['mrp'] ?? null;
+                            $base_price = $product['price'] ?? 2000;
+                            $base_discount = ($base_mrp && $base_mrp > $base_price) ? round((($base_mrp - $base_price) / $base_mrp) * 100) : 0;
+                        @endphp
+
+                        @if($base_discount > 0)
+                            <div class="absolute top-2 left-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-600 text-white">
+                                {{ $base_discount }}% OFF
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="mt-2">
+                        <div class="text-xs font-medium line-clamp-2">Base product title and some other texts</div>
+
+                        <div class="mt-1 flex items-end gap-2">
+                            @if(isset($base_mrp) && $base_mrp > 0)
+                                <div class="text-xs text-slate-400 line-through">@php echo $product['currency'] . number_format($base_mrp,2) @endphp</div>
+                            @endif
+
+                            <div class="text-sm font-semibold">@php echo $product['currency'] . number_format($base_price,2) @endphp</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-2 flex gap-2">
+                        <button
+                            type="button"
+                            class="flex-1 text-xs font-medium px-2 py-1 rounded {{ FD['rounded'] }} bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                            aria-label="Add base product to cart"
+                            data-product-id="{{ $product['id'] ?? '' }}"
+                            data-action="add-to-cart"
+                        >
+                            Add
+                        </button>
+
+                        <button
+                            type="button"
+                            class="text-xs px-2 py-1 rounded {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:outline-none"
+                            aria-label="View base product"
+                            data-action="view-product"
+                            data-product-id="{{ $product['id'] ?? '' }}"
+                        >
+                            View
+                        </button>
+                    </div>
+                </div>
+
+                {{-- Plus icon --}}
+                <div class="flex items-center self-center">
+                    <div class="w-8 h-8 flex items-center justify-center text-slate-600 dark:text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-6 h-6">
+                            <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                {{-- Upsell cards (equal height) --}}
                 @foreach($upsells as $u)
-                    <div class="flex-shrink-0 w-36 p-2 border dark:border-slate-700 {{ FD['rounded'] }} bg-white dark:bg-slate-900">
-                        <img src="{{ $u['img'] }}" alt="{{ $u['title'] }}" class="w-full h-20 object-cover rounded" />
-                        <div class="mt-2 text-xs font-medium">{{ $u['title'] }}</div>
-                        <div class="text-xs text-slate-500">@php echo $product['currency'] . number_format($u['price'],2) @endphp</div>
+                    @php
+                        $mrp = $u['mrp'] ?? ($u['price'] > 0 ? round($u['price'] * 1.15) : 0);
+                        $price = $u['price'] ?? 0;
+                        $discount = ($mrp && $mrp > $price) ? round((($mrp - $price) / $mrp) * 100) : 0;
+                        $upsell_id = $u['id'] ?? $u['sku'] ?? $u['title'];
+                    @endphp
+
+                    <div class="flex-shrink-0 w-40 p-2 border dark:border-slate-700 {{ FD['rounded'] }} bg-white dark:bg-slate-900 h-64 flex flex-col justify-between">
+                        <div class="relative">
+                            <img src="{{ $u['img'] }}" alt="{{ $u['title'] }}" class="w-full h-32 object-cover {{ FD['rounded'] }}"/>
+
+                            {{-- Discount badge --}}
+                            @if($discount > 0)
+                                <div class="absolute top-2 left-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-600 text-white">
+                                    {{ $discount }}% OFF
+                                </div>
+                            @endif
+
+                            {{-- Select checkbox (top-right) --}}
+                            <label class="absolute top-2 right-2 inline-flex items-center">
+                                <input
+                                    type="checkbox"
+                                    name="upsell_selected[]"
+                                    value="{{ $upsell_id }}"
+                                    class="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-sky-300"
+                                    aria-label="Select {{ $u['title'] }} to add"
+                                    data-upsell-id="{{ $upsell_id }}"
+                                />
+                            </label>
+                        </div>
+
+                        <div class="mt-2">
+                            <div class="text-xs font-medium line-clamp-2">{{ $u['title'] }}</div>
+
+                            <div class="mt-1 flex items-baseline gap-2">
+                                @if($mrp && $mrp > 0)
+                                    <div class="text-xs text-slate-400 line-through">@php echo $product['currency'] . number_format($mrp,2) @endphp</div>
+                                @endif
+
+                                <div class="text-sm font-semibold">@php echo $product['currency'] . number_format($price,2) @endphp</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 flex gap-2">
+                            <button
+                                type="button"
+                                class="flex-1 text-xs font-medium px-2 py-1 rounded {{ FD['rounded'] }} bg-sky-600 text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                                aria-label="Add {{ $u['title'] }} to cart"
+                                data-upsell-id="{{ $upsell_id }}"
+                                data-action="add-to-cart"
+                            >
+                                Add
+                            </button>
+
+                            <button
+                                type="button"
+                                class="text-xs px-2 py-1 rounded {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:outline-none"
+                                aria-label="View {{ $u['title'] }}"
+                                data-upsell-id="{{ $upsell_id }}"
+                                data-action="view-product"
+                            >
+                                View
+                            </button>
+                        </div>
                     </div>
                 @endforeach
             </div>
         </div>
 
-    </div>
-
-    <!-- Scripts: small UI helpers for offers, pincode check, wishlist toggle -->
-    <script>
-    (function(){
-        // Offers toggle
-        const toggleOffers = document.getElementById('toggleOffers');
-        const offersPanel = document.getElementById('offersPanel');
-        if (toggleOffers) toggleOffers.addEventListener('click', ()=> offersPanel.classList.toggle('hidden'));
-
-        // Pincode check (demo) - replace with real API call in production
-        const checkBtn = document.getElementById('checkPinBtn');
-        const pinInput = document.getElementById('pincodeInput');
-        const pinResult = document.getElementById('pincodeResult');
-        if (checkBtn) checkBtn.addEventListener('click', ()=>{
-            const pin = (pinInput.value || '').trim();
-            if (!/^[0-9]{6}$/.test(pin)) { pinResult.textContent = 'Please enter a valid 6-digit PIN code.'; pinResult.classList.remove('text-emerald-600'); pinResult.classList.add('text-rose-600'); return; }
-            pinResult.classList.remove('text-rose-600'); pinResult.textContent = 'Checking availability...';
-            // Simulate API
-            setTimeout(()=>{
-                const deliverable = (parseInt(pin[pin.length-1]) % 2) === 0; // demo logic
-                if (deliverable) {
-                    pinResult.textContent = 'Delivery available to this PIN — estimated in ' + document.getElementById('deliveryEstimate').textContent + '.';
-                    pinResult.classList.add('text-emerald-600'); pinResult.classList.remove('text-rose-600');
-                } else {
-                    pinResult.textContent = 'Currently not deliverable to this PIN code. Try another.';
-                    pinResult.classList.add('text-rose-600'); pinResult.classList.remove('text-emerald-600');
-                }
-            }, 700);
-        });
-
-        // Wishlist toggle
-        const wishBtn = document.getElementById('wishBtn');
-        if (wishBtn) wishBtn.addEventListener('click', ()=>{
-            const pressed = wishBtn.getAttribute('aria-pressed') === 'true';
-            wishBtn.setAttribute('aria-pressed', String(!pressed));
-            wishBtn.classList.toggle('bg-amber-600');
-            wishBtn.classList.toggle('text-white');
-        });
-
-        // Make sure variant UI updates the 'selectedSummary' if global updateVariantUI exists
-        if (typeof updateVariantUI === 'function') {
-            // call once to sync
-            updateVariantUI();
-            // monkey-patch to also update sticky price block if needed
-            const orig = updateVariantUI;
-            window.updateVariantUI = function(){ orig(); /* keep backward compat */ };
-        }
-
-    })();
-    </script>
-
-
-    <!-- Product Details: Long Description, FAQ & Reviews -->
-    <div id="pdpDetails" class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-    <!-- Left / Main: Tabs + Content -->
-    <div class="lg:col-span-2 bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-5 shadow-sm" id="detailsMain">
-        <!-- Tabs -->
-        <div class="flex items-center justify-between gap-3">
-        <nav class="tabs flex gap-2" role="tablist" aria-label="Product details tabs">
-            <button class="tab-btn px-3 py-2 text-sm font-medium rounded focus:outline-none" data-tab="desc" role="tab" aria-selected="true">Description</button>
-            <button class="tab-btn px-3 py-2 text-sm font-medium rounded focus:outline-none" data-tab="specs" role="tab">Specifications</button>
-            <button class="tab-btn px-3 py-2 text-sm font-medium rounded focus:outline-none" data-tab="faq" role="tab">FAQ</button>
-            <button class="tab-btn px-3 py-2 text-sm font-medium rounded focus:outline-none" data-tab="reviews" role="tab">Reviews (@php echo count($reviews) @endphp)</button>
-        </nav>
-
-        <div class="text-xs text-slate-500">Last updated: <time datetime="@php echo date('Y-m-d') @endphp">@php echo date('M j, Y') @endphp</time></div>
-        </div>
-
-        <hr class="my-4 dark:border-gray-700"/>
-
-        <!-- Panels -->
-        <div id="panel-desc" data-panel="desc">
-        <h2 class="text-lg font-semibold">Product description</h2>
-        <div class="mt-3 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-            <p>@php echo nl2br(e($product['long_desc'])) @endphp</p>
-
-            <ul class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 list-inside list-disc text-sm">
-            @foreach($product['highlights'] as $h)
-                <li class="pl-2">{{ $h }}</li>
-            @endforeach
-            </ul>
-
-            <!-- Expandable "More details" -->
-            <details class="mt-4 text-sm text-slate-600 dark:text-slate-400 p-3 border rounded">
-            <summary class="font-semibold cursor-pointer">More details</summary>
-            <div class="mt-2">Full product specifications, care instructions, assembly tips and a short troubleshooting guide go here. Keep this section factual and helpful — include measurements, recommended use-cases, and materials.</div>
-            </details>
-        </div>
-        </div>
-
-        <div id="panel-specs" data-panel="specs" class="hidden">
-        <h2 class="text-lg font-semibold">Technical specifications</h2>
-        <div class="mt-3 overflow-x-auto">
-            <table class="w-full text-sm text-left border-collapse">
-            <tbody class="align-top">
-                @foreach($product['specs'] as $k => $v)
-                <tr class="border-t dark:border-slate-700">
-                    <th class="px-3 py-2 w-1/3 text-xs text-slate-500">{{ $k }}</th>
-                    <td class="px-3 py-2 text-sm text-slate-700 dark:text-slate-300">{{ $v }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-            </table>
-        </div>
-
-        <!-- Comparison CTA -->
-        <div class="mt-4 flex items-center gap-3">
-            <button class="px-4 py-2 rounded-md border text-sm">Compare models</button>
-            <a href="#upsells" class="text-sm text-amber-600">See accessories</a>
-        </div>
-        </div>
-
-        <div id="panel-faq" data-panel="faq" class="hidden">
-        <h2 class="text-lg font-semibold">Frequently asked questions</h2>
-        <div class="mt-3 space-y-2">
-            <div class="flex items-center gap-2">
-            <input id="faqSearch" type="search" placeholder="Search FAQs" class="w-full px-3 py-2 border rounded text-sm" aria-label="Search FAQs" />
-            </div>
-
-            <div id="faqsWrapper" class="mt-2 space-y-2">
-            @foreach($faqs as $f)
-                <div class="faq-item border dark:border-slate-700 p-3 {{ FD['rounded'] }}">
-                <button class="faq-q w-full text-left flex items-center justify-between" aria-expanded="false">
-                    <span class="font-medium text-sm">{{ $f['q'] }}</span>
-                    <svg class="w-4 h-4 transform transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
-                </button>
-                <div class="faq-a mt-2 hidden text-sm text-slate-600 dark:text-slate-400">{{ $f['a'] }}</div>
-                </div>
-            @endforeach
-            </div>
-        </div>
-        </div>
-
-        <div id="panel-reviews" data-panel="reviews" class="hidden">
-        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-            <div>
-            <h2 class="text-lg font-semibold">Customer reviews</h2>
-            <div class="text-xs text-slate-500 mt-1">Verified buyers • Most recent first</div>
-            </div>
-
-            <div class="flex items-center gap-2">
-            <label for="sortReviews" class="text-xs">Sort</label>
-            <select id="sortReviews" class="px-2 py-1 border rounded text-sm">
-                <option value="recent">Most recent</option>
-                <option value="rating_desc">Top rated</option>
-                <option value="rating_asc">Lowest rated</option>
-            </select>
-            </div>
-        </div>
-
-        <hr class="my-3 dark:border-slate-700"/>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="md:col-span-1 bg-amber-50 dark:bg-amber-900 p-4 {{ FD['rounded'] }}">
-            <div class="text-center">
-                <div class="text-3xl font-bold">@php
-                $avg = 0; $total = count($reviews); if($total){ foreach($reviews as $r) $avg += $r['rating']; $avg = round($avg/$total,1); }
-                echo $total ? $avg : '0.0';
-                @endphp</div>
-                <div class="text-xs text-slate-600 mt-1">based on @php echo $total @endphp reviews</div>
-            </div>
-
-            @php
-                $ratingBuckets = [5=>0,4=>0,3=>0,2=>0,1=>0];
-                foreach($reviews as $r) $ratingBuckets[$r['rating']]++;
-            @endphp
-
-            <div class="mt-3 space-y-2 text-sm">
-                @foreach($ratingBuckets as $star => $count)
-                <div class="flex items-center gap-2">
-                    <div class="w-10 text-xs">@php echo $star @endphp★</div>
-                    <div class="flex-1 bg-slate-200 dark:bg-slate-700 h-2 rounded overflow-hidden">
-                    <div style="width:@php echo $total? intval(($count/$total)*100):0 @endphp%" class="h-2 bg-amber-600"></div>
-                    </div>
-                    <div class="w-8 text-xs text-right">@php echo $count @endphp</div>
-                </div>
-                @endforeach
-            </div>
-
-            <button id="openReviewModal2" class="mt-4 w-full px-3 py-2 rounded-md bg-amber-600 text-white text-sm">Write a review</button>
-            </div>
-
-            <div class="md:col-span-2" id="reviewsList">
-            @foreach($reviews as $r)
-                <article class="p-3 border dark:border-slate-700 {{ FD['rounded'] }} mb-3">
-                <header class="flex items-start justify-between gap-3">
+        <section id="pdp-description" class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm">
+            <div class="mx-auto">
+                <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div>
-                    <div class="font-semibold">{{ $r['name'] }} <span class="text-xs text-slate-400">· {{ $r['date'] }}</span></div>
-                    <div class="flex items-center gap-1 mt-1">@for($i=0;$i<5;$i++) {!! $i < $r['rating'] ? '<svg class="w-3 h-3 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' : '<svg class="w-3 h-3 text-slate-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' !!} @endfor</div>
+                        <h2 class="text-sm font-semibold mb-3">Product description</h2>
                     </div>
-                    <div class="text-xs text-slate-500">Verified purchase</div>
                 </header>
-                <div class="mt-2">
-                    <div class="font-semibold text-sm">{{ $r['title'] }}</div>
-                    <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">{{ $r['body'] }}</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-8 space-y-6">
+                        {{-- <article class="prose prose-lg dark:prose-invert">
+                            <h3 class="text-xl font-semibold">Amazing Product Name</h3>
+                            <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                                <div class="flex items-center gap-1" aria-label="Customer rating: 4.6 out of 5">
+                                <svg class="w-4 h-4 text-yellow-500" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.45a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.371-2.45a1 1 0 00-1.175 0l-3.37 2.45c-.784.57-1.839-.197-1.54-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.064 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"/></svg>
+                                <span class="ml-1 font-medium">4.6</span>
+                                <span class="text-gray-500 dark:text-gray-400">(1,248 reviews)</span>
+                                </div>
+
+                                <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-xs">
+                                <svg class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <span class="font-medium">Free premium support</span>
+                                </div>
+
+                            </div>
+
+                            <p class="mt-4 text-base text-gray-700 dark:text-gray-300">Short compelling product pitch. Use benefit-first language focusing on the customer's pain points and how the product solves them. Keep it scannable; expand below.</p>
+                        </article> --}}
+
+                        <!-- Rich content blocks (images + formatted description) -->
+                        <div class="space-y-4">
+                            <p class="mt-4 text-sm text-gray-700 dark:text-gray-300">Short compelling product pitch. Use benefit-first language focusing on the customer's pain points and how the product solves them. Keep it scannable; expand below.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                                <figure class="{{ FD['rounded'] }} overflow-hidden border border-gray-100 dark:border-gray-800">
+                                <img src="https://dummyimage.com/800x600/eeeeee/888888&text=Feature+image+1" alt="Feature 1" class="w-full h-56 object-cover">
+                                </figure>
+
+                                <div>
+                                <h4 class="text-lg font-semibold">What makes it different</h4>
+                                <ul class="mt-3 space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                                    <li class="flex items-start gap-2"><svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>Precision-built</strong> components for long-lasting performance.</span></li>
+                                    <li class="flex items-start gap-2"><svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none"><path d="M12 8v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>Fast setup</strong> — ready to use out of the box with guided instructions.</span></li>
+                                    <li class="flex items-start gap-2"><svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none"><path d="M3 12h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>Eco-friendly</strong> materials and low power consumption.</span></li>
+                                </ul>
+
+                                <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">Tip: Use bullet highlights like these to improve scan-ability. Convert each bullet into a short microcopy for mobile.</p>
+                                </div>
+                            </div>
+
+                            <!-- Long-form folded description with 'Read more' -->
+                            <div class="prose prose-sm dark:prose-invert bg-gray-50 dark:bg-gray-800 p-4 {{ FD['rounded'] }} border border-gray-100 dark:border-gray-800">
+                                <p class="text-sm text-gray-700 dark:text-gray-300">Longer, SEO-friendly product description that expands on technical details, benefits, and use cases. This should be crafted with keywords and structured headings. Use short paragraphs and subheads for readability.</p>
+
+                                <div id="longDescription" class="mt-3 text-sm text-gray-700 dark:text-gray-300 max-h-24 overflow-hidden transition-all">
+                                <p>Detailed paragraph 1 — describe how this product solves a user's top problem. Include measurable outcomes (e.g., "reduces setup time by 40%"), and concrete examples.</p>
+                                <p>Detailed paragraph 2 — talk about materials, construction, certifications, and compatibility with accessories.</p>
+                                <p>Detailed paragraph 3 — include warranty and service details, support channels, and any exclusives.</p>
+                                </div>
+
+                                <button id="toggleLongDesc" class="mt-3 text-sm font-medium underline text-blue-600 dark:text-blue-400" aria-expanded="false">Read more</button>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <div class="border-b border-gray-200 dark:border-gray-800">
+                                <nav class="-mb-px flex gap-4" aria-label="Product description tabs">
+                                <button class="tab-button pb-3 px-1 text-sm font-medium text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400" data-tab="highlights">Highlights</button>
+                                <button class="tab-button pb-3 px-1 text-sm font-medium text-gray-600 dark:text-gray-300" data-tab="specs">Specifications</button>
+                                <button class="tab-button pb-3 px-1 text-sm font-medium text-gray-600 dark:text-gray-300" data-tab="reviews">Reviews</button>
+                                <button class="tab-button pb-3 px-1 text-sm font-medium text-gray-600 dark:text-gray-300" data-tab="qa">Q&amp;A</button>
+                                </nav>
+                            </div>
+
+                            <div class="mt-6 space-y-6">
+                                <div id="highlights" class="tab-panel">
+                                <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-300">
+                                    <li class="space-y-1">
+                                    <h5 class="font-semibold">Speed & Efficiency</h5>
+                                    <p>Optimized design that delivers results quickly with low resource usage.</p>
+                                    </li>
+                                    <li class="space-y-1">
+                                    <h5 class="font-semibold">Reliability</h5>
+                                    <p>Tested under extreme conditions to ensure consistent performance.</p>
+                                    </li>
+                                    <li class="space-y-1">
+                                    <h5 class="font-semibold">Connectivity</h5>
+                                    <p>Supports the latest protocols and seamless pairing with popular devices.</p>
+                                    </li>
+                                    <li class="space-y-1">
+                                    <h5 class="font-semibold">Customer Support</h5>
+                                    <p>24/7 premium support included for the first year.</p>
+                                    </li>
+                                </ul>
+                                </div>
+
+                                <div id="specs" class="tab-panel hidden">
+                                <table class="w-full text-sm text-left">
+                                    <tbody>
+                                    <tr class="border-t border-gray-100 dark:border-gray-800">
+                                        <th class="py-3 pr-6 font-medium w-1/3">Model</th>
+                                        <td class="py-3">Model X-200</td>
+                                    </tr>
+                                    <tr class="border-t border-gray-100 dark:border-gray-800">
+                                        <th class="py-3 pr-6 font-medium">Dimensions</th>
+                                        <td class="py-3">220 x 150 x 90 mm</td>
+                                    </tr>
+                                    <tr class="border-t border-gray-100 dark:border-gray-800">
+                                        <th class="py-3 pr-6 font-medium">Weight</th>
+                                        <td class="py-3">1.2 kg</td>
+                                    </tr>
+                                    <tr class="border-t border-gray-100 dark:border-gray-800">
+                                        <th class="py-3 pr-6 font-medium">Battery</th>
+                                        <td class="py-3">Up to 12 hours (typical)</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                </div>
+
+                                <div id="reviews" class="tab-panel hidden">
+                                <div class="space-y-4">
+                                    <div class="flex items-start gap-4">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">A</div>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                        <strong>Alex</strong>
+                                        <span class="text-sm text-gray-500">— 5 stars</span>
+                                        </div>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">"Fantastic build quality and excellent battery life. Highly recommended."</p>
+                                    </div>
+                                    </div>
+
+                                    <a href="#" class="inline-block text-sm text-blue-600 dark:text-blue-400">View all reviews</a>
+                                </div>
+                                </div>
+
+                                <div id="qa" class="tab-panel hidden">
+                                <div class="space-y-3">
+                                    <details class="p-3 bg-gray-50 dark:bg-gray-800 {{ FD['rounded'] }} border border-gray-100 dark:border-gray-800">
+                                    <summary class="font-medium">Is this compatible with Model Y?</summary>
+                                    <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">Yes — Model X supports Model Y via the included adapter (sold separately).</p>
+                                    </details>
+
+                                    <a href="#" class="text-sm text-blue-600 dark:text-blue-400">Ask a question</a>
+                                </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <aside class="lg:col-span-4 sticky md:top-[8.3rem] self-start space-y-4">
+                        <div class="{{ FD['rounded'] }} border border-gray-100 dark:border-gray-800 p-4 bg-white dark:bg-gray-900 shadow-sm">
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Limited time deal</p>
+                            <div class="flex items-baseline gap-3">
+                                <div class="text-2xl font-extrabold">₹9,499</div>
+                                <div class="text-sm line-through text-gray-500">₹12,999</div>
+                            </div>
+                            <p class="text-xs text-green-600 dark:text-green-400 mt-1">Save ₹3,500 (27%)</p>
+                            </div>
+
+                            <div class="w-24 h-24 flex-shrink-0 {{ FD['rounded'] }} overflow-hidden border border-gray-100 dark:border-gray-800">
+                                <img src="https://dummyimage.com/200x200/cccccc/666666&text=Deal" alt="Deal image" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+
+                        <div class="mt-3 flex items-center gap-2">
+                            <!-- Countdown icon -->
+                            {{-- <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M12 8v5l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> --}}
+                            
+                            <div class="{{ FD['iconClass'] }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Offer ends in <span id="dealCountdown" class="font-medium">02:13:45</span></div>
+                        </div>
+
+                        <div class="mt-4 grid grid-cols-2 gap-2">
+                            <button class="py-2 px-3 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-800 text-sm font-medium">Add to cart</button>
+                            <button class="py-2 px-3 {{ FD['rounded'] }} bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">Buy now</button>
+                        </div>
+
+                        <div class="mt-3 text-xs text-gray-500 dark:text-gray-400">Free delivery & easy returns. EMI options available.</div>
+                        </div>
+
+                        <!-- Small ad / cross-sell card -->
+                        <div class="{{ FD['rounded'] }} border border-dashed border-gray-100 dark:border-gray-800 p-3 text-sm bg-gradient-to-br from-yellow-50 to-white dark:from-yellow-900 dark:to-gray-900">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-12 h-12 {{ FD['rounded'] }} overflow-hidden">
+                            <img src="https://dummyimage.com/120x120/eeeeee/888888&text=Bundle" alt="Bundle" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-semibold">Bundle & Save</h4>
+                                <span class="text-xs text-green-600 dark:text-green-400">-15%</span>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-600 dark:text-gray-300">Add a matching accessory and get 15% off. Limited stock.</p>
+                            <a href="#" class="mt-2 inline-block text-xs text-blue-600 dark:text-blue-400">View bundle</a>
+                            </div>
+                        </div>
+                        </div>
+
+                    </aside>
                 </div>
-                </article>
-            @endforeach
+            </div>
 
-            <!-- Load more (demo) -->
-            <div class="text-center mt-4">
-                <button id="loadMoreReviews" class="px-4 py-2 rounded-md border text-sm">Load more reviews</button>
+            <!-- Mobile sticky CTA -->
+            <div id="mobileCta" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[92%] sm:hidden">
+                <div class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-3 shadow-lg">
+                <div class="flex items-center gap-3">
+                    <img src="https://dummyimage.com/64x64/cccccc/666666&text=P" alt="product" class="w-12 h-12 {{ FD['rounded'] }} object-cover">
+                    <div>
+                    <div class="text-sm font-medium">₹9,499</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400">Free delivery</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="px-3 py-2 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-700 text-sm">Add</button>
+                    <button class="px-4 py-2 {{ FD['rounded'] }} bg-blue-600 text-white text-sm">Buy</button>
+                </div>
+                </div>
+            </div>
+
+            <!-- Minimal JS for interactions (tabs, read more, countdown) -->
+            <script>
+                (function(){
+                // Tabs
+                const tabButtons = document.querySelectorAll('.tab-button');
+                const panels = document.querySelectorAll('.tab-panel');
+                tabButtons.forEach(btn => btn.addEventListener('click', () => {
+                    tabButtons.forEach(b => b.classList.remove('text-blue-600','dark:text-blue-400','border-blue-600','dark:border-blue-400'));
+                    tabButtons.forEach(b => b.classList.add('text-gray-600','dark:text-gray-300'));
+                    btn.classList.add('text-blue-600','dark:text-blue-400','border-blue-600','dark:border-blue-400');
+                    panels.forEach(p => p.classList.add('hidden'));
+                    const target = document.getElementById(btn.dataset.tab);
+                    if (target) target.classList.remove('hidden');
+                }));
+
+                // Read more toggle
+                const toggleBtn = document.getElementById('toggleLongDesc');
+                const longDesc = document.getElementById('longDescription');
+                if(toggleBtn && longDesc){
+                    toggleBtn.addEventListener('click', () => {
+                    const expanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+                    toggleBtn.setAttribute('aria-expanded', String(!expanded));
+                    if(!expanded){
+                        longDesc.style.maxHeight = longDesc.scrollHeight + 'px';
+                        toggleBtn.textContent = 'Show less';
+                    } else {
+                        longDesc.style.maxHeight = '6rem';
+                        toggleBtn.textContent = 'Read more';
+                    }
+                    });
+                }
+
+                // Simple countdown (example: offer ends in X seconds from page load)
+                const countdownEl = document.getElementById('dealCountdown');
+                if(countdownEl){
+                    // set example expiry 2 hours from now
+                    const expiry = Date.now() + (2 * 60 * 60 * 1000) + (13 * 60 * 1000) + (45 * 1000);
+                    function updateCountdown(){
+                    const diff = Math.max(0, expiry - Date.now());
+                    const hrs = Math.floor(diff / (1000*60*60));
+                    const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
+                    const secs = Math.floor((diff % (1000*60)) / 1000);
+                    countdownEl.textContent = String(hrs).padStart(2,'0')+":"+String(mins).padStart(2,'0')+":"+String(secs).padStart(2,'0');
+                    if(diff<=0) clearInterval(timer);
+                    }
+                    updateCountdown();
+                    const timer = setInterval(updateCountdown,1000);
+                }
+
+                // Accessibility: make detail summaries keyboard friendly
+                document.querySelectorAll('details').forEach(d=>{
+                    d.addEventListener('keydown', e=>{
+                    if(e.key === 'Enter' || e.key === ' '){
+                        e.preventDefault(); d.open = !d.open;
+                    }
+                    });
+                });
+
+                })();
+            </script>
+
+        </section>
+
+        <div class="lg:col-span-2 bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-5 shadow-sm" id="detailsMain">
+            <!-- Tabs -->
+            <div class="flex items-center justify-between gap-3">
+                <nav class="tabs flex gap-2" role="tablist" aria-label="Product details tabs">
+                    <button class="tab-btn px-3 py-2 text-sm font-medium rounded focus:outline-none" data-tab="desc" role="tab" aria-selected="true">Description</button>
+                    <button class="tab-btn px-3 py-2 text-sm font-medium rounded focus:outline-none" data-tab="specs" role="tab">Specifications</button>
+                    <button class="tab-btn px-3 py-2 text-sm font-medium rounded focus:outline-none" data-tab="faq" role="tab">FAQ</button>
+                    <button class="tab-btn px-3 py-2 text-sm font-medium rounded focus:outline-none" data-tab="reviews" role="tab">Reviews (@php echo count($reviews) @endphp)</button>
+                </nav>
+
+                <div class="text-xs text-slate-500">Last updated: <time datetime="@php echo date('Y-m-d') @endphp">@php echo date('M j, Y') @endphp</time></div>
+            </div>
+
+            <hr class="my-4 dark:border-gray-700"/>
+
+            <!-- Panels -->
+            <div id="panel-desc" data-panel="desc">
+            <h2 class="text-lg font-semibold">Product description</h2>
+            <div class="mt-3 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                <p>@php echo nl2br(e($product['long_desc'])) @endphp</p>
+
+                <ul class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 list-inside list-disc text-sm">
+                @foreach($product['highlights'] as $h)
+                    <li class="pl-2">{{ $h }}</li>
+                @endforeach
+                </ul>
+
+                <!-- Expandable "More details" -->
+                <details class="mt-4 text-sm text-slate-600 dark:text-slate-400 p-3 border rounded">
+                <summary class="font-semibold cursor-pointer">More details</summary>
+                <div class="mt-2">Full product specifications, care instructions, assembly tips and a short troubleshooting guide go here. Keep this section factual and helpful — include measurements, recommended use-cases, and materials.</div>
+                </details>
             </div>
             </div>
-        </div>
+
+            <div id="panel-specs" data-panel="specs" class="hidden">
+            <h2 class="text-lg font-semibold">Technical specifications</h2>
+            <div class="mt-3 overflow-x-auto">
+                <table class="w-full text-sm text-left border-collapse">
+                <tbody class="align-top">
+                    @foreach($product['specs'] as $k => $v)
+                    <tr class="border-t dark:border-slate-700">
+                        <th class="px-3 py-2 w-1/3 text-xs text-slate-500">{{ $k }}</th>
+                        <td class="px-3 py-2 text-sm text-slate-700 dark:text-slate-300">{{ $v }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+                </table>
+            </div>
+
+            <!-- Comparison CTA -->
+            <div class="mt-4 flex items-center gap-3">
+                <button class="px-4 py-2 {{ FD['rounded'] }} border text-sm">Compare models</button>
+                <a href="#upsells" class="text-sm text-amber-600">See accessories</a>
+            </div>
+            </div>
+
+            <div id="panel-faq" data-panel="faq" class="hidden">
+            <h2 class="text-lg font-semibold">Frequently asked questions</h2>
+            <div class="mt-3 space-y-2">
+                <div class="flex items-center gap-2">
+                <input id="faqSearch" type="search" placeholder="Search FAQs" class="w-full px-3 py-2 border rounded text-sm" aria-label="Search FAQs" />
+                </div>
+
+                <div id="faqsWrapper" class="mt-2 space-y-2">
+                @foreach($faqs as $f)
+                    <div class="faq-item border dark:border-slate-700 p-3 {{ FD['rounded'] }}">
+                    <button class="faq-q w-full text-left flex items-center justify-between" aria-expanded="false">
+                        <span class="font-medium text-sm">{{ $f['q'] }}</span>
+                        <svg class="w-4 h-4 transform transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                    <div class="faq-a mt-2 hidden text-sm text-slate-600 dark:text-slate-400">{{ $f['a'] }}</div>
+                    </div>
+                @endforeach
+                </div>
+            </div>
+            </div>
+
+            <div id="panel-reviews" data-panel="reviews" class="hidden">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                <div>
+                <h2 class="text-lg font-semibold">Customer reviews</h2>
+                <div class="text-xs text-slate-500 mt-1">Verified buyers • Most recent first</div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                <label for="sortReviews" class="text-xs">Sort</label>
+                <select id="sortReviews" class="px-2 py-1 border rounded text-sm">
+                    <option value="recent">Most recent</option>
+                    <option value="rating_desc">Top rated</option>
+                    <option value="rating_asc">Lowest rated</option>
+                </select>
+                </div>
+            </div>
+
+            <hr class="my-3 dark:border-slate-700"/>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="md:col-span-1 bg-amber-50 dark:bg-amber-900 p-4 {{ FD['rounded'] }}">
+                <div class="text-center">
+                    <div class="text-3xl font-bold">@php
+                    $avg = 0; $total = count($reviews); if($total){ foreach($reviews as $r) $avg += $r['rating']; $avg = round($avg/$total,1); }
+                    echo $total ? $avg : '0.0';
+                    @endphp</div>
+                    <div class="text-xs text-slate-600 mt-1">based on @php echo $total @endphp reviews</div>
+                </div>
+
+                @php
+                    $ratingBuckets = [5=>0,4=>0,3=>0,2=>0,1=>0];
+                    foreach($reviews as $r) $ratingBuckets[$r['rating']]++;
+                @endphp
+
+                <div class="mt-3 space-y-2 text-sm">
+                    @foreach($ratingBuckets as $star => $count)
+                    <div class="flex items-center gap-2">
+                        <div class="w-10 text-xs">@php echo $star @endphp★</div>
+                        <div class="flex-1 bg-slate-200 dark:bg-slate-700 h-2 rounded overflow-hidden">
+                        <div style="width:@php echo $total? intval(($count/$total)*100):0 @endphp%" class="h-2 bg-amber-600"></div>
+                        </div>
+                        <div class="w-8 text-xs text-right">@php echo $count @endphp</div>
+                    </div>
+                    @endforeach
+                </div>
+
+                <button id="openReviewModal2" class="mt-4 w-full px-3 py-2 {{ FD['rounded'] }} bg-amber-600 text-white text-sm">Write a review</button>
+                </div>
+
+                <div class="md:col-span-2" id="reviewsList">
+                @foreach($reviews as $r)
+                    <article class="p-3 border dark:border-slate-700 {{ FD['rounded'] }} mb-3">
+                    <header class="flex items-start justify-between gap-3">
+                        <div>
+                        <div class="font-semibold">{{ $r['name'] }} <span class="text-xs text-slate-400">· {{ $r['date'] }}</span></div>
+                        <div class="flex items-center gap-1 mt-1">@for($i=0;$i<5;$i++) {!! $i < $r['rating'] ? '<svg class="w-3 h-3 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' : '<svg class="w-3 h-3 text-slate-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' !!} @endfor</div>
+                        </div>
+                        <div class="text-xs text-slate-500">Verified purchase</div>
+                    </header>
+                    <div class="mt-2">
+                        <div class="font-semibold text-sm">{{ $r['title'] }}</div>
+                        <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">{{ $r['body'] }}</p>
+                    </div>
+                    </article>
+                @endforeach
+
+                <!-- Load more (demo) -->
+                <div class="text-center mt-4">
+                    <button id="loadMoreReviews" class="px-4 py-2 {{ FD['rounded'] }} border text-sm">Load more reviews</button>
+                </div>
+                </div>
+            </div>
+
+            </div>
 
         </div>
 
-    </div>
+        <aside class="lg:col-span-1">
+            <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm sticky top-28">
+            <div class="text-sm font-semibold">Need help deciding?</div>
+            <div class="mt-2 text-xs text-slate-600">Chat with our product experts for advice, bulk orders, or assembly help.</div>
+            <div class="mt-3 flex gap-2">
+                <button class="px-3 py-2 {{ FD['rounded'] }} bg-amber-600 text-white text-sm">Chat now</button>
+                <button class="px-3 py-2 {{ FD['rounded'] }} border text-sm">Call</button>
+            </div>
 
-    <!-- Right: Sticky Helpful box -->
-    <aside class="lg:col-span-1">
-        <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm sticky top-28">
-        <div class="text-sm font-semibold">Need help deciding?</div>
-        <div class="mt-2 text-xs text-slate-600">Chat with our product experts for advice, bulk orders, or assembly help.</div>
-        <div class="mt-3 flex gap-2">
-            <button class="px-3 py-2 rounded-md bg-amber-600 text-white text-sm">Chat now</button>
-            <button class="px-3 py-2 rounded-md border text-sm">Call</button>
-        </div>
-
-        <div class="mt-4 border-t pt-3 text-xs text-slate-600">
-            <div><strong>Delivery:</strong> @php echo ($product['shipping']['estimate_days'][0] ?? '—') . ' - ' . ($product['shipping']['estimate_days'][1] ?? '—') @endphp days</div>
-            <div class="mt-1"><strong>Return:</strong> 7 days (eligible)</div>
-            <div class="mt-1"><strong>Warranty:</strong> @php echo $product['specs']['Warranty'] ?? '—' @endphp</div>
-        </div>
-        </div>
-    </aside>
-
+            <div class="mt-4 border-t pt-3 text-xs text-slate-600">
+                <div><strong>Delivery:</strong> @php echo ($product['shipping']['estimate_days'][0] ?? '—') . ' - ' . ($product['shipping']['estimate_days'][1] ?? '—') @endphp days</div>
+                <div class="mt-1"><strong>Return:</strong> 7 days (eligible)</div>
+                <div class="mt-1"><strong>Warranty:</strong> @php echo $product['specs']['Warranty'] ?? '—' @endphp</div>
+            </div>
+            </div>
+        </aside>
     </div>
 
 
     <!-- Review modal (reusable) -->
-    <div id="reviewModal2" class="fixed inset-0 z-60 flex items-center justify-center hidden p-4" aria-hidden="true">
+    <div id="reviewModal2" class="fixed inset-0 z-60 items-center justify-center hidden p-4" aria-hidden="true">
     <div class="max-w-xl w-full {{ FD['rounded'] }} bg-white dark:bg-slate-800 p-4 shadow-lg">
         <div class="flex items-start justify-between">
         <h3 class="text-lg font-semibold">Write a review</h3>
@@ -696,8 +1053,8 @@
         </div>
 
         <div class="flex items-center gap-2">
-            <button type="submit" class="px-4 py-2 rounded-md bg-amber-600 text-white">Submit review</button>
-            <button type="button" id="cancelReview2" class="px-4 py-2 rounded-md border">Cancel</button>
+            <button type="submit" class="px-4 py-2 {{ FD['rounded'] }} bg-amber-600 text-white">Submit review</button>
+            <button type="button" id="cancelReview2" class="px-4 py-2 {{ FD['rounded'] }} border">Cancel</button>
         </div>
         </form>
     </div>

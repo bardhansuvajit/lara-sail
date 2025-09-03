@@ -145,7 +145,7 @@
                                         <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
                                             <a href="#">
                                                 <div class="h-20 w-full mb-2">
-                                                    <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
+                                                    <img class="mx-auto h-full" src="https://dummyimage.com/400x400/000/fff" alt="" />
                                                 </div>
 
                                                 <div class="absolute top-0 right-0 w-full h-8 p-1 overflow-hidden">
@@ -372,7 +372,7 @@
                         <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
                             <a href="#">
                                 <div class="h-40 w-full">
-                                    <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
+                                    <img class="mx-auto h-full" src="https://dummyimage.com/400x400/000/fff" alt="" />
                                 </div>
 
                                 <div class="absolute top-0 right-0 w-full h-8 p-1 overflow-hidden">
@@ -430,7 +430,7 @@
 
             <div class="w-full space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
                 <div class="text-center">
-                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/promo-banner.jpg" class="bg-cover {{FD['rounded']}} w-full h-24 mb-4" alt="promo banner">
+                    <img src="https://dummyimage.com/400x400/000/fff" class="bg-cover {{FD['rounded']}} w-full h-24 mb-4" alt="promo banner">
                         
                     <span class="text-green-100 font-medium text-sm leading-5 py-0.5 px-2.5 bg-green-500 {{FD['rounded']}} items-center inline-flex mb-4 dark:bg-green-300 dark:text-green-800">
                         <svg class="w-4 h-4 mr-1 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
@@ -451,7 +451,7 @@
                 <div class="grid grid-cols-3 gap-2">
                     <div class="w-full max-w-sm bg-white border border-gray-200 {{FD['rounded']}} shadow-sm dark:bg-gray-800 dark:border-gray-700">
                         <a href="#">
-                            <img class="p-2 {{FD['rounded']}}" src="https://flowbite.com/docs/images/products/apple-watch.png" alt="product image" />
+                            <img class="p-2 {{FD['rounded']}}" src="https://dummyimage.com/400x400/000/fff" alt="product image" />
                         </a>
                         <div class="p-1">
                             <a href="#">
@@ -481,7 +481,7 @@
                     </div>
                     <div class="w-full max-w-sm bg-white border border-gray-200 {{FD['rounded']}} shadow-sm dark:bg-gray-800 dark:border-gray-700">
                         <a href="#">
-                            <img class="p-2 {{FD['rounded']}}" src="https://flowbite.com/docs/images/products/apple-watch.png" alt="product image" />
+                            <img class="p-2 {{FD['rounded']}}" src="https://dummyimage.com/400x400/000/fff" alt="product image" />
                         </a>
                         <div class="p-1">
                             <a href="#">
@@ -511,7 +511,7 @@
                     </div>
                     <div class="w-full max-w-sm bg-white border border-gray-200 {{FD['rounded']}} shadow-sm dark:bg-gray-800 dark:border-gray-700">
                         <a href="#">
-                            <img class="p-2 {{FD['rounded']}}" src="https://flowbite.com/docs/images/products/apple-watch.png" alt="product image" />
+                            <img class="p-2 {{FD['rounded']}}" src="https://dummyimage.com/400x400/000/fff" alt="product image" />
                         </a>
                         <div class="p-1">
                             <a href="#">
@@ -547,7 +547,7 @@
                     <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
                         <a href="#">
                             <div class="h-20 w-full mb-2">
-                                <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
+                                <img class="mx-auto h-full" src="https://dummyimage.com/400x400/000/fff" alt="" />
                             </div>
 
                             <div class="absolute top-0 right-0 w-full h-8 p-1 overflow-hidden">
@@ -588,7 +588,7 @@
                     <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
                         <a href="#">
                             <div class="h-20 w-full mb-2">
-                                <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
+                                <img class="mx-auto h-full" src="https://dummyimage.com/400x400/000/fff" alt="" />
                             </div>
 
                             <div class="absolute top-0 right-0 w-full h-8 p-1 overflow-hidden">
@@ -630,7 +630,7 @@
 
             <div class="w-full space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
                 <div class="text-center">
-                    <img src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/promo-banner.jpg" class="bg-cover {{FD['rounded']}} w-full h-36 mb-4" alt="promo banner">
+                    <img src="https://dummyimage.com/400x400/000/fff" class="bg-cover {{FD['rounded']}} w-full h-36 mb-4" alt="promo banner">
                         
                     <span class="text-green-100 font-medium text-sm leading-5 py-0.5 px-2.5 bg-green-500 {{FD['rounded']}} items-center inline-flex mb-4 dark:bg-green-300 dark:text-green-800">
                         <svg class="w-4 h-4 mr-1 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
