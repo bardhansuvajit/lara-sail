@@ -187,7 +187,11 @@
                 <div class="mt-4 flex items-center gap-4">
                     <div>
                         <div id="sellingPriceEl" class="text-xl sm:text-2xl font-bold">@php echo $product['currency'] . number_format($product['price'], 2) @endphp</div>
-                        <div id="mrpEl" class="text-xs text-slate-500 dark:text-slate-400 line-through">@php echo $product['currency'] . number_format($product['mrp'], 2) @endphp</div>
+                        <div id="mrpEl" class="text-xs text-slate-500 dark:text-slate-400">
+                            <span class="line-through">
+                                @php echo $product['currency'] . number_format($product['mrp'], 2) @endphp
+                            </span>
+                        </div>
                         <div id="savingsEl" class="text-xs text-emerald-700 dark:text-emerald-300 font-medium mt-1">You save @php echo $product['currency'] . number_format($product['mrp'] - $product['price'], 2) @endphp (@php echo round((($product['mrp'] - $product['price'])/$product['mrp'])*100) @endphp% off)</div>
                     </div>
                 </div>
@@ -901,7 +905,7 @@
 
         // set price & stock-based states
         if (priceEl) priceEl.textContent = '@php echo $product["currency"] @endphp' + Number(info.price).toFixed(2);
-        if (mrpEl) mrpEl.textContent = '@php echo $product["currency"] . number_format($product["mrp"], 2) @endphp';
+        if (mrpEl) mrpEl.innerHTML = '<span class="line-through">@php echo $product["currency"] . number_format($product["mrp"], 2) @endphp</span>';
         if (savingsEl) savingsEl.textContent = 'You save @php echo $product["currency"] . number_format($product["mrp"] - $product["price"], 2) @endphp (@php echo round((($product["mrp"] - $product["price"])/$product["mrp"])*100) @endphp% off)';
 
         if (info.stock <= 2) {
