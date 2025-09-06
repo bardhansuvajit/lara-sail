@@ -201,10 +201,13 @@ class ProductListingController
             $productTypes = json_decode($this->developerSettingRepository->getByKey('product_type')['data']->value);
             $productType = collect($productTypes)->firstWhere('key', $companyDomain);
 
+            $allStatusResp = $this->productStatusRepository->list('', ['status' => 1], 'all', 'position', 'asc');
+
             return view('admin.product.listing.edit', [
                 'data' => $resp['data'],
                 'activeCountries' => $activeCountries['data'],
-                'productType' => $productType
+                'productType' => $productType,
+                'allStatus' => $allStatusResp['data'],
             ]);
         } else {
             return redirect()->back()->with($resp['status'], $resp['message']);

@@ -28,7 +28,7 @@ class ProductController extends Controller
             $variation = $this->productVariationRepository->groupedVariation($resp['data']->id);
 
             return view('front.product.detail', [
-                'product' => $resp['data'],
+                'prouct' => $resp['data'],
                 'variation' => $variation
             ]);
         } else {

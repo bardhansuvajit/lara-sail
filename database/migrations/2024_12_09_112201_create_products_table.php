@@ -55,7 +55,7 @@ return new class extends Migration
             $table->enum('dimension_unit', ['mm', 'cm', 'm', 'in', 'ft'])->default('cm');
 
             // SEO
-            $table->text('tags')->nullable();
+            $table->text('search_tags')->nullable();
             $table->text('meta_title')->nullable();
             $table->text('meta_desc')->nullable();
 

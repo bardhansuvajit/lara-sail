@@ -102,75 +102,126 @@
     }
 @endphp
 
-<div class="pt-4">
+<div class="pt-2 md:pt-4">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 md:gap-4 items-start">
         <!-- Left: Images (thumbnails at bottom) -->
-        <div class="lg:col-span-5 bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm md:sticky md:top-[130px] md:mb-4">
-            <div class="flex flex-col gap-4">
+        <div class="lg:col-span-5 bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm md:sticky md:top-[130px] md:mb-4">
+            <div class="flex flex-col gap-2 md:gap-4">
 
-                <!-- Main image area -->
-                <div class="relative {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+                <!-- Main image area (wrapper is relative for lens) -->
+                <div id="mainImageWrapper" class="relative {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
                     <div class="aspect-w-4 aspect-h-3 {{ FD['rounded'] }} overflow-hidden">
-                        <img id="mainImage" src="@php echo $product['images'][0] @endphp" alt="Main product image" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
+                        <img id="mainImage" src="@php echo $product['images'][0] @endphp"
+                            alt="Main product image"
+                            class="w-full h-full object-cover transition-transform duration-300"
+                            draggable="false" />
                     </div>
 
                     <!-- zoom / gallery -->
                     <button id="openGallery" class="absolute right-3 top-3 p-2 {{ FD['rounded'] }} bg-white/80 dark:bg-slate-800/80 hover:shadow text-xs" aria-label="Open gallery">🔍 View</button>
+
+                    <!-- lens (created hidden; shown on hover) -->
+                    <div id="imgLens" class="hidden pointer-events-none absolute {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white/10 mix-blend-normal" aria-hidden="true"></div>
                 </div>
 
                 <!-- Thumbnails (bottom) -->
                 <div class="flex items-center gap-2">
-                    <div id="thumbs" class="flex gap-2 overflow-x-auto no-scrollbar py-1">
+                    <div id="thumbs" class="flex gap-2 overflow-x-auto no-scrollbar md:py-1">
                         @php foreach($product['images'] as $i => $img): @endphp
-                            <button type="button" class="thumb-item flex-none w-20 h-16 sm:w-24 sm:h-20 {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700" data-img="@php echo $img @endphp" aria-label="View image @php echo $i+1 @endphp">
-                                <img src="@php echo $img @endphp" alt="Thumb @php echo $i+1 @endphp" class="w-full h-full object-cover" loading="lazy" />
-                            </button>
+                        <button
+                            type="button"
+                            class="thumb-item flex-none w-20 h-16 sm:w-24 sm:h-20 {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 focus:outline-none"
+                            data-img="@php echo $img @endphp"
+                            aria-label="View image @php echo $i+1 @endphp">
+                            <img src="@php echo $img @endphp" alt="Thumb @php echo $i+1 @endphp" class="w-full h-full object-cover" loading="lazy" />
+                        </button>
                         @php endforeach; @endphp
                     </div>
                 </div>
-
             </div>
         </div>
 
         <!-- Right: Product Info & Actions -->
         <div class="lg:col-span-7 flex flex-col gap-4 md:mb-4">
-            <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm">
+            <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm">
+                <!-- Image Zoom Pane -->
+                <div id="zoomPane"
+                    class="hidden lg:block {{ FD['rounded'] }} overflow-hidden shadow-lg"
+                    style="position:fixed; z-index:70; display:none; background-repeat:no-repeat; background-position:center; background-color:#fff;"
+                    aria-hidden="true"></div>
+
                 <div class="flex items-start justify-between gap-4">
                     <div class="flex-1">
-                        <nav class="text-xs text-slate-400 mb-2" aria-label="breadcrumb">
-                            <ol class="flex items-center gap-2">
-                                <li>Home</li><li>/</li>
-                                <li>Office</li><li>/</li>
-                                <li class="truncate font-medium">@php echo htmlspecialchars($product['title']) @endphp</li>
+                        <nav class="{{ FD['text-0'] }} text-gray-500 mb-1" aria-label="breadcrumb">
+                            <ol class="flex items-center gap-2 flex-wrap">
+                                <li><a href="{{ route('front.home.index') }}" class="hover:underline text-gray-500 dark:text-gray-500">Home</a></li>
+
+                                <!-- Category parents -->
+                                @php
+                                    $category = $prouct->category;
+                                    $ancestors = collect([]);
+                                    $current = $category->parentDetails;
+                                    while ($current) {
+                                        $ancestors->prepend($current);
+                                        $current = $current->parentDetails;
+                                    }
+                                @endphp
+
+                                @foreach ($ancestors as $parent)
+                                    <li>/</li>
+                                    <li>
+                                        <a href="{{ route('front.category.detail', $parent->slug) }}" class="hover:underline text-gray-500 dark:text-gray-500" title="{{ $parent->title }}">
+                                            {{ Str::limit($parent->title, 20) }}
+                                        </a>
+                                    </li>
+                                @endforeach
+
+                                <!-- Current category -->
+                                <li>/</li>
+                                <li>
+                                    <a href="{{ route('front.category.detail', $category->slug) }}" class="hover:underline text-gray-500 dark:text-gray-500" title="{{ $category->title }}">
+                                        {{ Str::limit($category->title, 20) }}
+                                    </a>
+                                </li>
+
+                                <li>/</li>
+                                <li><span class="text-gray-800 font-medium dark:text-gray-300" title="{{ $prouct->title }}">{{ Str::limit($prouct->title, 25) }}</span></li>
                             </ol>
                         </nav>
 
-                        <h1 class="text-lg sm:text-xl font-semibold leading-tight">@php echo htmlspecialchars($product['title']) @endphp</h1>
+                        <h1 class="text-lg sm:text-xl font-semibold leading-tight">{{ $prouct->title }}</h1>
 
+                        <!-- Rating -->
                         <div class="flex items-center gap-2 mt-2 text-xs text-slate-500 dark:text-slate-300">
                             <span class="flex items-center gap-1">
-                                <div class="{{ FD['iconClass'] }} inline-block">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="m305-704 112-145q12-16 28.5-23.5T480-880q18 0 34.5 7.5T543-849l112 145 170 57q26 8 41 29.5t15 47.5q0 12-3.5 24T866-523L756-367l4 164q1 35-23 59t-56 24q-2 0-22-3l-179-50-179 50q-5 2-11 2.5t-11 .5q-32 0-56-24t-23-59l4-165L95-523q-8-11-11.5-23T80-570q0-25 14.5-46.5T135-647l170-57Zm49 69-194 64 124 179-4 191 200-55 200 56-4-192 124-177-194-66-126-165-126 165Zm126 135Z"/></svg>
-                                </div>
-                                <span class="font-medium">@php echo number_format($product['rating'], 1) @endphp</span>
+                                @if ($prouct->average_rating > 0)
+                                    {!! frontRatingHtml($prouct->average_rating) !!}
+                                @endif
                             </span>
-                            <span>·</span>
-                            <span>@php echo number_format($product['review_count']) @endphp reviews</span>
+                            <span>{{ $prouct->review_count.' '.( number_format($prouct->review_count) > 1 ? 'reviews' : 'review' ) }}</span>
                             <span>·</span>
                             <span class="text-slate-400 dark:text-slate-400">By <strong>@php echo htmlspecialchars($product['brand']) @endphp</strong></span>
                         </div>
 
-                        <div class="flex items-center gap-2 my-4">
-                            @php foreach($product['badges'] as $badge): @endphp
-                                <span class="px-3 py-1 {{ FD['rounded'] }} text-xs font-semibold bg-amber-200 text-amber-800 dark:bg-amber-900 dark:text-amber-200 shadow-sm">@php echo $badge @endphp</span>
-                            @php endforeach; @endphp
-                        </div>
+                        <!-- Badge -->
+                        @if (count($prouct->badges) > 0)
+                            <div class="flex items-center gap-2 my-4">
+                                @foreach ($prouct->badges as $badge)
+                                    @php
+                                        $badge = $badge->badgeDetail;
+                                    @endphp
+                                    <span class="px-3 py-1 {{ FD['rounded'] }} text-xs font-semibold shadow-sm {{ $badge->tailwind_classes }}">{{ $badge->title }}</span>
+                                @endforeach
+                            </div>
+                        @endif
 
-                        <p class="mt-3 text-xs text-slate-600 dark:text-slate-300">@php echo htmlspecialchars($product['short_desc']) @endphp</p>
-
+                        <!-- Short Description -->
+                        @if ($prouct->short_description)
+                            <p class="mt-3 text-xs text-gray-500 dark:text-gray-400/70 description-wrapper">{{ $prouct->short_description }}</p>
+                        @endif
                     </div>
 
-                    <!-- Wishlist / share icons -->
+                    <!-- Wishlist / share -->
                     <div class="flex flex-col items-end gap-2">
                         <button class="p-2 {{ FD['rounded'] }} hover:bg-slate-100 dark:hover:bg-slate-700" aria-label="Add to wishlist">
                             <!-- heart svg -->
@@ -466,7 +517,7 @@
                     <div class="mt-2 flex gap-2">
                         <button
                             type="button"
-                            class="flex-1 text-xs font-medium px-2 py-1 rounded {{ FD['rounded'] }} bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                            class="flex-1 text-xs font-medium px-2 py-1 {{ FD['rounded'] }} bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400"
                             aria-label="Add base product to cart"
                             data-product-id="{{ $product['id'] ?? '' }}"
                             data-action="add-to-cart"
@@ -476,7 +527,7 @@
 
                         <button
                             type="button"
-                            class="text-xs px-2 py-1 rounded {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:outline-none"
+                            class="text-xs px-2 py-1 {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:outline-none"
                             aria-label="View base product"
                             data-action="view-product"
                             data-product-id="{{ $product['id'] ?? '' }}"
@@ -602,9 +653,9 @@
                                         <p class="text-sm text-gray-700 dark:text-gray-300">Longer, SEO-friendly product description that expands on technical details, benefits, and use cases. This should be crafted with keywords and structured headings. Use short paragraphs and subheads for readability.</p>
 
                                         <div id="longDescription" class="mt-3 text-sm text-gray-700 dark:text-gray-300 max-h-24 overflow-hidden transition-all">
-                                        <p>Detailed paragraph 1 — describe how this product solves a user's top problem. Include measurable outcomes (e.g., "reduces setup time by 40%"), and concrete examples.</p>
-                                        <p>Detailed paragraph 2 — talk about materials, construction, certifications, and compatibility with accessories.</p>
-                                        <p>Detailed paragraph 3 — include warranty and service details, support channels, and any exclusives.</p>
+                                            <p>Detailed paragraph 1 — describe how this product solves a user's top problem. Include measurable outcomes (e.g., "reduces setup time by 40%"), and concrete examples.</p>
+                                            <p>Detailed paragraph 2 — talk about materials, construction, certifications, and compatibility with accessories.</p>
+                                            <p>Detailed paragraph 3 — include warranty and service details, support channels, and any exclusives.</p>
                                         </div>
 
                                         <button id="toggleLongDesc" class="mt-3 text-sm font-medium underline text-blue-600 dark:text-blue-400" aria-expanded="false">Read more</button>
@@ -622,17 +673,17 @@
                                 </header>
                                 <div class="space-y-4">
                                     <div class="flex items-center gap-2">
-                                    <input id="faqSearch" type="search" placeholder="Search FAQs" class="w-full px-3 py-2 border rounded text-sm" aria-label="Search FAQs" />
+                                        <input id="faqSearch" type="search" placeholder="Search FAQs" class="w-full px-3 py-2 border rounded text-sm" aria-label="Search FAQs" />
                                     </div>
 
                                     <div id="faqsWrapper" class="mt-2 space-y-2">
                                     @foreach($faqs as $f)
                                         <div class="faq-item border dark:border-slate-700 p-3 {{ FD['rounded'] }}">
-                                        <button class="faq-q w-full text-left flex items-center justify-between" aria-expanded="false">
-                                            <span class="font-medium text-sm">{{ $f['q'] }}</span>
-                                            <svg class="w-4 h-4 transform transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
-                                        </button>
-                                        <div class="faq-a mt-2 hidden text-sm text-slate-600 dark:text-slate-400">{{ $f['a'] }}</div>
+                                            <button class="faq-q w-full text-left flex items-center justify-between" aria-expanded="false">
+                                                <span class="font-medium text-sm">{{ $f['q'] }}</span>
+                                                <svg class="w-4 h-4 transform transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+                                            </button>
+                                            <div class="faq-a mt-2 hidden text-sm text-slate-600 dark:text-slate-400">{{ $f['a'] }}</div>
                                         </div>
                                     @endforeach
                                     </div>
@@ -719,7 +770,7 @@
                     </div>
 
                     <aside class="lg:col-span-4 sticky md:top-[8.1rem] self-start space-y-4" id="pdpAsideQuickBar">
-                        <div class="{{ FD['rounded'] }} border border-gray-100 dark:border-gray-800 p-4 bg-white dark:bg-gray-900 shadow-sm">
+                        <div class="{{ FD['rounded'] }} border border-gray-100 dark:border-gray-800 p-4 bg-gray-50 dark:bg-gray-900 shadow-sm">
                             <div class="flex items-start justify-between gap-4">
                                 <div>
                                     <p class="text-sm text-gray-500 dark:text-gray-400">Limited time deal</p>
@@ -770,7 +821,7 @@
                             </div>
                         </div>
 
-                        <div class="bg-white dark:bg-slate-900 {{ FD['rounded'] }} p-4 shadow-sm sticky top-28">
+                        <div class="bg-gray-50 dark:bg-slate-900 {{ FD['rounded'] }} p-4 shadow-sm sticky top-28">
                             <div class="text-sm font-semibold">Need help deciding?</div>
                             <div class="mt-2 text-xs text-slate-600">Chat with our product experts for advice, bulk orders, or assembly help.</div>
                             <div class="mt-3 flex gap-2">
@@ -835,10 +886,200 @@
     const variants = @php echo json_encode($variations, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) @endphp;
     const variantOrder = @php echo json_encode($variant_order, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) @endphp;
     const combos = variants.combinations || {};
+    // ---- CONFIG ----
+    const ZOOM_FACTOR = 5;      // how much larger the background will appear in the zoom pane
+    const SHOW_ON_WIDTH = 768;    // min viewport width to show zoom pane (hide on small screens)
+    // -----------------
 
+    const mainImage = document.getElementById('mainImage');
+    const mainWrap  = document.getElementById('mainImageWrapper');
+    const thumbs    = document.querySelectorAll('.thumb-item');
+    const lens      = document.getElementById('imgLens');
+    let zoomPane = null;          // the zoom pane element appended to body
+    let currentSrc = mainImage.src;
+    let boundHandlers = {};
+
+    // --- THUMBNAIL HOVER: change main image on pointerenter / focus ---
+    thumbs.forEach(btn => {
+        // pointerenter covers mouse & pen; also handle keyboard focus
+        btn.addEventListener('pointerenter', () => {
+        const src = btn.dataset.img;
+        if (src && src !== currentSrc) {
+            currentSrc = src;
+            mainImage.src = src;
+        }
+        // visual focus state
+        thumbs.forEach(t => t.classList.remove('ring-2','ring-slate-300'));
+        btn.classList.add('ring-2','ring-slate-300');
+        });
+        btn.addEventListener('focus', () => {
+        btn.dispatchEvent(new Event('pointerenter'));
+        });
+        // optional: on pointerleave remove ring (keeps last selected)
+        btn.addEventListener('pointerleave', () => {
+        // keep ring on the last hovered; comment out to remove ring on leave
+        // btn.classList.remove('ring-2','ring-slate-300');
+        });
+    });
+
+    // --- LIGHTBOX / GALLERY (unchanged) ---
+    document.getElementById('openGallery').addEventListener('click', () => {
+        const src = mainImage.src;
+        const light = document.createElement('div');
+        light.className = 'fixed inset-0 z-60 bg-black/80 flex items-center justify-center p-4';
+        light.innerHTML = `<div class="max-w-4xl w-full"><img src="${src}" class="w-full h-auto {{ FD['rounded'] }}" alt="preview" /></div>`;
+        light.addEventListener('click', (e) => {
+        if (e.target === light) document.body.removeChild(light);
+        });
+        document.body.appendChild(light);
+        const escHandler = e => { if (e.key === 'Escape') { if (document.body.contains(light)) document.body.removeChild(light); document.removeEventListener('keydown', escHandler); } };
+        document.addEventListener('keydown', escHandler);
+    });
+
+    // --- ZOOM PANE CREATION ---
+    // use existing DOM node (if present) instead of creating/appending to body
+    function getZoomPane() {
+        let pane = document.getElementById('zoomPane');
+        if (!pane) {
+            // fallback: create it (rare) so older pages still work
+            pane = document.createElement('div');
+            pane.id = 'zoomPane';
+            pane.style.position = 'fixed';
+            pane.style.zIndex = 70;
+            pane.style.display = 'none';
+            pane.style.backgroundRepeat = 'no-repeat';
+            pane.style.backgroundPosition = 'center';
+            document.body.appendChild(pane);
+        }
+        zoomPane = pane;
+        return zoomPane;
+    }
+
+    function showZoomPane() {
+        if (window.innerWidth < SHOW_ON_WIDTH) return;
+        const pane = getZoomPane();
+        pane.style.display = 'block';
+        pane.classList.remove('hidden'); // keep Tailwind happy if used
+        // NOTE: pointermove handler will update pane size/position/background-image
+    }
+
+    function hideZoomPane() {
+        const pane = document.getElementById('zoomPane');
+        if (!pane) return;
+        pane.style.display = 'none';
+        pane.classList.add('hidden');
+    }
+
+    // --- MOUSE MOVE handler to update zoom area ---
+    function onPointerMove(e) {
+        // get or create pane on-demand; defensive guard prevents the null-style error
+        const pane = getZoomPane();
+        if (!pane) return;
+
+        const rect = mainImage.getBoundingClientRect();
+        const x = (e.clientX - rect.left);
+        const y = (e.clientY - rect.top);
+
+        // clamp
+        const clampedX = Math.max(0, Math.min(rect.width, x));
+        const clampedY = Math.max(0, Math.min(rect.height, y));
+
+        // background size (we use displayed main image dims * ZOOM_FACTOR)
+        const bgW = Math.round(rect.width * ZOOM_FACTOR);
+        const bgH = Math.round(rect.height * ZOOM_FACTOR);
+
+        // background-position in percentages - centers the focus
+        const px = (clampedX / rect.width) * 100;
+        const py = (clampedY / rect.height) * 100;
+
+        // position zoomPane to the right of the main image...
+        const paneWidth = Math.min(420, Math.round(rect.width * 0.9));
+        const paneHeight = Math.round(rect.height);
+        pane.style.width = paneWidth + 'px';
+        pane.style.height = paneHeight + 'px';
+
+        // compute left/top ...
+        const spaceRight = window.innerWidth - (rect.right + 16);
+        const spaceLeft  = rect.left - 16;
+        let left;
+        if (spaceRight >= paneWidth) {
+            left = rect.right + 12 + window.scrollX;
+        } else if (spaceLeft >= paneWidth) {
+            left = rect.left - paneWidth - 12 + window.scrollX;
+        } else {
+            left = Math.max(12 + window.scrollX, window.innerWidth - paneWidth - 12 + window.scrollX);
+        }
+        const top = rect.top + window.scrollY;
+
+        pane.style.left = left + 'px';
+        pane.style.top  = top + 'px';
+
+        // set background properties using pane (not zoomPane)
+        pane.style.backgroundImage = `url("${mainImage.src}")`;
+        pane.style.backgroundSize = `${bgW}px ${bgH}px`;
+        pane.style.backgroundPosition = `${px}% ${py}%`;
+
+        // lens updates remain unchanged
+        const lensSize = Math.max(40, Math.round(rect.width / ZOOM_FACTOR));
+        lens.style.width = lensSize + 'px';
+        lens.style.height = lensSize + 'px';
+        lens.style.left = Math.round(clampedX - lensSize / 2) + 'px';
+        lens.style.top  = Math.round(clampedY - lensSize / 2) + 'px';
+    }
+
+    function attachZoomHandlers() {
+        // pointerenter -> create and show pane
+        boundHandlers.enter = (e) => {
+        showZoomPane();
+        lens.classList.remove('hidden');
+        // update immediately so pane appears under current cursor
+        onPointerMove(e);
+        };
+        boundHandlers.move = onPointerMove;
+        boundHandlers.leave = () => {
+        hideZoomPane();
+        lens.classList.add('hidden');
+        };
+
+        // Use pointer events for broad device coverage
+        mainImage.addEventListener('pointerenter', boundHandlers.enter);
+        mainImage.addEventListener('pointermove', boundHandlers.move);
+        mainImage.addEventListener('pointerleave', boundHandlers.leave);
+        // also hide on scroll or resize to avoid mispositioned pane
+        boundHandlers.onScroll = () => { hideZoomPane(); lens.classList.add('hidden'); };
+        window.addEventListener('scroll', boundHandlers.onScroll, { passive: true });
+        window.addEventListener('resize', boundHandlers.onScroll);
+    }
+
+    function detachZoomHandlers() {
+        if (!boundHandlers.enter) return;
+        mainImage.removeEventListener('pointerenter', boundHandlers.enter);
+        mainImage.removeEventListener('pointermove', boundHandlers.move);
+        mainImage.removeEventListener('pointerleave', boundHandlers.leave);
+        window.removeEventListener('scroll', boundHandlers.onScroll);
+        window.removeEventListener('resize', boundHandlers.onScroll);
+    }
+
+    // initialize
+    attachZoomHandlers();
+
+    // When the main image src changes (thumbnail hover), we should update currentSrc & make sure zoom uses the new image.
+    // We already set src on pointerenter thumbs; listen for src changes to ensure lens/zoom pane reflect new image (no extra action needed).
+    // But to be safe, re-create zoom pane image on load so background size will be correct.
+    mainImage.addEventListener('load', () => {
+        // no-op for now; the zoom pane uses the up-to-date mainImage.src when pointer moves
+    });
+
+    // Cleanup on page unload (optional)
+    window.addEventListener('unload', () => {
+        detachZoomHandlers();
+        if (zoomPane && document.body.contains(zoomPane)) document.body.removeChild(zoomPane);
+    });
+
+    /*
     // thumbnails -> change main image
     document.querySelectorAll('.thumb-item').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('hover', () => {
         document.getElementById('mainImage').src = btn.dataset.img;
         });
     });
@@ -853,6 +1094,7 @@
         const escHandler = e => { if (e.key === 'Escape') { if (document.body.contains(light)) document.body.removeChild(light); document.removeEventListener('keydown', escHandler); } };
         document.addEventListener('keydown', escHandler);
     });
+    */
 
     // helper: build combo key based on variantOrder
     function comboKeyFromSelected(selected){ return variantOrder.map(g => selected[g] ?? '').join('|'); }
@@ -895,7 +1137,7 @@
         if (!info) {
             // if (noteEl) { noteEl.textContent = 'This combination is unavailable'; noteEl.classList.remove('hidden'); }
             if (stockHelper) stockHelper.textContent = '';
-            if (priceEl) priceEl.innerHTML = '<span class="text-amber-700">Unavailable</span>';
+            if (priceEl) priceEl.innerHTML = '<span class="text-red-500 dark:text-amber-700">Unavailable</span>';
             if (addToCart) { addToCart.disabled = true; addToCart.classList.add('opacity-60'); }
             if (buyNow) { buyNow.disabled = true; buyNow.classList.add('opacity-60'); }
             if (mrpEl) mrpEl.textContent = '';
@@ -911,10 +1153,10 @@
         if (info.stock <= 2) {
             // if (noteEl){ noteEl.textContent = 'Low stock for this combination'; noteEl.classList.remove('hidden'); }
             if (stockHelper) stockHelper.textContent = '';
-            if (priceEl) priceEl.innerHTML = '<span class="text-amber-700">Out of Stock</span>';
+            if (priceEl) priceEl.innerHTML = '<span class="text-red-500 dark:text-amber-700">Out of Stock</span>';
             if (addToCart) { addToCart.disabled = true; addToCart.classList.add('opacity-60'); }
             if (buyNow) { buyNow.disabled = true; buyNow.classList.add('opacity-60'); }
-            if (mrpEl) mrpEl.innerHTML = '<span class="text-amber-700">We&apos;re sorry - this combination is currently out of stock. Enter your PIN to see alternatives or tap <strong>Notify me</strong> and we&apos;ll email you when stock returns.</span>';
+            if (mrpEl) mrpEl.innerHTML = '<span class="text-red-600 dark:text-amber-700">We&apos;re sorry - this combination is currently out of stock. Enter your PIN to see alternatives or tap <strong>Notify me</strong> and we&apos;ll email you when stock returns.</span>';
             if (savingsEl) savingsEl.textContent = '';
             return;
         } else {

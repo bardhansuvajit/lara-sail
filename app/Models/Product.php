@@ -32,7 +32,7 @@ class Product extends Model
         'length',
         'weight_unit',
         'dimension_unit',
-        'tags',
+        'search_tags',
         'meta_title',
         'meta_desc',
         'type',
@@ -82,6 +82,11 @@ class Product extends Model
     public function reviews()
     {
         return $this->hasMany('App\Models\ProductReview', 'product_id', 'id');
+    }
+
+    public function badges()
+    {
+        return $this->hasMany('App\Models\ProductBadgeCombination', 'product_id', 'id');
     }
 
     /*

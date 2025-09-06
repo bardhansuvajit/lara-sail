@@ -50,7 +50,7 @@ class ProductListingRepository implements ProductListingInterface
                         ->orWhere('slug', 'like', '%' . $keyword . '%')
                         ->orWhere('short_description', 'like', '%' . $keyword . '%')
                         ->orWhere('long_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('tags', 'like', '%' . $keyword . '%');
+                        ->orWhere('search_tags', 'like', '%' . $keyword . '%');
                 });
             }
 
@@ -539,7 +539,7 @@ class ProductListingRepository implements ProductListingInterface
                         'length' => $toFloatOrNull(Arr::get($row, 'length', 0)),
                         'weight_unit' => Arr::get($row, 'weight_unit') ?: 'g',
                         'dimension_unit' => Arr::get($row, 'dimension_unit') ?: 'cm',
-                        'tags' => Arr::get($row, 'tags') ?: null,
+                        'search_tags' => Arr::get($row, 'search_tags') ?: null,
                         'meta_title' => Arr::get($row, 'meta_title') ?: null,
                         'meta_desc' => Arr::get($row, 'meta_desc') ?: null,
                         'type' => Arr::get($row, 'type', 'physical-product') ?: 'physical-product',
@@ -673,7 +673,7 @@ class ProductListingRepository implements ProductListingInterface
                     'length' => $item['length'] ? $item['length'] : 0,
                     'weight_unit' => $item['weight_unit'] ? $item['weight_unit'] : 'g',
                     'dimension_unit' => $item['dimension_unit'] ? $item['dimension_unit'] : 'cm',
-                    'tags' => $item['tags'] ? $item['tags'] : null,
+                    'search_tags' => $item['search_tags'] ? $item['search_tags'] : null,
                     'meta_title' => $item['meta_title'] ? $item['meta_title'] : null,
                     'meta_desc' => $item['meta_desc'] ? $item['meta_desc'] : null,
                     'type' => $item['type'] ? $item['type'] : 'physical-product',

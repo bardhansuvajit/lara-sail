@@ -345,7 +345,7 @@ function handleNavbarScroll() {
 
         // product detail page aside bar container
         if (pdpAsideQuickBar) {
-            pdpAsideQuickBar.style.top = '8.1rem';
+            pdpAsideQuickBar.style.top = '8.2rem';
         }
     } 
     // Scrolling up or at top of page
@@ -359,7 +359,7 @@ function handleNavbarScroll() {
 
         // product detail page aside bar container
         if (pdpAsideQuickBar) {
-            pdpAsideQuickBar.style.top = '12.1rem';
+            pdpAsideQuickBar.style.top = '12.4rem';
         }
     }
 
@@ -1186,7 +1186,7 @@ async function checkWishlistStatus() {
 // Call this on page load
 document.addEventListener('DOMContentLoaded', checkWishlistStatus);
 
-// Your existing toggle code (modified slightly)
+// Wishlist toggle code
 document.querySelectorAll('.wishlist-btn').forEach(wishlistBtn => {
     wishlistBtn.addEventListener('click', async (e) => {
         e.preventDefault();
@@ -1260,6 +1260,92 @@ document.querySelectorAll('.wishlist-btn').forEach(wishlistBtn => {
             }, 300);
         }
     });
+});
+
+// PDP - Short description shoe more
+document.querySelectorAll('p.description-wrapper').forEach(p => {
+    p.classList.add('line-clamp-2', 'relative');
+
+    // create toggle button (inserted INSIDE the <p>)
+    const btn = document.createElement('button');
+    btn.type = 'button';
+
+    // Tailwind-only classes (uses an arbitrary color value for the exact hex)
+    btn.className = 'absolute right-0 bottom-0 bg-gradient-to-br from-[#1e293beb] to-[#1e293bad] dark:from-[#1e293beb] dark:to-[#1e293bad] pl-8 font-light text-xs text-gray-800 dark:text-white hover:underline show-more-btn hidden';
+    btn.setAttribute('aria-expanded', 'false');
+    btn.textContent = 'Show more';
+
+    // append inside the <p>
+    p.appendChild(btn);
+
+    // small timeout to allow CSS to apply before measuring
+    setTimeout(() => {
+        if (p.scrollHeight <= p.clientHeight) {
+            // not truncated -> remove the button
+            btn.remove();
+            return;
+        }
+
+        btn.classList.remove('hidden');
+
+        let expanded = false;
+        const duration = 200; // ms
+
+        function expand() {
+            const start = p.clientHeight;
+            // remove clamp so full height is available
+            p.classList.remove('line-clamp-2');
+            const end = p.scrollHeight;
+
+            // animate using max-height
+            p.style.maxHeight = start + 'px';
+            requestAnimationFrame(() => {
+            p.style.transition = `max-height ${duration}ms ease`;
+            p.style.maxHeight = end + 'px';
+            });
+
+            const onEnd = () => {
+            p.style.transition = '';
+            p.style.maxHeight = '';
+            p.removeEventListener('transitionend', onEnd);
+            };
+            p.addEventListener('transitionend', onEnd);
+
+            btn.textContent = 'Show less';
+            btn.setAttribute('aria-expanded', 'true');
+        }
+
+        function collapse() {
+            const full = p.scrollHeight;
+            p.style.maxHeight = full + 'px';
+
+            requestAnimationFrame(() => {
+            // add clamp which reduces visible height
+            p.classList.add('line-clamp-2');
+
+            requestAnimationFrame(() => {
+                const clampedH = p.clientHeight;
+                p.style.transition = `max-height ${duration}ms ease`;
+                p.style.maxHeight = clampedH + 'px';
+            });
+            });
+
+            const onEnd = () => {
+            p.style.transition = '';
+            p.style.maxHeight = '';
+            p.removeEventListener('transitionend', onEnd);
+            };
+            p.addEventListener('transitionend', onEnd);
+
+            btn.textContent = 'Show more';
+            btn.setAttribute('aria-expanded', 'false');
+        }
+
+        btn.addEventListener('click', () => {
+            expanded = !expanded;
+            if (expanded) expand(); else collapse();
+        });
+    }, 40);
 });
 
 // Price Range - Category page
