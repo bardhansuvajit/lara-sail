@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreign('product_variation_id')->references('id')->on('product_variations')->onDelete('cascade');
 
             // Currency
+            $table->string('country_code', 2)->default('IN');
             $table->unsignedBigInteger('country_id')->nullable();
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('SET NULL');
             $table->string('currency_code', 3)->nullable()->comment('ISO 4217 code');

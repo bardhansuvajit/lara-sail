@@ -1271,7 +1271,7 @@ document.querySelectorAll('p.description-wrapper').forEach(p => {
     btn.type = 'button';
 
     // Tailwind-only classes (uses an arbitrary color value for the exact hex)
-    btn.className = 'absolute right-0 bottom-0 bg-gradient-to-br from-[#1e293beb] to-[#1e293bad] dark:from-[#1e293beb] dark:to-[#1e293bad] pl-8 font-light text-xs text-gray-800 dark:text-white hover:underline show-more-btn hidden';
+    btn.className = 'absolute right-0 bottom-0 bg-gradient-to-br from-[#ffffffb5] to-[#ffffff] dark:from-[#1e293beb] dark:to-[#1e293bad] pl-8 font-light text-xs text-gray-800 dark:text-white hover:underline show-more-btn hidden';
     btn.setAttribute('aria-expanded', 'false');
     btn.textContent = 'Show more';
 

@@ -189,15 +189,17 @@
                             </ol>
                         </nav>
 
+                        {{ dd(COUNTRY) }}
+
                         <h1 class="text-lg sm:text-xl font-semibold leading-tight">{{ $prouct->title }}</h1>
 
                         <!-- Rating -->
                         <div class="flex items-center gap-2 mt-2 text-xs text-slate-500 dark:text-slate-300">
-                            <span class="flex items-center gap-1">
-                                @if ($prouct->average_rating > 0)
+                            @if ($prouct->average_rating > 0)
+                                <span class="flex items-center gap-1">
                                     {!! frontRatingHtml($prouct->average_rating) !!}
-                                @endif
-                            </span>
+                                </span>
+                            @endif
                             <span>{{ $prouct->review_count.' '.( number_format($prouct->review_count) > 1 ? 'reviews' : 'review' ) }}</span>
                             <span>·</span>
                             <span class="text-slate-400 dark:text-slate-400">By <strong>@php echo htmlspecialchars($product['brand']) @endphp</strong></span>
