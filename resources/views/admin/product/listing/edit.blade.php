@@ -10,13 +10,13 @@
     <section class="grid grid-cols-6 lg:grid-cols-10 gap-4">
         {{-- <div class="col-span-2"></div> --}}
 
-        {{-- @if ($errors->any())
-            @foreach ($errors->all() as $error) --}}
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
                 {{-- @foreach ($error as $error) --}}
-                    {{-- <p class="text-red-600">{{ $error }}</p> --}}
+                    <p class="text-red-600">{{ $error }}</p>
                 {{-- @endforeach --}}
-            {{-- @endforeach
-        @endif --}}
+            @endforeach
+        @endif
 
         <div class="col-span-6 lg:col-start-3">
             <div class="w-full mt-2">
@@ -167,16 +167,16 @@
                     @forelse ($data->pricings as $pricingData)
                         @if (count($data->pricings) > 1)
                             <div class="flex items-center space-x-3 mb-3">
-                                <p class="text-xs font-medium">
-                                    {{ $pricingData->currency_symbol }} ({{ $pricingData->currency_code }})
+                                <p class="text-xs font-black">
+                                    {{ $pricingData->country_code }} - 
                                 </p>
                                 <a 
                                     href="" 
-                                    class="text-xs font-medium"
+                                    class="text-xs font-medium text-red-400 dark:text-orange-700 underline hover:no-underline"
                                     x-data=""
                                     x-on:click.prevent="
                                         $dispatch('open-modal', 'confirm-data-deletion'); 
-                                        $dispatch('data-title', '{{ $pricingData->currency_symbol }} ({{ $pricingData->currency_code }})');
+                                        $dispatch('data-title', '{{ $pricingData->country_code }}');
                                         $dispatch('set-delete-route', '{{ route('admin.product.pricing.delete', $pricingData->id) }}')"
                                 >
                                     Remove this pricing
@@ -194,15 +194,16 @@
                                     name="selling_price" 
                                     :value="old('selling_price') ? old('selling_price') : $pricingData->selling_price" 
                                     placeholder="Enter Selling Price" 
-                                    selectTitle="₹ (INR)" 
+                                    {{-- selectTitle="₹ (INR)"  --}}
                                     selectId="currency" 
-                                    selectName="currency" 
+                                    selectName="country_code" 
                                 >
                                     @slot('options')
                                         @foreach ($activeCountries as $country)
                                             <x-admin.input-select-option 
-                                                value="{{$country->id}}" 
-                                                :selected="old('currency_code') ? old('currency_code') == $country->id : $pricingData->country_id == $country->id"
+                                                value="{{$country->code}}" 
+                                                :selected="old('currency_code', $pricingData->country_code) == $country->code"
+                                                {{-- :selected="old('currency_code') ? old('currency_code') == $country->id : $pricingData->country_id == $country->id" --}}
                                             >
                                                 {{ $country->currency_symbol }} ({{ $country->currency_code }})
                                             </x-admin.input-select-option>
@@ -259,14 +260,15 @@
                                     placeholder="Enter Selling Price" 
                                     selectTitle="₹ (INR)" 
                                     selectId="currency" 
-                                    selectName="currency" 
+                                    selectName="country_code" 
                                 >
                                     @slot('options')
                                         @foreach ($activeCountries as $country)
                                             <x-admin.input-select-option 
-                                                value="{{$country->id}}" 
-                                                :selected="old('currency_code') ? old('currency_code') == $country->id : applicationSettings('country_code') == $country->code"
+                                                value="{{$country->code}}" 
+                                                :selected="old('currency_code') ? old('currency_code') == $country->code : applicationSettings('country_code') == $country->code"
                                             >
+                                                {{-- {{ applicationSettings('country_code') }} {{$country->code}} -  --}}
                                                 {{ $country->currency_symbol }} ({{ $country->currency_code }})
                                             </x-admin.input-select-option>
                                         @endforeach

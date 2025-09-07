@@ -8,7 +8,7 @@ interface ProductPricingInterface
     public function list(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder);
     public function store(Array $array);
     public function getById(Int $id);
-    public function getByProductIdCountryId(Int $productId, Int $countryId);
+    public function getByProductIdCountryCode(Int $productId, String $countryId);
     public function update(Int $id, Array $array);
     public function delete(Int $id);
     public function bulkAction(Array $array);

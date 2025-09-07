@@ -122,16 +122,17 @@ class ProductListingRepository implements ProductListingInterface
             $data->save();
 
             // PRICING
-            $countryData = $this->countryRepository->getById($array['currency_country_id']);
-            if ($countryData['code'] == 200) {
-                $currencyCode = $countryData['data']->currency_code;
-                $currencySymbol = $countryData['data']->currency_symbol;
-            }
+            // $countryData = $this->countryRepository->getById($array['country_code']);
+            // if ($countryData['code'] == 200) {
+            //     $currencyCode = $countryData['data']->currency_code;
+            //     $currencySymbol = $countryData['data']->currency_symbol;
+            // }
             $pricingData = [
                 'product_id' => $data->id,
-                'country_id' => $array['currency_country_id'],
-                'currency_code' => $currencyCode,
-                'currency_symbol' => $currencySymbol,
+                'country_code' => $array['country_code'],
+                // 'country_id' => $array['country_code'],
+                // 'currency_code' => $currencyCode,
+                // 'currency_symbol' => $currencySymbol,
                 'selling_price' => $array['selling_price'],
                 'mrp' => $array['mrp'],
                 'discount' => $array['discount_percentage'],
@@ -315,20 +316,13 @@ class ProductListingRepository implements ProductListingInterface
 
                 // PRICING
                 if (
-                    !empty($array['currency_country_id']) &&
+                    !empty($array['country_code']) &&
                     !empty($array['selling_price'])
                 ) {
                     // **** pricing 1 - setting up data
-                    $countryData = $this->countryRepository->getById($array['currency_country_id']);
-                    if ($countryData['code'] == 200) {
-                        $currencyCode = $countryData['data']->currency_code;
-                        $currencySymbol = $countryData['data']->currency_symbol;
-                    }
                     $pricingData = [
                         'product_id' => $array['id'],
-                        'country_id' => $array['currency_country_id'],
-                        'currency_code' => $currencyCode,
-                        'currency_symbol' => $currencySymbol,
+                        'country_code' => $array['country_code'],
                         'selling_price' => $array['selling_price'],
                         'mrp' => $array['mrp'],
                         'discount' => $array['discount_percentage'],
@@ -337,8 +331,8 @@ class ProductListingRepository implements ProductListingInterface
                         'margin' => $array['margin_percentage'],
                     ];
 
-                    // **** pricing 2 - check if pricing exists for this product id & country id
-                    $existingPricingData = $this->productPricingRepository->getByProductIdCountryId($array['id'], $array['currency_country_id']);
+                    // **** pricing 2 - check if pricing exists for this product id & country code
+                    $existingPricingData = $this->productPricingRepository->getByProductIdCountryCode($array['id'], $array['country_code']);
 
                     // **** pricing 2 - if pricing exists update it, else add new
                     if ($existingPricingData['code'] == 200) {
@@ -636,6 +630,7 @@ class ProductListingRepository implements ProductListingInterface
         }
     }
 
+    /*
     public function importOld(UploadedFile $file)
     {
         try {
@@ -722,6 +717,7 @@ class ProductListingRepository implements ProductListingInterface
             ];
         }
     }
+    */
 
     public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {

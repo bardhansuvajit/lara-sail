@@ -108,13 +108,32 @@ class ProductListingController
             'collection_id' => 'required|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
             'collection_name' => 'required|string|min:2',
 
-            'currency' => 'required|integer|min:1|exists:countries,id',
-            'selling_price' => 'required|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
-            'mrp' => 'nullable|numeric|min:1|max:1000000|gt:selling_price|regex:'.PRICE_REGEX,
-            'discount' => 'nullable|numeric|min:0|max:100',
-            'cost' => 'nullable|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
-            'profit' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
-            'margin' => 'nullable|numeric|min:0|max:99',
+            // 'country_code' => 'required|string|min:1|exists:countries,code',
+            // 'selling_price' => 'required|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
+            // 'mrp' => 'nullable|numeric|min:1|max:1000000|gt:selling_price|regex:'.PRICE_REGEX,
+            // 'discount' => 'nullable|numeric|min:0|max:100',
+            // 'cost' => 'nullable|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
+            // 'profit' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
+            // 'margin' => 'nullable|numeric|min:0|max:99',
+
+            // country codes (array)
+            'country_code'       => 'required|array|min:1',
+            'country_code.*'     => 'required|string|exists:countries,code',
+            // selling prices (required array)
+            'selling_price'      => 'required|array|min:1',
+            'selling_price.*'    => ['required','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            // mrp can be nullable per item
+            'mrp'                => 'nullable|array',
+            'mrp.*'              => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            // discount/profit/margin arrays (readonly front-end but validate anyway)
+            'discount'           => 'nullable|array',
+            'discount.*'         => ['nullable','numeric','min:0','max:100'],
+            'cost'               => 'nullable|array',
+            'cost.*'             => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            'profit'             => 'nullable|array',
+            'profit.*'           => ['nullable','numeric','min:0','max:1000000','regex:'.PRICE_REGEX],
+            'margin'             => 'nullable|array',
+            'margin.*'           => ['nullable','numeric','min:0','max:99'],
 
             'track_quantity' => 'nullable|string|in:yes',
             'stock_quantity' => 'nullable|numeric|min:0|max:9999999999',
@@ -163,7 +182,7 @@ class ProductListingController
             'category_id' => (int) $request->category_id,
             'collection_ids' => json_encode(array_map('intval', explode(',', $request->collection_id))),
 
-            'currency_country_id' => (int) $request->currency,
+            'country_code' => $request->country_code,
             'selling_price' => (float) filter_var($request->selling_price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
             'mrp' => $request->mrp ? (float) filter_var($request->mrp, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
             'discount_percentage' => $request->mrp ? discountPercentageCalc($request->selling_price, $request->mrp) : 0,
@@ -241,7 +260,7 @@ class ProductListingController
             'collection_id' => 'required|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
             'collection_name' => 'required|string|min:2',
 
-            'currency' => 'required|integer|min:1|exists:countries,id',
+            'country_code' => 'required|string|min:1|exists:countries,code',
             'selling_price' => 'required|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
             'mrp' => [
                 'nullable',
@@ -305,7 +324,7 @@ class ProductListingController
             'long_description' => ($request->description != "<p>&nbsp;</p>") ? $request->description : null,
             'category_id' => (int) $request->category_id,
             'collection_ids' => json_encode(array_map('intval', explode(',', $request->collection_id))),
-            'currency_country_id' => (int) $request->currency,
+            'country_code' => $request->country_code,
             'selling_price' => (float) filter_var($request->selling_price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
             'mrp' => $request->mrp ? (float) filter_var($request->mrp, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
             'discount_percentage' => $request->mrp ? discountPercentageCalc($request->selling_price, $request->mrp) : 0,

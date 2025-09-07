@@ -87,9 +87,10 @@ class ProductPricingRepository implements ProductPricingInterface
         try {
             $data = new ProductPricing();
             $data->product_id = $array['product_id'];
-            $data->country_id = $array['country_id'];
-            $data->currency_code = $array['currency_code'];
-            $data->currency_symbol = $array['currency_symbol'];
+            $data->country_code = $array['country_code'];
+            // $data->country_id = $array['country_id'];
+            // $data->currency_code = $array['currency_code'];
+            // $data->currency_symbol = $array['currency_symbol'];
 
             $data->selling_price = $array['selling_price'];
             $data->mrp = $array['mrp'];
@@ -151,12 +152,12 @@ class ProductPricingRepository implements ProductPricingInterface
         }
     }
 
-    public function getByProductIdCountryId(Int $productId, Int $countryId)
+    public function getByProductIdCountryCode(Int $productId, String $countryCode)
     {
         try {
             $data = ProductPricing::where([
                 ['product_id', $productId],
-                ['country_id', $countryId]
+                ['country_code', $countryCode]
             ])->first();
 
             if (!empty($data)) {
@@ -194,9 +195,10 @@ class ProductPricingRepository implements ProductPricingInterface
 
             if ($data['code'] == 200) {
                 $data['data']->product_id = $array['product_id'];
-                $data['data']->country_id = $array['country_id'];
-                $data['data']->currency_code = $array['currency_code'];
-                $data['data']->currency_symbol = $array['currency_symbol'];
+                $data['data']->country_code = $array['country_code'];
+                // $data['data']->country_id = $array['country_id'];
+                // $data['data']->currency_code = $array['currency_code'];
+                // $data['data']->currency_symbol = $array['currency_symbol'];
 
                 $data['data']->selling_price = $array['selling_price'];
                 $data['data']->mrp = $array['mrp'];
@@ -326,9 +328,10 @@ class ProductPricingRepository implements ProductPricingInterface
                 Country::create([
                     'product_id' => $item['product_id'] ? $item['product_id'] : null,
                     'product_variation_id' => $item['product_variation_id'] ? $item['product_variation_id'] : null,
-                    'country_id' => $item['country_id'] ? $item['country_id'] : null,
-                    'currency_code' => $item['currency_code'] ? $item['currency_code'] : null,
-                    'currency_symbol' => $item['currency_symbol'] ? $item['currency_symbol'] : null,
+                    'country_code' => $item['country_code'] ? $item['country_code'] : null,
+                    // 'country_id' => $item['country_id'] ? $item['country_id'] : null,
+                    // 'currency_code' => $item['currency_code'] ? $item['currency_code'] : null,
+                    // 'currency_symbol' => $item['currency_symbol'] ? $item['currency_symbol'] : null,
                     'min_quantity' => $item['min_quantity'] ? $item['min_quantity'] : null,
                     'price_type' => $item['price_type'] ? $item['price_type'] : 'regular',
                     'selling_price' => $item['selling_price'] ? $item['selling_price'] : 0,
