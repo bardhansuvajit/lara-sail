@@ -10,6 +10,12 @@
     <section class="grid grid-cols-6 lg:grid-cols-10 gap-4">
         {{-- <div class="col-span-2"></div> --}}
 
+        {{-- @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                <p class="text-red-600">{{ $error }}</p>
+            @endforeach
+        @endif --}}
+
         <div class="col-span-6 lg:col-start-3">
             <div class="w-full mt-2">
                 <form action="{{ route('admin.product.listing.store') }}" method="post" enctype="multipart/form-data" id="productForm" >
@@ -206,7 +212,7 @@
                         </div>
                     </div> --}}
 
-                    <div id="currencyPricingWrapper">
+                    {{-- <div id="currencyPricingWrapper">
                         <div class="currency-block" data-block-id="0">
                             <div class="flex justify-between items-start mb-2">
                                 <h5 class="font-semibold text-gray-700 dark:text-primary-300 block-heading">Currency Block</h5>
@@ -244,11 +250,13 @@
                                 <div>
                                     <x-admin.input-label for="mrp_0" :value="__('MRP')" />
                                     <x-admin.text-input id="mrp_0" class="block" type="tel" name="mrp[]" :value="old('mrp.0')" placeholder="Enter MRP" maxlength="13" />
+                                    <x-admin.input-error :messages="$errors->get('mrp.0')" class="mt-2" />
                                 </div>
 
                                 <div>
                                     <x-admin.input-label for="discount_0" :value="__('Discount')" />
                                     <x-admin.text-input id="discount_0" class="block" type="tel" name="discount[]" :value="old('discount.0') ?? 0" placeholder="Discount will be calculated automatically" readonly tabindex="-1" />
+                                    <x-admin.input-error :messages="$errors->get('discount.0')" class="mt-2" />
                                 </div>
                             </div>
 
@@ -256,19 +264,103 @@
                                 <div>
                                     <x-admin.input-label for="cost_0" :value="__('Cost per item')" />
                                     <x-admin.text-input id="cost_0" class="block" type="tel" name="cost[]" :value="old('cost.0')" placeholder="Enter Cost" maxlength="13" />
+                                    <x-admin.input-error :messages="$errors->get('cost.0')" class="mt-2" />
                                 </div>
 
                                 <div>
                                     <x-admin.input-label for="profit_0" :value="__('Profit')" />
                                     <x-admin.text-input id="profit_0" class="block" type="tel" name="profit[]" :value="old('profit.0') ?? 0" placeholder="Profit will be calculated automatically" readonly tabindex="-1" />
+                                    <x-admin.input-error :messages="$errors->get('profit.0')" class="mt-2" />
                                 </div>
 
                                 <div>
                                     <x-admin.input-label for="margin_0" :value="__('Margin')" />
                                     <x-admin.text-input id="margin_0" class="block" type="tel" name="margin[]" :value="old('margin.0') ?? 0" placeholder="Margin will be calculated automatically" readonly tabindex="-1" />
+                                    <x-admin.input-error :messages="$errors->get('margin.0')" class="mt-2" />
                                 </div>
                             </div>
                         </div>
+                    </div> --}}
+
+                    <div id="currencyPricingWrapper">
+                        @php
+                            $oldCurrencyCount = old('country_code') ? count(old('country_code')) : 1;
+                        @endphp
+                        
+                        @for($i = 0; $i < $oldCurrencyCount; $i++)
+                        <div class="currency-block" data-block-id="{{ $i }}">
+                            <div class="flex justify-between items-start mb-2">
+                                <h5 class="font-semibold text-gray-700 dark:text-primary-300 block-heading">Currency Block</h5>
+                                @if($i > 0)
+                                <button type="button" class="remove-currency-btn text-xs text-red-600 hover:underline">Remove</button>
+                                @else
+                                <button type="button" class="remove-currency-btn text-xs text-red-600 hover:underline hidden">Remove</button>
+                                @endif
+                            </div>
+
+                            <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                                <div>
+                                    <x-admin.input-label for="selling_price_{{ $i }}" :value="__('Selling price *')" />
+                                    <x-admin.text-input-with-dropdown 
+                                        id="selling_price_{{ $i }}" 
+                                        class="block w-auto" 
+                                        type="tel" 
+                                        name="selling_price[]" 
+                                        :value="old('selling_price.'.$i)" 
+                                        placeholder="Enter Selling Price" 
+                                        selectId="currency_{{ $i }}" 
+                                        selectName="country_code[]" 
+                                        maxlength="13"
+                                    >
+                                        @slot('options')
+                                            @foreach ($activeCountries as $country)
+                                                <x-admin.input-select-option 
+                                                    value="{{ $country->code }}" 
+                                                    :selected="(old('country_code.'.$i) == $country->code) || 
+                                                            (!$i && !old('country_code') && applicationSettings('country_code') == $country->code)"
+                                                >
+                                                    {{ $country->currency_symbol }} ({{ $country->currency_code }})
+                                                </x-admin.input-select-option>
+                                            @endforeach
+                                        @endslot
+                                    </x-admin.text-input-with-dropdown>
+                                    <x-admin.input-error :messages="$errors->get('selling_price.'.$i)" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <x-admin.input-label for="mrp_{{ $i }}" :value="__('MRP')" />
+                                    <x-admin.text-input id="mrp_{{ $i }}" class="block" type="tel" name="mrp[]" :value="old('mrp.'.$i)" placeholder="Enter MRP" maxlength="13" />
+                                    <x-admin.input-error :messages="$errors->get('mrp.'.$i)" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <x-admin.input-label for="discount_{{ $i }}" :value="__('Discount')" />
+                                    <x-admin.text-input id="discount_{{ $i }}" class="block" type="tel" name="discount[]" :value="old('discount.'.$i, 0)" placeholder="Discount will be calculated automatically" readonly tabindex="-1" />
+                                    <x-admin.input-error :messages="$errors->get('discount.'.$i)" class="mt-2" />
+                                </div>
+                            </div>
+
+                            <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                                <div>
+                                    <x-admin.input-label for="cost_{{ $i }}" :value="__('Cost per item')" />
+                                    <x-admin.text-input id="cost_{{ $i }}" class="block" type="tel" name="cost[]" :value="old('cost.'.$i)" placeholder="Enter Cost" maxlength="13" />
+                                    <x-admin.input-error :messages="$errors->get('cost.'.$i)" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <x-admin.input-label for="profit_{{ $i }}" :value="__('Profit')" />
+                                    <x-admin.text-input id="profit_{{ $i }}" class="block" type="tel" name="profit[]" :value="old('profit.'.$i, 0)" placeholder="Profit will be calculated automatically" readonly tabindex="-1" />
+                                    <x-admin.input-error :messages="$errors->get('profit.'.$i)" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <x-admin.input-label for="margin_{{ $i }}" :value="__('Margin')" />
+                                    <x-admin.text-input id="margin_{{ $i }}" class="block" type="tel" name="margin[]" :value="old('margin.'.$i, 0)" placeholder="Margin will be calculated automatically" readonly tabindex="-1" />
+                                    <x-admin.input-error :messages="$errors->get('margin.'.$i)" class="mt-2" />
+                                </div>
+                            </div>
+                        </div>
+                        @endfor
                     </div>
 
                     @if (count($activeCountries) > 0)
@@ -490,7 +582,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const addBtn = document.getElementById("addCurrencyBtn");
     const limitMsg = document.getElementById("currencyLimitMsg");
 
-    let nextId = 1; // for unique ids on clones
+    // let nextId = 1; // for unique ids on clones
+
+    // Start nextId from the count of existing blocks
+    let nextId = wrapper.querySelectorAll('.currency-block').length;
+
+    // Initialize all existing blocks
+    wrapper.querySelectorAll('.currency-block').forEach(block => {
+        initializeBlock(block);
+    });
 
     function getUsedCountries(excludeBlock = null) {
         const used = new Set();

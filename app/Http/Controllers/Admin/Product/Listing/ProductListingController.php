@@ -174,6 +174,53 @@ class ProductListingController
 
         $validator->validate();
 
+        $toFloat = function ($val) {
+            if ($val === null || $val === '') return 0.0; // or return null if you prefer
+            // normalize comma decimal to dot, trim spaces
+            $s = trim((string) $val);
+            $s = str_replace(',', '.', $s);
+            // sanitize and cast
+            $num = filter_var($s, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            return (float) $num;
+        };
+
+        // gather input arrays (guaranteed by validator to exist for required fields)
+        $countryCodes = $request->input('country_code', []);
+        $sellingPrices = $request->input('selling_price', []);
+        $mrps = $request->input('mrp', []);
+        $costs = $request->input('cost', []);
+        // discount/profit/margin are computed on server; ignore incoming values if you prefer
+
+        $pricing = [];
+        $entries = count($sellingPrices); // selling_price is required; use its count
+
+        for ($i = 0; $i < $entries; $i++) {
+            $cc = $countryCodes[$i] ?? null;
+            $selling = $toFloat($sellingPrices[$i] ?? 0);
+            // treat empty mrp as 0 (or null)
+            $mrpRaw = $mrps[$i] ?? null;
+            $mrp = ($mrpRaw === '' || is_null($mrpRaw)) ? 0.0 : $toFloat($mrpRaw);
+
+            $discountPercentage = ($mrp > 0) ? discountPercentageCalc($selling, $mrp) : 0;
+
+            $costRaw = $costs[$i] ?? null;
+            $cost = ($costRaw === '' || is_null($costRaw)) ? 0.0 : $toFloat($costRaw);
+
+            $profit = ($cost > 0) ? profitCalc($selling, $cost) : 0;
+            $marginPercentage = ($cost > 0) ? marginCalc($selling, $cost) : 0;
+
+            $pricing[] = [
+                'country_code' => $cc,
+                'selling_price' => $selling,
+                'mrp' => $mrp,
+                'discount_percentage' => $discountPercentage,
+                'cost' => $cost,
+                'profit' => $profit,
+                'margin_percentage' => $marginPercentage,
+            ];
+        }
+
+
         $productData = [
             'type' => strtolower(str_replace(' ', '-', $request->type)),
             'title' => $request->title,
@@ -182,13 +229,15 @@ class ProductListingController
             'category_id' => (int) $request->category_id,
             'collection_ids' => json_encode(array_map('intval', explode(',', $request->collection_id))),
 
-            'country_code' => $request->country_code,
-            'selling_price' => (float) filter_var($request->selling_price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
-            'mrp' => $request->mrp ? (float) filter_var($request->mrp, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
-            'discount_percentage' => $request->mrp ? discountPercentageCalc($request->selling_price, $request->mrp) : 0,
-            'cost' => $request->cost ? (float) filter_var($request->cost, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
-            'profit' => $request->cost ? profitCalc($request->selling_price, $request->cost) : 0,
-            'margin_percentage' => $request->cost ? marginCalc($request->selling_price, $request->cost) : 0,
+            // 'country_code' => $request->country_code,
+            // 'selling_price' => (float) filter_var($request->selling_price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
+            // 'mrp' => $request->mrp ? (float) filter_var($request->mrp, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
+            // 'discount_percentage' => $request->mrp ? discountPercentageCalc($request->selling_price, $request->mrp) : 0,
+            // 'cost' => $request->cost ? (float) filter_var($request->cost, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
+            // 'profit' => $request->cost ? profitCalc($request->selling_price, $request->cost) : 0,
+            // 'margin_percentage' => $request->cost ? marginCalc($request->selling_price, $request->cost) : 0,
+
+            'pricing' => $pricing,
 
             'sku' => $request->sku ? $request->sku : null,
             'track_quantity' => $request->track_quantity ? (bool) $request->track_quantity : false,
@@ -200,7 +249,7 @@ class ProductListingController
             'images' => $request->images ? $request->images : null
         ];
 
-        // dd($productData);
+        dd($productData);
 
         $resp = $this->productListingRepository->store($productData);
         return redirect()->route('admin.product.listing.index')->with($resp['status'], $resp['message']);
