@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\Ip\IpController;
+use App\Http\Controllers\Api\Country\CountryController;
 use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\Product\Variation\ProductVariationController;
 use App\Http\Controllers\Api\Product\Variation\ProductVariationCombinationController;
@@ -26,6 +27,13 @@ Route::get('/test', function() {
 Route::prefix('ip')->group(function() {
     Route::get('/check/{ip}', [IpController::class, 'check']);
     Route::post('/store', [IpController::class, 'store']);
+});
+
+// country
+Route::prefix('country')->group(function() {
+    Route::get('/{code}', [CountryController::class, 'detail']);
+    // Frontend Country update + Cookie
+    Route::get('/update/{code}', [CountryController::class, 'update']);
 });
 
 // cart
