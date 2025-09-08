@@ -36,7 +36,11 @@
                                 >
                                     <div class="w-full flex items-center justify-between">
                                         <div class="flex space-x-2 items-center">
-                                            @if($category['image_s']) <div class="h-8 overflow-hidden flex"><img src="{{ Storage::url($category['image_s']) }}" alt=""></div> @endif
+                                            @if($category['image_s']) 
+                                                <div class="h-5 overflow-hidden flex">
+                                                    <img src="{{ Storage::url($category['image_s']) }}" alt="">
+                                                </div>
+                                            @endif
                                             <p class="text-xs">{{ $category['title'] }}</p>
                                         </div>
 
@@ -54,7 +58,7 @@
                                     href="javascript: void(0)">
                                     <div class="w-full flex items-center justify-between">
                                         <div class="flex space-x-2 items-center">
-                                            @if($category['image_s']) <div class="h-8 overflow-hidden flex"><img src="{{ Storage::url($category['image_s']) }}" alt=""></div> @endif
+                                            @if($category['image_s']) <div class="h-5 overflow-hidden flex"><img src="{{ Storage::url($category['image_s']) }}" alt=""></div> @endif
                                             <p class="text-xs">{{ $category['title'] }}</p>
                                         </div>
 

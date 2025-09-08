@@ -8,7 +8,7 @@
     wire:ignore.self
 >
     <x-admin.input-label for="product_id" :value="__('Product *')" />
-    <x-admin.dropdown align="top" width="full" wire:key="dropdown-{{ $product_id }}">
+    <x-admin.dropdown align="bottom" width="full" wire:key="dropdown-{{ $product_id }}">
         <x-slot name="trigger">
             <x-admin.text-input-with-icon 
                 id="product_id" 

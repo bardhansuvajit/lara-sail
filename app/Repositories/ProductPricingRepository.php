@@ -88,9 +88,6 @@ class ProductPricingRepository implements ProductPricingInterface
             $data = new ProductPricing();
             $data->product_id = $array['product_id'];
             $data->country_code = $array['country_code'];
-            // $data->country_id = $array['country_id'];
-            // $data->currency_code = $array['currency_code'];
-            // $data->currency_symbol = $array['currency_symbol'];
 
             $data->selling_price = $array['selling_price'];
             $data->mrp = $array['mrp'];

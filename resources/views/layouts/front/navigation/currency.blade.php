@@ -19,7 +19,7 @@
             <ul class="text-start {{FD['text']}} font-medium dark:text-white">
                 @foreach ($activeCountries as $item)
                     <li>
-                        <a href="#" title="" class="inline-flex w-full items-center gap-2 {{FD['rounded']}} px-3 py-2 {{FD['text']}} hover:bg-gray-100 dark:hover:bg-gray-600">
+                        <a href="javascript: void(0)" title="{{ $item->name }}" class="inline-flex w-full items-center gap-2 {{FD['rounded']}} px-3 py-2 {{FD['text']}} hover:bg-gray-100 dark:hover:bg-gray-600" onclick="updateFECurr('{{ $item->code }}')">
                             <div class="w-4 h-4 flex items-center">
                                 {!! $item->flag !!}
                             </div>

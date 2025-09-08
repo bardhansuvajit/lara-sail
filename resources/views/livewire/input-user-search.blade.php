@@ -6,7 +6,7 @@
     wire:ignore.self
 >
     <x-admin.input-label for="user_id" :value="__('User *')" />
-    <x-admin.dropdown align="top" width="full" wire:key="dropdown-{{ $user_id }}">
+    <x-admin.dropdown align="bottom" width="full" wire:key="dropdown-{{ $user_id }}">
         <x-slot name="trigger">
             <x-admin.text-input-with-icon 
                 id="user_id" 

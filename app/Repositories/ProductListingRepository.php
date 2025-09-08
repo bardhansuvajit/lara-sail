@@ -122,25 +122,28 @@ class ProductListingRepository implements ProductListingInterface
             $data->save();
 
             // PRICING
+            // dd($array['pricing']);
             // $countryData = $this->countryRepository->getById($array['country_code']);
             // if ($countryData['code'] == 200) {
             //     $currencyCode = $countryData['data']->currency_code;
             //     $currencySymbol = $countryData['data']->currency_symbol;
             // }
-            $pricingData = [
-                'product_id' => $data->id,
-                'country_code' => $array['country_code'],
-                // 'country_id' => $array['country_code'],
-                // 'currency_code' => $currencyCode,
-                // 'currency_symbol' => $currencySymbol,
-                'selling_price' => $array['selling_price'],
-                'mrp' => $array['mrp'],
-                'discount' => $array['discount_percentage'],
-                'cost' => $array['cost'],
-                'profit' => $array['profit'],
-                'margin' => $array['margin_percentage'],
-            ];
-            $pricingResp = $this->productPricingRepository->store($pricingData);
+
+            if (count($array['pricing']) > 0) {
+                foreach ($array['pricing'] as $key => $pricing) {
+                    $pricingData = [
+                        'product_id' => $data->id,
+                        'country_code' => $pricing['country_code'],
+                        'selling_price' => $pricing['selling_price'],
+                        'mrp' => $pricing['mrp'],
+                        'discount' => $pricing['discount_percentage'],
+                        'cost' => $pricing['cost'],
+                        'profit' => $pricing['profit'],
+                        'margin' => $pricing['margin_percentage'],
+                    ];
+                    $pricingResp = $this->productPricingRepository->store($pricingData);
+                }
+            }
 
             // IMAGES
             if (!empty($array['images']) && count($array['images']) > 0) {
@@ -315,6 +318,45 @@ class ProductListingRepository implements ProductListingInterface
                 $data['data']->save();
 
                 // PRICING
+                // Handle removed prices first
+                if (!empty($array['removed_price_ids'])) {
+                    foreach ($array['removed_price_ids'] as $removedId) {
+                        $deleteResp = $this->productPricingRepository->delete($removedId);
+                    }
+                }
+
+                if (count($array['pricing']) > 0) {
+                    // dd($array['pricing']);
+                    foreach ($array['pricing'] as $key => $pricing) {
+
+                        // dd($pricing);
+
+                        $pricingData = [
+                            'product_id' => $array['id'],
+                            'country_code' => $pricing['country_code'],
+                            'selling_price' => $pricing['selling_price'],
+                            'mrp' => $pricing['mrp'],
+                            'discount' => $pricing['discount_percentage'],
+                            'cost' => $pricing['cost'],
+                            'profit' => $pricing['profit'],
+                            'margin' => $pricing['margin_percentage'],
+                        ];
+
+                        // dd($pricingData);
+
+                        // Update Existing Pricing
+                        if (!empty($pricing['id'])) {
+                            $pricingResp = $this->productPricingRepository->update($pricing['id'], $pricingData);
+                        }
+                        // Add New Pricing
+                        else {
+                            $pricingResp = $this->productPricingRepository->store($pricingData);
+                        }
+
+                        // dd($pricingResp);
+                    }
+                }
+                /*
                 if (
                     !empty($array['country_code']) &&
                     !empty($array['selling_price'])
@@ -343,6 +385,7 @@ class ProductListingRepository implements ProductListingInterface
                         $pricingResp = $this->productPricingRepository->store($pricingData);
                     }
                 }
+                */
 
                 // IMAGES
                 if (!empty($array['images']) && count($array['images']) > 0) {

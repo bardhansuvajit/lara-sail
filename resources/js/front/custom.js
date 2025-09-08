@@ -1262,7 +1262,7 @@ document.querySelectorAll('.wishlist-btn').forEach(wishlistBtn => {
     });
 });
 
-// PDP - Short description shoe more
+// PDP - Short description show more
 document.querySelectorAll('p.description-wrapper').forEach(p => {
     p.classList.add('line-clamp-2', 'relative');
 
@@ -1346,6 +1346,14 @@ document.querySelectorAll('p.description-wrapper').forEach(p => {
             if (expanded) expand(); else collapse();
         });
     }, 40);
+});
+
+// Frontend Currency update
+// this is not working for some reason
+document.addEventListener("DOMContentLoaded", function () {
+    function updateFECurr(countryCode) {
+        console.log(countryCode);
+    }
 });
 
 // Price Range - Category page

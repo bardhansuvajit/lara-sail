@@ -33,6 +33,8 @@ class IndexController extends Controller
 
     public function index(): View
     {
+        // dd(COUNTRY);
+
         $categoryStyleCount = 5;
         $defaultMostSoldProductLoad = 8;
 

@@ -116,7 +116,6 @@ class ProductListingController
             // 'profit' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
             // 'margin' => 'nullable|numeric|min:0|max:99',
 
-            // country codes (array)
             'country_code'       => 'required|array|min:1',
             'country_code.*'     => 'required|string|exists:countries,code',
             // selling prices (required array)
@@ -220,7 +219,6 @@ class ProductListingController
             ];
         }
 
-
         $productData = [
             'type' => strtolower(str_replace(' ', '-', $request->type)),
             'title' => $request->title,
@@ -249,7 +247,7 @@ class ProductListingController
             'images' => $request->images ? $request->images : null
         ];
 
-        dd($productData);
+        // dd($productData);
 
         $resp = $this->productListingRepository->store($productData);
         return redirect()->route('admin.product.listing.index')->with($resp['status'], $resp['message']);
@@ -309,20 +307,40 @@ class ProductListingController
             'collection_id' => 'required|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
             'collection_name' => 'required|string|min:2',
 
-            'country_code' => 'required|string|min:1|exists:countries,code',
-            'selling_price' => 'required|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
-            'mrp' => [
-                'nullable',
-                'numeric',
-                'min:0',
-                'max:1000000',
-                Rule::when(fn ($input) => $input['mrp'] > 0, 'gte:selling_price'),
-                'regex:'.PRICE_REGEX
-            ],
-            'discount' => 'nullable|numeric|min:0|max:100',
-            'cost' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
-            'profit' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
-            'margin' => 'nullable|numeric|min:0|max:99',
+            // 'country_code' => 'required|string|min:1|exists:countries,code',
+            // 'selling_price' => 'required|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
+            // 'mrp' => [
+            //     'nullable',
+            //     'numeric',
+            //     'min:0',
+            //     'max:1000000',
+            //     Rule::when(fn ($input) => $input['mrp'] > 0, 'gte:selling_price'),
+            //     'regex:'.PRICE_REGEX
+            // ],
+            // 'discount' => 'nullable|numeric|min:0|max:100',
+            // 'cost' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
+            // 'profit' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
+            // 'margin' => 'nullable|numeric|min:0|max:99',
+
+            'price_ids'       => 'required|array|min:1',
+            'price_ids.*'     => 'required|integer|min:1',
+            'country_code'       => 'required|array|min:1',
+            'country_code.*'     => 'required|string|exists:countries,code',
+            // selling prices (required array)
+            'selling_price'      => 'required|array|min:1',
+            'selling_price.*'    => ['required','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            // mrp can be nullable per item
+            'mrp'                => 'nullable|array',
+            'mrp.*'              => ['nullable','numeric','max:1000000','regex:'.PRICE_REGEX],
+            // discount/profit/margin arrays (readonly front-end but validate anyway)
+            'discount'           => 'nullable|array',
+            'discount.*'         => ['nullable','numeric','min:0','max:100'],
+            'cost'               => 'nullable|array',
+            'cost.*'             => ['nullable','numeric','max:1000000','regex:'.PRICE_REGEX],
+            'profit'             => 'nullable|array',
+            'profit.*'           => ['nullable','numeric','min:0','max:1000000','regex:'.PRICE_REGEX],
+            'margin'             => 'nullable|array',
+            'margin.*'           => ['nullable','numeric','min:0','max:99'],
 
             'track_quantity' => 'nullable|string|in:yes',
             'stock_quantity' => 'nullable|numeric|min:0|max:9999999999',
@@ -365,6 +383,61 @@ class ProductListingController
 
         $validator->validate();
 
+        // Get removed price IDs
+        $removedPriceIds = [];
+        if ($request->has('removed_price_ids') && !empty($request->removed_price_ids)) {
+            $removedPriceIds = array_filter(explode(',', $request->removed_price_ids));
+        }
+
+        $toFloat = function ($val) {
+            if ($val === null || $val === '') return 0.0; // or return null if you prefer
+            // normalize comma decimal to dot, trim spaces
+            $s = trim((string) $val);
+            $s = str_replace(',', '.', $s);
+            // sanitize and cast
+            $num = filter_var($s, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            return (float) $num;
+        };
+
+        // gather input arrays (guaranteed by validator to exist for required fields)
+        $priceIds = $request->input('price_ids', []);
+        $countryCodes = $request->input('country_code', []);
+        $sellingPrices = $request->input('selling_price', []);
+        $mrps = $request->input('mrp', []);
+        $costs = $request->input('cost', []);
+        // discount/profit/margin are computed on server; ignore incoming values if you prefer
+
+        $pricing = [];
+        $entries = count($sellingPrices); // selling_price is required; use its count
+
+        for ($i = 0; $i < $entries; $i++) {
+            $pId = $priceIds[$i] ?? null;
+            $cc = $countryCodes[$i] ?? null;
+            $selling = $toFloat($sellingPrices[$i] ?? 0);
+            // treat empty mrp as 0 (or null)
+            $mrpRaw = $mrps[$i] ?? null;
+            $mrp = ($mrpRaw === '' || is_null($mrpRaw)) ? 0.0 : $toFloat($mrpRaw);
+
+            $discountPercentage = ($mrp > 0) ? discountPercentageCalc($selling, $mrp) : 0;
+
+            $costRaw = $costs[$i] ?? null;
+            $cost = ($costRaw === '' || is_null($costRaw)) ? 0.0 : $toFloat($costRaw);
+
+            $profit = ($cost > 0) ? profitCalc($selling, $cost) : 0;
+            $marginPercentage = ($cost > 0) ? marginCalc($selling, $cost) : 0;
+
+            $pricing[] = [
+                'id' => $pId,
+                'country_code' => $cc,
+                'selling_price' => $selling,
+                'mrp' => $mrp,
+                'discount_percentage' => $discountPercentage,
+                'cost' => $cost,
+                'profit' => $profit,
+                'margin_percentage' => $marginPercentage,
+            ];
+        }
+
         $productData = [
             'id' => $request->id,
             'type' => strtolower(str_replace(' ', '-', $request->type)),
@@ -373,13 +446,17 @@ class ProductListingController
             'long_description' => ($request->description != "<p>&nbsp;</p>") ? $request->description : null,
             'category_id' => (int) $request->category_id,
             'collection_ids' => json_encode(array_map('intval', explode(',', $request->collection_id))),
-            'country_code' => $request->country_code,
-            'selling_price' => (float) filter_var($request->selling_price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
-            'mrp' => $request->mrp ? (float) filter_var($request->mrp, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
-            'discount_percentage' => $request->mrp ? discountPercentageCalc($request->selling_price, $request->mrp) : 0,
-            'cost' => $request->cost ? (float) filter_var($request->cost, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
-            'profit' => $request->cost ? profitCalc($request->selling_price, $request->cost) : 0,
-            'margin_percentage' => $request->cost ? marginCalc($request->selling_price, $request->cost) : 0,
+
+            // 'country_code' => $request->country_code,
+            // 'selling_price' => (float) filter_var($request->selling_price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
+            // 'mrp' => $request->mrp ? (float) filter_var($request->mrp, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
+            // 'discount_percentage' => $request->mrp ? discountPercentageCalc($request->selling_price, $request->mrp) : 0,
+            // 'cost' => $request->cost ? (float) filter_var($request->cost, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
+            // 'profit' => $request->cost ? profitCalc($request->selling_price, $request->cost) : 0,
+            // 'margin_percentage' => $request->cost ? marginCalc($request->selling_price, $request->cost) : 0,
+
+            'pricing' => $pricing,
+            'removed_price_ids' => $removedPriceIds,
 
             'sku' => $request->sku ? $request->sku : null,
             'track_quantity' => $request->track_quantity ? (bool) $request->track_quantity : false,

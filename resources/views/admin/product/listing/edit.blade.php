@@ -164,7 +164,19 @@
 
                     <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Pricing</h4>
 
-                    @forelse ($data->pricings as $pricingData)
+                    {{-- <x-admin.product-multi-currency-pricing 
+                        :activeCountries="$activeCountries" 
+                        :oldCurrencyCount="1" /> --}}
+
+                    <x-admin.product-multi-currency-pricing 
+                        :activeCountries="$activeCountries" 
+                        :productPrices="$data->pricings" 
+                    />
+
+                    {{-- <div class="border-t border-gray-200 dark:border-gray-700 mb-2"></div>
+                    <div class="border-t border-gray-200 dark:border-gray-700 mb-5"></div> --}}
+
+                    {{-- @forelse ($data->pricings as $pricingData)
                         @if (count($data->pricings) > 1)
                             <div class="flex items-center space-x-3 mb-3">
                                 <p class="text-xs font-black">
@@ -194,7 +206,6 @@
                                     name="selling_price" 
                                     :value="old('selling_price') ? old('selling_price') : $pricingData->selling_price" 
                                     placeholder="Enter Selling Price" 
-                                    {{-- selectTitle="₹ (INR)"  --}}
                                     selectId="currency" 
                                     selectName="country_code" 
                                 >
@@ -203,7 +214,6 @@
                                             <x-admin.input-select-option 
                                                 value="{{$country->code}}" 
                                                 :selected="old('currency_code', $pricingData->country_code) == $country->code"
-                                                {{-- :selected="old('currency_code') ? old('currency_code') == $country->id : $pricingData->country_id == $country->id" --}}
                                             >
                                                 {{ $country->currency_symbol }} ({{ $country->currency_code }})
                                             </x-admin.input-select-option>
@@ -268,7 +278,6 @@
                                                 value="{{$country->code}}" 
                                                 :selected="old('currency_code') ? old('currency_code') == $country->code : applicationSettings('country_code') == $country->code"
                                             >
-                                                {{-- {{ applicationSettings('country_code') }} {{$country->code}} -  --}}
                                                 {{ $country->currency_symbol }} ({{ $country->currency_code }})
                                             </x-admin.input-select-option>
                                         @endforeach
@@ -307,9 +316,9 @@
                                 <x-admin.input-error :messages="$errors->get('margin')" class="mt-2" />
                             </div>
                         </div>
-                    @endforelse
+                    @endforelse --}}
 
-                    @if (count($activeCountries) > 0)
+                    {{-- @if (count($activeCountries) > 0)
                         <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
                             <div>
                                 <a href="" class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500">
@@ -322,7 +331,7 @@
                                 </a>
                             </div>
                         </div>
-                    @endif
+                    @endif --}}
 
                     <div class="border-t border-gray-200 dark:border-gray-700"></div>
 
@@ -434,6 +443,7 @@
     </section>
 
     @include('admin.includes.delete-confirm-modal')
+
 </x-admin-app-layout>
 
 @vite([
