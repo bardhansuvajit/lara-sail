@@ -378,6 +378,70 @@ if (!function_exists('frontRatingHtml')) {
 
 if (!function_exists('formatIndianMoney')) {
     function formatIndianMoney($amount, $decimalPlaces = 2) {
+        // detect country from a global $COUNTRY array if available
+        global $COUNTRY;
+        $countryCode = null;
+        if (isset($COUNTRY) && is_array($COUNTRY) && isset($COUNTRY['country'])) {
+            $countryCode = $COUNTRY['country'];
+        } elseif (defined('COUNTRY') && is_array(COUNTRY) && isset(COUNTRY['country'])) {
+            // in case COUNTRY is defined as a constant array (less common)
+            $countryCode = COUNTRY['country'];
+        }
+
+        // force two decimals only for US
+        $forceTwoDecimals = ($countryCode === 'US');
+
+        // If intl is available, use NumberFormatter
+        if (extension_loaded('intl')) {
+            if ($forceTwoDecimals) {
+                // US: always show exactly 2 fraction digits
+                $formatter = new NumberFormatter('en_US', NumberFormatter::DECIMAL);
+                $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 2);
+                // Ensure grouping separators appear as per locale
+                return $formatter->format((float)$amount);
+            } else {
+                // Non-US: keep previous behavior (Indian formatting + trim trailing zeros)
+                $formatter = new NumberFormatter('en_IN', NumberFormatter::DECIMAL);
+                $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $decimalPlaces);
+                $formatted = $formatter->format((float)$amount);
+
+                // Remove trailing ".00" or any ".X0"/".0X" if decimal part is zero
+                if (strpos($formatted, '.') !== false) {
+                    $formatted = rtrim(rtrim($formatted, '0'), '.');
+                }
+
+                return $formatted;
+            }
+        }
+
+        // Fallback when intl extension is not available
+        if ($forceTwoDecimals) {
+            // US fallback: use standard US grouping with exactly two decimals
+            return number_format((float)$amount, 2, '.', ',');
+        }
+
+        // Non-US fallback: Indian grouping logic (keeps original decimal trimming behavior)
+        $amount = round((float) $amount, $decimalPlaces);
+        $parts = explode('.', number_format($amount, $decimalPlaces, '.', ''));
+
+        $whole = $parts[0];
+        $lastThree = substr($whole, -3);
+        $otherNumbers = substr($whole, 0, -3);
+
+        $formatted = ($otherNumbers ? preg_replace("/\B(?=(\d{2})+(?!\d))/", ",", $otherNumbers) . ',' : '') . $lastThree;
+
+        // Only add decimal if it's not zero
+        if ($decimalPlaces > 0 && !empty($parts[1]) && (int)$parts[1] !== 0) {
+            $formatted .= '.' . rtrim($parts[1], '0');
+        }
+
+        return $formatted;
+    }
+}
+
+/*
+if (!function_exists('formatIndianMoney')) {
+    function formatIndianMoney($amount, $decimalPlaces = 2) {
         // Set Indian locale (requires intl extension)
         if (extension_loaded('intl')) {
             $formatter = new NumberFormatter('en_IN', NumberFormatter::DECIMAL);
@@ -410,6 +474,7 @@ if (!function_exists('formatIndianMoney')) {
         return $formatted;
     }
 }
+*/
 
 /*
 if (! function_exists('ratingBadgeClasses')) {

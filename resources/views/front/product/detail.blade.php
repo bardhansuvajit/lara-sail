@@ -112,7 +112,8 @@
                     $images = $product->activeImages;
                 @endphp
 
-                @if ($activeImagesCount == 1)
+                <div class="flex flex-col gap-2 md:gap-4">
+                    <!-- Main image area (wrapper is relative for lens) -->
                     <div id="mainImageWrapper" class="relative {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
                         <div class="aspect-w-4 aspect-h-3 {{ FD['rounded'] }} overflow-hidden">
                             <img id="mainImage" src="{{ Storage::url($images[0]->image_l) }}"
@@ -127,29 +128,21 @@
                         <!-- lens (created hidden; shown on hover) -->
                         <div id="imgLens" class="hidden pointer-events-none absolute {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white/10 mix-blend-normal" aria-hidden="true"></div>
                     </div>
-                @else
-                    <div class="flex flex-col gap-2 md:gap-4">
 
-                        <!-- Main image area (wrapper is relative for lens) -->
-                        <div id="mainImageWrapper" class="relative {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
-                            <div class="aspect-w-4 aspect-h-3 {{ FD['rounded'] }} overflow-hidden">
-                                <img id="mainImage" src="@php echo $product['images'][0] @endphp"
-                                    alt="Main product image"
-                                    class="w-full h-full object-cover transition-transform duration-300"
-                                    draggable="false" />
-                            </div>
-
-                            <!-- zoom / gallery -->
-                            <button id="openGallery" class="absolute right-3 top-3 p-2 {{ FD['rounded'] }} bg-white/80 dark:bg-slate-800/80 hover:shadow text-xs" aria-label="Open gallery">🔍 View</button>
-
-                            <!-- lens (created hidden; shown on hover) -->
-                            <div id="imgLens" class="hidden pointer-events-none absolute {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white/10 mix-blend-normal" aria-hidden="true"></div>
-                        </div>
-
+                    @if ($activeImagesCount > 1)
                         <!-- Thumbnails (bottom) -->
                         <div class="flex items-center gap-2">
                             <div id="thumbs" class="flex gap-2 overflow-x-auto no-scrollbar md:py-1">
-                                @php foreach($product['images'] as $i => $img): @endphp
+                                @foreach ($images as $i => $img)
+                                    <button
+                                        type="button"
+                                        class="thumb-item flex-none w-20 h-16 sm:w-24 sm:h-20 {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 focus:outline-none"
+                                        data-img="{{ Storage::url($img->image_l) }}"
+                                        aria-label="View image {{ $i+1 }}">
+                                            <img src="{{ Storage::url($img->image_s) }}" alt="Thumb {{ $i+1 }}" class="w-full h-full object-scale-down" loading="lazy" />
+                                    </button>
+                                @endforeach
+                                {{-- @php foreach($product['images'] as $i => $img): @endphp
                                 <button
                                     type="button"
                                     class="thumb-item flex-none w-20 h-16 sm:w-24 sm:h-20 {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 focus:outline-none"
@@ -157,14 +150,14 @@
                                     aria-label="View image @php echo $i+1 @endphp">
                                     <img src="@php echo $img @endphp" alt="Thumb @php echo $i+1 @endphp" class="w-full h-full object-cover" loading="lazy" />
                                 </button>
-                                @php endforeach; @endphp
+                                @php endforeach; @endphp --}}
                             </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
+                </div>
 
                 <!-- Image Zoom Pane -->
-                <div id="zoomPane" class="hidden lg:block {{ FD['rounded'] }} overflow-hidden shadow-lg" style="position:fixed; z-index:70; display:none; background-repeat:no-repeat; background-position:center; background-color:#fff;" aria-hidden="true"></div>
+                <div id="zoomPane" class="hidden lg:block {{ FD['rounded'] }} overflow-hidden shadow-lg" style="position:fixed; z-index:10; display:none; background-repeat:no-repeat; background-position:center; background-color:#fff;" aria-hidden="true"></div>
             @else
                 <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
 					{!! str_replace('w-32 h-32', 'w-96 h-96', FD['brokenImageFront']) !!}
@@ -343,7 +336,8 @@
                 </div> --}}
 
                 <!-- Quantity & Actions -->
-                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                @if ( !empty($product->FDPricing) && ($product->statusDetail->allow_order == 1) )
+                {{-- <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                     <!-- Qty block -->
                     <div class="flex items-start sm:items-center gap-3">
                         <div>
@@ -422,7 +416,101 @@
                         Buy Now
                         </button>
                     </div>
+                </div> --}}
+
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
+                    <!-- Qty block -->
+                    <div class="flex items-start sm:items-center gap-3">
+                        <div>
+                        {{-- <label for="qtyInput" class="text-xs font-semibold block mb-1">Qty</label> --}}
+
+                            <div
+                                id="qtyGroup"
+                                class="inline-flex items-stretch {{ FD['rounded'] }} overflow-hidden border border-gray-300 dark:border-gray-600"
+                                role="group"
+                                aria-label="Quantity selector"
+                                data-max-stock="12"
+                                data-min-qty="1"
+                                data-step="1"
+                                data-product-id="{{ $product->id ?? '' }}"
+                            >
+                                <button
+                                    id="qtyDec"
+                                    type="button"
+                                    class="w-9 h-9 flex items-center justify-center text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
+                                    aria-label="Decrease quantity"
+                                    title="Decrease quantity"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4" aria-hidden="true"><path d="M200-440v-80h560v80H200Z"/></svg>
+                                </button>
+
+                                <!-- readonly input: user cannot type; only buttons change value -->
+                                <input
+                                    id="qtyInput"
+                                    type="text"
+                                    inputmode="numeric"
+                                    pattern="\d*"
+                                    aria-live="polite"
+                                    aria-label="Quantity"
+                                    role="spinbutton"
+                                    aria-valuemin="1"
+                                    aria-valuemax="99"
+                                    aria-valuenow="1"
+                                    value="1"
+                                    readonly
+                                    aria-readonly="true"
+                                    class="w-20 sm:w-16 text-center text-sm bg-white dark:bg-slate-800 outline-none border-l border-r border-transparent focus:outline-none focus:ring-0 px-2 cursor-default"
+                                    style="min-width:3.5rem;"
+                                    tabindex="0"
+                                />
+
+                                <button
+                                    id="qtyInc"
+                                    type="button"
+                                    class="w-9 h-9 flex items-center justify-center text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
+                                    aria-label="Increase quantity"
+                                    title="Increase quantity"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4" aria-hidden="true"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                                </button>
+                            </div>
+
+                            <div id="stockHelper" class="mt-2 ml-1 text-xs text-slate-500 dark:text-slate-400" aria-live="polite"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 flex gap-2 w-full sm:w-auto justify-end items-center">
+                        <button
+                            id="addToCart"
+                            type="button"
+                            class="flex-1 sm:flex-none px-4 py-2 {{ FD['rounded'] }} bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm inline-flex items-center justify-center disabled:opacity-50 transition-shadow add-to-cart"
+                            aria-label="Add to cart"
+                            {{-- data-action="add-to-cart" --}}
+                            data-prod-id="{{$product->id}}" 
+                            data-purchase-type="cart"
+                            data-variation-data="{{ json_encode($variation['data']) }}"
+                        >
+                        <span class="mr-2 inline-flex items-center" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4"><path d="M289.42-105.77q-28.14 0-47.88-19.7-19.73-19.7-19.73-47.84 0-28.15 19.7-47.88 19.7-19.73 47.84-19.73 28.14 0 47.88 19.7 19.73 19.7 19.73 47.84 0 28.14-19.7 47.88-19.7 19.73-47.84 19.73Zm380.42 0q-28.14 0-47.88-19.7-19.73-19.7-19.73-47.84 0-28.15 19.7-47.88 19.7-19.73 47.84-19.73 28.15 0 47.88 19.7 19.73 19.7 19.73 47.84 0 28.14-19.7 47.88-19.7 19.73-47.84 19.73ZM242.23-729.19l101.39 212.31h268.65q3.46 0 6.15-1.74 2.7-1.73 4.62-4.8l107.31-195q2.3-4.23.38-7.5-1.92-3.27-6.54-3.27H242.23Zm-27.15-55.96h544.57q24.35 0 36.52 20.41 12.17 20.42.98 41.51l-124.92 226.5q-9.04 16.81-25.1 26.31-16.06 9.5-34.52 9.5H325.62l-47.12 86.23q-3.08 4.61-.19 10 2.88 5.38 8.65 5.38H709.5q11.43 0 19.66 8.23 8.22 8.22 8.22 19.66 0 11.65-8.22 19.86-8.23 8.21-19.66 8.21H289.32q-38.71 0-58.38-33.07t-1.48-66.27l57.08-101.63-143.92-303.26H96.15q-11.65 0-19.86-8.21-8.21-8.21-8.21-19.77 0-11.56 8.21-19.77 8.21-8.21 19.86-8.21h60.5q9.89 0 17.87 5.27t12.4 14.12l28.16 59Zm128.54 268.27h275.96-275.96Z"/></svg>
+                        </span>
+                        Add to Cart
+                        </button>
+
+                        <button
+                            id="buyNow"
+                            type="button"
+                            class="px-4 py-2 {{ FD['rounded'] }} border border-amber-600 text-amber-600 dark:text-amber-300 text-sm font-semibold  add-to-cart"
+                            aria-label="Buy now"
+                            {{-- data-action="buy-now" --}}
+                            data-prod-id="{{$product->id}}" 
+                            data-purchase-type="cart"
+                            data-variation-data="{{ json_encode($variation['data']) }}"
+                        >
+                        Buy Now
+                        </button>
+                    </div>
                 </div>
+                @endif
 
                 <hr class="mt-5 mb-2 dark:border-gray-600">
 
@@ -940,6 +1028,27 @@
     // ---- CONFIG ----
     const ZOOM_FACTOR = 5;      // how much larger the background will appear in the zoom pane
     const SHOW_ON_WIDTH = 768;    // min viewport width to show zoom pane (hide on small screens)
+    const qtyGroup = document.getElementById('qtyGroup');
+    const qtyInput = document.getElementById('qtyInput');
+    const decBtn = document.getElementById('qtyDec');
+    const incBtn = document.getElementById('qtyInc');
+    const stockHelper = document.getElementById('stockHelper');
+    const addToCart = document.getElementById('addToCart');
+
+    // Settings
+    const minQty = parseInt(qtyGroup.dataset.minQty || '1', 10);
+    const serverMax = parseInt(qtyGroup.dataset.maxStock || '99', 10);
+    const step = parseInt(qtyGroup.dataset.step || '1', 10);
+
+    // Hard cap for business rule
+    const HARD_MAX = 99;
+
+    // acceleration settings for long-press buttons
+    const accelerateIntervalStart = 400; // ms
+    const accelerateIntervalMin = 60; // ms
+
+    // compute effective max stock (clamped to HARD_MAX)
+    let maxStock = Math.min(Math.max(0, serverMax), HARD_MAX);
     // -----------------
 
     const mainImage = document.getElementById('mainImage');
@@ -1274,6 +1383,114 @@
     // init UI
     updateVariantUI();
     */
+
+    function clamp(v) {
+        if (isNaN(v)) return minQty;
+        v = Math.round(v);
+        if (v < minQty) return minQty;
+        if (v > maxStock) return maxStock;
+        return v;
+    }
+
+    function updateUI(qty) {
+        qty = clamp(qty);
+        qtyInput.value = qty;
+        qtyInput.setAttribute('aria-valuenow', qty);
+        qtyInput.setAttribute('aria-valuemax', Math.min(maxStock, HARD_MAX));
+        decBtn.disabled = qty <= minQty;
+        incBtn.disabled = qty >= maxStock;
+        // Add to cart is managed server-side; we only reflect disable state here
+        if (addToCart) addToCart.disabled = qty < minQty || maxStock === 0;
+
+        // Stock helper messages
+        if (maxStock === 0) {
+        stockHelper.textContent = 'Out of stock';
+        stockHelper.classList.remove('text-slate-500');
+        stockHelper.classList.add('text-red-600');
+        } else if (maxStock <= 5) {
+        stockHelper.textContent = 'Only ' + maxStock + ' left — order soon';
+        stockHelper.classList.remove('text-slate-500', 'text-green-600');
+        stockHelper.classList.add('text-amber-600');
+        } else {
+        stockHelper.textContent = '';
+        stockHelper.classList.remove('text-amber-600', 'text-red-600');
+        stockHelper.classList.add('text-slate-500');
+        }
+    }
+
+    // Initialize
+    updateUI(parseInt(qtyInput.value || minQty, 10));
+
+    // change by delta (only via buttons)
+    function changeBy(delta) {
+        const current = clamp(parseInt(qtyInput.value || minQty, 10));
+        updateUI(current + delta);
+    }
+
+    // Button click handlers (only way to update qty)
+    decBtn.addEventListener('click', () => changeBy(-step));
+    incBtn.addEventListener('click', () => changeBy(step));
+
+    // Long-press accelerate for inc/dec (mobile friendly)
+    let accelTimer = null;
+    let accelInterval = accelerateIntervalStart;
+    let accelDirection = 0;
+
+    function startAccel(dir) {
+        accelDirection = dir;
+        accelInterval = accelerateIntervalStart;
+        accelTimer = setTimeout(accelerateStep, accelInterval);
+    }
+    function accelerateStep() {
+        if (!accelDirection) return stopAccel();
+        changeBy(accelDirection * step);
+        accelInterval = Math.max(accelerateIntervalMin, Math.round(accelInterval * 0.85));
+        accelTimer = setTimeout(accelerateStep, accelInterval);
+    }
+    function stopAccel() {
+        clearTimeout(accelTimer);
+        accelTimer = null;
+        accelDirection = 0;
+    }
+
+    ['mousedown','touchstart'].forEach(evt => {
+        incBtn.addEventListener(evt, (e) => {
+        e.preventDefault();
+        startAccel(1);
+        }, {passive:false});
+        decBtn.addEventListener(evt, (e) => {
+        e.preventDefault();
+        startAccel(-1);
+        }, {passive:false});
+    });
+    ['mouseup','mouseleave','touchend','touchcancel'].forEach(evt => {
+        incBtn.addEventListener(evt, stopAccel);
+        decBtn.addEventListener(evt, stopAccel);
+    });
+
+    // Prevent typing/editing in input (explicitly required)
+    // readonly attribute is present, but also block key events to be extra-safe.
+    qtyInput.addEventListener('keydown', function (e) {
+        // allow Tab (9) and Shift+Tab navigation; block other keys that could mutate input
+        if (e.key === 'Tab' || (e.key === 'Tab' && e.shiftKey)) return;
+        e.preventDefault();
+    });
+
+    // Prevent paste / drop into input
+    qtyInput.addEventListener('paste', (e) => e.preventDefault());
+    qtyInput.addEventListener('drop', (e) => e.preventDefault());
+
+    // Expose API for other scripts: set max stock (server push) and get qty
+    window.__qtyWidget = {
+        getQty: () => clamp(parseInt(qtyInput.value || minQty, 10)),
+        setMaxStock: (n) => {
+        const parsed = Math.min(HARD_MAX, Math.max(0, parseInt(n || 0, 10)));
+        maxStock = parsed;
+        qtyInput.setAttribute('aria-valuemax', Math.min(maxStock, HARD_MAX));
+        updateUI(window.__qtyWidget.getQty());
+        },
+        setQty: (n) => updateUI(clamp(parseInt(n || minQty, 10)))
+    };
 
 })();
 </script>
