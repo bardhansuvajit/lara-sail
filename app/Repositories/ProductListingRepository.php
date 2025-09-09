@@ -289,7 +289,7 @@ class ProductListingRepository implements ProductListingInterface
     public function getBySlugFDCustomArr(String $slug)
     {
         try {
-            $data = Product::select(['id', 'title', 'slug', 'category_id', 'average_rating', 'review_count', 'status'])
+            $data = Product::select(['id', 'title', 'slug', 'category_id', 'short_description', 'average_rating', 'review_count', 'status'])
             ->with(['statusDetail', 'category', 'activeImages', 'FDPricing', 'activeVariations', 'reviews', 'badges'])
             ->where('slug', $slug)
             ->first();

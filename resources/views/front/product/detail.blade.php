@@ -162,6 +162,9 @@
                         </div>
                     </div>
                 @endif
+
+                <!-- Image Zoom Pane -->
+                <div id="zoomPane" class="hidden lg:block {{ FD['rounded'] }} overflow-hidden shadow-lg" style="position:fixed; z-index:70; display:none; background-repeat:no-repeat; background-position:center; background-color:#fff;" aria-hidden="true"></div>
             @else
                 <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
 					{!! str_replace('w-32 h-32', 'w-96 h-96', FD['brokenImageFront']) !!}
@@ -171,16 +174,11 @@
 
         <!-- Right: Product Info & Actions -->
         <div class="lg:col-span-7 flex flex-col gap-4 md:mb-4">
-            <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm">
-                <!-- Image Zoom Pane -->
-                <div id="zoomPane"
-                    class="hidden lg:block {{ FD['rounded'] }} overflow-hidden shadow-lg"
-                    style="position:fixed; z-index:70; display:none; background-repeat:no-repeat; background-position:center; background-color:#fff;"
-                    aria-hidden="true"></div>
-
-                <div class="flex items-start justify-between gap-4">
-                    <div class="flex-1">
-                        <nav class="{{ FD['text-0'] }} text-gray-500 mb-1" aria-label="breadcrumb">
+            <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm space-y-2">
+                <div class="flex items-start justify-between gap-2 md:gap-4">
+                    <div class="flex-1 space-y-2">
+                        <!-- Breadcrumb -->
+                        <nav class="{{ FD['text-0'] }} text-gray-500" aria-label="breadcrumb">
                             <ol class="flex items-center gap-2 flex-wrap">
                                 <li><a href="{{ route('front.home.index') }}" class="hover:underline text-gray-500 dark:text-gray-500">Home</a></li>
 
@@ -217,19 +215,26 @@
                             </ol>
                         </nav>
 
+                        <!-- Title -->
                         <h1 class="text-base sm:text-xl font-semibold leading-tight">{{ $product->title }}</h1>
 
                         <!-- Rating -->
-                        <div class="flex items-center gap-2 mt-2 text-xs text-slate-500 dark:text-slate-300">
-                            @if ($product->average_rating > 0)
-                                <span class="flex items-center gap-1">
-                                    {!! frontRatingHtml($product->average_rating) !!}
-                                </span>
-                            @endif
-                            <span>{{ $product->review_count.' '.( number_format($product->review_count) > 1 ? 'reviews' : 'review' ) }}</span>
-                            {{-- <span>·</span>
-                            <span class="text-slate-400 dark:text-slate-400">By <strong>@php echo htmlspecialchars($product['brand']) @endphp</strong></span> --}}
-                        </div>
+                        @if ($product->average_rating > 0 || $product->review_count > 0)
+                            <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-300">
+                                @if ($product->average_rating > 0)
+                                    <span class="flex items-center gap-1">
+                                        {!! frontRatingHtml($product->average_rating) !!}
+                                    </span>
+                                @endif
+
+                                @if ($product->review_count > 0)
+                                    <span>{{ $product->review_count.' '.( number_format($product->review_count) > 1 ? 'reviews' : 'review' ) }}</span>
+                                @endif
+
+                                {{-- <span>·</span>
+                                <span class="text-slate-400 dark:text-slate-400">By <strong>@php echo htmlspecialchars($product['brand']) @endphp</strong></span> --}}
+                            </div>
+                        @endif
 
                         <!-- Badge -->
                         @if (count($product->badges) > 0)
@@ -238,29 +243,34 @@
                                     @php
                                         $badge = $badge->badgeDetail;
                                     @endphp
-                                    <span class="px-3 py-1 {{ FD['rounded'] }} text-xs font-semibold shadow-sm {{ $badge->tailwind_classes }}">{{ $badge->title }}</span>
+                                    <span class="px-3 py-1 {{ FD['rounded'] }} text-xs font-semibold shadow-sm {{ $badge->tailwind_classes }}">{{ $badge->icon.' '.$badge->title }}</span>
                                 @endforeach
                             </div>
-                        @endif
-
-                        <!-- Short Description -->
-                        @if ($product->short_description)
-                            <p class="mt-3 text-xs text-gray-500 dark:text-gray-400/70 description-wrapper">{!! nl2br($product->short_description) !!}</p>
                         @endif
                     </div>
 
                     <!-- Wishlist / share -->
                     <div class="flex flex-col items-end gap-2">
-                        <button class="p-2 {{ FD['rounded'] }} hover:bg-slate-100 dark:hover:bg-slate-700" aria-label="Add to wishlist">
+                        <div>
+                            <button class="p-2 rounded-full focus:outline-none wishlist-btn" data-prod-id="{{$product->id}}">
+                                <svg class="transition-all duration-300 ease-in-out w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path class="transition-all duration-300 ease-in-out" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                        </div>
+                        {{-- <button class="p-2 {{ FD['rounded'] }} hover:bg-slate-100 dark:hover:bg-slate-700" aria-label="Add to wishlist">
                             <!-- heart svg -->
                             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l8.8-8.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
                         </button>
                         <button class="p-2 {{ FD['rounded'] }} hover:bg-slate-100 dark:hover:bg-slate-700" aria-label="Share product">
                             <!-- share svg -->
                             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v14"/></svg>
-                        </button>
+                        </button> --}}
                     </div>
                 </div>
+
+                <!-- Short Description -->
+                @if ($product->short_description)
+                    <p class="text-xs text-gray-500 dark:text-gray-400/70 description-wrapper">{!! nl2br($product->short_description) !!}</p>
+                @endif
 
                 <!-- Price block -->
 		        @if ( !empty($product->FDPricing) )
@@ -269,7 +279,7 @@
                         $currencySymbol = $p->country->currency_symbol;
                     @endphp
 
-                    <div class="mt-4 flex items-center gap-4">
+                    <div class="flex items-center">
                         <div>
                             <div id="sellingPriceEl" class="text-xl sm:text-2xl font-bold">
                                 <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->selling_price) }}
@@ -333,7 +343,7 @@
                 </div> --}}
 
                 <!-- Quantity & Actions -->
-                <div class="mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                     <!-- Qty block -->
                     <div class="flex items-start sm:items-center gap-3">
                         <div>
