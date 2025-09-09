@@ -149,21 +149,49 @@
                                         @endif
 
                                         <div class="flex-1">
-                                            <p class="{{ FD['text'] }} font-medium">{{ $product['title'] }}</p>
+                                            <p class="{{ FD['text'] }} font-medium line-clamp-1">{{ $product['title'] }}</p>
 
                                             {{-- price row --}}
-                                            @if (count($product->pricings) > 0)
-                                                @php $p = $product->pricings[0]; @endphp
+                                            {{-- @if ( !empty($product->FDPricing) )
+                                                @php
+                                                    $p = $product->FDPricing;
+                                                    $currencySymbol = $p->country->currency_symbol;
+                                                @endphp
+
+                                                <div class="mt-3 flex items-center justify-between gap-2">
+                                                    <div>
+                                                        <div class="{{ FD['text-2'] }} font-extrabold text-gray-900 dark:text-white leading-none">
+                                                            <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->selling_price) }}
+                                                        </div>
+                                                        <div class="mt-1 flex items-center gap-2">
+                                                            @if($p->mrp && $p->mrp > 0)
+                                                                <span class="text-xs text-gray-400 dark:text-gray-400 line-through">
+                                                                    <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->mrp) }}
+                                                                </span>
+                                                                <span class="text-xs font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/20 px-2 py-0.5 {{ FD['rounded'] }}">
+                                                                    {{ $p->discount }}% off
+                                                                </span>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif --}}
+                                            @if ( !empty($product->FDPricing) )
+                                                {{-- @php $p = $product->pricings[0]; @endphp --}}
+                                                @php
+                                                    $p = $product->FDPricing;
+                                                    $currencySymbol = $p->country->currency_symbol;
+                                                @endphp
 
                                                 <div class="mt-2 flex items-center justify-between gap-2">
                                                     <div class="flex gap-2">
                                                         <div class="{{ FD['text'] }} font-extrabold text-gray-900 dark:text-white leading-none">
-                                                            <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->selling_price) }}
+                                                            <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->selling_price) }}
                                                         </div>
 
                                                         @if($p->mrp && $p->mrp > 0)
                                                             <span class="text-xs text-gray-400 dark:text-gray-400 line-through leading-none">
-                                                                <span class="currency-icon">{{ $p->currency_symbol }}</span>{{ formatIndianMoney($p->mrp) }}
+                                                                <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->mrp) }}
                                                             </span>
                                                             <span class="text-xs font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/20 px-2 py-0.5 {{ FD['rounded'] }} leading-none">
                                                                 {{ $p->discount }}% off

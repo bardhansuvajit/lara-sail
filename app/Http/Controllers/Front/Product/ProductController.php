@@ -22,17 +22,34 @@ class ProductController extends Controller
 
     public function detail($slug): RedirectResponse|View
     {
+        $resp = $this->productListingRepository->getBySlugFDCustomArr($slug);
+
+        if ($resp['code'] == 200) {
+            $product = $resp['data'];
+            $variation = $this->productVariationRepository->groupedVariation($product->id);
+
+            return view('front.product.detail', [
+                'product' => $product,
+                'activeImagesCount' => count($product->activeImages),
+                'variation' => $variation
+            ]);
+        } else {
+            return redirect()->route('front.error.404');
+        }
+
+        /*
         $resp = $this->productListingRepository->getBySlug($slug);
 
         if ($resp['code'] == 200) {
             $variation = $this->productVariationRepository->groupedVariation($resp['data']->id);
 
             return view('front.product.detail', [
-                'prouct' => $resp['data'],
+                'product' => $resp['data'],
                 'variation' => $variation
             ]);
         } else {
             return redirect()->route('front.error.404');
         }
+        */
     }
 }

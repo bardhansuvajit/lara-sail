@@ -31,17 +31,32 @@ class CountryController extends Controller
             $data = $resp['data'];
             // COOKIE - Currency & Country
             setcookie('currency', urlencode(json_encode([
-                "country" => $data->code,
-                "countryFullName" => $data->name,
-                "currency" => $data->currency_code,
-                "icon" => $data->currency_symbol,
-                "phoneCode" => $data->phone_code,
-                "phoneNoDigits" => $data->phone_no_digits,
-                "postalCodeDigits" => ( $data->code == "IN" ) ? 10 : 5
-            ])));
+                    "country" => $data->code,
+                    "countryFullName" => $data->name,
+                    "currency" => $data->currency_code,
+                    "icon" => $data->currency_symbol,
+                    "phoneCode" => $data->phone_code,
+                    "phoneNoDigits" => $data->phone_no_digits,
+                    "postalCodeDigits" => ($data->code == "IN") ? 10 : 5,
+                    "flagSvg" => $data->flag
+                ])),
+                time() + (86400 * 365), // expire in 30 days
+                "/" // important: ensure it's global to overwrite
+            );
+
+
+            // dd(COUNTRY);
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Country updated',
+                'data' => $data,
+            ];
+        } else {
+            return $resp;
         }
 
-        return $resp;
     }
 
 }

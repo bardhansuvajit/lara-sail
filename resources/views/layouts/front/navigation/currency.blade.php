@@ -3,11 +3,11 @@
         <button type="button" class="inline-flex items-center gap-1 {{FD['text']}} font-medium hover:underline dark:text-white">
             <div class="flex gap-1 items-center">
                 <p>
-                    <span class="currency-symbol">₹</span>
-                    <span class="currency-code">(INR)</span>
+                    <span class="currency-symbol">{{ COUNTRY['icon'] }}</span>
+                    <span class="currency-code">({{ COUNTRY['currency'] }})</span>
                 </p>
                 <div class="w-5">
-                    <svg id=flag-icons-in viewBox="0 0 640 480"xmlns=http://www.w3.org/2000/svg xmlns:xlink=http://www.w3.org/1999/xlink><path d="M0 0h640v160H0z"fill=#f93 /><path d="M0 160h640v160H0z"fill=#fff /><path d="M0 320h640v160H0z"fill=#128807 /><g transform="matrix(3.2 0 0 3.2 320 240)"><circle r=20 fill=#008 /><circle r=17.5 fill=#fff /><circle r=3.5 fill=#008 /><g id=in-d><g id=in-c><g id=in-b><g id=in-a fill=#008><circle r=.9 transform="rotate(7.5 -8.8 133.5)"/><path d="M0 17.5.6 7 0 2l-.6 5z"/></g><use height=100% transform=rotate(15) width=100% xlink:href=#in-a /></g><use height=100% transform=rotate(30) width=100% xlink:href=#in-b /></g><use height=100% transform=rotate(60) width=100% xlink:href=#in-c /></g><use height=100% transform=rotate(120) width=100% xlink:href=#in-d /><use height=100% transform=rotate(-120) width=100% xlink:href=#in-d /></g></svg>
+                    {!! COUNTRY['flagSvg'] !!}
                 </div>
             </div>
 

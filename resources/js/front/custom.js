@@ -1219,6 +1219,7 @@ document.querySelectorAll('.toggle-currency').forEach(el => {
 
             if (data.code == 200) {
                 const countryData = data.data;
+                window.location.reload();
             }
 
             // return data.code !== 200;

@@ -286,6 +286,40 @@ class ProductListingRepository implements ProductListingInterface
         }
     }
 
+    public function getBySlugFDCustomArr(String $slug)
+    {
+        try {
+            $data = Product::select(['id', 'title', 'slug', 'category_id', 'average_rating', 'review_count', 'status'])
+            ->with(['statusDetail', 'category', 'activeImages', 'FDPricing', 'activeVariations', 'reviews', 'badges'])
+            ->where('slug', $slug)
+            ->first();
+            // ->toArray();
+
+            if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
     public function update(Array $array)
     {
         // dd($array);

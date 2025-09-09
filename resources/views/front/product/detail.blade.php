@@ -3,6 +3,7 @@
     title="{{ __('Product') }}">
 
 @php
+    /*
     // Mock PHP data for Product Detail Page (PDP)
     $product = [
         'id' => 101,
@@ -37,7 +38,6 @@
             '4D adjustable armrests',
             '120 kg weight capacity'
         ],
-        // variations
         'variations' => [
             'colors' => ['black' => 'Black', 'grey' => 'Grey', 'blue' => 'Navy Blue'],
             'materials' => ['mesh' => 'Mesh', 'leather' => 'PU Leather'],
@@ -100,45 +100,73 @@
         }
         return false;
     }
+    */
 @endphp
 
-<div class="pt-2 md:pt-4">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 md:gap-4 items-start">
+<div class="px-2 md:px-0 pt-2 md:pt-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 md:gap-4 @if ($activeImagesCount > 0) items-start @else items-stretch @endif">
         <!-- Left: Images (thumbnails at bottom) -->
         <div class="lg:col-span-5 bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm md:sticky md:top-[130px] md:mb-4">
-            <div class="flex flex-col gap-2 md:gap-4">
+            @if ($activeImagesCount > 0)
+                @php
+                    $images = $product->activeImages;
+                @endphp
 
-                <!-- Main image area (wrapper is relative for lens) -->
-                <div id="mainImageWrapper" class="relative {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
-                    <div class="aspect-w-4 aspect-h-3 {{ FD['rounded'] }} overflow-hidden">
-                        <img id="mainImage" src="@php echo $product['images'][0] @endphp"
-                            alt="Main product image"
-                            class="w-full h-full object-cover transition-transform duration-300"
-                            draggable="false" />
+                @if ($activeImagesCount == 1)
+                    <div id="mainImageWrapper" class="relative {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+                        <div class="aspect-w-4 aspect-h-3 {{ FD['rounded'] }} overflow-hidden">
+                            <img id="mainImage" src="{{ Storage::url($images[0]->image_l) }}"
+                                alt="Main product image"
+                                class="w-full h-72 object-scale-down transition-transform duration-300"
+                                draggable="false" />
+                        </div>
+
+                        <!-- zoom / gallery -->
+                        <button id="openGallery" class="absolute right-3 top-3 p-2 {{ FD['rounded'] }} bg-white/80 dark:bg-slate-800/80 hover:shadow text-xs" aria-label="Open gallery">🔍 View</button>
+
+                        <!-- lens (created hidden; shown on hover) -->
+                        <div id="imgLens" class="hidden pointer-events-none absolute {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white/10 mix-blend-normal" aria-hidden="true"></div>
                     </div>
+                @else
+                    <div class="flex flex-col gap-2 md:gap-4">
 
-                    <!-- zoom / gallery -->
-                    <button id="openGallery" class="absolute right-3 top-3 p-2 {{ FD['rounded'] }} bg-white/80 dark:bg-slate-800/80 hover:shadow text-xs" aria-label="Open gallery">🔍 View</button>
+                        <!-- Main image area (wrapper is relative for lens) -->
+                        <div id="mainImageWrapper" class="relative {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+                            <div class="aspect-w-4 aspect-h-3 {{ FD['rounded'] }} overflow-hidden">
+                                <img id="mainImage" src="@php echo $product['images'][0] @endphp"
+                                    alt="Main product image"
+                                    class="w-full h-full object-cover transition-transform duration-300"
+                                    draggable="false" />
+                            </div>
 
-                    <!-- lens (created hidden; shown on hover) -->
-                    <div id="imgLens" class="hidden pointer-events-none absolute {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white/10 mix-blend-normal" aria-hidden="true"></div>
-                </div>
+                            <!-- zoom / gallery -->
+                            <button id="openGallery" class="absolute right-3 top-3 p-2 {{ FD['rounded'] }} bg-white/80 dark:bg-slate-800/80 hover:shadow text-xs" aria-label="Open gallery">🔍 View</button>
 
-                <!-- Thumbnails (bottom) -->
-                <div class="flex items-center gap-2">
-                    <div id="thumbs" class="flex gap-2 overflow-x-auto no-scrollbar md:py-1">
-                        @php foreach($product['images'] as $i => $img): @endphp
-                        <button
-                            type="button"
-                            class="thumb-item flex-none w-20 h-16 sm:w-24 sm:h-20 {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 focus:outline-none"
-                            data-img="@php echo $img @endphp"
-                            aria-label="View image @php echo $i+1 @endphp">
-                            <img src="@php echo $img @endphp" alt="Thumb @php echo $i+1 @endphp" class="w-full h-full object-cover" loading="lazy" />
-                        </button>
-                        @php endforeach; @endphp
+                            <!-- lens (created hidden; shown on hover) -->
+                            <div id="imgLens" class="hidden pointer-events-none absolute {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white/10 mix-blend-normal" aria-hidden="true"></div>
+                        </div>
+
+                        <!-- Thumbnails (bottom) -->
+                        <div class="flex items-center gap-2">
+                            <div id="thumbs" class="flex gap-2 overflow-x-auto no-scrollbar md:py-1">
+                                @php foreach($product['images'] as $i => $img): @endphp
+                                <button
+                                    type="button"
+                                    class="thumb-item flex-none w-20 h-16 sm:w-24 sm:h-20 {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 focus:outline-none"
+                                    data-img="@php echo $img @endphp"
+                                    aria-label="View image @php echo $i+1 @endphp">
+                                    <img src="@php echo $img @endphp" alt="Thumb @php echo $i+1 @endphp" class="w-full h-full object-cover" loading="lazy" />
+                                </button>
+                                @php endforeach; @endphp
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                @endif
+            @else
+                <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
+					{!! str_replace('w-32 h-32', 'w-96 h-96', FD['brokenImageFront']) !!}
+				</div>
+            @endif
         </div>
 
         <!-- Right: Product Info & Actions -->
@@ -158,7 +186,7 @@
 
                                 <!-- Category parents -->
                                 @php
-                                    $category = $prouct->category;
+                                    $category = $product->category;
                                     $ancestors = collect([]);
                                     $current = $category->parentDetails;
                                     while ($current) {
@@ -185,30 +213,28 @@
                                 </li>
 
                                 <li>/</li>
-                                <li><span class="text-gray-800 font-medium dark:text-gray-300" title="{{ $prouct->title }}">{{ Str::limit($prouct->title, 25) }}</span></li>
+                                <li><span class="text-gray-800 font-medium dark:text-gray-300" title="{{ $product->title }}">{{ Str::limit($product->title, 25) }}</span></li>
                             </ol>
                         </nav>
 
-                        {{ dd(COUNTRY) }}
-
-                        <h1 class="text-lg sm:text-xl font-semibold leading-tight">{{ $prouct->title }}</h1>
+                        <h1 class="text-base sm:text-xl font-semibold leading-tight">{{ $product->title }}</h1>
 
                         <!-- Rating -->
                         <div class="flex items-center gap-2 mt-2 text-xs text-slate-500 dark:text-slate-300">
-                            @if ($prouct->average_rating > 0)
+                            @if ($product->average_rating > 0)
                                 <span class="flex items-center gap-1">
-                                    {!! frontRatingHtml($prouct->average_rating) !!}
+                                    {!! frontRatingHtml($product->average_rating) !!}
                                 </span>
                             @endif
-                            <span>{{ $prouct->review_count.' '.( number_format($prouct->review_count) > 1 ? 'reviews' : 'review' ) }}</span>
-                            <span>·</span>
-                            <span class="text-slate-400 dark:text-slate-400">By <strong>@php echo htmlspecialchars($product['brand']) @endphp</strong></span>
+                            <span>{{ $product->review_count.' '.( number_format($product->review_count) > 1 ? 'reviews' : 'review' ) }}</span>
+                            {{-- <span>·</span>
+                            <span class="text-slate-400 dark:text-slate-400">By <strong>@php echo htmlspecialchars($product['brand']) @endphp</strong></span> --}}
                         </div>
 
                         <!-- Badge -->
-                        @if (count($prouct->badges) > 0)
+                        @if (count($product->badges) > 0)
                             <div class="flex items-center gap-2 my-4">
-                                @foreach ($prouct->badges as $badge)
+                                @foreach ($product->badges as $badge)
                                     @php
                                         $badge = $badge->badgeDetail;
                                     @endphp
@@ -218,8 +244,8 @@
                         @endif
 
                         <!-- Short Description -->
-                        @if ($prouct->short_description)
-                            <p class="mt-3 text-xs text-gray-500 dark:text-gray-400/70 description-wrapper">{{ $prouct->short_description }}</p>
+                        @if ($product->short_description)
+                            <p class="mt-3 text-xs text-gray-500 dark:text-gray-400/70 description-wrapper">{!! nl2br($product->short_description) !!}</p>
                         @endif
                     </div>
 
@@ -237,20 +263,36 @@
                 </div>
 
                 <!-- Price block -->
-                <div class="mt-4 flex items-center gap-4">
-                    <div>
-                        <div id="sellingPriceEl" class="text-xl sm:text-2xl font-bold">@php echo $product['currency'] . number_format($product['price'], 2) @endphp</div>
-                        <div id="mrpEl" class="text-xs text-slate-500 dark:text-slate-400">
-                            <span class="line-through">
-                                @php echo $product['currency'] . number_format($product['mrp'], 2) @endphp
-                            </span>
+		        @if ( !empty($product->FDPricing) )
+                    @php
+                        $p = $product->FDPricing;
+                        $currencySymbol = $p->country->currency_symbol;
+                    @endphp
+
+                    <div class="mt-4 flex items-center gap-4">
+                        <div>
+                            <div id="sellingPriceEl" class="text-xl sm:text-2xl font-bold">
+                                <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->selling_price) }}
+                                {{-- @php echo $product['currency'] . number_format($product['price'], 2) @endphp --}}
+                            </div>
+                            <div id="mrpEl" class="text-xs text-slate-500 dark:text-slate-400">
+                                <span class="line-through">
+                                    <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->mrp) }}
+                                    {{-- @php echo $product['currency'] . number_format($product['mrp'], 2) @endphp --}}
+                                </span>
+                            </div>
+                            <div id="savingsEl" class="text-xs text-emerald-700 dark:text-emerald-300 font-medium mt-1">
+                                You save <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->mrp - $p->selling_price) }} 
+                                ({{ $p->discount }}% off)
+                                {{-- You save @php echo $product['currency'] . number_format($product['mrp'] - $product['price'], 2) @endphp 
+                                (@php echo round((($product['mrp'] - $product['price'])/$product['mrp'])*100) @endphp% off) --}}
+                            </div>
                         </div>
-                        <div id="savingsEl" class="text-xs text-emerald-700 dark:text-emerald-300 font-medium mt-1">You save @php echo $product['currency'] . number_format($product['mrp'] - $product['price'], 2) @endphp (@php echo round((($product['mrp'] - $product['price'])/$product['mrp'])*100) @endphp% off)</div>
                     </div>
-                </div>
+                @endif
 
                 <!-- Variations -->
-                <div class="mt-4">
+                {{-- <div class="mt-4">
                     @php foreach($variant_groups as $groupKey => $options): @endphp
                     <div class="mb-3">
                         <label class="text-xs font-semibold block mb-2">@php echo htmlspecialchars(ucfirst(str_replace('_',' ',$groupKey))) @endphp</label>
@@ -286,10 +328,9 @@
                         <label class="text-xs font-semibold block mb-1">Selected</label>
                         <div class="flex justify-between">
                             <div id="selectedSummary" class="mt-1 font-semibold text-sm text-slate-900 dark:text-slate-100">— / —</div>
-                            {{-- <div id="variantNote" class="mt-1 text-xs text-amber-700 hidden" aria-live="polite">Low stock for this combination</div> --}}
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 <!-- Quantity & Actions -->
                 <div class="mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-3">
@@ -549,7 +590,7 @@
                 </div>
 
                 {{-- Upsell cards (equal height) --}}
-                @foreach($upsells as $u)
+                {{-- @foreach($upsells as $u)
                     @php
                         $mrp = $u['mrp'] ?? ($u['price'] > 0 ? round($u['price'] * 1.15) : 0);
                         $price = $u['price'] ?? 0;
@@ -561,14 +602,12 @@
                         <div class="relative">
                             <img src="{{ $u['img'] }}" alt="{{ $u['title'] }}" class="w-full h-32 object-cover {{ FD['rounded'] }}"/>
 
-                            {{-- Discount badge --}}
                             @if($discount > 0)
                                 <div class="absolute top-2 left-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-600 text-white">
                                     {{ $discount }}% OFF
                                 </div>
                             @endif
 
-                            {{-- Select checkbox (top-right) --}}
                             <label class="absolute top-2 right-2 inline-flex items-center">
                                 <input
                                     type="checkbox"
@@ -615,7 +654,7 @@
                             </button>
                         </div>
                     </div>
-                @endforeach
+                @endforeach --}}
             </div>
         </div>
 
@@ -679,7 +718,7 @@
                                     </div>
 
                                     <div id="faqsWrapper" class="mt-2 space-y-2">
-                                    @foreach($faqs as $f)
+                                    {{-- @foreach($faqs as $f)
                                         <div class="faq-item border dark:border-slate-700 p-3 {{ FD['rounded'] }}">
                                             <button class="faq-q w-full text-left flex items-center justify-between" aria-expanded="false">
                                                 <span class="font-medium text-sm">{{ $f['q'] }}</span>
@@ -687,14 +726,14 @@
                                             </button>
                                             <div class="faq-a mt-2 hidden text-sm text-slate-600 dark:text-slate-400">{{ $f['a'] }}</div>
                                         </div>
-                                    @endforeach
+                                    @endforeach --}}
                                     </div>
                                 </div>
                             </div>
 
                             <hr class="dark:border-gray-600">
 
-                            <div id="reviews">
+                            {{-- <div id="reviews">
                                 <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                                     <div>
                                     <h2 class="text-lg font-semibold">Customer reviews</h2>
@@ -767,7 +806,7 @@
                                     </div>
                                 </div>
 
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
 
@@ -843,7 +882,7 @@
             </div>
 
             <!-- Mobile sticky CTA -->
-            <div id="mobileCta" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[92%] sm:hidden">
+            <div id="mobileCta" class="fixed bottom-16 left-1/2 -translate-x-1/2 z-50 w-[92%] sm:hidden">
                 <div class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 {{ FD['rounded'] }} p-3 shadow-lg">
                 <div class="flex items-center gap-3">
                     <img src="https://dummyimage.com/64x64/cccccc/666666&text=P" alt="product" class="w-12 h-12 {{ FD['rounded'] }} object-cover">
@@ -885,9 +924,9 @@
 <script>
 (function(){
     // server-provided data (raw json, NOT escaped)
-    const variants = @php echo json_encode($variations, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) @endphp;
-    const variantOrder = @php echo json_encode($variant_order, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) @endphp;
-    const combos = variants.combinations || {};
+    // const variants = @php // echo json_encode($variations, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) @endphp;
+    // const variantOrder = @php // echo json_encode($variant_order, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) @endphp;
+    // const combos = variants.combinations || {};
     // ---- CONFIG ----
     const ZOOM_FACTOR = 5;      // how much larger the background will appear in the zoom pane
     const SHOW_ON_WIDTH = 768;    // min viewport width to show zoom pane (hide on small screens)
@@ -1078,26 +1117,6 @@
         if (zoomPane && document.body.contains(zoomPane)) document.body.removeChild(zoomPane);
     });
 
-    /*
-    // thumbnails -> change main image
-    document.querySelectorAll('.thumb-item').forEach(btn => {
-        btn.addEventListener('hover', () => {
-        document.getElementById('mainImage').src = btn.dataset.img;
-        });
-    });
-
-    // open gallery (lightbox) - simple
-    document.getElementById('openGallery').addEventListener('click', () => {
-        const light = document.createElement('div');
-        light.className = 'fixed inset-0 z-60 bg-black/80 flex items-center justify-center p-4';
-        light.innerHTML = `<div class="max-w-4xl w-full"><img src="${document.getElementById('mainImage').src}" class="w-full h-auto rounded" alt="preview"/></div>`;
-        light.addEventListener('click', ()=> document.body.removeChild(light));
-        document.body.appendChild(light);
-        const escHandler = e => { if (e.key === 'Escape') { if (document.body.contains(light)) document.body.removeChild(light); document.removeEventListener('keydown', escHandler); } };
-        document.addEventListener('keydown', escHandler);
-    });
-    */
-
     // helper: build combo key based on variantOrder
     function comboKeyFromSelected(selected){ return variantOrder.map(g => selected[g] ?? '').join('|'); }
 
@@ -1147,9 +1166,11 @@
             return;
         }
 
+        /*
+        {{--
         // set price & stock-based states
-        if (priceEl) priceEl.textContent = '@php echo $product["currency"] @endphp' + Number(info.price).toFixed(2);
-        if (mrpEl) mrpEl.innerHTML = '<span class="line-through">@php echo $product["currency"] . number_format($product["mrp"], 2) @endphp</span>';
+        if (priceEl) priceEl.textContent = '@php // echo $product["currency"] @endphp' + Number(info.price).toFixed(2);
+        if (mrpEl) mrpEl.innerHTML = '<span class="line-through">@php // echo $product["currency"] . number_format($product["mrp"], 2) @endphp</span>';
         if (savingsEl) savingsEl.textContent = 'You save @php echo $product["currency"] . number_format($product["mrp"] - $product["price"], 2) @endphp (@php echo round((($product["mrp"] - $product["price"])/$product["mrp"])*100) @endphp% off)';
 
         if (info.stock <= 2) {
@@ -1172,8 +1193,11 @@
 
         if (addToCart) { addToCart.disabled = info.stock <= 0; addToCart.classList.toggle('opacity-60', info.stock <= 0); }
         if (buyNow) { buyNow.disabled = info.stock <= 0; buyNow.classList.toggle('opacity-60', info.stock <= 0); }
+        --}}
+        */
     }
 
+    /*
     // wire variant groups: set initial selected and attach handlers
     document.querySelectorAll('[data-variant-group]').forEach(groupEl => {
         const groupKey = groupEl.getAttribute('data-variant-group');
@@ -1239,6 +1263,7 @@
 
     // init UI
     updateVariantUI();
+    */
 
 })();
 </script>

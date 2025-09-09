@@ -7,7 +7,7 @@
         <div id="countdown" class="{{ FD['text-2'] }} font-bold font-mono dark:text-white">00:10:00</div>
     </div>
 
-    <div class="mt-3 grid grid-cols-2 gap-2">
+    <div class="mt-3 grid grid-cols-2 gap-2 md:gap-4">
         @foreach($flashSaleProducts as $product)
             <a href="{{ route('front.product.detail', $product->slug) }}" class="block h-full">
                 <div class="bg-white dark:bg-gray-800 p-2 {{ FD['rounded'] }} shadow-sm hover:shadow-lg h-full flex flex-col">
@@ -31,8 +31,32 @@
                         {{-- Title --}}
                         <p class="{{ FD['text'] }} font-medium mt-2 mb-1">{{ $product['title'] }}</p>
 
-                        {{-- Pricing --}}
-                        @if (count($product->pricings) > 0)
+                        {{-- price row --}}
+                        @if ( !empty($product->FDPricing) )
+                            @php
+                                $p = $product->FDPricing;
+                                $currencySymbol = $p->country->currency_symbol;
+                            @endphp
+
+                            <div class="mt-3 flex items-center justify-between gap-2">
+                                <div>
+                                    <div class="{{ FD['text-2'] }} font-extrabold text-gray-900 dark:text-white leading-none">
+                                        <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->selling_price) }}
+                                    </div>
+                                    <div class="mt-1 flex items-center gap-2">
+                                        @if($p->mrp && $p->mrp > 0)
+                                            <span class="text-xs text-gray-400 dark:text-gray-400 line-through">
+                                                <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->mrp) }}
+                                            </span>
+                                            <span class="text-xs font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/20 px-2 py-0.5 {{ FD['rounded'] }}">
+                                                {{ $p->discount }}% off
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                        {{-- @if (count($product->pricings) > 0)
                             @php $p = $product->pricings[0]; @endphp
 
                             <div class="{{ FD['text-1'] }} font-extrabold text-gray-900 dark:text-white leading-none">
@@ -49,7 +73,7 @@
                                     </span>
                                 @endif
                             </div>
-                        @endif
+                        @endif --}}
                     </div>
                 </div>
             </a>

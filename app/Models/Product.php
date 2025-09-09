@@ -64,6 +64,12 @@ class Product extends Model
         return $this->hasMany('App\Models\ProductPricing', 'product_id', 'id')->orderBy('id', 'asc');
     }
 
+    // get only pricing matching with cookie
+    public function FDPricing()
+    {
+        return $this->hasOne('App\Models\ProductPricing', 'product_id', 'id')->where('country_code', COUNTRY['country'])->where('status', 1);
+    }
+
     public function featured()
     {
         return $this->hasOne('App\Models\ProductFeature', 'product_id', 'id');

@@ -10,6 +10,7 @@ interface ProductListingInterface
     public function getById(Int $id);
     public function getByIds(Array $ids);
     public function getBySlug(String $slug);
+    public function getBySlugFDCustomArr(String $slug);
     public function update(Array $array);
     public function delete(Int $id);
     public function bulkAction(Array $array);

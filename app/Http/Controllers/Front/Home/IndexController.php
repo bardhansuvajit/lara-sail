@@ -70,6 +70,8 @@ class IndexController extends Controller
             return $this->adSectionRepository->list('homepage', ['status' => 1], 'all', 'position', 'asc');
         });
 
+        // dd(COUNTRY);
+
         return view('front.home.index', [
             'categoryStyleCount' => $categoryStyleCount, // show max no of category
             'banners' => $banners['data'],
