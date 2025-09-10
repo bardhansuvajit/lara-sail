@@ -104,8 +104,17 @@
 @endphp
 
 <div class="px-2 md:px-0 pt-2 md:pt-4">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 md:gap-4 @if ($activeImagesCount > 0) items-start @else items-stretch @endif">
-        <!-- Left: Images22 (thumbnails at bottom) -->
+    @php
+        // If there are no product images stretch the height of Left & Right section
+        if ($activeImagesCount > 0) {
+            $itemsClass = "items-start";
+        } else {
+            $itemsClass = "items-stretch";
+        }
+    @endphp
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 md:gap-4 {{ $itemsClass }}">
+        <!-- Left: Images (thumbnails at bottom) -->
         <div class="lg:col-span-5 bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm md:sticky md:top-[130px] md:mb-4">
             @if ($activeImagesCount > 0)
                 @php
@@ -136,10 +145,10 @@
                                 @foreach ($images as $i => $img)
                                     <button
                                         type="button"
-                                        class="thumb-item flex-none w-20 h-16 sm:w-24 sm:h-20 {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 focus:outline-none"
+                                        class="thumb-item flex-none w-20 h-16 sm:w-24 sm:h-20 {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 focus:outline-none transition-all"
                                         data-img="{{ Storage::url($img->image_l) }}"
                                         aria-label="View image {{ $i+1 }}">
-                                            <img src="{{ Storage::url($img->image_s) }}" alt="Thumb {{ $i+1 }}" class="w-full h-full object-scale-down" loading="lazy" />
+                                            <img src="{{ Storage::url($img->image_s) }}" alt="Thumb {{ $i+1 }}" class="w-full h-full object-scale-down transition-all" loading="lazy" />
                                     </button>
                                 @endforeach
                                 {{-- @php foreach($product['images'] as $i => $img): @endphp
@@ -1028,6 +1037,15 @@
     // ---- CONFIG ----
     const ZOOM_FACTOR = 5;      // how much larger the background will appear in the zoom pane
     const SHOW_ON_WIDTH = 768;    // min viewport width to show zoom pane (hide on small screens)
+    const mainImage = document.getElementById('mainImage');
+    const mainWrap  = document.getElementById('mainImageWrapper');
+    const thumbs    = document.querySelectorAll('.thumb-item');
+    const lens      = document.getElementById('imgLens');
+    let zoomPane = null;          // the zoom pane element appended to body
+    let currentSrc = mainImage.src;
+    let boundHandlers = {};
+
+
     const qtyGroup = document.getElementById('qtyGroup');
     const qtyInput = document.getElementById('qtyInput');
     const decBtn = document.getElementById('qtyDec');
@@ -1051,34 +1069,33 @@
     let maxStock = Math.min(Math.max(0, serverMax), HARD_MAX);
     // -----------------
 
-    const mainImage = document.getElementById('mainImage');
-    const mainWrap  = document.getElementById('mainImageWrapper');
-    const thumbs    = document.querySelectorAll('.thumb-item');
-    const lens      = document.getElementById('imgLens');
-    let zoomPane = null;          // the zoom pane element appended to body
-    let currentSrc = mainImage.src;
-    let boundHandlers = {};
+
 
     // --- THUMBNAIL HOVER: change main image on pointerenter / focus ---
     thumbs.forEach(btn => {
         // pointerenter covers mouse & pen; also handle keyboard focus
         btn.addEventListener('pointerenter', () => {
-        const src = btn.dataset.img;
-        if (src && src !== currentSrc) {
-            currentSrc = src;
-            mainImage.src = src;
-        }
-        // visual focus state
-        thumbs.forEach(t => t.classList.remove('ring-2','ring-slate-300'));
-        btn.classList.add('ring-2','ring-slate-300');
+            btn.classList.add('border-2', 'border-amber-300', 'dark:border-amber-300');
+            const src = btn.dataset.img;
+            if (src && src !== currentSrc) {
+                currentSrc = src;
+                mainImage.src = src;
+            }
+            // visual focus state
+            // thumbs.forEach(t => t.classList.remove('ring-2','ring-slate-300'));
+            // btn.classList.add('ring-2','ring-slate-300','ring-inset');
+            thumbs.forEach(t => t.classList.remove('border-2', 'border-amber-300', 'dark:border-amber-300'));
+            btn.classList.add('border-2', 'border-amber-300', 'dark:border-amber-300');
         });
+
         btn.addEventListener('focus', () => {
-        btn.dispatchEvent(new Event('pointerenter'));
+            btn.dispatchEvent(new Event('pointerenter'));
         });
+
         // optional: on pointerleave remove ring (keeps last selected)
         btn.addEventListener('pointerleave', () => {
-        // keep ring on the last hovered; comment out to remove ring on leave
-        // btn.classList.remove('ring-2','ring-slate-300');
+            // keep ring on the last hovered; comment out to remove ring on leave
+            // btn.classList.remove('ring-2','ring-slate-300');
         });
     });
 
@@ -1180,7 +1197,8 @@
         pane.style.backgroundPosition = `${px}% ${py}%`;
 
         // lens updates remain unchanged
-        const lensSize = Math.max(40, Math.round(rect.width / ZOOM_FACTOR));
+        // const lensSize = Math.max(40, Math.round(rect.width / ZOOM_FACTOR));
+        const lensSize = Math.max(40, Math.round(paneWidth / ZOOM_FACTOR));
         lens.style.width = lensSize + 'px';
         lens.style.height = lensSize + 'px';
         lens.style.left = Math.round(clampedX - lensSize / 2) + 'px';
@@ -1248,7 +1266,8 @@
         const v = btn.dataset.variantValue;
         const active = v === value;
         btn.setAttribute('aria-checked', active ? 'true' : 'false');
-        btn.classList.toggle('ring-2', active);
+        // btn.classList.toggle('ring-2', active);
+        btn.classList.toggle('border-2', active);
         btn.classList.toggle('ring-amber-500', active);
         btn.classList.toggle('opacity-60', btn.disabled && !active);
         });
