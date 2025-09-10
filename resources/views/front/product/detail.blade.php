@@ -105,7 +105,7 @@
 
 <div class="px-2 md:px-0 pt-2 md:pt-4">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 md:gap-4 @if ($activeImagesCount > 0) items-start @else items-stretch @endif">
-        <!-- Left: Images2 (thumbnails at bottom) -->
+        <!-- Left: Images22 (thumbnails at bottom) -->
         <div class="lg:col-span-5 bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm md:sticky md:top-[130px] md:mb-4">
             @if ($activeImagesCount > 0)
                 @php
