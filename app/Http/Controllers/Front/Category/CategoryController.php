@@ -247,7 +247,8 @@ class CategoryController extends Controller
     public function detail(Request $request, $slug): View|RedirectResponse
     {
         // Static Country ID
-        $countryId = 82;
+        // $countryCode = 82;
+        $countryCode = COUNTRY['country'];
         $displayProductsPerPage = 16;
 
         $sortByArr = [
@@ -295,18 +296,18 @@ class CategoryController extends Controller
         $query = \App\Models\Product::query()
             ->select('products.*')
             ->addSelect([
-                'selling_price' => function ($query) use ($countryId) {
+                'selling_price' => function ($query) use ($countryCode) {
                     $query->select('selling_price')
                         ->from('product_pricings')
                         ->whereColumn('product_pricings.product_id', 'products.id')
-                        ->where(function ($q) use ($countryId) {
-                            if ($countryId) {
-                                $q->where('country_id', $countryId)->orWhereNull('country_id');
+                        ->where(function ($q) use ($countryCode) {
+                            if ($countryCode) {
+                                $q->where('country_code', $countryCode)->orWhereNull('country_code');
                             } else {
-                                $q->whereNull('country_id');
+                                $q->whereNull('country_code');
                             }
                         })
-                        ->orderByRaw('CASE WHEN country_id = ? THEN 0 WHEN country_id IS NULL THEN 1 ELSE 2 END', [$countryId])
+                        ->orderByRaw('CASE WHEN country_code = ? THEN 0 WHEN country_code IS NULL THEN 1 ELSE 2 END', [$countryCode])
                         ->limit(1);
                 }
             ])
@@ -324,29 +325,29 @@ class CategoryController extends Controller
             $min = $priceMin !== null ? (float) $priceMin : null;
             $max = $priceMax !== null ? (float) $priceMax : null;
 
-            $query->where(function ($q) use ($min, $max, $countryId) {
+            $query->where(function ($q) use ($min, $max, $countryCode) {
                 if ($min !== null && $max !== null) {
                     if ($min > $max) { [$min, $max] = [$max, $min]; }
                     $q->whereRaw('(SELECT selling_price FROM product_pricings 
                                 WHERE product_pricings.product_id = products.id 
-                                AND (country_id = ? OR country_id IS NULL) 
-                                ORDER BY CASE WHEN country_id = ? THEN 0 WHEN country_id IS NULL THEN 1 ELSE 2 END 
+                                AND (country_code = ? OR country_code IS NULL) 
+                                ORDER BY CASE WHEN country_code = ? THEN 0 WHEN country_code IS NULL THEN 1 ELSE 2 END 
                                 LIMIT 1) BETWEEN ? AND ?',
-                        [$countryId, $countryId, $min, $max]);
+                        [$countryCode, $countryCode, $min, $max]);
                 } elseif ($min !== null) {
                     $q->whereRaw('(SELECT selling_price FROM product_pricings 
                                 WHERE product_pricings.product_id = products.id 
-                                AND (country_id = ? OR country_id IS NULL) 
-                                ORDER BY CASE WHEN country_id = ? THEN 0 WHEN country_id IS NULL THEN 1 ELSE 2 END 
+                                AND (country_code = ? OR country_code IS NULL) 
+                                ORDER BY CASE WHEN country_code = ? THEN 0 WHEN country_code IS NULL THEN 1 ELSE 2 END 
                                 LIMIT 1) >= ?',
-                        [$countryId, $countryId, $min]);
+                        [$countryCode, $countryCode, $min]);
                 } elseif ($max !== null) {
                     $q->whereRaw('(SELECT selling_price FROM product_pricings 
                                 WHERE product_pricings.product_id = products.id 
-                                AND (country_id = ? OR country_id IS NULL) 
-                                ORDER BY CASE WHEN country_id = ? THEN 0 WHEN country_id IS NULL THEN 1 ELSE 2 END 
+                                AND (country_code = ? OR country_code IS NULL) 
+                                ORDER BY CASE WHEN country_code = ? THEN 0 WHEN country_code IS NULL THEN 1 ELSE 2 END 
                                 LIMIT 1) <= ?',
-                        [$countryId, $countryId, $max]);
+                        [$countryCode, $countryCode, $max]);
                 }
             });
         }

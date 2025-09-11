@@ -35,7 +35,7 @@
                     <x-admin.input-label for="selling_price_{{ $i }}" :value="__('Selling price *')" />
                     <x-admin.text-input-with-dropdown 
                         id="selling_price_{{ $i }}" 
-                        class="block w-auto format-input-decimal" 
+                        class="block w-auto" 
                         type="tel" 
                         name="selling_price[]" 
                         :value="$isEditMode ? $productPrices[$i]->selling_price : old('selling_price.'.$i)" 
@@ -75,7 +75,7 @@
                     <x-admin.input-label for="mrp_{{ $i }}" :value="__('MRP')" />
                     <x-admin.text-input 
                         id="mrp_{{ $i }}" 
-                        class="block format-input-decimal" 
+                        class="block" 
                         type="tel" 
                         name="mrp[]" 
                         :value="$isEditMode ? $productPrices[$i]->mrp : old('mrp.'.$i)" 
@@ -106,7 +106,7 @@
                     <x-admin.input-label for="cost_{{ $i }}" :value="__('Cost per item')" />
                     <x-admin.text-input 
                         id="cost_{{ $i }}" 
-                        class="block format-input-decimal" 
+                        class="block" 
                         type="tel" 
                         name="cost[]" 
                         :value="$isEditMode ? $productPrices[$i]->cost : old('cost.'.$i)" 
@@ -178,14 +178,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const addBtn = document.getElementById("addCurrencyBtn");
     const limitMsg = document.getElementById("currencyLimitMsg");
 
-    // add once after `const wrapper = document.getElementById("currencyPricingWrapper");`
-wrapper.addEventListener('input', function (e) {
-  if (e.target && e.target.matches && e.target.matches('.format-input-decimal')) {
-    formatPriceInput(e);
-  }
-});
-
-
     // Start nextId from the count of existing blocks
     let nextId = wrapper.querySelectorAll('.currency-block').length;
 
@@ -228,15 +220,24 @@ wrapper.addEventListener('input', function (e) {
         return null;
     }
 
-    // Helper used only for calculations — it does NOT alter the input field itself.
-    function parseNumberForCalc(value) {
-        if (value === null || typeof value === 'undefined') return NaN;
-        try {
-            const s = String(value).replace(/,/g, '.');
-            const m = s.match(/-?\d+(\.\d+)?/);
-            return m ? parseFloat(m[0]) : NaN;
-        } catch (e) {
-            return NaN;
+    function sanitizeNumericInput(value) {
+        if (!value && value !== 0) return "";
+
+        value = String(value).replace(/,/g, '.');        // accept comma as decimal
+        value = value.replace(/[^0-9.]/g, '');           // keep digits and dot only
+
+        if (value.startsWith('.')) value = '0' + value;  // ".09" -> "0.09"
+
+        // keep only first dot
+        const firstDot = value.indexOf('.');
+        if (firstDot !== -1) {
+            let before = value.slice(0, firstDot) || '0';
+            let after = value.slice(firstDot + 1).replace(/\./g, ''); // drop other dots
+            before = before.slice(0, 10);
+            after = after.slice(0, 2);
+            return after.length ? (before + '.' + after) : before;
+        } else {
+            return value.slice(0, 10);
         }
     }
 
@@ -251,19 +252,29 @@ wrapper.addEventListener('input', function (e) {
         const heading = block.querySelector(".block-heading");
         const removeBtn = block.querySelector(".remove-currency-btn");
 
-        // add a composing flag (kept minimal so IME input isn't interfered with)
+        // add a composing flag to avoid interfering with IME
         [sellingEl, mrpEl, costEl].forEach(el => {
             if (!el) return;
             el._isComposing = false;
             el.addEventListener('compositionstart', () => { el._isComposing = true; });
             el.addEventListener('compositionend', () => {
                 el._isComposing = false;
-                // trigger related calculations if any (do not modify user input)
+                // sanitize after composition ends
+                el.addEventListener("input", formatPriceInput);
+                // el.value = sanitizeNumericInput(el.value);
+                // trigger related calculations if any
                 el.dispatchEvent(new Event('input', { bubbles: true }));
                 el.dispatchEvent(new Event('blur', { bubbles: true }));
             });
-            // We intentionally do NOT enforce maxlength/inputmode/pattern here so user can type freely.
+            // set helpful attributes
+            el.setAttribute('maxlength','13');
+            el.setAttribute('inputmode','decimal');
+            el.setAttribute('pattern','\\d{0,10}(\\.\\d{0,2})?');
         });
+
+        if (countrySelect && typeof countrySelect.dataset.prev === "undefined") {
+            countrySelect.dataset.prev = countrySelect.value || "";
+        }
 
         function updateHeading() {
             if (!heading || !countrySelect) return;
@@ -275,8 +286,8 @@ wrapper.addEventListener('input', function (e) {
 
         function calculateDiscount() {
             if (!sellingEl || !mrpEl || !discountEl) return;
-            const sellingPrice = parseNumberForCalc(sellingEl.value);
-            const mrp = parseNumberForCalc(mrpEl.value);
+            const sellingPrice = parseFloat(sanitizeNumericInput(sellingEl.value));
+            const mrp = parseFloat(sanitizeNumericInput(mrpEl.value));
 
             if (isNaN(mrp) || isNaN(sellingPrice) || mrp <= 0) {
                 discountEl.value = 0;
@@ -295,8 +306,8 @@ wrapper.addEventListener('input', function (e) {
 
         function calculateProfitMargin() {
             if (!sellingEl || !costEl || !profitEl || !marginEl) return;
-            const sellingPrice = parseNumberForCalc(sellingEl.value);
-            const cost = parseNumberForCalc(costEl.value);
+            const sellingPrice = parseFloat(sanitizeNumericInput(sellingEl.value));
+            const cost = parseFloat(sanitizeNumericInput(costEl.value));
 
             if (isNaN(sellingPrice) || isNaN(cost) || sellingPrice <= 0 || cost <= 0) {
                 profitEl.value = 0; marginEl.value = 0;
@@ -321,27 +332,36 @@ wrapper.addEventListener('input', function (e) {
             }
         }
 
-        // input handling is now non-destructive — we don't alter user input
+        // input handling (skip sanitize while composing)
         [sellingEl, mrpEl, costEl].forEach(el => {
             if (!el) return;
             el.addEventListener('input', function (ev) {
                 if (el._isComposing) return;
-                // Do not change el.value here — user types freely.
+                el.value = sanitizeNumericInput(el.value);
                 calculateDiscount();
                 calculateProfitMargin();
             });
             el.addEventListener('blur', function (ev) {
-                // Do not sanitize on blur; only run calculations
+                el.value = sanitizeNumericInput(el.value);
                 calculateDiscount();
                 calculateProfitMargin();
             });
-
+            // el.addEventListener('compositionend', () => {
+            //     el._isComposing = false;
+            //     el.value = sanitizeNumericInput(el.value);
+            //     el.dispatchEvent(new Event('input', { bubbles: true }));
+            // });
             el.addEventListener('compositionend', () => {
                 el._isComposing = false;
+                // sanitize final composed value immediately
+                el.value = sanitizeNumericInput(el.value);
                 // trigger existing input/blur handlers so calculations run
                 el.dispatchEvent(new Event('input', { bubbles: true }));
                 el.dispatchEvent(new Event('blur', { bubbles: true }));
             });
+
+
+            // allow '.' and ',' keys (no blocking) — sanitization will normalize
         });
 
         if (sellingEl) {
@@ -354,9 +374,6 @@ wrapper.addEventListener('input', function (e) {
         if (costEl) costEl.addEventListener('input', calculateProfitMargin);
 
         if (countrySelect) {
-            if (typeof countrySelect.dataset.prev === "undefined") {
-                countrySelect.dataset.prev = countrySelect.value || "";
-            }
             countrySelect.addEventListener('change', function () {
                 const previous = countrySelect.dataset.prev || "";
                 const newVal = countrySelect.value || "";
@@ -379,6 +396,17 @@ wrapper.addEventListener('input', function (e) {
             });
             updateHeading();
         }
+
+        /*
+        if (removeBtn) {
+            removeBtn.addEventListener('click', function () {
+                const count = wrapper.querySelectorAll('.currency-block').length;
+                if (count <= 1) return;
+                block.remove();
+                limitMsg.classList.add('hidden');
+            });
+        }
+        */
 
         if (removeBtn) {
             removeBtn.addEventListener('click', function () {

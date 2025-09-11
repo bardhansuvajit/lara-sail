@@ -123,30 +123,50 @@ class CartController extends Controller
             // Product data fetch
             $product = $this->productListingRepository->getById($request->product_id)['data'];
             $sku = $product->sku ? $product->sku : $product->slug;
-            $pricingData = $product->pricings;
+            // $pricingData = $product->pricings;
             $productImage = [
                 'image_s' => isset($product->activeImages[0]) ? $product->activeImages[0]->image_s : null,
                 'image_m' => isset($product->activeImages[0]) ? $product->activeImages[0]->image_m : null,
                 'image_l' => isset($product->activeImages[0]) ? $product->activeImages[0]->image_l : null
             ];
+            
+            // Pricing
+            $pricingData = $product->FDPricing;
 
-            // dd($productImage);
+            if (!isset($pricingData)) {
+                return response()->json([
+                    'code' => 500,
+                    'status' => 'error',
+                    'message' => 'No pricing found. Please try again.'
+                ]);
+            }
+
+            // dd($pricingData);
+
+            $sellingPrice = $pricingData->selling_price;
+            $mrp = $pricingData->mrp;
+
+            // $countryBasedDBPricing = $pricingData->country_code;
+            // dd($countryBasedDBPricing);
 
             // Currency/ Pricing
-            $currencyData = countryCurrencyData()['currency'];
+            // $currencyData = countryCurrencyData()['currency'];
 
-            foreach ($pricingData as $pricingKey => $pricingValue) {
-                if ($pricingValue->currency_code == $currencyData) {
-                    $sellingPrice = $pricingValue->selling_price;
-                    $mrp = $pricingValue->mrp;
-                } else {
-                    return response()->json([
-                        'code' => 500,
-                        'status' => 'error',
-                        'message' => 'No pricing found. Please try again.'
-                    ]);
-                }
-            }
+            // dd($pricingData->country_code);
+
+            // foreach ($pricingData as $pricingKey => $pricingValue) {
+            //     dd($pricingValue);
+            //     if ($pricingValue->country_code == COUNTRY['country']) {
+            //         $sellingPrice = $pricingValue->selling_price;
+            //         $mrp = $pricingValue->mrp;
+            //     } else {
+            //         return response()->json([
+            //             'code' => 500,
+            //             'status' => 'error',
+            //             'message' => 'No pricing found. Please try again.'
+            //         ]);
+            //     }
+            // }
 
             // Handle variations
             $variationData = [];

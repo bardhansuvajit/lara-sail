@@ -4,12 +4,15 @@ const bulkActionDiv = document.getElementById('bulkAction');
 const systemTheme = document.getElementById('systemTheme');
 const lightTheme = document.getElementById('lightTheme');
 const darkTheme = document.getElementById('darkTheme');
-const sellingPriceEl = document.getElementById('selling_price');
+/*
+// const sellingPriceEl = document.getElementById('selling_price');
+const sellingPriceEl = document.querySelector("[id^='selling_price']");
 const mrpEl = document.getElementById('mrp');
 const discountEl = document.getElementById('discount');
 const costEl = document.getElementById('cost');
 const profitEl = document.getElementById('profit');
 const marginEl = document.getElementById('margin');
+*/
 const imagesPositionToggleButton = document.getElementById('imagesPositionToggleButton');
 const variantsPositionToggleButton = document.getElementById('variantsPositionToggleButton');
 const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -115,7 +118,8 @@ if (systemTheme && lightTheme && darkTheme) {
 //     }
 // }
 // mask input fields, to accept 2 decimal digits
-const formatPriceInput = (e) => {
+// const formatPriceInput = (e) => {
+window.formatPriceInput = function (e) {
     let value = e.target.value;
     // Remove non-numeric and non-decimal characters
     value = value.replace(/[^0-9.]/g, '');
@@ -137,6 +141,7 @@ const formatPriceInput = (e) => {
     // Update the input value
     e.target.value = value;
 };
+
 const formatWholeNumberInput = (e) => {
     let value = e.target.value;
     // Remove non-numeric characters
@@ -151,6 +156,20 @@ const formatWholeNumberInput = (e) => {
     e.target.value = value;
 };
 
+["stock_quantity"].forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+        if (id == "stock_quantity") {
+            element.addEventListener("input", formatWholeNumberInput);
+        }
+    }
+});
+
+document.querySelectorAll('.format-input-decimal').forEach(el => {
+    el.addEventListener("input", formatPriceInput);
+});
+
+/*
 ["selling_price", "mrp", "cost", "stock_quantity"].forEach(id => {
     const element = document.getElementById(id);
     if (element) {
@@ -233,6 +252,7 @@ if (sellingPriceEl && costEl && profitEl && marginEl) {
     sellingPriceEl.addEventListener('input', calculateProfit);
     costEl.addEventListener('input', calculateProfit);
 }
+*/
 
 // image upload preview
 document.querySelectorAll(".images").forEach((uploader) => {

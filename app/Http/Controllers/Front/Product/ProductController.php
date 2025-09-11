@@ -31,7 +31,8 @@ class ProductController extends Controller
             return view('front.product.detail', [
                 'product' => $product,
                 'activeImagesCount' => count($product->activeImages),
-                'variation' => $variation
+                'variation' => $variation,
+                'upsells' => [],
             ]);
         } else {
             return redirect()->route('front.error.404');

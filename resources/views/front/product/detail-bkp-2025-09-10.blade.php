@@ -2,6 +2,107 @@
     screen="max-w-screen-xl"
     title="{{ __('Product') }}">
 
+@php
+    /*
+    // Mock PHP data for Product Detail Page (PDP)
+    $product = [
+        'id' => 101,
+        'title' => 'UltraComfort Ergonomic Office Chair - Model X1',
+        'brand' => 'ErgoPro',
+        'rating' => 4.6,
+        'review_count' => 1245,
+        'short_desc' => 'Breathable mesh, adjustable lumbar support, 4D armrests, 120kg capacity. Lorem ipsum dolor sit amet consectetur adipisicing elit. Id voluptas, dolorum consequuntur expedita perferendis sunt sed voluptatem fuga. Officia, hic.',
+        'long_desc' => "Designed for professionals who sit for long hours. The UltraComfort X1 brings ergonomic engineering with breathable mesh, adjustable lumbar, and 4D armrests. Perfect for home and office use. Comes with easy assembly and a 2-year warranty.",
+        'price' => 12999.00,
+        'mrp' => 19999.00,
+        'currency' => '₹',
+        'stock' => 27,
+        'cod_available' => true,
+        'shipping' => [
+            'estimate_days' => [2,5],
+            'free_over' => 1499.00
+        ],
+        'images' => [
+            'https://dummyimage.com/1200x900/eeeeee/888888&text=Chair+1',
+            'https://dummyimage.com/1200x900/dddddd/777777&text=Chair+2',
+            'https://dummyimage.com/1200x900/cccccc/666666&text=Chair+3',
+            'https://dummyimage.com/1200x900/bbbbbb/444444&text=Chair+4',
+            'https://dummyimage.com/1200x900/ffd700/333333&text=Chair+5',
+            'https://dummyimage.com/1200x900/00aaff/ffffff&text=Chair+6',
+            'https://dummyimage.com/1200x900/10b981/ffffff&text=Chair+7',
+        ],
+        'badges' => ['Best Seller','Limited Stock'],
+        'highlights' => [
+            'Ergonomic lumbar support',
+            'Breathable mesh back',
+            '4D adjustable armrests',
+            '120 kg weight capacity'
+        ],
+        'variations' => [
+            'colors' => ['black' => 'Black', 'grey' => 'Grey', 'blue' => 'Navy Blue'],
+            'materials' => ['mesh' => 'Mesh', 'leather' => 'PU Leather'],
+            'combinations' => [
+                'black|mesh' => ['price' => 12999.00, 'stock' => 12],
+                'grey|mesh'  => ['price' => 13499.00, 'stock' => 7],
+                'blue|mesh'  => ['price' => 13999.00, 'stock' => 5],
+                'black|leather' => ['price' => 14999.00, 'stock' => 3],
+                'grey|leather'  => ['price' => 14999.00, 'stock' => 0]
+            ]
+        ],
+        'offers' => [
+            ['title' => 'Bank Offer', 'desc' => '10% instant discount with SBI cards (up to ₹1,500)'],
+            ['title' => 'No Cost EMI', 'desc' => '3 & 6 months options available']
+        ],
+        'specs' => [
+            'Weight Capacity' => '120 kg',
+            'Warranty' => '2 Years on Mechanism',
+            'Assembly' => 'Minimal assembly required',
+            'Dimensions' => '46 x 48 x 120 cm (LxWxH)'
+        ]
+    ];
+
+    $upsells = [
+        ['id'=>201,'title'=>'Lumbar Support Cushion','price'=>799.00,'img'=>'https://dummyimage.com/400x300/eeeeee/888888&text=Cushion'],
+        ['id'=>202,'title'=>'Assembly + Warranty Pack','price'=>999.00,'img'=>'https://dummyimage.com/400x300/dddddd/777777&text=Warranty'],
+        ['id'=>203,'title'=>'Premium Floor Mat','price'=>499.00,'img'=>'https://dummyimage.com/400x300/cccccc/666666&text=Mat']
+    ];
+
+    $reviews = [
+        ['name'=>'Anita R.','rating'=>5,'title'=>'Super comfortable','body'=>'I use this chair for 8+ hours — back pain reduced significantly. Very sturdy.','date'=>'2025-08-10'],
+        ['name'=>'Rahul S.','rating'=>4,'title'=>'Good value','body'=>'Build quality is solid. Armrests could be softer.','date'=>'2025-07-22'],
+        ['name'=>'Mina P.','rating'=>5,'title'=>'Highly recommend','body'=>'Great for home office setup. Easy assembly.','date'=>'2025-06-15']
+    ];
+
+    $faqs = [
+        ['q'=>'Is assembly required?','a'=>'Minimal assembly required. Tools and manual included.'],
+        ['q'=>'What is the warranty?','a'=>'2 years on mechanism and 1 year on parts.'],
+        ['q'=>'Does it support heavy users?','a'=>'Rated up to 120 kg. For heavier needs, check our XL range.']
+    ];
+
+    // swatch map for color visual rendering
+    $swatch_map = [
+        'black' => '#111827',
+        'grey'  => '#6B7280',
+        'blue'  => '#1E3A8A'
+    ];
+
+    // create variant groups and stable order (excludes 'combinations')
+    $variations = $product['variations'];
+    $variant_groups = $variations;
+    if (isset($variant_groups['combinations'])) unset($variant_groups['combinations']);
+    $variant_order = array_keys($variant_groups);
+
+    // helper: is an option available (any combination with stock>0 that contains this option)
+    function option_available($groupKey, $optKey, $variations){
+        foreach($variations['combinations'] as $comboKey => $info){
+            $parts = explode('|', $comboKey);
+            if (in_array($optKey, $parts, true) && ($info['stock'] ?? 0) > 0) return true;
+        }
+        return false;
+    }
+    */
+@endphp
+
 <div class="px-2 md:px-0 pt-2 md:pt-4">
     @php
         // If there are no product images stretch the height of Left & Right section
@@ -13,7 +114,7 @@
     @endphp
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 md:gap-4 {{ $itemsClass }}">
-        <!-- Left: Images + thumbnails -->
+        <!-- Left: Images (thumbnails at bottom) -->
         <div class="lg:col-span-5 bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm md:sticky md:top-[130px] md:mb-4">
             @if ($activeImagesCount > 0)
                 @php
@@ -50,13 +151,22 @@
                                             <img src="{{ Storage::url($img->image_s) }}" alt="Thumb {{ $i+1 }}" class="w-full h-full object-scale-down transition-all" loading="lazy" />
                                     </button>
                                 @endforeach
+                                {{-- @php foreach($product['images'] as $i => $img): @endphp
+                                <button
+                                    type="button"
+                                    class="thumb-item flex-none w-20 h-16 sm:w-24 sm:h-20 {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 focus:outline-none"
+                                    data-img="@php echo $img @endphp"
+                                    aria-label="View image @php echo $i+1 @endphp">
+                                    <img src="@php echo $img @endphp" alt="Thumb @php echo $i+1 @endphp" class="w-full h-full object-cover" loading="lazy" />
+                                </button>
+                                @php endforeach; @endphp --}}
                             </div>
                         </div>
                     @endif
                 </div>
 
                 <!-- Image Zoom Pane -->
-                {{-- <div id="zoomPane" class="hidden lg:block {{ FD['rounded'] }} overflow-hidden shadow-lg" style="position:fixed; z-index:10; display:none; background-repeat:no-repeat; background-position:center; background-color:#fff;" aria-hidden="true"></div> --}}
+                <div id="zoomPane" class="hidden lg:block {{ FD['rounded'] }} overflow-hidden shadow-lg" style="position:fixed; z-index:10; display:none; background-repeat:no-repeat; background-position:center; background-color:#fff;" aria-hidden="true"></div>
             @else
                 <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
 					{!! str_replace('w-32 h-32', 'w-96 h-96', FD['brokenImageFront']) !!}
@@ -148,6 +258,14 @@
                                 <svg class="transition-all duration-300 ease-in-out w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path class="transition-all duration-300 ease-in-out" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                             </button>
                         </div>
+                        {{-- <button class="p-2 {{ FD['rounded'] }} hover:bg-slate-100 dark:hover:bg-slate-700" aria-label="Add to wishlist">
+                            <!-- heart svg -->
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l8.8-8.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                        </button>
+                        <button class="p-2 {{ FD['rounded'] }} hover:bg-slate-100 dark:hover:bg-slate-700" aria-label="Share product">
+                            <!-- share svg -->
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v14"/></svg>
+                        </button> --}}
                     </div>
                 </div>
 
@@ -167,15 +285,19 @@
                         <div>
                             <div id="sellingPriceEl" class="text-xl sm:text-2xl font-bold">
                                 <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->selling_price) }}
+                                {{-- @php echo $product['currency'] . number_format($product['price'], 2) @endphp --}}
                             </div>
                             <div id="mrpEl" class="text-xs text-slate-500 dark:text-slate-400">
                                 <span class="line-through">
                                     <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->mrp) }}
+                                    {{-- @php echo $product['currency'] . number_format($product['mrp'], 2) @endphp --}}
                                 </span>
                             </div>
-                            <div id="savingsEl" class="text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
+                            <div id="savingsEl" class="text-xs text-emerald-700 dark:text-emerald-300 font-medium mt-1">
                                 You save <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->mrp - $p->selling_price) }} 
                                 ({{ $p->discount }}% off)
+                                {{-- You save @php echo $product['currency'] . number_format($product['mrp'] - $product['price'], 2) @endphp 
+                                (@php echo round((($product['mrp'] - $product['price'])/$product['mrp'])*100) @endphp% off) --}}
                             </div>
                         </div>
                     </div>
@@ -223,7 +345,7 @@
                 </div> --}}
 
                 <!-- Quantity & Cart Actions -->
-                @if ( !empty($product->FDPricing) && ($product->statusDetail->allow_order == 1) )
+                {{-- @if ( !empty($product->FDPricing) && ($product->statusDetail->allow_order == 1) ) --}}
                     <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
                         <!-- Qty block -->
                         <div class="flex items-start sm:items-center gap-3">
@@ -316,12 +438,21 @@
                             </button>
                         </div>
                     </div>
-                @endif
+                {{-- @endif --}}
 
                 <hr class="mt-5 mb-2 dark:border-gray-600">
 
-                <!-- productBadges -->
+                <!-- productBadges (fixed & matched to page styles) -->
                 <div id="productBadges" class="">
+                    @php
+                        $fastDelivery = isset($product['shipping']['estimate_days']) && $product['shipping']['estimate_days'][0] <= 2;
+                        $warrantyText = $product['specs']['Warranty'] ?? null;
+                        $cod = $product['cod_available'] ?? false;
+                        $freeShipping = (isset($product['shipping']['free_over']) && ($product['price'] >= $product['shipping']['free_over']));
+                        $minDays = $product['shipping']['estimate_days'][0] ?? null;
+                        $maxDays = $product['shipping']['estimate_days'][1] ?? null;
+                    @endphp
+
                     <div class="grid grid-cols-4 gap-2 md:gap-4">
                         <!-- Badge: Delivery -->
                         <div role="listitem" class="flex flex-col items-center text-center p-3 bg-white dark:bg-slate-800 {{ FD['rounded'] }} shadow-sm">
@@ -331,7 +462,14 @@
                             </div>
                             <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Delivery</h5>
                             <p class="text-xs text-gray-500 dark:text-gray-400">
-                                Standard delivery
+                                @if($minDays && $maxDays)
+                                    {{ $minDays }}-{{ $maxDays }} business days
+                                @else
+                                    Standard delivery
+                                @endif
+                                @if($freeShipping)
+                                    <span class="block text-xxs text-slate-400">Free over {{ $product['currency'] . number_format($product['shipping']['free_over'], 2) }}</span>
+                                @endif
                             </p>
                         </div>
 
@@ -346,7 +484,11 @@
                             </div>
                             <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Cash on Delivery</h5>
                             <p class="text-xs text-gray-500 dark:text-gray-400">
-                                Available in many pin codes — select at checkout
+                                @if($cod)
+                                    Available in many pin codes — select at checkout
+                                @else
+                                    Not available at checkout
+                                @endif
                             </p>
                         </div>
 
@@ -373,80 +515,155 @@
 
                 </div>
             </div>
+
         </div>
     </div>
 
     <div class="flex flex-col gap-4">
-        <!-- UPSELL -->
-        @if (count($upsells) > 0)
-            <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm">
-                <div class="flex items-start justify-between mb-3">
-                    <h3 class="text-sm font-semibold">Frequently bought together</h3>
+        {{-- UPSELL --}}
+        <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm">
+            <div class="flex items-start justify-between mb-3">
+                <h3 class="text-sm font-semibold">Frequently bought together</h3>
 
-                    {{-- Top-level CTAs --}}
-                    <div class="flex gap-2 items-center">
+                {{-- Top-level CTAs --}}
+                <div class="flex gap-2 items-center">
+                    <button
+                        type="button"
+                        id="buy-together"
+                        class="inline-flex items-center text-xs font-medium px-3 py-1.5 {{ FD['rounded'] }} shadow-sm bg-sky-600 text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                        aria-label="Buy these items together"
+                        data-action="buy-together"
+                    >
+                        Buy together
+                    </button>
+
+                    <button
+                        type="button"
+                        id="add-selected"
+                        class="inline-flex items-center text-xs font-medium px-3 py-1.5 {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300"
+                        aria-label="Add selected upsells to cart"
+                        data-action="add-selected"
+                    >
+                        Add selected
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex gap-3 overflow-x-auto no-scrollbar py-1 items-start">
+                {{-- Base product card (same height as upsells) --}}
+                <div class="flex-shrink-0 w-40 p-2 border dark:border-slate-700 {{ FD['rounded'] }} bg-white dark:bg-slate-900 h-64 flex flex-col justify-between">
+                    <div class="relative">
+                        <img src="https://dummyimage.com/800x600/eeeeee/888888&text=First+image"
+                            alt="Base product title and some other texts"
+                            class="w-full h-32 object-cover {{ FD['rounded'] }}"/>
+
+                        {{-- Optional discount badge for base product (if you want) --}}
+                        @php
+                            $base_mrp = $product['mrp'] ?? null;
+                            $base_price = $product['price'] ?? 2000;
+                            $base_discount = ($base_mrp && $base_mrp > $base_price) ? round((($base_mrp - $base_price) / $base_mrp) * 100) : 0;
+                        @endphp
+
+                        @if($base_discount > 0)
+                            <div class="absolute top-2 left-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-600 text-white">
+                                {{ $base_discount }}% OFF
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="mt-2">
+                        <div class="text-xs font-medium line-clamp-2">Base product title and some other texts</div>
+
+                        <div class="mt-1 flex items-end gap-2">
+                            @if(isset($base_mrp) && $base_mrp > 0)
+                                <div class="text-xs text-slate-400 line-through">@php echo $product['currency'] . number_format($base_mrp,2) @endphp</div>
+                            @endif
+
+                            <div class="text-sm font-semibold">@php echo $product['currency'] . number_format($base_price,2) @endphp</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-2 flex gap-2">
                         <button
                             type="button"
-                            id="buy-together"
-                            class="inline-flex items-center text-xs font-medium px-3 py-1.5 {{ FD['rounded'] }} shadow-sm bg-sky-600 text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400"
-                            aria-label="Buy these items together"
-                            data-action="buy-together"
+                            class="flex-1 text-xs font-medium px-2 py-1 {{ FD['rounded'] }} bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                            aria-label="Add base product to cart"
+                            data-product-id="{{ $product['id'] ?? '' }}"
+                            data-action="add-to-cart"
                         >
-                            Buy together
+                            Add
                         </button>
 
                         <button
                             type="button"
-                            id="add-selected"
-                            class="inline-flex items-center text-xs font-medium px-3 py-1.5 {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300"
-                            aria-label="Add selected upsells to cart"
-                            data-action="add-selected"
+                            class="text-xs px-2 py-1 {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:outline-none"
+                            aria-label="View base product"
+                            data-action="view-product"
+                            data-product-id="{{ $product['id'] ?? '' }}"
                         >
-                            Add selected
+                            View
                         </button>
                     </div>
                 </div>
 
-                <div class="flex gap-3 overflow-x-auto no-scrollbar py-1 items-start">
-                    {{-- Base product card (same height as upsells) --}}
+                {{-- Plus icon --}}
+                <div class="flex items-center self-center">
+                    <div class="w-8 h-8 flex items-center justify-center text-slate-600 dark:text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-6 h-6">
+                            <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                {{-- Upsell cards (equal height) --}}
+                {{-- @foreach($upsells as $u)
+                    @php
+                        $mrp = $u['mrp'] ?? ($u['price'] > 0 ? round($u['price'] * 1.15) : 0);
+                        $price = $u['price'] ?? 0;
+                        $discount = ($mrp && $mrp > $price) ? round((($mrp - $price) / $mrp) * 100) : 0;
+                        $upsell_id = $u['id'] ?? $u['sku'] ?? $u['title'];
+                    @endphp
+
                     <div class="flex-shrink-0 w-40 p-2 border dark:border-slate-700 {{ FD['rounded'] }} bg-white dark:bg-slate-900 h-64 flex flex-col justify-between">
                         <div class="relative">
-                            <img src="https://dummyimage.com/800x600/eeeeee/888888&text=First+image"
-                                alt="Base product title and some other texts"
-                                class="w-full h-32 object-cover {{ FD['rounded'] }}"/>
+                            <img src="{{ $u['img'] }}" alt="{{ $u['title'] }}" class="w-full h-32 object-cover {{ FD['rounded'] }}"/>
 
-                            {{-- Optional discount badge for base product (if you want) --}}
-                            @php
-                                $base_mrp = $product['mrp'] ?? null;
-                                $base_price = $product['price'] ?? 2000;
-                                $base_discount = ($base_mrp && $base_mrp > $base_price) ? round((($base_mrp - $base_price) / $base_mrp) * 100) : 0;
-                            @endphp
-
-                            @if($base_discount > 0)
+                            @if($discount > 0)
                                 <div class="absolute top-2 left-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-600 text-white">
-                                    {{ $base_discount }}% OFF
+                                    {{ $discount }}% OFF
                                 </div>
                             @endif
+
+                            <label class="absolute top-2 right-2 inline-flex items-center">
+                                <input
+                                    type="checkbox"
+                                    name="upsell_selected[]"
+                                    value="{{ $upsell_id }}"
+                                    class="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-sky-300"
+                                    aria-label="Select {{ $u['title'] }} to add"
+                                    data-upsell-id="{{ $upsell_id }}"
+                                />
+                            </label>
                         </div>
 
                         <div class="mt-2">
-                            <div class="text-xs font-medium line-clamp-2">Base product title and some other texts</div>
+                            <div class="text-xs font-medium line-clamp-2">{{ $u['title'] }}</div>
 
-                            <div class="mt-1 flex items-end gap-2">
-                                @if(isset($base_mrp) && $base_mrp > 0)
-                                    <div class="text-xs text-slate-400 line-through">@php echo $product['currency'] . number_format($base_mrp,2) @endphp</div>
+                            <div class="mt-1 flex items-baseline gap-2">
+                                @if($mrp && $mrp > 0)
+                                    <div class="text-xs text-slate-400 line-through">@php echo $product['currency'] . number_format($mrp,2) @endphp</div>
                                 @endif
 
-                                <div class="text-sm font-semibold">@php echo $product['currency'] . number_format($base_price,2) @endphp</div>
+                                <div class="text-sm font-semibold">@php echo $product['currency'] . number_format($price,2) @endphp</div>
                             </div>
                         </div>
 
                         <div class="mt-2 flex gap-2">
                             <button
                                 type="button"
-                                class="flex-1 text-xs font-medium px-2 py-1 {{ FD['rounded'] }} bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                                aria-label="Add base product to cart"
-                                data-product-id="{{ $product['id'] ?? '' }}"
+                                class="flex-1 text-xs font-medium px-2 py-1 rounded {{ FD['rounded'] }} bg-sky-600 text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                                aria-label="Add {{ $u['title'] }} to cart"
+                                data-upsell-id="{{ $upsell_id }}"
                                 data-action="add-to-cart"
                             >
                                 Add
@@ -454,96 +671,19 @@
 
                             <button
                                 type="button"
-                                class="text-xs px-2 py-1 {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:outline-none"
-                                aria-label="View base product"
+                                class="text-xs px-2 py-1 rounded {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:outline-none"
+                                aria-label="View {{ $u['title'] }}"
+                                data-upsell-id="{{ $upsell_id }}"
                                 data-action="view-product"
-                                data-product-id="{{ $product['id'] ?? '' }}"
                             >
                                 View
                             </button>
                         </div>
                     </div>
-
-                    {{-- Plus icon --}}
-                    <div class="flex items-center self-center">
-                        <div class="w-8 h-8 flex items-center justify-center text-slate-600 dark:text-slate-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-6 h-6">
-                                <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
-                            </svg>
-                        </div>
-                    </div>
-
-                    {{-- Upsell cards (equal height) --}}
-                    @foreach($upsells as $u)
-                        @php
-                            $mrp = $u['mrp'] ?? ($u['price'] > 0 ? round($u['price'] * 1.15) : 0);
-                            $price = $u['price'] ?? 0;
-                            $discount = ($mrp && $mrp > $price) ? round((($mrp - $price) / $mrp) * 100) : 0;
-                            $upsell_id = $u['id'] ?? $u['sku'] ?? $u['title'];
-                        @endphp
-
-                        <div class="flex-shrink-0 w-40 p-2 border dark:border-slate-700 {{ FD['rounded'] }} bg-white dark:bg-slate-900 h-64 flex flex-col justify-between">
-                            <div class="relative">
-                                <img src="{{ $u['img'] }}" alt="{{ $u['title'] }}" class="w-full h-32 object-cover {{ FD['rounded'] }}"/>
-
-                                @if($discount > 0)
-                                    <div class="absolute top-2 left-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-600 text-white">
-                                        {{ $discount }}% OFF
-                                    </div>
-                                @endif
-
-                                <label class="absolute top-2 right-2 inline-flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        name="upsell_selected[]"
-                                        value="{{ $upsell_id }}"
-                                        class="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-sky-300"
-                                        aria-label="Select {{ $u['title'] }} to add"
-                                        data-upsell-id="{{ $upsell_id }}"
-                                    />
-                                </label>
-                            </div>
-
-                            <div class="mt-2">
-                                <div class="text-xs font-medium line-clamp-2">{{ $u['title'] }}</div>
-
-                                <div class="mt-1 flex items-baseline gap-2">
-                                    @if($mrp && $mrp > 0)
-                                        <div class="text-xs text-slate-400 line-through">@php echo $product['currency'] . number_format($mrp,2) @endphp</div>
-                                    @endif
-
-                                    <div class="text-sm font-semibold">@php echo $product['currency'] . number_format($price,2) @endphp</div>
-                                </div>
-                            </div>
-
-                            <div class="mt-2 flex gap-2">
-                                <button
-                                    type="button"
-                                    class="flex-1 text-xs font-medium px-2 py-1 rounded {{ FD['rounded'] }} bg-sky-600 text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400"
-                                    aria-label="Add {{ $u['title'] }} to cart"
-                                    data-upsell-id="{{ $upsell_id }}"
-                                    data-action="add-to-cart"
-                                >
-                                    Add
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="text-xs px-2 py-1 rounded {{ FD['rounded'] }} border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:outline-none"
-                                    aria-label="View {{ $u['title'] }}"
-                                    data-upsell-id="{{ $upsell_id }}"
-                                    data-action="view-product"
-                                >
-                                    View
-                                </button>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+                @endforeach --}}
             </div>
-        @endif
+        </div>
 
-        <!-- Description, Reviews, FAQs, CTA -->
         <section id="pdp-description" class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm">
             <div class="mx-auto">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -785,6 +925,23 @@
             </div>
 
         </section>
+
+        {{-- <aside class="lg:col-span-1">
+            <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm sticky top-28">
+            <div class="text-sm font-semibold">Need help deciding?</div>
+            <div class="mt-2 text-xs text-slate-600">Chat with our product experts for advice, bulk orders, or assembly help.</div>
+            <div class="mt-3 flex gap-2">
+                <button class="px-3 py-2 {{ FD['rounded'] }} bg-amber-600 text-white text-sm">Chat now</button>
+                <button class="px-3 py-2 {{ FD['rounded'] }} border text-sm">Call</button>
+            </div>
+
+            <div class="mt-4 border-t pt-3 text-xs text-slate-600">
+                <div><strong>Delivery:</strong> @php echo ($product['shipping']['estimate_days'][0] ?? '—') . ' - ' . ($product['shipping']['estimate_days'][1] ?? '—') @endphp days</div>
+                <div class="mt-1"><strong>Return:</strong> 7 days (eligible)</div>
+                <div class="mt-1"><strong>Warranty:</strong> @php echo $product['specs']['Warranty'] ?? '—' @endphp</div>
+            </div>
+            </div>
+        </aside> --}}
     </div>
 
 </div>
@@ -797,7 +954,7 @@
     // const variantOrder = @php // echo json_encode($variant_order, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) @endphp;
     // const combos = variants.combinations || {};
     // ---- CONFIG ----
-    const ZOOM_FACTOR = 3;      // how much larger the background will appear in the zoom pane
+    const ZOOM_FACTOR = 5;      // how much larger the background will appear in the zoom pane
     const SHOW_ON_WIDTH = 768;    // min viewport width to show zoom pane (hide on small screens)
     const mainImage = document.getElementById('mainImage');
     const mainWrap  = document.getElementById('mainImageWrapper');
@@ -834,11 +991,6 @@
 
 
     // --- THUMBNAIL HOVER: change main image on pointerenter / focus ---
-    // Add border to first thumbnail on page load
-    const firstThumb = document.querySelector('.thumb-item');
-    if (firstThumb) {
-        firstThumb.classList.add('border-2', 'border-amber-300', 'dark:border-amber-300');
-    }
     thumbs.forEach(btn => {
         // pointerenter covers mouse & pen; also handle keyboard focus
         btn.addEventListener('pointerenter', () => {
@@ -881,45 +1033,20 @@
     });
 
     // --- ZOOM PANE CREATION ---
+    // use existing DOM node (if present) instead of creating/appending to body
     function getZoomPane() {
-        // reuse existing element if present
         let pane = document.getElementById('zoomPane');
-        if (pane) {
-            zoomPane = pane;
-            return zoomPane;
+        if (!pane) {
+            // fallback: create it (rare) so older pages still work
+            pane = document.createElement('div');
+            pane.id = 'zoomPane';
+            pane.style.position = 'fixed';
+            pane.style.zIndex = 70;
+            pane.style.display = 'none';
+            pane.style.backgroundRepeat = 'no-repeat';
+            pane.style.backgroundPosition = 'center';
+            document.body.appendChild(pane);
         }
-
-        // create it lazily
-        pane = document.createElement('div');
-        pane.id = 'zoomPane';
-
-        // base classes (matches previous HTML)
-        pane.classList.add('hidden', 'lg:block', 'overflow-hidden', 'shadow-lg');
-
-        // copy a "rounded*" class from mainWrap if present so visual style matches FD['rounded']
-        try {
-            if (mainWrap && mainWrap.classList && mainWrap.classList.length) {
-                for (const c of mainWrap.classList) {
-                    if (c.startsWith('rounded')) { pane.classList.add(c); break; }
-                }
-            }
-        } catch (err) {
-            // ignore if mainWrap not available yet
-        }
-
-        // inline styles (same intent as your removed HTML)
-        pane.style.position = 'fixed';
-        pane.style.zIndex = '70';                 // safe high z-index
-        pane.style.display = 'none';
-        pane.style.backgroundRepeat = 'no-repeat';
-        pane.style.backgroundPosition = 'center';
-        pane.style.backgroundColor = '#fff';
-        pane.setAttribute('aria-hidden', 'true');
-
-        // make pane non-interactive so it doesn't steal pointer events
-        pane.style.pointerEvents = 'none';
-
-        document.body.appendChild(pane);
         zoomPane = pane;
         return zoomPane;
     }
@@ -941,100 +1068,61 @@
 
     // --- MOUSE MOVE handler to update zoom area ---
     function onPointerMove(e) {
+        // get or create pane on-demand; defensive guard prevents the null-style error
         const pane = getZoomPane();
         if (!pane) return;
 
-        // bounding boxes
-        const imgRect = mainImage.getBoundingClientRect();
-        const wrapRect = mainWrap.getBoundingClientRect();
+        const rect = mainImage.getBoundingClientRect();
+        const x = (e.clientX - rect.left);
+        const y = (e.clientY - rect.top);
 
-        // natural image size (guard)
-        const nw = mainImage.naturalWidth || imgRect.width;
-        const nh = mainImage.naturalHeight || imgRect.height;
-        if (!nw || !nh) return;
+        // clamp
+        const clampedX = Math.max(0, Math.min(rect.width, x));
+        const clampedY = Math.max(0, Math.min(rect.height, y));
 
-        const boxW = imgRect.width;
-        const boxH = imgRect.height;
-        const imgRatio = nw / nh;
-        const boxRatio = boxW / boxH;
+        // background size (we use displayed main image dims * ZOOM_FACTOR)
+        const bgW = Math.round(rect.width * ZOOM_FACTOR);
+        const bgH = Math.round(rect.height * ZOOM_FACTOR);
 
-        // compute actual displayed image size (object-fit: contain / scale-down behavior)
-        let dispW, dispH;
-        if (imgRatio > boxRatio) {
-            // image is relatively wider -> fit to box width
-            dispW = boxW;
-            dispH = boxW / imgRatio;
-        } else {
-            // image is relatively taller -> fit to box height
-            dispH = boxH;
-            dispW = boxH * imgRatio;
-        }
+        // background-position in percentages - centers the focus
+        const px = (clampedX / rect.width) * 100;
+        const py = (clampedY / rect.height) * 100;
 
-        // offset of the drawn image inside the img element (centered)
-        const offsetX = (boxW - dispW) / 2;
-        const offsetY = (boxH - dispH) / 2;
-
-        // compute pointer position relative to the drawn image (not the outer box)
-        const imageLeft = imgRect.left + offsetX + window.scrollX;
-        const imageTop  = imgRect.top + offsetY + window.scrollY;
-        const x = (e.clientX + window.scrollX) - imageLeft;
-        const y = (e.clientY + window.scrollY) - imageTop;
-
-        // clamp to image content
-        const clampedX = Math.max(0, Math.min(dispW, x));
-        const clampedY = Math.max(0, Math.min(dispH, y));
-
-        // background (use natural size so aspect is preserved)
-        const bgW = Math.round(nw * ZOOM_FACTOR);
-        const bgH = Math.round(nh * ZOOM_FACTOR);
-
-        // relative position inside drawn image
-        const relX = clampedX / dispW;
-        const relY = clampedY / dispH;
-
-        // pane size (unchanged logic)
-        const paneWidth = Math.min(420, Math.round(imgRect.width * 0.9));
-        const paneHeight = Math.round(imgRect.height);
+        // position zoomPane to the right of the main image...
+        const paneWidth = Math.min(420, Math.round(rect.width * 0.9));
+        const paneHeight = Math.round(rect.height);
         pane.style.width = paneWidth + 'px';
         pane.style.height = paneHeight + 'px';
 
-        // place pane (try right, then left, same as before)
-        const spaceRight = window.innerWidth - (imgRect.right + 16);
-        const spaceLeft  = imgRect.left - 16;
+        // compute left/top ...
+        const spaceRight = window.innerWidth - (rect.right + 16);
+        const spaceLeft  = rect.left - 16;
         let left;
         if (spaceRight >= paneWidth) {
-            left = imgRect.right + 12 + window.scrollX;
+            left = rect.right + 12 + window.scrollX;
         } else if (spaceLeft >= paneWidth) {
-            left = imgRect.left - paneWidth - 12 + window.scrollX;
+            left = rect.left - paneWidth - 12 + window.scrollX;
         } else {
             left = Math.max(12 + window.scrollX, window.innerWidth - paneWidth - 12 + window.scrollX);
         }
-        const top = imageTop; // align the pane with the actual image content top
+        const top = rect.top + window.scrollY;
+
         pane.style.left = left + 'px';
         pane.style.top  = top + 'px';
 
-        // compute background offsets (center the focused pixel)
-        const bgCenterX = Math.round(relX * bgW);
-        const bgCenterY = Math.round(relY * bgH);
-        const bgPosX = Math.max(0, Math.min(bgW - paneWidth, bgCenterX - Math.round(paneWidth / 2)));
-        const bgPosY = Math.max(0, Math.min(bgH - paneHeight, bgCenterY - Math.round(paneHeight / 2)));
-
+        // set background properties using pane (not zoomPane)
         pane.style.backgroundImage = `url("${mainImage.src}")`;
-        pane.style.backgroundSize  = `${bgW}px ${bgH}px`;
-        pane.style.backgroundPosition = `-${bgPosX}px -${bgPosY}px`;
+        pane.style.backgroundSize = `${bgW}px ${bgH}px`;
+        pane.style.backgroundPosition = `${px}% ${py}%`;
 
-        // lens: size based on paneWidth (same approach you had) and positioned relative to wrapper
+        // lens updates remain unchanged
+        // const lensSize = Math.max(40, Math.round(rect.width / ZOOM_FACTOR));
         const lensSize = Math.max(40, Math.round(paneWidth / ZOOM_FACTOR));
         lens.style.width = lensSize + 'px';
         lens.style.height = lensSize + 'px';
-
-        // compute lens left/top relative to wrapper (mainWrap)
-        const lensLeft = Math.round((imageLeft - wrapRect.left) + clampedX - lensSize / 2);
-        const lensTop  = Math.round((imageTop - wrapRect.top)  + clampedY - lensSize / 2);
-        lens.style.left = lensLeft + 'px';
-        lens.style.top  = lensTop + 'px';
+        lens.style.left = Math.round(clampedX - lensSize / 2) + 'px';
+        lens.style.top  = Math.round(clampedY - lensSize / 2) + 'px';
     }
-
 
     function attachZoomHandlers() {
         // pointerenter -> create and show pane

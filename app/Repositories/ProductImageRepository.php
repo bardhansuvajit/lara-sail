@@ -95,6 +95,11 @@ class ProductImageRepository implements ProductImageInterface
             if (!empty($array['product_variation_id'])) $data->product_variation_id = $array['product_variation_id'];
             if (!empty($array['is_variation_specific'])) $data->is_variation_specific = $array['is_variation_specific'];
             if (!empty($array['alt_text'])) $data->alt_text = $array['alt_text'];
+            
+            // get max position for given attribute_id and type
+            $lastPosition = ProductImage::where('product_id', $array['product_id'])
+            ->max('position');
+            $data->position = $lastPosition ? $lastPosition + 1 : 1;
 
             $data->status = 1;
             $data->save();

@@ -19,7 +19,7 @@
 					src="{{ Storage::url($product->activeImages[0]->image_m) }}"
 					alt="{{ $product->slug }}"
 					loading="lazy"
-					class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+					class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
 				/>
 			@else
 				<div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">

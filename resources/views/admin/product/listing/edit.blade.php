@@ -12,9 +12,13 @@
 
         @if ($errors->any())
             @foreach ($errors->all() as $error)
-                {{-- @foreach ($error as $error) --}}
+                @if (is_array($error))
+                    @foreach ($error as $error)
+                        <p class="text-red-600">{{ $error }}</p>
+                    @endforeach
+                @else   
                     <p class="text-red-600">{{ $error }}</p>
-                {{-- @endforeach --}}
+                @endif
             @endforeach
         @endif
 
@@ -146,7 +150,7 @@
                         </div>
                     </div>
 
-                    <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                    <div class="grid gap-4 mb-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
 
                         @livewire('product-page-category-generate', [
                             'category_id' => old('category_id', $data->category_id),
@@ -164,180 +168,16 @@
 
                     <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Pricing</h4>
 
-                    {{-- <x-admin.product-multi-currency-pricing 
-                        :activeCountries="$activeCountries" 
-                        :oldCurrencyCount="1" /> --}}
-
                     <x-admin.product-multi-currency-pricing 
                         :activeCountries="$activeCountries" 
                         :productPrices="$data->pricings" 
                     />
 
-                    {{-- <div class="border-t border-gray-200 dark:border-gray-700 mb-2"></div>
-                    <div class="border-t border-gray-200 dark:border-gray-700 mb-5"></div> --}}
-
-                    {{-- @forelse ($data->pricings as $pricingData)
-                        @if (count($data->pricings) > 1)
-                            <div class="flex items-center space-x-3 mb-3">
-                                <p class="text-xs font-black">
-                                    {{ $pricingData->country_code }} - 
-                                </p>
-                                <a 
-                                    href="" 
-                                    class="text-xs font-medium text-red-400 dark:text-orange-700 underline hover:no-underline"
-                                    x-data=""
-                                    x-on:click.prevent="
-                                        $dispatch('open-modal', 'confirm-data-deletion'); 
-                                        $dispatch('data-title', '{{ $pricingData->country_code }}');
-                                        $dispatch('set-delete-route', '{{ route('admin.product.pricing.delete', $pricingData->id) }}')"
-                                >
-                                    Remove this pricing
-                                </a>
-                            </div>
-                        @endif
-
-                        <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
-                            <div>
-                                <x-admin.input-label for="selling_price" :value="__('Selling price *')" />
-                                <x-admin.text-input-with-dropdown 
-                                    id="selling_price" 
-                                    class="block w-auto" 
-                                    type="tel" 
-                                    name="selling_price" 
-                                    :value="old('selling_price') ? old('selling_price') : $pricingData->selling_price" 
-                                    placeholder="Enter Selling Price" 
-                                    selectId="currency" 
-                                    selectName="country_code" 
-                                >
-                                    @slot('options')
-                                        @foreach ($activeCountries as $country)
-                                            <x-admin.input-select-option 
-                                                value="{{$country->code}}" 
-                                                :selected="old('currency_code', $pricingData->country_code) == $country->code"
-                                            >
-                                                {{ $country->currency_symbol }} ({{ $country->currency_code }})
-                                            </x-admin.input-select-option>
-                                        @endforeach
-                                    @endslot
-                                </x-admin.text-input-with-dropdown>
-
-                                <x-admin.input-error :messages="$errors->get('selling_price')" class="mt-2" />
-                                <x-admin.input-error :messages="$errors->get('currency')" class="mt-2" />
-                            </div>
-                            <div>
-                                <x-admin.input-label for="mrp" :value="__('MRP')" />
-                                <x-admin.text-input id="mrp" class="block" type="tel" name="mrp" :value="old('mrp') ? old('mrp') : $pricingData->mrp" placeholder="Enter MRP" />
-                                <x-admin.input-error :messages="$errors->get('mrp')" class="mt-2" />
-                            </div>
-                            <div>
-                                <x-admin.input-label for="discount" :value="__('Discount')" />
-                                <x-admin.text-input id="discount" class="block" type="tel" name="discount" :value="old('discount') ? old('discount') : $pricingData->discount" placeholder="Discount will be calculated automatically" />
-                                <x-admin.input-error :messages="$errors->get('discount')" class="mt-2" />
-                            </div>
-                        </div>
-
-                        <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
-                            <div>
-                                <x-admin.input-label for="cost" :value="__('Cost per item')" />
-                                <x-admin.text-input id="cost" class="block" type="tel" name="cost" :value="old('cost') ? old('cost') : $pricingData->cost" placeholder="Enter Cost" />
-                                <x-admin.input-error :messages="$errors->get('cost')" class="mt-2" />
-                            </div>
-                            <div>
-                                <x-admin.input-label for="profit" :value="__('Profit')" />
-                                <x-admin.text-input id="profit" class="block" type="tel" name="profit" :value="old('profit') ? old('profit') : $pricingData->profit" placeholder="Profit will be calculated automatically" />
-                                <x-admin.input-error :messages="$errors->get('profit')" class="mt-2" />
-                            </div>
-                            <div>
-                                <x-admin.input-label for="margin" :value="__('Margin')" />
-                                <x-admin.text-input id="margin" class="block" type="tel" name="margin" :value="old('margin') ? old('margin') : $pricingData->margin" placeholder="Margin will be calculated automatically" />
-                                <x-admin.input-error :messages="$errors->get('margin')" class="mt-2" />
-                            </div>
-                        </div>
-
-                        @if (!$loop->last)
-                            <div class="border-t border-gray-200 dark:border-gray-700 my-4"></div>
-                        @endif
-                    @empty
-                        <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
-                            <div>
-                                <x-admin.input-label for="selling_price" :value="__('Selling price *')" />
-                                <x-admin.text-input-with-dropdown 
-                                    id="selling_price" 
-                                    class="block w-auto" 
-                                    type="tel" 
-                                    name="selling_price" 
-                                    :value="old('selling_price')" 
-                                    placeholder="Enter Selling Price" 
-                                    selectTitle="₹ (INR)" 
-                                    selectId="currency" 
-                                    selectName="country_code" 
-                                >
-                                    @slot('options')
-                                        @foreach ($activeCountries as $country)
-                                            <x-admin.input-select-option 
-                                                value="{{$country->code}}" 
-                                                :selected="old('currency_code') ? old('currency_code') == $country->code : applicationSettings('country_code') == $country->code"
-                                            >
-                                                {{ $country->currency_symbol }} ({{ $country->currency_code }})
-                                            </x-admin.input-select-option>
-                                        @endforeach
-                                    @endslot
-                                </x-admin.text-input-with-dropdown>
-
-                                <x-admin.input-error :messages="$errors->get('selling_price')" class="mt-2" />
-                                <x-admin.input-error :messages="$errors->get('currency')" class="mt-2" />
-                            </div>
-                            <div>
-                                <x-admin.input-label for="mrp" :value="__('MRP')" />
-                                <x-admin.text-input id="mrp" class="block" type="tel" name="mrp" :value="old('mrp')" placeholder="Enter MRP" />
-                                <x-admin.input-error :messages="$errors->get('mrp')" class="mt-2" />
-                            </div>
-                            <div>
-                                <x-admin.input-label for="discount" :value="__('Discount')" />
-                                <x-admin.text-input id="discount" class="block" type="tel" name="discount" :value="old('discount') ?? 0" placeholder="Discount will be calculated automatically" />
-                                <x-admin.input-error :messages="$errors->get('discount')" class="mt-2" />
-                            </div>
-                        </div>
-
-                        <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
-                            <div>
-                                <x-admin.input-label for="cost" :value="__('Cost per item')" />
-                                <x-admin.text-input id="cost" class="block" type="tel" name="cost" :value="old('cost')" placeholder="Enter Cost" />
-                                <x-admin.input-error :messages="$errors->get('cost')" class="mt-2" />
-                            </div>
-                            <div>
-                                <x-admin.input-label for="profit" :value="__('Profit')" />
-                                <x-admin.text-input id="profit" class="block" type="tel" name="profit" :value="old('profit') ?? 0" placeholder="Profit will be calculated automatically" />
-                                <x-admin.input-error :messages="$errors->get('profit')" class="mt-2" />
-                            </div>
-                            <div>
-                                <x-admin.input-label for="margin" :value="__('Margin')" />
-                                <x-admin.text-input id="margin" class="block" type="tel" name="margin" :value="old('margin') ?? 0" placeholder="Margin will be calculated automatically" />
-                                <x-admin.input-error :messages="$errors->get('margin')" class="mt-2" />
-                            </div>
-                        </div>
-                    @endforelse --}}
-
-                    {{-- @if (count($activeCountries) > 0)
-                        <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
-                            <div>
-                                <a href="" class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500">
-                                    <div class="flex items-center">
-                                        <div class="w-3 h-3">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
-                                        </div>
-                                        Add different currency
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    @endif --}}
-
                     <div class="border-t border-gray-200 dark:border-gray-700"></div>
 
                     <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Inventory</h4>
 
-                    <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                    <div class="grid gap-4 mb-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
                         <div>
                             <x-admin.input-label for="sku" :value="__('SKU')" />
                             <x-admin.text-input id="sku" class="block" type="text" name="sku" :value="old('sku') ? old('sku') : $data->sku" placeholder="Enter SKU" maxlength="50" />
@@ -345,7 +185,7 @@
                         </div>
                     </div>
 
-                    <div class="grid gap-4 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 items-center">
+                    <div class="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 items-center">
                         <div>
                             <x-admin.input-checkbox 
                                 id="quantity-track-checkbox" 
@@ -363,7 +203,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                    <div class="grid gap-4 mb-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
                         <div>
                             <x-admin.input-checkbox 
                                 id="allow-backorders-checkbox"

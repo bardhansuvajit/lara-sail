@@ -10,11 +10,17 @@
     <section class="grid grid-cols-6 lg:grid-cols-10 gap-4">
         {{-- <div class="col-span-2"></div> --}}
 
-        {{-- @if ($errors->any())
+        @if ($errors->any())
             @foreach ($errors->all() as $error)
-                <p class="text-red-600">{{ $error }}</p>
+                @if (is_array($error))
+                    @foreach ($error as $error)
+                        <p class="text-red-600">{{ $error }}</p>
+                    @endforeach
+                @else   
+                    <p class="text-red-600">{{ $error }}</p>
+                @endif
             @endforeach
-        @endif --}}
+        @endif
 
         <div class="col-span-6 lg:col-start-3">
             <div class="w-full mt-2">
@@ -129,7 +135,7 @@
                         </div>
                     </div>
 
-                    <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                    <div class="grid gap-4 mb-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
 
                         @livewire('product-page-category-generate', [
                             'category_id' => old('category_id', 0),
@@ -154,7 +160,7 @@
 
                     <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Inventory</h4>
 
-                    <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                    <div class="grid gap-4 mb-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
                         <div>
                             <x-admin.input-label for="sku" :value="__('SKU')" />
                             <x-admin.text-input id="sku" class="block" type="text" name="sku" :value="old('sku')" placeholder="Enter SKU" maxlength="50" />
@@ -179,7 +185,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                    <div class="grid gap-4 mb-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
                         <div>
                             <x-admin.input-checkbox 
                                 id="allow-backorders-checkbox"
@@ -193,7 +199,7 @@
 
                     {{-- <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Variants</h4>
 
-                    <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                    <div class="grid gap-4 mb-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
                         <div>
                             <a href="" class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500">
                                 <div class="flex items-center">
