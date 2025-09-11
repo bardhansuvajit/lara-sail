@@ -234,7 +234,7 @@
     <x-admin.modal name="add-variant" maxWidth="7xl" focusable show>
         <div class="p-4">
             @if (count($variations) > 0)
-                <div class="grid space-x-6 grid-cols-3">
+                <div class="grid space-x-2 grid-cols-3">
                     <div class="col-span-2">
                         {{-- heading --}}
                         <h5 class="text-xs font-bold text-gray-700 dark:text-gray-200"> {{ __('Available Variations to create from') }} </h5>
@@ -593,7 +593,7 @@
         if (activeCountries.length > 1) {
             addCurrency = `
             <div class="my-3">
-                <a href="javascript:void(0);" id="addVariationCurrencyBtn" class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500">
+                <a href="javascript:void(0);" id="addCurrencyBtn" class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500">
                     <div class="flex items-center underline hover:no-underline text-primary-600 dark:text-primary-300">
                         <div class="w-3 h-3">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
@@ -601,7 +601,7 @@
                         Add different currency
                     </div>
                 </a>
-                <p id="variationCurrencyLimitMsg" class="text-xs text-red-500 mt-1 hidden"></p>
+                <p id="currencyLimitMsg" class="text-xs text-red-500 mt-1 hidden"></p>
             </div>
             `;
         }
@@ -611,40 +611,39 @@
         inputsContainer.className = 'flex flex-col';
         inputsContainer.innerHTML = `
             <div id="variationCurrencyPricingWrapper" class="p-2 bg-gray-200/20 hover:bg-gray-100 dark:hover:bg-gray-700/50">
-                <div class="">
-                    <p class="text-xs font-medium text-gray-800 dark:text-gray-200 mb-2">Price Adjust</p>
-
-                    <div class="flex items-center gap-2 variation-currency-block">
-                        <select name="var_country_code[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-20">
+                <div class="flex items-center justify-between variation-currency-block">
+                    <label class="text-xs font-medium text-gray-800 dark:text-gray-200">Price Adjust</label>
+                    <div class="flex items-center gap-2">
+                        <select name="country_code[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1">
                             ${countryOptions}
                         </select>
-                        <select name="var_adjustment_type[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1">
+                        <select name="adjustment_type[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1">
                             <option value="fixed" selected>Fixed</option>
                             <option value="percentage">Percentage</option>
                         </select>
-                        <input type="tel" name="var_price_adjustment[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-32 format-input-decimal" placeholder="0.00">
+                        <input type="number" name="price_adjustment[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-32" placeholder="0.00">
                     </div>
                 </div>
                 ${addCurrency}
                 <div>
                     <ul class="ps-5 list-disc">
-                        <li class="leading-none"><p class="text-[10px] text-gray-600 dark:text-amber-400">Keep this field empty if NO Price Adjustment </p></li>
-                        <li class="leading-none"><p class="text-[10px] text-gray-600 dark:text-amber-400">Enter Adjustment price. NOT Full Price</p></li>
+                        <li><p class="text-[10px] text-gray-600 dark:text-amber-400">Keep this field empty if NO Price Adjustment </p></li>
+                        <li><p class="text-[10px] text-gray-600 dark:text-amber-400">Enter Adjustment price. NOT Full Price</p></li>
                     </ul>
                 </div>
             </div>
             <div class="flex items-center justify-between p-2 bg-gray-200/20 hover:bg-gray-100 dark:hover:bg-gray-700/50">
-                <p class="text-xs font-medium text-gray-800 dark:text-gray-200">SKU</p>
-                <input type="text" name="var_sku_variant" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-32" placeholder="SKU">
+                <label class="text-xs font-medium text-gray-800 dark:text-gray-200">SKU</label>
+                <input type="text" name="sku_variant" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-32" placeholder="SKU">
             </div>
             <div class="flex items-center justify-between p-2 bg-gray-200/20 hover:bg-gray-100 dark:hover:bg-gray-700/50">
-                <p class="text-xs font-medium text-gray-800 dark:text-gray-200">Stock</p>
-                <input type="number" name="var_stock_quantity_variant" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-20" placeholder="0">
+                <label class="text-xs font-medium text-gray-800 dark:text-gray-200">Stock</label>
+                <input type="number" name="stock_quantity_variant" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-20" placeholder="0">
             </div>
             <div class="flex items-center justify-between p-2 bg-gray-200/20 hover:bg-gray-100 dark:hover:bg-gray-700/50">
-                <p for="allow_backorders" class="text-xs font-medium text-gray-800 dark:text-gray-200">Continue selling when out of stock</p>
-                <input type="checkbox" name="var_allow_backorders" id="allow_backorders" x-on:change="document.querySelector('input[name=allowBackordersFailsafe]').value = $event.target.checked" class="rounded border-gray-300 dark:border-gray-600 text-primary-600 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 dark:bg-gray-700 dark:checked:bg-primary-500">
-                <input type="hidden" name="var_allowBackordersFailsafe" value="false">
+                <label for="allow_backorders" class="text-xs font-medium text-gray-800 dark:text-gray-200">Continue selling when out of stock</label>
+                <input type="checkbox" name="allow_backorders" id="allow_backorders" x-on:change="document.querySelector('input[name=allowBackordersFailsafe]').value = $event.target.checked" class="rounded border-gray-300 dark:border-gray-600 text-primary-600 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 dark:bg-gray-700 dark:checked:bg-primary-500">
+                <input type="hidden" name="allowBackordersFailsafe" value="false">
             </div>
         `;
 
@@ -669,27 +668,26 @@
 
         try {
             const currencyAdjustments = [];
-            const blocks2 = document.querySelectorAll('.variation-currency-block');
-            const count2 = blocks2.length;
-            console.log(count2);
-            
             document.querySelectorAll('.variation-currency-block').forEach(block => {
-                const countrySelect = block.querySelector('select[name="var_country_code[]"]');
-                const adjustmentTypeSelect = block.querySelector('select[name="var_adjustment_type[]"]');
-                const priceInput = block.querySelector('input[name="var_price_adjustment[]"]');
-
-                if (countrySelect && adjustmentTypeSelect && priceInput) {
+                const countryCode = block.querySelector('select[name="country_code[]"]').value;
+                const adjustmentType = block.querySelector('select[name="adjustment_type[]"]').value;
+                const priceAdjustment = block.querySelector('input[name="price_adjustment[]"]').value;
+                
+                if (priceAdjustment) {
                     currencyAdjustments.push({
-                        country_code: countrySelect.value,
-                        adjustment_type: adjustmentTypeSelect.value,
-                        price_adjustment: parseFloat(priceInput.value) || 0
+                        country_code: countryCode,
+                        adjustment_type: adjustmentType,
+                        price_adjustment: priceAdjustment
                     });
                 }
             });
 
-            const sku = document.querySelector('input[name=var_sku_variant]').value;
-            const stockQuantity = document.querySelector('input[name=var_stock_quantity_variant]').value;
-            const allowBackorders = document.querySelector('input[name=var_allowBackordersFailsafe]').value == "true" ? 1 : 0;
+            // const countryCode = document.querySelector('select[name=country_code]').value;
+            // const adjustmentType = document.querySelector('select[name=adjustment_type]').value;
+            // const priceAdjustment = document.querySelector('input[name=price_adjustment]').value;
+            const sku = document.querySelector('input[name=sku_variant]').value;
+            const stockQuantity = document.querySelector('input[name=stock_quantity_variant]').value;
+            const allowBackorders = document.querySelector('input[name=allowBackordersFailsafe]').value == "true" ? 1 : 0;
 
             const response = await fetch('/api/variation/store', {
                 method: 'POST',
@@ -699,6 +697,9 @@
                 },
                 body: JSON.stringify({
                     product_id: {{ $product_id }},
+                    // country_code: countryCode,
+                    // adjustment_type: adjustmentType,
+                    // price_adjustment: priceAdjustment,
                     sku: sku,
                     stock_quantity: stockQuantity,
                     allow_backorders: allowBackorders,
@@ -768,81 +769,4 @@
             });
         })();
     });
-
-    // Use event delegation for the dynamically created "Add different currency" button
-    document.addEventListener('click', function(e) {
-        // Check if the clicked element or its parent is the add currency button
-        const addCurrencyBtn = e.target.closest('#addVariationCurrencyBtn');
-        if (addCurrencyBtn) {
-            e.preventDefault();
-            addCurrencyBlock();
-        }
-        
-        // Check if the clicked element is a remove currency button
-        if (e.target.classList.contains('remove-currency-block')) {
-            e.target.closest('.variation-currency-block').remove();
-            document.getElementById('variationCurrencyLimitMsg').classList.add('hidden');
-        }
-    });
-
-    function addCurrencyBlock() {
-        const wrapper = document.getElementById('variationCurrencyPricingWrapper');
-        const existingBlocks = wrapper.querySelectorAll('.variation-currency-block');
-
-        // Check if we've reached the maximum allowed blocks
-        if (existingBlocks.length >= activeCountries.length) {
-            document.getElementById('variationCurrencyLimitMsg').textContent =
-                'You can only add currency adjustments for ' + activeCountries.length + ' countries';
-            document.getElementById('variationCurrencyLimitMsg').classList.remove('hidden');
-            return;
-        }
-
-        // Get already selected country codes
-        const selectedCountryCodes = Array.from(existingBlocks).map(block => {
-            return block.querySelector('select[name="var_country_code[]"]').value;
-        });
-
-        // Find available countries that haven't been selected yet
-        const availableCountries = activeCountries.filter(
-            country => !selectedCountryCodes.includes(country.code)
-        );
-
-        if (availableCountries.length === 0) {
-            document.getElementById('variationCurrencyLimitMsg').textContent =
-                'All available currencies have been added';
-            document.getElementById('variationCurrencyLimitMsg').classList.remove('hidden');
-            return;
-        }
-
-        // Create options for the select dropdown
-        let countryOptions = '';
-        availableCountries.forEach(country => {
-            countryOptions += `<option value="${country.code}">${country.currency_symbol} (${country.currency_code})</option>`;
-        });
-
-        // Create new currency block (added delete button here)
-        const newBlock = document.createElement('div');
-        newBlock.className = 'flex items-center gap-2 variation-currency-block mt-2';
-        newBlock.innerHTML = `
-            <select name="var_country_code[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-20">
-                ${countryOptions}
-            </select>
-            <select name="var_adjustment_type[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1">
-                <option value="fixed" selected>Fixed</option>
-                <option value="percentage">Percentage</option>
-            </select>
-            <input type="tel" name="var_price_adjustment[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-32 format-input-decimal" placeholder="0.00">
-            <button type="button" class="remove-currency-block text-red-500 hover:text-red-700 ml-2" title="Remove">
-                ✕
-            </button>
-        `;
-
-        // Insert the new block before the "Add different currency" button
-        const addCurrencyBtnContainer = document.getElementById('addVariationCurrencyBtn')?.parentElement;
-        wrapper.insertBefore(newBlock, addCurrencyBtnContainer);
-
-        // Hide any previous error message
-        document.getElementById('variationCurrencyLimitMsg').classList.add('hidden');
-    }
-
 </script>

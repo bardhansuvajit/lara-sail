@@ -108,7 +108,7 @@
                             class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                             <div class="flex-shrink-0">
                                 <img class="w-11 h-11 rounded-full"
-                                    src="https://randomuser.me/api/portraits/women/28.jpg"
+                                    src="https://dummyimage.com/100x100/0ea5a4/ffffff&text=User"
                                     alt="Bonnie Green avatar" />
                                 <div
                                     class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 rounded-full border border-white bg-primary-700 dark:border-gray-700">
@@ -138,7 +138,7 @@
                             class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                             <div class="flex-shrink-0">
                                 <img class="w-11 h-11 rounded-full"
-                                    src="https://randomuser.me/api/portraits/women/21.jpg"
+                                    src="https://dummyimage.com/100x100/0ea5a4/ffffff&text=User"
                                     alt="Jese Leos avatar" />
                                 <div
                                     class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-gray-900 rounded-full border border-white dark:border-gray-700">
@@ -166,7 +166,7 @@
                             class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                             <div class="flex-shrink-0">
                                 <img class="w-11 h-11 rounded-full"
-                                    src="https://randomuser.me/api/portraits/men/28.jpg"
+                                    src="https://dummyimage.com/100x100/0ea5a4/ffffff&text=User"
                                     alt="Joseph McFall avatar" />
                                 <div
                                     class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-red-600 rounded-full border border-white dark:border-gray-700">
@@ -194,7 +194,7 @@
                             class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                             <div class="flex-shrink-0">
                                 <img class="w-11 h-11 rounded-full"
-                                    src="https://randomuser.me/api/portraits/men/18.jpg"
+                                    src="https://dummyimage.com/100x100/0ea5a4/ffffff&text=User"
                                     alt="Roberta Casas image" />
                                 <div
                                     class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-green-400 rounded-full border border-white dark:border-gray-700">
@@ -223,7 +223,7 @@
                         <a href="#" class="flex py-3 px-4 hover:bg-gray-100 dark:hover:bg-gray-600">
                             <div class="flex-shrink-0">
                                 <img class="w-11 h-11 rounded-full"
-                                    src="https://randomuser.me/api/portraits/women/8.jpg"
+                                    src="https://dummyimage.com/100x100/0ea5a4/ffffff&text=User"
                                     alt="Robert image" />
                                 <div
                                     class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-purple-500 rounded-full border border-white dark:border-gray-700">

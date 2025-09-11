@@ -18,7 +18,7 @@ class ProductVariationController
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
 
         $request->validate([
             'product_id' => 'required|integer|min:1|exists:products,id',

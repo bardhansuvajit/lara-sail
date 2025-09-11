@@ -7,7 +7,7 @@
     @php
         // Determine if we're in edit mode with existing prices
         $isEditMode = !empty($productPrices);
-        
+
         // Set the initial count based on edit mode or old input
         if ($isEditMode) {
             $initialCount = count($productPrices);
@@ -146,7 +146,7 @@
                     <x-admin.input-error :messages="$errors->get('margin.'.$i)" class="mt-2" />
                 </div>
             </div>
-            
+
             <!-- Hidden field to store price ID for updates in edit mode -->
             @if($isEditMode && isset($productPrices[$i]->id))
                 <input type="hidden" name="price_ids[]" value="{{ $productPrices[$i]->id }}" />
@@ -155,7 +155,7 @@
     @endfor
 </div>
 
-@if (count($activeCountries) > 0)
+@if (count($activeCountries) > 1)
     <div class="grid gap-2 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
         <div>
             <a href="javascript:void(0);" id="addCurrencyBtn" class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500">
@@ -179,11 +179,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const limitMsg = document.getElementById("currencyLimitMsg");
 
     // add once after `const wrapper = document.getElementById("currencyPricingWrapper");`
-wrapper.addEventListener('input', function (e) {
-  if (e.target && e.target.matches && e.target.matches('.format-input-decimal')) {
-    formatPriceInput(e);
-  }
-});
+    wrapper.addEventListener('input', function (e) {
+        if (e.target && e.target.matches && e.target.matches('.format-input-decimal')) {
+            formatPriceInput(e);
+        }
+    });
 
 
     // Start nextId from the count of existing blocks
