@@ -109,6 +109,7 @@ class ProductVariant extends Component
                     'allow_backorders' => $variation->allow_backorders,
                     'price_adjustment' => $variation->price_adjustment,
                     'adjustment_type' => $variation->adjustment_type,
+                    'pricings' => $variation->pricings,
                     'created_at' => $variation->created_at->format('M d, Y'),
                 ];
             });

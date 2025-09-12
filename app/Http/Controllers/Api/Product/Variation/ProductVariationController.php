@@ -18,7 +18,7 @@ class ProductVariationController
 
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
 
         $request->validate([
             'product_id' => 'required|integer|min:1|exists:products,id',
@@ -37,8 +37,9 @@ class ProductVariationController
             'sold_count' => $request->sold_count ?? 0,
             'in_cart_count' => $request->in_cart_count ?? 0,
             'primary_image_id' => $request->primary_image_id ?? null,
-            'price_adjustment' => $request->price_adjustment ?? 0,
-            'adjustment_type' => $request->adjustment_type ?? 'fixed',
+
+            'currency_adjustments' => $request->currency_adjustments,
+
             'weight_adjustment' => $request->weight_adjustment ?? 0,
             'height_adjustment' => $request->height_adjustment ?? 0,
             'width_adjustment' => $request->width_adjustment ?? 0,

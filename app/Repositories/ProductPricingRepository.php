@@ -87,6 +87,7 @@ class ProductPricingRepository implements ProductPricingInterface
         try {
             $data = new ProductPricing();
             $data->product_id = $array['product_id'];
+            $data->product_variation_id = $array['product_variation_id'] ?? null;
             $data->country_code = $array['country_code'];
 
             $data->selling_price = $array['selling_price'];
@@ -184,13 +185,14 @@ class ProductPricingRepository implements ProductPricingInterface
 
     public function update(Int $id, Array $array)
     {
-        // dd($array);
+        // dd($id, $array);
 
         try {
             // $data = $this->getById($array['id']);
             $data = $this->getById($id);
 
             if ($data['code'] == 200) {
+                // dd($data['data']);
                 $data['data']->product_id = $array['product_id'];
                 $data['data']->country_code = $array['country_code'];
                 // $data['data']->country_id = $array['country_id'];
@@ -210,7 +212,7 @@ class ProductPricingRepository implements ProductPricingInterface
                     'code' => 200,
                     'status' => 'success',
                     'message' => 'Changes have been saved',
-                    'data' => $data,
+                    'data' => $data['data'],
                 ];
             } else {
                 return $data;

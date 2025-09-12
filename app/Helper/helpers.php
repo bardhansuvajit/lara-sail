@@ -439,6 +439,18 @@ if (!function_exists('formatIndianMoney')) {
     }
 }
 
+if (!function_exists('floatConvert')) {
+    function floatConvert($val) {
+        if ($val === null || $val === '') return 0.0; // or return null if you prefer
+        // normalize comma decimal to dot, trim spaces
+        $s = trim((string) $val);
+        $s = str_replace(',', '.', $s);
+        // sanitize and cast
+        $num = filter_var($s, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        return (float) $num;
+    }
+}
+
 /*
 if (!function_exists('formatIndianMoney')) {
     function formatIndianMoney($amount, $decimalPlaces = 2) {

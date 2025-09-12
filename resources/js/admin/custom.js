@@ -120,6 +120,8 @@ if (systemTheme && lightTheme && darkTheme) {
 // mask input fields, to accept 2 decimal digits
 // const formatPriceInput = (e) => {
 window.formatPriceInput = function (e) {
+    console.log('hh');
+    
     let value = e.target.value;
     // Remove non-numeric and non-decimal characters
     value = value.replace(/[^0-9.]/g, '');

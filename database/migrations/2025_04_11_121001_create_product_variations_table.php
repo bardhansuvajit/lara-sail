@@ -32,8 +32,8 @@ return new class extends Migration
             $table->unsignedInteger('in_cart_count')->default(0);
 
             // Pricing
-            $table->decimal('price_adjustment', 12, 2)->default(0.00)->comment('Fixed amount or percentage');
-            $table->enum('adjustment_type', ['fixed', 'percentage'])->default('fixed')->comment('Apply to base price from product_pricing');
+            // $table->decimal('price_adjustment', 12, 2)->default(0.00)->comment('Fixed amount or percentage');
+            // $table->enum('adjustment_type', ['fixed', 'percentage'])->default('fixed')->comment('Apply to base price from product_pricing');
 
             // Shipping
             $table->decimal('weight_adjustment', 8, 2)->default(0.00);

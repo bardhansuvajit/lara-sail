@@ -252,7 +252,7 @@
 
 
     {{-- add variant modal --}}
-    <x-admin.modal name="add-variant" maxWidth="7xl" focusable>
+    <x-admin.modal name="add-variant" maxWidth="7xl" focusable show>
         <div class="p-4">
             @if (count($variations) > 0)
                 <div class="grid space-x-6 grid-cols-3">
@@ -633,11 +633,15 @@
         inputsContainer.innerHTML = `
             <div id="variationCurrencyPricingWrapper" class="p-2 bg-gray-200/20 hover:bg-gray-100 dark:hover:bg-gray-700/50">
                 <div class="">
-                    <p class="text-xs font-medium text-gray-800 dark:text-gray-200 mb-2">New Selling Price</p>
+                    <p class="text-xs font-medium text-gray-800 dark:text-gray-200 mb-2">New Price</p>
 
                     <div class="flex items-center gap-2 variation-currency-block">
                         <select name="var_country_code[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-20">
                             ${countryOptions}
+                        </select>
+                        <select name="var_adjustment_type[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1">
+                            <option value="add" selected>Add</option>
+                            <option value="sub">Subtract</option>
                         </select>
                         <input type="tel" name="var_price_adjustment[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-32 format-input-decimal" placeholder="0.00">
                     </div>
@@ -691,11 +695,13 @@
             
             document.querySelectorAll('.variation-currency-block').forEach(block => {
                 const countrySelect = block.querySelector('select[name="var_country_code[]"]');
+                const adjustmentTypeSelect = block.querySelector('select[name="var_adjustment_type[]"]');
                 const priceInput = block.querySelector('input[name="var_price_adjustment[]"]');
 
-                if (countrySelect && priceInput) {
+                if (countrySelect && adjustmentTypeSelect && priceInput) {
                     currencyAdjustments.push({
                         country_code: countrySelect.value,
+                        adjustment_type: adjustmentTypeSelect.value,
                         price_adjustment: parseFloat(priceInput.value) || 0
                     });
                 }
@@ -840,6 +846,10 @@
         newBlock.innerHTML = `
             <select name="var_country_code[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-20">
                 ${countryOptions}
+            </select>
+            <select name="var_adjustment_type[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1">
+                <option value="add" selected>Add</option>
+                <option value="sub">Subtract</option>
             </select>
             <input type="tel" name="var_price_adjustment[]" class="text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-32 format-input-decimal" placeholder="0.00">
             <button type="button" class="remove-currency-block text-red-500 hover:text-red-700 ml-2" title="Remove">

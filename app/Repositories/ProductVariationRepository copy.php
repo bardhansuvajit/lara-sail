@@ -142,6 +142,9 @@ class ProductVariationRepository implements ProductVariationInterface
             $data->in_cart_count = !empty($array['in_cart_count']) ? $array['in_cart_count'] : 0;
             $data->primary_image_id = !empty($array['primary_image_id']) ? $array['primary_image_id'] : null;
 
+            // $data->price_adjustment = !empty($array['price_adjustment']) ? $array['price_adjustment'] : 0;
+            // $data->adjustment_type = !empty($array['adjustment_type']) ? $array['adjustment_type'] : 'fixed';
+
             $data->weight_adjustment = !empty($array['weight_adjustment']) ? $array['weight_adjustment'] : 0;
             $data->height_adjustment = !empty($array['height_adjustment']) ? $array['height_adjustment'] : 0;
             $data->width_adjustment = !empty($array['width_adjustment']) ? $array['width_adjustment'] : 0;
@@ -196,6 +199,12 @@ class ProductVariationRepository implements ProductVariationInterface
 
                             // Selling Price
                             $variationSellingPrice = floatConvert($currencyAdjust['price_adjustment']);
+                            // $baseSellingPrice = $existingPricingData['selling_price'];
+                            // if ($currencyAdjust['adjustment_type'] == 'add') {
+                            //     $variationSellingPrice = floatConvert($baseSellingPrice + $currencyAdjust['price_adjustment']);
+                            // } else {
+                            //     $variationSellingPrice = floatConvert($baseSellingPrice - $currencyAdjust['price_adjustment']);
+                            // }
 
                             // treat empty MRP as 0 (or null)
                             $mrpRaw = $existingPricingData['mrp'] ?? null;
@@ -328,6 +337,8 @@ class ProductVariationRepository implements ProductVariationInterface
                 $data['data']->allow_backorders = $array['allow_backorders'];
 
                 if (!empty($array['primary_image_id']))     $data['data']->primary_image_id = $array['primary_image_id'];
+                // if (!empty($array['price_adjustment']))     $data['data']->price_adjustment = $array['price_adjustment'];
+                // if (!empty($array['adjustment_type']))      $data['data']->adjustment_type = $array['adjustment_type'];
 
                 if (!empty($array['weight_adjustment']))    $data['data']->weight_adjustment = $array['weight_adjustment'];
                 if (!empty($array['height_adjustment']))    $data['data']->height_adjustment = $array['height_adjustment'];

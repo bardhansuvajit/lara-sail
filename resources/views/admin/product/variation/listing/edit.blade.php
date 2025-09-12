@@ -110,7 +110,14 @@
                 </div>
             </div>
 
-            <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+            <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Pricing</h4>
+
+            <x-admin.product-multi-currency-pricing 
+                :activeCountries="$activeCountries" 
+                :productPrices="$data->pricings" 
+            />
+
+            {{-- <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
                 <div>
                     <x-admin.input-label for="price_adjustment" :value="__('Price Adjustment')" />
                     <x-admin.text-input id="price_adjustment" class="block w-full" type="text" name="price_adjustment" :value="old('price_adjustment') ? old('price_adjustment') : $data->price_adjustment" placeholder="Enter Price Adjustment" />
@@ -127,7 +134,7 @@
                     </x-admin.input-select>
                     <x-admin.input-error :messages="$errors->get('adjustment_type')" class="mt-2" />
                 </div>
-            </div>
+            </div> --}}
 
             <div class="grid gap-4 mb-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
                 <div>

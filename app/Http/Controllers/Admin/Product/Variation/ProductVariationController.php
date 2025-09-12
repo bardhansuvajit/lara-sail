@@ -53,8 +53,26 @@ class ProductVariationController
             'stock_quantity' => 'nullable|numeric|min:0|max:9999999999',
             'allow_backorders' => 'nullable|string|in:yes',
 
-            'price_adjustment' => 'nullable|numeric',
-            'adjustment_type' => 'nullable|in:fixed,percentage',
+            // 'price_adjustment' => 'nullable|numeric',
+            // 'adjustment_type' => 'nullable|in:fixed,percentage',
+
+            'country_code'       => 'required|array|min:1',
+            'country_code.*'     => 'required|string|exists:countries,code',
+            // selling prices (required array)
+            'selling_price'      => 'required|array|min:1',
+            'selling_price.*'    => ['required','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            // mrp can be nullable per item
+            'mrp'                => 'nullable|array',
+            'mrp.*'              => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            // discount/profit/margin arrays (readonly front-end but validate anyway)
+            'discount'           => 'nullable|array',
+            'discount.*'         => ['nullable','numeric','min:0','max:100'],
+            'cost'               => 'nullable|array',
+            'cost.*'             => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            'profit'             => 'nullable|array',
+            'profit.*'           => ['nullable','numeric','min:0','max:1000000','regex:'.PRICE_REGEX],
+            'margin'             => 'nullable|array',
+            'margin.*'           => ['nullable','numeric','min:0','max:99'],
 
             'weight_adjustment' => 'nullable|min:0',
             'weight_unit' => 'nullable|in:g,kg,lb,oz',
@@ -92,6 +110,45 @@ class ProductVariationController
 
         $validator->validate();
 
+        // gather input arrays (guaranteed by validator to exist for required fields)
+        $priceIds = $request->input('price_ids', []);
+        $countryCodes = $request->input('country_code', []);
+        $sellingPrices = $request->input('selling_price', []);
+        $mrps = $request->input('mrp', []);
+        $costs = $request->input('cost', []);
+        // discount/profit/margin are computed on server; ignore incoming values if you prefer
+
+        $pricing = [];
+        $entries = count($sellingPrices); // selling_price is required; use its count
+
+        for ($i = 0; $i < $entries; $i++) {
+            $pId = $priceIds[$i] ?? null;
+            $cc = $countryCodes[$i] ?? null;
+            $selling = floatConvert($sellingPrices[$i] ?? 0);
+            // treat empty mrp as 0 (or null)
+            $mrpRaw = $mrps[$i] ?? null;
+            $mrp = ($mrpRaw === '' || is_null($mrpRaw)) ? 0.0 : floatConvert($mrpRaw);
+
+            $discountPercentage = ($mrp > 0) ? discountPercentageCalc($selling, $mrp) : 0;
+
+            $costRaw = $costs[$i] ?? null;
+            $cost = ($costRaw === '' || is_null($costRaw)) ? 0.0 : floatConvert($costRaw);
+
+            $profit = ($cost > 0) ? profitCalc($selling, $cost) : 0;
+            $marginPercentage = ($cost > 0) ? marginCalc($selling, $cost) : 0;
+
+            $pricing[] = [
+                'id' => $pId,
+                'country_code' => $cc,
+                'selling_price' => $selling,
+                'mrp' => $mrp,
+                'discount_percentage' => $discountPercentage,
+                'cost' => $cost,
+                'profit' => $profit,
+                'margin_percentage' => $marginPercentage,
+            ];
+        }
+
         $data = [
             'id' => $request->id,
             'variation_identifier' => $request->variation_identifier ? $request->variation_identifier : null,
@@ -100,8 +157,11 @@ class ProductVariationController
             'stock_quantity' => $request->stock_quantity ? (int) $request->stock_quantity : 0,
             'allow_backorders' => $request->allow_backorders ? (bool) $request->allow_backorders : false,
 
-            'price_adjustment' => $request->price_adjustment ? $request->price_adjustment : null,
-            'adjustment_type' => $request->adjustment_type ? $request->adjustment_type : 'fixed',
+            // 'price_adjustment' => $request->price_adjustment ? $request->price_adjustment : null,
+            // 'adjustment_type' => $request->adjustment_type ? $request->adjustment_type : 'fixed',
+
+            'pricing' => $pricing,
+
             'weight_adjustment' => $request->weight_adjustment ? $request->weight_adjustment : 0,
             'length_adjustment' => $request->length_adjustment ? $request->length_adjustment : 0,
             'width_adjustment' => $request->width_adjustment ? $request->width_adjustment : 0,
