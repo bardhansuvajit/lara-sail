@@ -48,6 +48,15 @@ class InputProductBadgeSearch extends Component
         $badge = ProductBadge::select('id','title','icon','tailwind_classes')->find($id);
         if (! $badge) return;
 
+        // If it's already selected -> toggle (remove)
+        if (in_array($badge->id, $this->selected, true)) {
+            $this->removeProduct($badge->id);
+            // reset search & page after toggling off as well
+            $this->product = '';
+            $this->resetPage();
+            return;
+        }
+
         if ($this->mode === 'single') {
             $this->selected = [$badge->id];
             $this->product_id = $badge->id;

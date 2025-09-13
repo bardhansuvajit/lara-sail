@@ -54,19 +54,28 @@
 
     {{-- Selected items shown as chips --}}
     <div class="mt-2 flex flex-wrap gap-2" wire:key="selected-chips-{{ md5(json_encode($selected)) }}">
-        @if(count($selected) === 0)
+        {{-- @if(count($selected) === 0)
             <div class="text-xs text-gray-500">No badge selected.</div>
-        @endif
+        @endif --}}
 
         @foreach($selected as $id)
             @php $badge = $selectedBadges[$id] ?? null; @endphp
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-2xl text-xs font-semibold shadow-sm {{ $badge?->tailwind_classes ?? 'bg-gray-100 text-gray-800' }}" wire:key="selected-{{ $id }}">
+            <div class="inline-flex items-center gap-2 rounded shadow-sm {{ $badge?->tailwind_classes ?? 'bg-gray-100 text-gray-800' }}" wire:key="selected-{{ $id }}">
                 {!! $badge?->icon ?? '' !!}
-                <span class="truncate max-w-[160px]">{{ $badge?->title ?? 'Badge #' . $id }}</span>
-                <button type="button" class="ml-2 text-xs focus:outline-none" wire:click.prevent="removeProduct({{ $id }})" aria-label="Remove">
-                    &times;
+
+                <span class="px-1 py-0.5 h-5 text-xs">{{ $badge?->title ?? 'Badge #' . $id }}</span>
+
+                <button type="button" class="ml-2 text-xs h-5 w-5 hover:bg-gray-500 dark:hover:bg-gray-500 focus:outline-none rounded" wire:click.prevent="removeProduct({{ $id }})" aria-label="Remove">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
                 </button>
             </div>
+            {{-- <div class="inline-flex items-center gap-2 px-3 py-1 rounded-2xl text-xs font-semibold shadow-sm {{ $badge?->tailwind_classes ?? 'bg-gray-100 text-gray-800' }}" wire:key="selected-{{ $id }}">
+                {!! $badge?->icon ?? '' !!}
+                <span class="truncate max-w-[160px]">{{ $badge?->title ?? 'Badge #' . $id }}</span>
+                <button type="button" class="ml-2 text-xs h-5 w-5 hover:bg-gray-500 dark:hover:bg-gray-500 focus:outline-none rounded" wire:click.prevent="removeProduct({{ $id }})" aria-label="Remove">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                </button>
+            </div> --}}
         @endforeach
     </div>
 
