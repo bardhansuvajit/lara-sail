@@ -765,6 +765,7 @@
         }
     });
 
+    @if(!empty($existingVariations['raw']) && count($existingVariations['raw']) > 0)
     // variants drag & drop to set position
     window.addEventListener('load', () => {
         (function () {
@@ -782,6 +783,7 @@
             });
         })();
     });
+    @endif
 
     // Use event delegation for the dynamically created "Add different currency" button
     document.addEventListener('click', function(e) {

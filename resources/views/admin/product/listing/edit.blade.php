@@ -162,6 +162,17 @@
                             'collection_name' => old('collection_name', collectionTitles($data->collection_ids)),
                         ])
 
+                        {{-- @livewire('input-product-badge-search', [
+                            'product_id' => old('product_id', 0),
+                            'product_title' => old('product_title', ''),
+                        ]) --}}
+
+                        @livewire('input-product-badge-search', [
+                            'mode' => 'multiple',
+                            'selected_ids' => old('badge_ids', optional($data->badges)->pluck('id')->toArray() ?? []),
+                        ])
+
+
                     </div>
 
                     <div class="border-t border-gray-200 dark:border-gray-700"></div>
