@@ -9,8 +9,9 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
 use App\Interfaces\CountryInterface;
-use App\Interfaces\ProductPricingInterface;
 use App\Interfaces\ProductImageInterface;
+use App\Interfaces\ProductPricingInterface;
+use App\Interfaces\ProductBadgeCombinationInterface;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
@@ -21,20 +22,23 @@ class ProductListingRepository implements ProductListingInterface
 {
     private TrashInterface $trashRepository;
     private CountryInterface $countryRepository;
-    private ProductPricingInterface $productPricingRepository;
     private ProductImageInterface $productImageRepository;
+    private ProductPricingInterface $productPricingRepository;
+    private ProductBadgeCombinationInterface $productBadgeCombinationRepository;
 
     public function __construct(
         TrashInterface $trashRepository, 
-        ProductPricingInterface $productPricingRepository, 
+        CountryInterface $countryRepository,
         ProductImageInterface $productImageRepository, 
-        CountryInterface $countryRepository
+        ProductPricingInterface $productPricingRepository, 
+        ProductBadgeCombinationInterface $productBadgeCombinationRepository
     )
     {
         $this->trashRepository = $trashRepository;
-        $this->productPricingRepository = $productPricingRepository;
-        $this->productImageRepository = $productImageRepository;
         $this->countryRepository = $countryRepository;
+        $this->productImageRepository = $productImageRepository;
+        $this->productPricingRepository = $productPricingRepository;
+        $this->productBadgeCombinationRepository = $productBadgeCombinationRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
@@ -157,6 +161,17 @@ class ProductListingRepository implements ProductListingInterface
                         'image_l' => $uploadResp['largeThumbName'],
                     ];
                     $imageResp = $this->productImageRepository->store($imageData);
+                }
+            }
+
+            // BADGES
+            if (!empty($array['badges']) && count($array['badges']) > 0) {
+                foreach($array['badges'] as $badgeKey => $badgeId) {
+                    $badgeCombinationData = [
+                        'product_id' => $data->id,
+                        'product_badge_id' => $badgeId,
+                    ];
+                    $badgeCombinationResp = $this->productBadgeCombinationRepository->store($badgeCombinationData);
                 }
             }
 
@@ -390,36 +405,6 @@ class ProductListingRepository implements ProductListingInterface
                         // dd($pricingResp);
                     }
                 }
-                /*
-                if (
-                    !empty($array['country_code']) &&
-                    !empty($array['selling_price'])
-                ) {
-                    // **** pricing 1 - setting up data
-                    $pricingData = [
-                        'product_id' => $array['id'],
-                        'country_code' => $array['country_code'],
-                        'selling_price' => $array['selling_price'],
-                        'mrp' => $array['mrp'],
-                        'discount' => $array['discount_percentage'],
-                        'cost' => $array['cost'],
-                        'profit' => $array['profit'],
-                        'margin' => $array['margin_percentage'],
-                    ];
-
-                    // **** pricing 2 - check if pricing exists for this product id & country code
-                    $existingPricingData = $this->productPricingRepository->getByProductIdCountryCode($array['id'], $array['country_code']);
-
-                    // **** pricing 2 - if pricing exists update it, else add new
-                    if ($existingPricingData['code'] == 200) {
-                        $existingPricingDataId = $existingPricingData['data']->id;
-                        // dd($existingPricingDataId);
-                        $pricingResp = $this->productPricingRepository->update($existingPricingDataId, $pricingData);
-                    } else {
-                        $pricingResp = $this->productPricingRepository->store($pricingData);
-                    }
-                }
-                */
 
                 // IMAGES
                 if (!empty($array['images']) && count($array['images']) > 0) {
@@ -433,6 +418,27 @@ class ProductListingRepository implements ProductListingInterface
                             'image_l' => $uploadResp['largeThumbName'],
                         ];
                         $imageResp = $this->productImageRepository->store($imageData);
+                    }
+                }
+
+                // BADGES
+                // dd($array['badges']);
+                if (!empty($array['badges']) && count($array['badges']) > 0) {
+                    foreach($array['badges'] as $badgeKey => $badgeId) {
+                        // condition array
+                        $badgeCombinationData = [
+                            'product_id' => $array['id'],
+                            'product_badge_id' => $badgeId,
+                        ];
+
+                        // 1. check if this condition already exists in DB
+                        $badgeComboResp = $this->productBadgeCombinationRepository->conditions($badgeCombinationData);
+                        // dd($badgeComboResp);
+                        if ($badgeComboResp['code'] != 200) {
+                            $badgeCombinationResp = $this->productBadgeCombinationRepository->store($badgeCombinationData);
+                            // dd($badgeCombinationResp);
+                        }
+
                     }
                 }
 

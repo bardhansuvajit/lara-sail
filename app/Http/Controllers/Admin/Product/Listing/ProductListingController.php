@@ -282,7 +282,7 @@ class ProductListingController
 
     public function update(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
 
         // Get uploaded files
         $uploadedFiles = $request->file('images');
@@ -355,7 +355,7 @@ class ProductListingController
             'status' => 'required|integer|min:1',
 
             'badge_ids'             => 'nullable|array',
-            'badge_ids.*'           => ['nullable','integer','min:1'],
+            'badge_ids.*'           => ['nullable','integer','min:1','exists:product_badges,id'],
         ], [
             'selling_price.regex' => 'The selling price accepts value upto 2 decimals.',
             'mrp.regex' => 'The selling price accepts value upto 2 decimals.',
@@ -471,6 +471,8 @@ class ProductListingController
             'images' => $request->images ? $request->images : null,
 
             'status' => (int) $request->status ? $request->status : 2,
+
+            'badges' => $request->badge_ids
         ];
 
         // dd($productData);

@@ -1,6 +1,6 @@
 <div 
     wire:loading.class="opacity-50" 
-    wire:target="product"
+    wire:target="search"
     wire:ignore.self
 >
     <x-admin.input-label for="product_id" :value="__('Badge *')" />
@@ -17,7 +17,7 @@
                 placeholder="Search badge" 
                 aria-autocomplete="off" 
                 autocomplete="off" 
-                wire:model.debounce.300ms="product" 
+                wire:model.live.debounce.300ms="search" 
             />
         </x-slot>
 
@@ -31,12 +31,12 @@
                                wire:click.prevent="selectProduct({{ $product->id }})"
                                >
                                 <div class="px-3 py-1 text-xs font-semibold shadow-sm {{ $product->tailwind_classes }}">
-                                    {!! $product->icon !!} {{ $product->title }}
+                                    {{ $product->id }} {!! $product->icon !!} {{ $product->title }}
                                 </div>
                             </a>
                         </li>
                     @empty
-                        <li class="px-2 py-1 text-xs">No product found.</li>
+                        <li class="px-2 py-1 text-xs">No badge found.</li>
                     @endforelse
                 </ul>
 
@@ -54,28 +54,17 @@
 
     {{-- Selected items shown as chips --}}
     <div class="mt-2 flex flex-wrap gap-2" wire:key="selected-chips-{{ md5(json_encode($selected)) }}">
-        {{-- @if(count($selected) === 0)
-            <div class="text-xs text-gray-500">No badge selected.</div>
-        @endif --}}
-
         @foreach($selected as $id)
             @php $badge = $selectedBadges[$id] ?? null; @endphp
             <div class="inline-flex items-center gap-2 rounded shadow-sm {{ $badge?->tailwind_classes ?? 'bg-gray-100 text-gray-800' }}" wire:key="selected-{{ $id }}">
                 {!! $badge?->icon ?? '' !!}
 
-                <span class="px-1 py-0.5 h-5 text-xs">{{ $badge?->title ?? 'Badge #' . $id }}</span>
+                <span class="px-1 py-0.5 h-5 text-xs line-clamp-1">{{ $badge?->title ?? 'Badge #' . $id }}</span>
 
                 <button type="button" class="ml-2 text-xs h-5 w-5 hover:bg-gray-500 dark:hover:bg-gray-500 focus:outline-none rounded" wire:click.prevent="removeProduct({{ $id }})" aria-label="Remove">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
                 </button>
             </div>
-            {{-- <div class="inline-flex items-center gap-2 px-3 py-1 rounded-2xl text-xs font-semibold shadow-sm {{ $badge?->tailwind_classes ?? 'bg-gray-100 text-gray-800' }}" wire:key="selected-{{ $id }}">
-                {!! $badge?->icon ?? '' !!}
-                <span class="truncate max-w-[160px]">{{ $badge?->title ?? 'Badge #' . $id }}</span>
-                <button type="button" class="ml-2 text-xs h-5 w-5 hover:bg-gray-500 dark:hover:bg-gray-500 focus:outline-none rounded" wire:click.prevent="removeProduct({{ $id }})" aria-label="Remove">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                </button>
-            </div> --}}
         @endforeach
     </div>
 

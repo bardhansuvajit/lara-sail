@@ -44,6 +44,8 @@ use App\Interfaces\ContentPageInterface;
 use App\Interfaces\SocialMediaInterface;
 use App\Interfaces\AdSectionInterface;
 use App\Interfaces\AdItemInterface;
+use App\Interfaces\ProductBadgeInterface;
+use App\Interfaces\ProductBadgeCombinationInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -85,6 +87,8 @@ use App\Repositories\ContentPageRepository;
 use App\Repositories\SocialMediaRepository;
 use App\Repositories\AdSectionRepository;
 use App\Repositories\AdItemRepository;
+use App\Repositories\ProductBadgeRepository;
+use App\Repositories\ProductBadgeCombinationRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -134,6 +138,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(SocialMediaInterface::class, SocialMediaRepository::class);
         $this->app->bind(AdSectionInterface::class, AdSectionRepository::class);
         $this->app->bind(AdItemInterface::class, AdItemRepository::class);
+        $this->app->bind(ProductBadgeInterface::class, ProductBadgeRepository::class);
+        $this->app->bind(ProductBadgeCombinationInterface::class, ProductBadgeCombinationRepository::class);
     }
 
     /**

@@ -11,7 +11,7 @@ class InputProductBadgeSearch extends Component
     use WithPagination;
 
     // search text
-    public ?string $product = '';
+    public string $search = '';
 
     // single-mode fields
     public ?int $product_id = null;
@@ -46,13 +46,13 @@ class InputProductBadgeSearch extends Component
     public function selectProduct(int $id)
     {
         $badge = ProductBadge::select('id','title','icon','tailwind_classes')->find($id);
-        if (! $badge) return;
+        if (!$badge) return;
 
         // If it's already selected -> toggle (remove)
         if (in_array($badge->id, $this->selected, true)) {
             $this->removeProduct($badge->id);
             // reset search & page after toggling off as well
-            $this->product = '';
+            $this->search = '';
             $this->resetPage();
             return;
         }
@@ -63,13 +63,13 @@ class InputProductBadgeSearch extends Component
             $this->product_title = $badge->title;
         } else {
             // multiple: add if not exists
-            if (! in_array($badge->id, $this->selected, true)) {
+            if (!in_array($badge->id, $this->selected, true)) {
                 $this->selected[] = $badge->id;
             }
         }
 
         // reset search & page
-        $this->product = '';
+        $this->search = '';
         $this->resetPage();
     }
 
@@ -82,20 +82,19 @@ class InputProductBadgeSearch extends Component
         }
     }
 
-    public function updatedProduct()
+    public function updatedSearch()
     {
         $this->resetPage();
     }
 
     public function render()
     {
-        $products = ProductBadge::when($this->product, function ($query) {
-                $query->where('title', 'like', '%' . $this->product . '%')
-                    ->orWhere('short', 'like', '%' . $this->product . '%')
-                    ->orWhere('description', 'like', '%' . $this->product . '%')
-                    ->orWhere('meta', 'like', '%' . $this->product . '%');
+        $products = ProductBadge::when($this->search, function ($query) {
+                $query->where('title', 'like', '%' . $this->search . '%')
+                    ->orWhere('short', 'like', '%' . $this->search . '%')
+                    ->orWhere('description', 'like', '%' . $this->search . '%')
+                    ->orWhere('meta', 'like', '%' . $this->search . '%');
             })
-            // ->where('status', 1)
             ->orderBy('position')
             ->select(['id', 'title', 'icon', 'tailwind_classes'])
             ->simplePaginate(15);

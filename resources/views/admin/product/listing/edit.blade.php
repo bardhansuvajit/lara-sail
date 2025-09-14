@@ -264,11 +264,11 @@
         </div>
 
         <div class="col-span-2">
-            <div class="w-full mt-2 px-10">
+            <div class="w-full mt-2">
                 <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Status</h4>
 
                 <div>
-                    <x-admin.input-label for="status" :value="__('Status')" />
+                    {{-- <x-admin.input-label for="status" :value="__('Status')" /> --}}
                     <x-admin.input-select id="status" name="status" title="Select Status..." class="w-full" form="productForm">
                         @slot('options')
                             @foreach ($allStatus as $statusVal)
