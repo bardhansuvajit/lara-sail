@@ -66,7 +66,7 @@
 
         <!-- Right: Product Info & Actions -->
         <div class="lg:col-span-7 flex flex-col gap-4 md:mb-4">
-            <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm space-y-2">
+            <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm space-y-2 md:space-y-4">
                 <div class="flex items-start justify-between gap-2 md:gap-4">
                     <div class="flex-1 space-y-2">
                         <!-- Breadcrumb -->
@@ -182,11 +182,9 @@
                 @endif
 
                 <!-- Variations -->
-
-                {{-- {{ dd($variation) }} --}}
-
+                {{-- {{ dd($variation['data']) }} --}}
                 @if ($variation['code'] == 200)
-                    <div class="space-y-2" id="variationTab">
+                    <div class="space-y-4" id="variationTab">
                         @foreach ($variation['data']['attributes'] as $attrIndex => $attribute)
                             <div>
                                 <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">
@@ -204,6 +202,7 @@
                                             data-value-slug="{{ $value['slug'] }}"
                                             data-attr-id="{{ $attribute['id'] }}"
                                             data-value-id="{{ $value['id'] }}"
+                                            :checked="$valueIndex == 0"
                                         >
                                             <div class="text-center">
                                                 <div class="flex flex-col items-center gap-2">
@@ -218,8 +217,6 @@
                             </div>
                         @endforeach
                     </div>
-
-                    <div class="border-t dark:border-gray-700 my-4 sm:my-4"></div>
                 @endif
 
 
@@ -1397,78 +1394,167 @@
 
 
     // Variation
-    const productCombinations = @json($variation['data']['combinations']);
-    // console.log(JSON.stringify(productCombinations));
-    const selectedOptions = {}; // { color: "red", ram: "16gb" }
+    @if ($variation['code'] == 200)
+        const productCombinations = @json($variation['data']['combinations']);
+        const attributeSlugs = @json(array_map(function($a){ return $a['slug']; }, $variation['data']['attributes']));
+        const selectedOptions = {};
 
-    document.querySelectorAll('.attr-val-generate').forEach(el => {
-        el.addEventListener('click', function () {
-            const attrSlug = this.dataset.attrSlug;
-            const valueSlug = this.value;
-
-            // update selected option
-            selectedOptions[attrSlug] = valueSlug;
-
-            updateCombinationsUI();
-        });
-    });
-
-    function updateCombinationsUI() {
-        // Build possible identifier like "red-16gb"
-        const selectedSlugs = Object.values(selectedOptions).filter(Boolean);
-        const identifier = selectedSlugs.join('-');
-
-        // Find matching variations
-        const matchedVariations = productCombinations.filter(c => {
-            return c.variation_identifier === identifier
-                || selectedSlugs.every(slug => c.variation_identifier.includes(slug));
-        });
-
-        // --- Update Price if exact match ---
-        const exactMatch = productCombinations.find(c => c.variation_identifier === identifier);
-        if (exactMatch) {
-            const savings = exactMatch.pricing[0].mrp - exactMatch.pricing[0].selling_price;
-            document.getElementById('priceBox').innerText = exactMatch.pricing[0].selling_price_formatted;
-            document.getElementById('mrpBox').innerText = exactMatch.pricing[0].mrp_formatted;
-            document.getElementById('savingsBox').innerText = exactMatch.pricing[0].savings_formatted;
-            document.getElementById('discountBox').innerText = exactMatch.pricing[0].discount;
+        // Helpers (same as before)
+        function tokensOf(identifier) { return identifier.split('-').map(t => t.trim()).filter(Boolean); }
+        function combinationMatchesSelectionTokens(tokens, selectionObj) {
+            return Object.entries(selectionObj).every(([k, v]) => { if (!v) return true; return tokens.includes(v); });
+        }
+        function findExactMatch(selectedObj) {
+            const values = attributeSlugs.map(s => selectedObj[s]).filter(Boolean);
+            if (values.length !== attributeSlugs.length) return null;
+            const normalized = values.slice().sort().join('|');
+            return productCombinations.find(c => {
+                const tokens = tokensOf(c.variation_identifier);
+                return tokens.length === attributeSlugs.length && tokens.slice().sort().join('|') === normalized;
+            }) || null;
         }
 
-        // --- Highlight available options ---
-        document.querySelectorAll('.attr-val-generate').forEach(el => {
-            const attrSlug = el.dataset.attrSlug;
-            // const valueSlug = el.dataset.valueSlug;
-            const valueSlug = this.dataset.valueSlug ?? this.value;
-            selectedOptions[attrSlug] = valueSlug;
+        function getLabelFor(input) {
+            if (!input) return null;
+            if (input.id) {
+                const lab = document.querySelector(`label[for="${input.id}"]`);
+                if (lab) return lab;
+            }
+            const ancestorLabel = input.closest && input.closest('label');
+            if (ancestorLabel) return ancestorLabel;
+            if (input.nextElementSibling && input.nextElementSibling.tagName === 'LABEL') return input.nextElementSibling;
+            if (input.parentElement) {
+                const found = input.parentElement.querySelector('label');
+                if (found) return found;
+            }
+            return input.parentElement || null;
+        }
 
-            // Create a test selection with this option
-            const testSelection = {...selectedOptions};
-            testSelection[attrSlug] = valueSlug;
+        function enableLabel(label) { if (!label) return; label.classList.remove('opacity-50'); label.setAttribute('aria-disabled', 'false'); }
+        function disableLabel(label) { if (!label) return; label.classList.add('opacity-50'); label.setAttribute('aria-disabled', 'true'); }
 
-            // Check if any combination matches this test selection 
-            const isValid = productCombinations.some(c => {
-                const tokens = c.variation_identifier.split('-'); // ['red','16gb'] etc.
-                return Object.entries(testSelection).every(([key, value]) => tokens.includes(value));
+        const optionInputs = Array.from(document.querySelectorAll('.attr-val-generate'));
+
+        // ======= FIXED: attach handlers to BOTH label and input, do NOT preventDefault =======
+        optionInputs.forEach(input => {
+            const label = getLabelFor(input);
+
+            const handler = (ev) => {
+                // don't preventDefault here — allow native checked toggling for robustness
+                const attrSlug = input.dataset.attrSlug;
+                const valueSlug = input.dataset.valueSlug ?? input.value;
+
+                // ensure input is checked (useful when label click doesn't toggle underlying input)
+                if ('checked' in input) input.checked = true;
+
+                // update selected options and UI
+                selectedOptions[attrSlug] = valueSlug;
+                updateCombinationsUI();
+            };
+
+            // Listen to clicks on the visible label (if any)
+            if (label) label.addEventListener('click', handler);
+
+            // ALSO listen to the underlying input's change/click so we catch direct input interactions
+            input.addEventListener('change', handler);
+            input.addEventListener('click', handler);
+        });
+        // ======= End FIX =======
+
+        // Initialize selectedOptions from checked inputs, otherwise pick first available per attribute
+        (function initDefaults() {
+            attributeSlugs.forEach(slug => {
+                const checkedInput = optionInputs.find(i => i.dataset.attrSlug === slug && (i.checked || i.getAttribute('checked') !== null));
+                if (checkedInput) {
+                    selectedOptions[slug] = checkedInput.dataset.valueSlug ?? checkedInput.value;
+                } else {
+                    const first = optionInputs.find(i => i.dataset.attrSlug === slug);
+                    if (first) {
+                        selectedOptions[slug] = first.dataset.valueSlug ?? first.value;
+                        if ('checked' in first) first.checked = true;
+                    }
+                }
             });
 
-            if (isValid) {
-                el.classList.remove('opacity-50', 'pointer-events-none');
-            } else {
-                el.classList.add('opacity-50', 'pointer-events-none');
-            }
-        });
+            updateCombinationsUI();
+        })();
 
-        // --- Auto-select first valid option for next attr ---
-        Object.keys(selectedOptions).forEach(attr => {
-            if (!selectedOptions[attr]) {
-                const firstValid = document.querySelector(`.attr-val-generate[data-attr-slug="${attr}"]:not(.opacity-50)`);
-                if (firstValid) {
-                    selectedOptions[attr] = firstValid.dataset.valueSlug;
-                    firstValid.click();
-                }
+        function updateCombinationsUI() {
+            // price update (same as your code)
+            const exact = findExactMatch(selectedOptions);
+            if (exact && exact.pricing && exact.pricing.length) {
+                const p = exact.pricing[0];
+                if (document.getElementById('priceBox')) document.getElementById('priceBox').innerText = p.selling_price_formatted ?? p.selling_price ?? '';
+                if (document.getElementById('mrpBox')) document.getElementById('mrpBox').innerText = p.mrp_formatted ?? p.mrp ?? '';
+                if (document.getElementById('savingsBox')) document.getElementById('savingsBox').innerText = p.savings_formatted ?? ((+p.mrp || 0) - (+p.selling_price || 0)) ?? '';
+                if (document.getElementById('discountBox')) document.getElementById('discountBox').innerText = p.discount ?? '';
             }
-        });
-    }
+
+            // enable/disable per-label (same logic)
+            optionInputs.forEach(input => {
+                const attr = input.dataset.attrSlug;
+                const val = input.dataset.valueSlug ?? input.value;
+                const testSelection = {...selectedOptions, [attr]: val};
+                const isValid = productCombinations.some(c => {
+                    const tokens = tokensOf(c.variation_identifier);
+                    return combinationMatchesSelectionTokens(tokens, testSelection);
+                });
+                const label = getLabelFor(input);
+                if (isValid) enableLabel(label); else disableLabel(label);
+
+                // keep `aria-checked` for selected
+                const isSelected = selectedOptions[attr] === val;
+                if (label) label.setAttribute('aria-checked', isSelected ? 'true' : 'false');
+            });
+
+            // auto-fix invalid selected options (same logic)
+            let changed = false;
+            attributeSlugs.forEach(attr => {
+                const cur = selectedOptions[attr];
+                if (!cur) return;
+                const stillValid = productCombinations.some(c => {
+                    const tokens = tokensOf(c.variation_identifier);
+                    return combinationMatchesSelectionTokens(tokens, selectedOptions);
+                });
+                if (!stillValid) {
+                    const candidateInput = optionInputs.filter(i => i.dataset.attrSlug === attr).find(opt => {
+                        const val = opt.dataset.valueSlug ?? opt.value;
+                        const testSel = {...selectedOptions, [attr]: val};
+                        return productCombinations.some(c => combinationMatchesSelectionTokens(tokensOf(c.variation_identifier), testSel));
+                    });
+                    if (candidateInput) {
+                        const val = candidateInput.dataset.valueSlug ?? candidateInput.value;
+                        selectedOptions[attr] = val;
+                        if ('checked' in candidateInput) candidateInput.checked = true;
+                        changed = true;
+                    } else {
+                        delete selectedOptions[attr];
+                        changed = true;
+                    }
+                }
+            });
+
+            if (changed) {
+                const exactAfter = findExactMatch(selectedOptions);
+                if (exactAfter && exactAfter.pricing && exactAfter.pricing.length) {
+                    const p = exactAfter.pricing[0];
+                    if (document.getElementById('priceBox')) document.getElementById('priceBox').innerText = p.selling_price_formatted ?? p.selling_price ?? '';
+                    if (document.getElementById('mrpBox')) document.getElementById('mrpBox').innerText = p.mrp_formatted ?? p.mrp ?? '';
+                    if (document.getElementById('savingsBox')) document.getElementById('savingsBox').innerText = p.savings_formatted ?? ((+p.mrp || 0) - (+p.selling_price || 0)) ?? '';
+                    if (document.getElementById('discountBox')) document.getElementById('discountBox').innerText = p.discount ?? '';
+                }
+                // re-run enable/disable
+                optionInputs.forEach(input => {
+                    const attr = input.dataset.attrSlug;
+                    const val = input.dataset.valueSlug ?? input.value;
+                    const testSelection = {...selectedOptions, [attr]: val};
+                    const isValid = productCombinations.some(c => combinationMatchesSelectionTokens(tokensOf(c.variation_identifier), testSelection));
+                    const label = getLabelFor(input);
+                    if (isValid) enableLabel(label); else disableLabel(label);
+                });
+            }
+        }
+    @endif
 
 
 })();
