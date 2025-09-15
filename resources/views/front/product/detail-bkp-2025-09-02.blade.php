@@ -39,14 +39,64 @@
         ],
         // variations
         'variations' => [
-            'colors' => ['black' => 'Black', 'grey' => 'Grey', 'blue' => 'Navy Blue'],
-            'materials' => ['mesh' => 'Mesh', 'leather' => 'PU Leather'],
+            'attributes' => [
+                0 => [
+                    'id' => 2
+                    'title' => 'Color'
+                    'slug' => 'color',
+                    'values' =>[
+                        0 => [
+                            'id' => 1
+                            'title' => 'Midnight Black'
+                            'slug' => 'midnight-black'
+                        ],
+                        1 => [
+                            'id' => 2
+                            'title' => 'Sky Blue'
+                            'slug' => 'sky-blue'
+                        ],
+                        2 => [
+                            'id' => 3
+                            'title' => 'Starlight'
+                            'slug' => 'starlight'
+                        ],
+                    ]
+                ],
+                1 => [
+                    'id' => 3
+                    'title' => 'RAM'
+                    'slug' => 'ram',
+                    'values' =>[
+                        0 => [
+                            'id' => 8
+                            'title' => '16GB'
+                            'slug' => '16gb'
+                        ],
+                        1 => [
+                            'id' => 9
+                            'title' => '24GB'
+                            'slug' => '24gb'
+                        ]
+                    ]
+                ],
+            ],
             'combinations' => [
-                'black|mesh' => ['price' => 12999.00, 'stock' => 12],
-                'grey|mesh'  => ['price' => 13499.00, 'stock' => 7],
-                'blue|mesh'  => ['price' => 13999.00, 'stock' => 5],
-                'black|leather' => ['price' => 14999.00, 'stock' => 3],
-                'grey|leather'  => ['price' => 14999.00, 'stock' => 0]
+                0 => [
+                    'id' => 5,
+                    'variation_identifier' => 'midnight-black-16gb'
+                    'sku' => 'midnight-black-16gb-macbook-air',
+                    'track_quantity' => 1,
+                    'stock_quantity' => 19,
+                    'allow_backorders' => 0,
+                    'pricing' => [
+                        0 => [
+                            'country_code' => 'IN',
+                            'selling_price' => 10000,
+                        ]
+                    ]
+                    'min_quantity' => 1,
+                    'status' => 1,
+                ]
             ]
         ],
         'offers' => [

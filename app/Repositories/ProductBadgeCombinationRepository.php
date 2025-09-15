@@ -169,6 +169,46 @@ class ProductBadgeCombinationRepository implements ProductBadgeCombinationInterf
         }
     }
 
+    public function syncProductBadges(int $productId, array $sentBadgeIds)
+    {
+        // sanitize incoming
+        $sent = array_values(array_unique(array_filter($sentBadgeIds, fn($v) => $v !== null && $v !== '')));
+
+        DB::transaction(function () use ($productId, $sent) {
+            // 1. fetch existing badge ids
+            $existing = ProductBadgeCombination::where('product_id', $productId)
+                ->pluck('product_badge_id')
+                ->toArray();
+
+            // 2. compute diffs
+            $toAdd    = array_values(array_diff($sent, $existing));     // badges in request but not in DB
+            $toDelete = array_values(array_diff($existing, $sent));     // badges in DB but not in request
+
+            // 3. delete removed badges in one query
+            if (!empty($toDelete)) {
+                ProductBadgeCombination::where('product_id', $productId)
+                    ->whereIn('product_badge_id', $toDelete)
+                    ->delete();
+            }
+
+            // 4. insert new badges in one batch
+            if (!empty($toAdd)) {
+                $now = now();
+                $rows = array_map(fn($badgeId) => [
+                    'product_id' => $productId,
+                    'product_badge_id' => $badgeId,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ], $toAdd);
+
+                // use insert (assumes unique constraint prevents duplicates)
+                ProductBadgeCombination::insert($rows);
+            }
+        });
+
+        return ['code' => 200, 'message' => 'badges synced'];
+    }
+
     public function update(Array $array)
     {
         try {

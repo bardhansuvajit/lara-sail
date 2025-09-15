@@ -26,7 +26,8 @@ class ProductController extends Controller
 
         if ($resp['code'] == 200) {
             $product = $resp['data'];
-            $variation = $this->productVariationRepository->groupedVariation($product->id);
+            $pricingCountry = COUNTRY['country'];
+            $variation = $this->productVariationRepository->groupedVariation($product->id, $pricingCountry);
 
             return view('front.product.detail', [
                 'product' => $product,

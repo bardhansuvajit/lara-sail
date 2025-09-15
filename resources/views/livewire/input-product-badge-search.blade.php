@@ -3,7 +3,7 @@
     wire:target="search"
     wire:ignore.self
 >
-    <x-admin.input-label for="product_id" :value="__('Badge *')" />
+    <x-admin.input-label for="product_id" :value="__('Badge')" />
 
     <x-admin.dropdown align="bottom" width="full" wire:key="dropdown-{{ $mode }}-{{ md5(json_encode($selected)) }}">
         <x-slot name="trigger">
@@ -31,7 +31,7 @@
                                wire:click.prevent="selectProduct({{ $product->id }})"
                                >
                                 <div class="px-3 py-1 text-xs font-semibold shadow-sm {{ $product->tailwind_classes }}">
-                                    {{ $product->id }} {!! $product->icon !!} {{ $product->title }}
+                                    {!! $product->icon !!} {{ $product->title }}
                                 </div>
                             </a>
                         </li>

@@ -424,6 +424,58 @@ class ProductListingRepository implements ProductListingInterface
                 // BADGES
                 // dd($array['badges']);
                 if (!empty($array['badges']) && count($array['badges']) > 0) {
+
+                    $productId = $array['id'];
+                    $productBadgeResp = $this->productBadgeCombinationRepository->syncProductBadges($productId, $array['badges']);
+                    // dd($productBadgeResp);
+
+                    /*
+                    // 1. check product badges
+                    $productId = $array['id'];
+                    $badgeDataArr = [
+                        'product_id' => $productId
+                    ];
+                    $productBadges = $this->productBadgeCombinationRepository->conditions($badgeDataArr);
+
+                    // 2. if no data found
+                    if ($productBadges['code'] != 200) {
+                        foreach($array['badges'] as $badgeKey => $badgeId) {
+                            // 3. set data store array
+                            $badgeCombinationData = [
+                                'product_id' => $array['id'],
+                                'product_badge_id' => $badgeId,
+                            ];
+
+                            // 4. insert data
+                            $badgeCombinationResp = $this->productBadgeCombinationRepository->store($badgeCombinationData);
+                            // dd($badgeCombinationResp);
+                        }
+                    }
+                    // 5. if data found
+                    else {
+                        // 6. get existing badge ids
+                        $existingProductBadgesIds = $productBadges['data']->pluck('product_badge_id')->toArray();
+                        // dd($existingProductBadgesIds, $array['badges']);
+                        // 7. loop through sent badges
+                        foreach($array['badges'] as $badgeKey => $badgeId) {
+                            // 8. check if existing badge ids matches with sent badges, if not found, add them
+                            if (!in_array($badgeId, $existingProductBadgesIds)) {
+                                // 3. set data store array
+                                $badgeCombinationData = [
+                                    'product_id' => $array['id'],
+                                    'product_badge_id' => $badgeId,
+                                ];
+
+                                // 4. insert data
+                                $badgeCombinationResp = $this->productBadgeCombinationRepository->store($badgeCombinationData);
+                            }
+                        }
+                    }
+                    */
+
+                    // dd($productBadges);
+
+                    /*
                     foreach($array['badges'] as $badgeKey => $badgeId) {
                         // condition array
                         $badgeCombinationData = [
@@ -438,8 +490,8 @@ class ProductListingRepository implements ProductListingInterface
                             $badgeCombinationResp = $this->productBadgeCombinationRepository->store($badgeCombinationData);
                             // dd($badgeCombinationResp);
                         }
-
                     }
+                    */
                 }
 
                 DB::commit();

@@ -45,9 +45,12 @@ class ProductVariationController
         // $request->validate([
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|min:1',
-            'variation_identifier' => 'required|string|unique:product_variations,variation_identifier,'.$request->id,
-            'sku' => 'nullable|string|max:50|unique:product_variations,sku,'.$request->id,
-            'barcode' => 'nullable|string|max:50|unique:product_variations,barcode,'.$request->id,
+            'variation_identifier' => 'required|string',
+            'sku' => 'nullable|string|max:50',
+            'barcode' => 'nullable|string|max:50',
+            // 'variation_identifier' => 'required|string|unique:product_variations,variation_identifier,product_variation_id'.$request->id,
+            // 'sku' => 'nullable|string|max:50|unique:product_variations,sku,'.$request->id,
+            // 'barcode' => 'nullable|string|max:50|unique:product_variations,barcode,'.$request->id,
 
             'track_quantity' => 'nullable|string|in:yes',
             'stock_quantity' => 'nullable|numeric|min:0|max:9999999999',

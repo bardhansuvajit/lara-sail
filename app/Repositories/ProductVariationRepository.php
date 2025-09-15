@@ -176,7 +176,7 @@ class ProductVariationRepository implements ProductVariationInterface
                 // Looping through adjustments based on Country
                 foreach ($array['currency_adjustments'] as $key => $currencyAdjust) {
                     // Add only if there is Adjustment
-                    if ($currencyAdjust['price_adjustment'] > 0) {
+                    // if ($currencyAdjust['price_adjustment'] > 0) {
 
                         // get base pricing details first
                         $existingProdPricing = $this->productPricingRepository->getByProductIdCountryCode($productId, $currencyAdjust['country_code']);
@@ -192,10 +192,14 @@ class ProductVariationRepository implements ProductVariationInterface
                             //     'data' => []
                             // ];
 
-                            // dd($existingPricingData);
+                            // dd($existingPricingData->selling_price);
 
-                            // Selling Price
-                            $variationSellingPrice = floatConvert($currencyAdjust['price_adjustment']);
+                            // Set Selling Price
+                            if ($currencyAdjust['price_adjustment'] != 0) {
+                                $variationSellingPrice = floatConvert($currencyAdjust['price_adjustment']);
+                            } else {
+                                $variationSellingPrice = $existingPricingData->selling_price;
+                            }
 
                             // treat empty MRP as 0 (or null)
                             $mrpRaw = $existingPricingData['mrp'] ?? null;
@@ -223,7 +227,7 @@ class ProductVariationRepository implements ProductVariationInterface
                             ];
                             $pricingResp = $this->productPricingRepository->store($pricingData);
                         }
-                    }
+                    // }
                 }
             }
 
@@ -633,10 +637,126 @@ class ProductVariationRepository implements ProductVariationInterface
         }
     }
 
+    public function groupedVariation(Int $id, string $pricingCountry = 'all')
+    {
+        try {
+            $variations = ProductVariation::with([
+                'combinations.attribute',
+                'combinations.attributeValue',
+                'pricings'
+            ])
+            ->where('product_id', $id)
+            ->where('status', 1)
+            ->orderBy('position', 'asc')
+            ->get();
+
+            if (count($variations) == 0) {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No variations found',
+                    'data' => []
+                ];
+            }
+
+            // --- ATTRIBUTES ---
+            $attributes = $variations
+                ->flatMap(function ($variation) {
+                    return $variation->combinations->map(function ($combo) {
+                        return [
+                            'attribute_id' => $combo->attribute->id,
+                            'attribute_title' => $combo->attribute->title,
+                            'attribute_slug' => $combo->attribute->slug,
+                            'value_id' => $combo->attribute_value_id,
+                            'value_title' => $combo->attributeValue->title ?? 'N/A',
+                            'value_slug' => $combo->attributeValue->slug ?? 'n-a',
+                        ];
+                    });
+                })
+                ->groupBy('attribute_id')
+                ->map(function ($group) {
+                    $first = $group->first();
+
+                    return [
+                        'id' => $first['attribute_id'],
+                        'title' => $first['attribute_title'],
+                        'slug' => $first['attribute_slug'],
+                        'values' => $group->unique('value_id')
+                            ->map(fn($item) => [
+                                'id' => $item['value_id'],
+                                'title' => $item['value_title'],
+                                'slug' => $item['value_slug'],
+                            ])
+                            ->values()
+                            ->toArray(),
+                    ];
+                })
+                ->values()
+                ->toArray();
+
+            // --- COMBINATIONS ---
+            $combinations = $variations->map(function ($variation) use ($pricingCountry) {
+                // filter pricings
+                $pricingData = $variation->pricings
+                    ->when($pricingCountry !== 'all', function ($q) use ($pricingCountry) {
+                        return $q->where('country_code', $pricingCountry);
+                    })
+                    ->map(function ($pricing) {
+                        return [
+                            'country_code' => $pricing->country_code ?? null,
+                            'min_order_quantity' => $pricing->min_quantity ?? 1,
+
+                            'selling_price' => $pricing->selling_price ?? 0,
+                            'selling_price_formatted' => formatIndianMoney($pricing->selling_price) ?? 0,
+                            'mrp' => $pricing->mrp ?? 0,
+                            'mrp_formatted' => formatIndianMoney($pricing->mrp) ?? 0,
+                            'savings_formatted' => formatIndianMoney(($pricing->mrp - $pricing->selling_price), 0) ?? 0,
+                            'discount' => $pricing->discount ?? 0,
+
+                            'status' => formatIndianMoney($pricing->status) ?? 0,
+                        ];
+                    })
+                    ->values()
+                    ->toArray();
+
+                return [
+                    'id' => $variation->id,
+                    'variation_identifier' => $variation->variation_identifier,
+                    'sku' => $variation->sku,
+                    'track_quantity' => $variation->track_quantity,
+                    'stock_quantity' => $variation->stock_quantity,
+                    'allow_backorders' => $variation->allow_backorders,
+                    'pricing' => $pricingData,
+                    'min_quantity' => $variation->pricings->first()->min_quantity ?? 1,
+                    'status' => $variation->status,
+                ];
+            })->values()->toArray();
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Variations found',
+                'data' => [
+                    'attributes' => $attributes,
+                    'combinations' => $combinations
+                ]
+            ];
+
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching variations.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /*
     public function groupedVariation(Int $id)
     {
         try {
-            $data = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue'])
+            $data = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue', 'pricings'])
                 ->where([
                     ['product_id', $id],
                     ['status', 1]
@@ -706,4 +826,5 @@ class ProductVariationRepository implements ProductVariationInterface
             ];
         }
     }
+    */
 }

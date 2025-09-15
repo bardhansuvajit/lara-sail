@@ -16,5 +16,5 @@ interface ProductVariationInterface
     public function position(Array $ids);
 
     // mainly used for frontend
-    public function groupedVariation(Int $id);
+    public function groupedVariation(Int $id, String $pricingCountry);
 }

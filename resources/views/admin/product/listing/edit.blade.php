@@ -162,9 +162,11 @@
                             'collection_name' => old('collection_name', collectionTitles($data->collection_ids)),
                         ])
 
+                        {{-- {{ dd($data->badges->pluck('product_badge_id')->toArray()) }} --}}
+
                         @livewire('input-product-badge-search', [
                             'mode' => 'multiple',
-                            'selected_ids' => old('badge_ids', optional($data->badges)->pluck('id')->toArray() ?? []),
+                            'selected_ids' => old('badge_ids', optional($data->badges)->pluck('product_badge_id')->toArray() ?? []),
                         ])
 
                     </div>
@@ -225,6 +227,7 @@
 
                     @livewire('product-variant', [
                         'product_id' => $data->id,
+                        // 'product_pricings' => $data->pricings->pluck('selling_price', 'country')->toArray(),
                         'category_id' => $data->category_id,
                     ])
 

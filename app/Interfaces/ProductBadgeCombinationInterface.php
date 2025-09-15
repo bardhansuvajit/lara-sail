@@ -9,6 +9,7 @@ interface ProductBadgeCombinationInterface
     public function store(Array $array);
     public function getById(Int $id);
     public function conditions(Array $array);
+    public function syncProductBadges(int $productId, array $sentBadgeIds);
     public function update(Array $array);
     public function delete(Int $id);
     public function bulkAction(Array $array);
