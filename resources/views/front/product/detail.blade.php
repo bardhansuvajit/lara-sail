@@ -1393,78 +1393,120 @@
     };
 
 
+
+
+
+
+
     // Variation
     @if ($variation['code'] == 200)
         const productCombinations = @json($variation['data']['combinations']);
         const attributeSlugs = @json(array_map(function($a){ return $a['slug']; }, $variation['data']['attributes']));
         const selectedOptions = {};
 
-        // Helpers (same as before)
-        function tokensOf(identifier) { return identifier.split('-').map(t => t.trim()).filter(Boolean); }
-        function combinationMatchesSelectionTokens(tokens, selectionObj) {
-            return Object.entries(selectionObj).every(([k, v]) => { if (!v) return true; return tokens.includes(v); });
-        }
-        function findExactMatch(selectedObj) {
+        // Cache DOM elements
+        const priceBoxEl = document.getElementById('priceBox');
+        const mrpBoxEl = document.getElementById('mrpBox');
+        const savingsBoxEl = document.getElementById('savingsBox');
+        const discountBoxEl = document.getElementById('discountBox');
+        const optionInputs = Array.from(document.querySelectorAll('.attr-val-generate'));
+
+        // Helpers
+        const tokensOf = identifier => identifier.split('-').map(t => t.trim()).filter(Boolean);
+        const combinationMatchesSelectionTokens = (tokens, selectionObj) => 
+            Object.entries(selectionObj).every(([k, v]) => !v || tokens.includes(v));
+        
+        const findExactMatch = selectedObj => {
             const values = attributeSlugs.map(s => selectedObj[s]).filter(Boolean);
             if (values.length !== attributeSlugs.length) return null;
+            
             const normalized = values.slice().sort().join('|');
             return productCombinations.find(c => {
                 const tokens = tokensOf(c.variation_identifier);
-                return tokens.length === attributeSlugs.length && tokens.slice().sort().join('|') === normalized;
+                return tokens.length === attributeSlugs.length && 
+                    tokens.slice().sort().join('|') === normalized;
             }) || null;
-        }
+        };
 
-        function getLabelFor(input) {
+        const getLabelFor = input => {
             if (!input) return null;
             if (input.id) {
                 const lab = document.querySelector(`label[for="${input.id}"]`);
                 if (lab) return lab;
             }
-            const ancestorLabel = input.closest && input.closest('label');
-            if (ancestorLabel) return ancestorLabel;
-            if (input.nextElementSibling && input.nextElementSibling.tagName === 'LABEL') return input.nextElementSibling;
-            if (input.parentElement) {
-                const found = input.parentElement.querySelector('label');
-                if (found) return found;
+            return input.closest('label') || 
+                input.nextElementSibling?.tagName === 'LABEL' && input.nextElementSibling ||
+                input.parentElement?.querySelector('label') ||
+                input.parentElement;
+        };
+
+        const enableLabel = label => {
+            if (!label) return;
+            label.classList.remove('opacity-50');
+            label.setAttribute('aria-disabled', 'false');
+        };
+        
+        const disableLabel = label => {
+            if (!label) return;
+            label.classList.add('opacity-50');
+            label.setAttribute('aria-disabled', 'true');
+        };
+
+        const updatePrice = combination => {
+            if (combination?.pricing?.length) {
+                const p = combination.pricing[0];
+                if (priceBoxEl) priceBoxEl.innerText = p.selling_price_formatted ?? p.selling_price ?? '';
+                if (mrpBoxEl) mrpBoxEl.innerText = p.mrp_formatted ?? p.mrp ?? '';
+                if (savingsBoxEl) savingsBoxEl.innerText = p.savings_formatted ?? ((+p.mrp || 0) - (+p.selling_price || 0)) ?? '';
+                if (discountBoxEl) discountBoxEl.innerText = p.discount ?? '';
             }
-            return input.parentElement || null;
-        }
+        };
 
-        function enableLabel(label) { if (!label) return; label.classList.remove('opacity-50'); label.setAttribute('aria-disabled', 'false'); }
-        function disableLabel(label) { if (!label) return; label.classList.add('opacity-50'); label.setAttribute('aria-disabled', 'true'); }
+        const updateOptionsAvailability = () => {
+            optionInputs.forEach(input => {
+                const attr = input.dataset.attrSlug;
+                const val = input.dataset.valueSlug ?? input.value;
+                const testSelection = {...selectedOptions, [attr]: val};
+                
+                const isValid = productCombinations.some(c => 
+                    combinationMatchesSelectionTokens(tokensOf(c.variation_identifier), testSelection)
+                );
+                
+                const label = getLabelFor(input);
+                isValid ? enableLabel(label) : disableLabel(label);
+                
+                // Update aria-checked for selected state
+                const isSelected = selectedOptions[attr] === val;
+                if (label) label.setAttribute('aria-checked', isSelected.toString());
+            });
+        };
 
-        const optionInputs = Array.from(document.querySelectorAll('.attr-val-generate'));
+        // Event handler for option selection
+        const handleOptionSelection = ev => {
+            const input = ev.target.matches('input') ? ev.target : 
+                        (ev.target.tagName === 'LABEL' ? document.getElementById(ev.target.htmlFor) : null);
+            
+            if (!input) return;
+            
+            const attrSlug = input.dataset.attrSlug;
+            const valueSlug = input.dataset.valueSlug ?? input.value;
+            
+            // Update selected options
+            selectedOptions[attrSlug] = valueSlug;
+            
+            // Ensure input is checked
+            if ('checked' in input) input.checked = true;
+            
+            updateCombinationsUI();
+        };
 
-        // ======= FIXED: attach handlers to BOTH label and input, do NOT preventDefault =======
-        optionInputs.forEach(input => {
-            const label = getLabelFor(input);
-
-            const handler = (ev) => {
-                // don't preventDefault here — allow native checked toggling for robustness
-                const attrSlug = input.dataset.attrSlug;
-                const valueSlug = input.dataset.valueSlug ?? input.value;
-
-                // ensure input is checked (useful when label click doesn't toggle underlying input)
-                if ('checked' in input) input.checked = true;
-
-                // update selected options and UI
-                selectedOptions[attrSlug] = valueSlug;
-                updateCombinationsUI();
-            };
-
-            // Listen to clicks on the visible label (if any)
-            if (label) label.addEventListener('click', handler);
-
-            // ALSO listen to the underlying input's change/click so we catch direct input interactions
-            input.addEventListener('change', handler);
-            input.addEventListener('click', handler);
-        });
-        // ======= End FIX =======
-
-        // Initialize selectedOptions from checked inputs, otherwise pick first available per attribute
+        // Initialize selectedOptions from checked inputs or first available
         (function initDefaults() {
             attributeSlugs.forEach(slug => {
-                const checkedInput = optionInputs.find(i => i.dataset.attrSlug === slug && (i.checked || i.getAttribute('checked') !== null));
+                const checkedInput = optionInputs.find(i => 
+                    i.dataset.attrSlug === slug && (i.checked || i.hasAttribute('checked'))
+                );
+                
                 if (checkedInput) {
                     selectedOptions[slug] = checkedInput.dataset.valueSlug ?? checkedInput.value;
                 } else {
@@ -1479,49 +1521,42 @@
             updateCombinationsUI();
         })();
 
-        function updateCombinationsUI() {
-            // price update (same as your code)
-            const exact = findExactMatch(selectedOptions);
-            if (exact && exact.pricing && exact.pricing.length) {
-                const p = exact.pricing[0];
-                if (document.getElementById('priceBox')) document.getElementById('priceBox').innerText = p.selling_price_formatted ?? p.selling_price ?? '';
-                if (document.getElementById('mrpBox')) document.getElementById('mrpBox').innerText = p.mrp_formatted ?? p.mrp ?? '';
-                if (document.getElementById('savingsBox')) document.getElementById('savingsBox').innerText = p.savings_formatted ?? ((+p.mrp || 0) - (+p.selling_price || 0)) ?? '';
-                if (document.getElementById('discountBox')) document.getElementById('discountBox').innerText = p.discount ?? '';
+        // Attach event listeners using event delegation
+        document.addEventListener('click', ev => {
+            if (ev.target.matches('.attr-val-generate, label[for]')) {
+                handleOptionSelection(ev);
             }
+        });
 
-            // enable/disable per-label (same logic)
-            optionInputs.forEach(input => {
-                const attr = input.dataset.attrSlug;
-                const val = input.dataset.valueSlug ?? input.value;
-                const testSelection = {...selectedOptions, [attr]: val};
-                const isValid = productCombinations.some(c => {
-                    const tokens = tokensOf(c.variation_identifier);
-                    return combinationMatchesSelectionTokens(tokens, testSelection);
-                });
-                const label = getLabelFor(input);
-                if (isValid) enableLabel(label); else disableLabel(label);
-
-                // keep `aria-checked` for selected
-                const isSelected = selectedOptions[attr] === val;
-                if (label) label.setAttribute('aria-checked', isSelected ? 'true' : 'false');
-            });
-
-            // auto-fix invalid selected options (same logic)
+        function updateCombinationsUI() {
+            // Update price
+            updatePrice(findExactMatch(selectedOptions));
+            
+            // Update options availability
+            updateOptionsAvailability();
+            
+            // Auto-fix invalid selected options
             let changed = false;
+            
             attributeSlugs.forEach(attr => {
                 const cur = selectedOptions[attr];
                 if (!cur) return;
-                const stillValid = productCombinations.some(c => {
-                    const tokens = tokensOf(c.variation_identifier);
-                    return combinationMatchesSelectionTokens(tokens, selectedOptions);
-                });
+                
+                const stillValid = productCombinations.some(c => 
+                    combinationMatchesSelectionTokens(tokensOf(c.variation_identifier), selectedOptions)
+                );
+                
                 if (!stillValid) {
-                    const candidateInput = optionInputs.filter(i => i.dataset.attrSlug === attr).find(opt => {
-                        const val = opt.dataset.valueSlug ?? opt.value;
-                        const testSel = {...selectedOptions, [attr]: val};
-                        return productCombinations.some(c => combinationMatchesSelectionTokens(tokensOf(c.variation_identifier), testSel));
-                    });
+                    const candidateInput = optionInputs
+                        .filter(i => i.dataset.attrSlug === attr)
+                        .find(opt => {
+                            const val = opt.dataset.valueSlug ?? opt.value;
+                            const testSel = {...selectedOptions, [attr]: val};
+                            return productCombinations.some(c => 
+                                combinationMatchesSelectionTokens(tokensOf(c.variation_identifier), testSel)
+                            );
+                        });
+                        
                     if (candidateInput) {
                         const val = candidateInput.dataset.valueSlug ?? candidateInput.value;
                         selectedOptions[attr] = val;
@@ -1535,23 +1570,8 @@
             });
 
             if (changed) {
-                const exactAfter = findExactMatch(selectedOptions);
-                if (exactAfter && exactAfter.pricing && exactAfter.pricing.length) {
-                    const p = exactAfter.pricing[0];
-                    if (document.getElementById('priceBox')) document.getElementById('priceBox').innerText = p.selling_price_formatted ?? p.selling_price ?? '';
-                    if (document.getElementById('mrpBox')) document.getElementById('mrpBox').innerText = p.mrp_formatted ?? p.mrp ?? '';
-                    if (document.getElementById('savingsBox')) document.getElementById('savingsBox').innerText = p.savings_formatted ?? ((+p.mrp || 0) - (+p.selling_price || 0)) ?? '';
-                    if (document.getElementById('discountBox')) document.getElementById('discountBox').innerText = p.discount ?? '';
-                }
-                // re-run enable/disable
-                optionInputs.forEach(input => {
-                    const attr = input.dataset.attrSlug;
-                    const val = input.dataset.valueSlug ?? input.value;
-                    const testSelection = {...selectedOptions, [attr]: val};
-                    const isValid = productCombinations.some(c => combinationMatchesSelectionTokens(tokensOf(c.variation_identifier), testSelection));
-                    const label = getLabelFor(input);
-                    if (isValid) enableLabel(label); else disableLabel(label);
-                });
+                updatePrice(findExactMatch(selectedOptions));
+                updateOptionsAvailability();
             }
         }
     @endif
