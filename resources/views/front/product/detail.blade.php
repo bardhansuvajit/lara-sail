@@ -219,86 +219,6 @@
                     </div>
                 @endif
 
-
-                {{-- @if ($variation['code'] == 200)
-                    <div class="space-y-2" id="variationTab">
-                        @foreach ($variation['data'] as $attrIndex => $attribute)
-                            <div>
-                                <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">{{ $attribute['title'] }}</h3>
-
-                                <div class="w-full grid grid-cols-4 lg:grid-cols-6 gap-4">
-                                    @foreach ($attribute['values'] as $valueIndex => $value)
-
-                                        <x-front.radio-input-button 
-                                            id="someId{{$attrIndex}}{{$valueIndex}}" 
-                                            name="variation-{{ $attribute['slug'] }}" 
-                                            value="{{ $value['slug'] }}" 
-                                            class="attr-val-generate" 
-                                            data-prod-id="{{ $product->id }}" 
-                                            data-attr-id="{{ $attribute['id'] }}" 
-                                            data-value-id="{{ $value['id'] }}" 
-                                            onclick="sendUrlParam('{{ $attribute['slug'] }}', '{{ $value['slug'] }}')"
-                                        >
-                                            <div class="text-center">
-                                                <div class="flex flex-col items-center gap-2">
-                                                    <img src="https://placehold.co/40x40" class="rounded-full">
-                                                    <div>
-                                                        <div class="{{FD['text']}} font-semibold">{{ $value['title'] }}</div>
-                                                        <div class="{{FD['text-0']}} text-gray-600 dark:text-gray-400">Extra 20% off</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </x-front.radio-input-button>
-
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                    <div class="border-t dark:border-gray-700 my-4 sm:my-4"></div>
-                @endif --}}
-
-
-                {{-- <div class="mt-4">
-                    @php foreach($variant_groups as $groupKey => $options): @endphp
-                    <div class="mb-3">
-                        <label class="text-xs font-semibold block mb-2">@php echo htmlspecialchars(ucfirst(str_replace('_',' ',$groupKey))) @endphp</label>
-
-                        <div data-variant-group="@php echo htmlspecialchars($groupKey) @endphp" class="flex items-center gap-3" role="radiogroup" aria-label="Choose @php echo htmlspecialchars($groupKey) @endphp">
-                        @php foreach($options as $optKey => $optLabel):
-                                $disabled = option_available($groupKey, $optKey, $variations) ? '' : 'disabled';
-                                $isColor = $groupKey === 'colors';
-                        @endphp
-                            <button
-                                type="button"
-                                role="radio"
-                                aria-checked="false"
-                                @php echo $disabled ? 'aria-disabled="true"' : '' @endphp
-                                class="variant-option p-1 {{ FD['rounded'] }} border dark:border-slate-700 flex items-center justify-center text-xs focus:outline-none"
-                                data-variant-value="@php echo htmlspecialchars($optKey) @endphp"
-                                title="@php echo htmlspecialchars($optLabel) @endphp"
-                                @php echo $disabled ? 'tabindex="-1" disabled' : 'tabindex="0"' @endphp
-                                @php if($isColor): @endphp style="background: @php echo $swatch_map[$optKey] ?? '#ccc' @endphp; width:2.4rem; height:2.4rem; border-radius:9999px;" @php endif; @endphp
-                            >
-                            @php if(!$isColor): @endphp<span class="text-xs">@php echo htmlspecialchars($optLabel) @endphp</span>@php endif; @endphp
-                            @php if(!$disabled): /* nothing */ else: @endphp
-                                <span class="sr-only">Unavailable</span>
-                            @php endif; @endphp
-                            </button>
-                        @php endforeach; @endphp
-                        </div>
-                    </div>
-                    @php endforeach; @endphp
-
-                    <!-- Selected summary (full-width) -->
-                    <div class="col-span-1 sm:col-span-2 mt-2">
-                        <label class="text-xs font-semibold block mb-1">Selected</label>
-                        <div class="flex justify-between">
-                            <div id="selectedSummary" class="mt-1 font-semibold text-sm text-slate-900 dark:text-slate-100">— / —</div>
-                        </div>
-                    </div>
-                </div> --}}
-
                 <!-- Quantity & Cart Actions -->
                 @if ( !empty($product->FDPricing) && ($product->statusDetail->allow_order == 1) )
                     <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
@@ -1284,6 +1204,12 @@
     updateVariantUI();
     */
 
+
+
+
+
+
+    /*
     function clamp(v) {
         if (isNaN(v)) return minQty;
         v = Math.round(v);
@@ -1391,7 +1317,139 @@
         },
         setQty: (n) => updateUI(clamp(parseInt(n || minQty, 10)))
     };
+    */
 
+
+
+
+
+
+
+
+
+
+
+    @if ($variation['code'] == 200)
+        document.addEventListener("DOMContentLoaded", () => {
+            const productCombinations = @json($variation['data']['combinations']);
+            const variationAttributes = @json($variation['data']['attributes']);
+            const selectedOptions = {};
+
+            // Helpers
+            function tokensOf(identifier) {
+                return identifier.split('-').map(t => t.trim()).filter(Boolean);
+            }
+
+            function findCombination(options) {
+                console.log('options>>', options);
+
+                return productCombinations.find(c => {
+                    const tokens = tokensOf(c.variation_identifier);
+                    return Object.values(options).every(v => tokens.includes(v));
+                });
+            }
+
+            function autoSelectNext(attrSlug) {
+                console.log('attrSlug>>', attrSlug);
+                
+                const combo = findCombination(selectedOptions);
+                if (!combo) return;
+
+                const tokens = tokensOf(combo.variation_identifier);
+                variationAttributes.forEach(attr => {
+                    if (!selectedOptions[attr.slug]) {
+                        const token = tokens.find(t =>
+                            attr.values.some(v => v.slug === t)
+                        );
+                        if (token) {
+                            const el = document.querySelector(
+                                `.attr-val-generate[data-attr-slug="${attr.slug}"][data-value-slug="${token}"]`
+                            );
+                            if (el) {
+                                el.checked = true;
+                                selectedOptions[attr.slug] = token;
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateUI(combo) {
+                console.log(combo);
+                if (combo && combo.pricing?.length > 0) {
+                    const price = combo.pricing[0].selling_price_formatted;
+                    const priceBox = document.getElementById('priceBox');
+                    if (priceBox) {
+                        priceBox.innerText = price;
+                    }
+                }
+                disableInvalidOptions();
+            }
+
+            function disableInvalidOptions() {
+                variationAttributes.forEach(attr => {
+                    attr.values.forEach(val => {
+                        const el = document.querySelector(
+                            `.attr-val-generate[data-attr-slug="${attr.slug}"][data-value-slug="${val.slug}"]`
+                        );
+                        if (!el) return;
+
+                        // Check if this value can exist with currently selected options
+                        const testOptions = { ...selectedOptions, [attr.slug]: val.slug };
+                        const valid = productCombinations.some(c => {
+                            const tokens = tokensOf(c.variation_identifier);
+                            return Object.values(testOptions).every(v => tokens.includes(v));
+                        });
+
+                        if (valid) {
+                            el.parentElement.classList.remove("opacity-50");
+                        } else {
+                            el.parentElement.classList.add("opacity-50");
+                        }
+                    });
+                });
+            }
+
+            // Attach events
+            document.querySelectorAll('.attr-val-generate').forEach(el => {
+                el.addEventListener('change', function () {
+                    const attrSlug = this.dataset.attrSlug;
+                    const valueSlug = this.dataset.valueSlug;
+
+                    // console.log('attrSlug>>', attrSlug); // Color/ Size
+                    // console.log('valueSlug>>', valueSlug);// Red/ XL
+
+                    selectedOptions[attrSlug] = valueSlug;
+
+                    autoSelectNext(attrSlug);
+
+                    const combo = findCombination(selectedOptions);
+                    updateUI(combo);
+                });
+            });
+
+            // Auto-select first valid combination
+            const firstCombo = productCombinations[0];
+            if (firstCombo) {
+                const tokens = tokensOf(firstCombo.variation_identifier);
+                variationAttributes.forEach(attr => {
+                    const token = tokens.find(t =>
+                        attr.values.some(v => v.slug === t)
+                    );
+                    if (token) {
+                        const el = document.querySelector(
+                            `.attr-val-generate[data-attr-slug="${attr.slug}"][data-value-slug="${token}"]`
+                        );
+                        if (el) {
+                            el.checked = true;
+                            selectedOptions[attr.slug] = token;
+                        }
+                    }
+                });
+                updateUI(firstCombo);
+            }
+        });
+    @endif
 
 
 
@@ -1400,6 +1458,98 @@
 
     // Variation
     @if ($variation['code'] == 200)
+        /*
+        const productCombinations = @json($variation['data']['combinations']);
+        const attributes = @json($variation['data']['attributes']);
+        const selectedOptions = {};
+
+        // Helpers
+        function tokensOf(identifier) {
+            return identifier.split('-').map(t => t.trim()).filter(Boolean);
+        }
+
+        function findCombination(options) {
+            return productCombinations.find(c => {
+                const tokens = tokensOf(c.variation_identifier);
+                return Object.values(options).every(v => tokens.includes(v));
+            });
+        }
+
+        function autoSelectNext(attrSlug) {
+            const combo = findCombination(selectedOptions);
+            if (!combo) return;
+
+            const tokens = tokensOf(combo.variation_identifier);
+            attributes.forEach(attr => {
+                if (!selectedOptions[attr.slug]) {
+                    const token = tokens.find(t =>
+                        attr.values.some(v => v.slug === t)
+                    );
+                    if (token) {
+                        const el = document.querySelector(
+                            `.attr-val-generate[data-attr-slug="${attr.slug}"][data-value-slug="${token}"]`
+                        );
+                        if (el) {
+                            el.checked = true;
+                            selectedOptions[attr.slug] = token;
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateUI(combo) {
+            if (combo && combo.pricing?.length > 0) {
+                const price = combo.pricing[0].selling_price_formatted;
+                document.getElementById('priceBox').innerText = price;
+            }
+        }
+
+        // Attach events
+        document.querySelectorAll('.attr-val-generate').forEach(el => {
+            el.addEventListener('change', function () {
+                const attrSlug = this.dataset.attrSlug;
+                const valueSlug = this.dataset.valueSlug;
+
+                selectedOptions[attrSlug] = valueSlug;
+
+                autoSelectNext(attrSlug);
+
+                const combo = findCombination(selectedOptions);
+                updateUI(combo);
+            });
+        });
+
+        // Auto-select first valid combination
+        const firstCombo = productCombinations[0];
+        if (firstCombo) {
+            const tokens = tokensOf(firstCombo.variation_identifier);
+            attributes.forEach(attr => {
+                const token = tokens.find(t =>
+                    attr.values.some(v => v.slug === t)
+                );
+                if (token) {
+                    const el = document.querySelector(
+                        `.attr-val-generate[data-attr-slug="${attr.slug}"][data-value-slug="${token}"]`
+                    );
+                    if (el) {
+                        el.checked = true;
+                        selectedOptions[attr.slug] = token;
+                    }
+                }
+            });
+            updateUI(firstCombo);
+        }
+        */
+
+
+
+
+
+
+
+
+        /*
         const productCombinations = @json($variation['data']['combinations']);
         const attributeSlugs = @json(array_map(function($a){ return $a['slug']; }, $variation['data']['attributes']));
         const selectedOptions = {};
@@ -1574,6 +1724,7 @@
                 updateOptionsAvailability();
             }
         }
+        */
     @endif
 
 
