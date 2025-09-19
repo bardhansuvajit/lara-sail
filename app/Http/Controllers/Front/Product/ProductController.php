@@ -31,6 +31,7 @@ class ProductController extends Controller
 
             return view('front.product.detail', [
                 'product' => $product,
+                'status' => $product->statusDetail,
                 'activeImagesCount' => count($product->activeImages),
                 'variation' => $variation,
                 'upsells' => [],

@@ -126,13 +126,6 @@ class ProductListingRepository implements ProductListingInterface
             $data->save();
 
             // PRICING
-            // dd($array['pricing']);
-            // $countryData = $this->countryRepository->getById($array['country_code']);
-            // if ($countryData['code'] == 200) {
-            //     $currencyCode = $countryData['data']->currency_code;
-            //     $currencySymbol = $countryData['data']->currency_symbol;
-            // }
-
             if (count($array['pricing']) > 0) {
                 foreach ($array['pricing'] as $key => $pricing) {
                     $pricingData = [
@@ -696,13 +689,13 @@ class ProductListingRepository implements ProductListingInterface
                     }
 
                     // PRICING — do it guarded: don't let pricing errors break import
-                    $countryId = $toIntOrNull(Arr::get($row, 'currency_country_id'));
-                    if ($countryId) {
+                    $countryCode = Arr::get($row, 'country_code');
+                    if ($countryCode) {
                         try {
-                            $countryResp = $this->countryRepository->getById($countryId);
-                            if (isset($countryResp['code']) && $countryResp['code'] == 200) {
-                                $currencyCode = $countryResp['data']->currency_code;
-                                $currencySymbol = $countryResp['data']->currency_symbol;
+                            // $countryResp = $this->countryRepository->getById($countryId);
+                            // if (isset($countryResp['code']) && $countryResp['code'] == 200) {
+                                // $currencyCode = $countryResp['data']->currency_code;
+                                // $currencySymbol = $countryResp['data']->currency_symbol;
 
                                 $selling = $toFloatOrNull(Arr::get($row, 'selling_price', 0)) ?? 0;
                                 $mrp = $toFloatOrNull(Arr::get($row, 'mrp', 0)) ?? 0;
@@ -710,9 +703,10 @@ class ProductListingRepository implements ProductListingInterface
 
                                 $pricingData = [
                                     'product_id' => $product->id,
-                                    'country_id' => $countryId,
-                                    'currency_code' => $currencyCode,
-                                    'currency_symbol' => $currencySymbol,
+                                    'country_code' => $countryCode,
+                                    // 'country_id' => $countryId,
+                                    // 'currency_code' => $currencyCode,
+                                    // 'currency_symbol' => $currencySymbol,
                                     'selling_price' => $selling,
                                     'mrp' => $mrp,
                                     'discount' => ($selling && $mrp) ? discountPercentageCalc($selling, $mrp) : 0,
@@ -728,9 +722,9 @@ class ProductListingRepository implements ProductListingInterface
                                     Log::warning("Pricing store failed for product {$product->id} (row ".($i+1)."): ".$pe->getMessage());
                                     // continue without stopping import
                                 }
-                            } else {
-                                Log::warning("Country not found for row ".($i+1)." country_id: {$countryId}");
-                            }
+                            // } else {
+                            //     Log::warning("Country not found for row ".($i+1)." country_id: {$countryId}");
+                            // }
                         } catch (\Throwable $ce) {
                             Log::warning("Country lookup error for row ".($i+1).": ".$ce->getMessage());
                         }
