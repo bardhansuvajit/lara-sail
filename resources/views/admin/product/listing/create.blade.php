@@ -71,38 +71,24 @@
                         <div x-data="{ open: {{ old('short_description') ? 'true' : 'false' }} }">
                             <a href="javascript: void(0)" class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500" @click="open = !open">
                                 <div class="flex items-center">
-                                    <div class="w-3 h-3">
+                                    <div class="w-3 h-3" x-show="!open">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
                                     </div>
-                                    Add Short description
+
+                                    <span x-text="open ? 'Close Short description Form' : 'Add Short description'"></span>
+
+                                    <div class="w-3 h-3 ml-1" x-show="open">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                                    </div>
                                 </div>
                             </a>
 
-                            <div x-show="open" class="mt-4">
+                            <div x-show="open" class="mt-3">
                                 <x-admin.input-label for="short_description" :value="__('Short Description')" />
                                 <x-admin.textarea id="short_description" class="block" type="text" name="short_description" :value="old('short_description')" placeholder="Enter Short Description" maxlength="1000" />
                                 <x-admin.input-error :messages="$errors->get('short_description')" class="mt-2" />
                             </div>
                         </div>
-                    </div>
-
-                    <div class="grid gap-4 mb-3 grid-cols-1">
-                        <a 
-                            href="javascript: void(0)" 
-                            class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500" 
-                            id="highlightButton" 
-                            x-data="" 
-                            x-on:click.prevent="
-                                $dispatch('open-modal', 'highlight');
-                            " 
-                        >
-                            <div class="flex items-center">
-                                <div class="w-3 h-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
-                                </div>
-                                Add Highlights
-                            </div>
-                        </a>
                     </div>
 
                     <div class="grid gap-2 mb-3 grid-cols-1">
@@ -248,103 +234,6 @@
 
         {{-- <div class="col-span-2"></div> --}}
     </section>
-
-    {{-- HIGHTLIGHT MODAL --}}
-    <x-admin.modal 
-        name="highlight" 
-        maxWidth="2xl" 
-        {{-- show=true  --}}
-    >
-        <div class="p-4">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ __('Product Highlights') }}
-            </h2>
-
-            <p class="mt-1 text-xs text-gray-600 dark:text-gray-400">
-                {!! __('You can add <strong><em>Multiple</em></strong> highlights') !!}
-            </p>
-
-            <div id="highlight-container">
-                <div class="grid gap-4 mt-4 grid-cols-1">
-                    <div>
-                        <x-admin.input-label for="icon" :value="__('Icon')" />
-                        <ul class="flex space-x-2">
-                            @forelse (developerSettings('product_highlight_icons')->icons as $keyIcon => $keyValue)
-                                <li>
-                                    <x-admin.radio-input-button 
-                                        id="icon_{{$keyIcon}}" 
-                                        value="{{ $keyValue }}" 
-                                        title="{!! $keyValue !!}"
-                                        name="icon" 
-                                        :checked="$loop->first" />
-                                </li>
-                            @empty
-                                
-                            @endforelse
-                        </ul>
-                        <x-admin.input-error :messages="$errors->get('icon')" class="mt-2" />
-                    </div>
-                </div>
-
-                <div class="grid gap-4 mt-3 grid-cols-1">
-                    <div>
-                        <x-admin.input-label for="highlight-title" :value="__('Title')" />
-                        <x-admin.text-input id="highlight-title" class="block" type="text" name="highlight_title" :value="old('highlight_title')" placeholder="Enter title" autofocus required />
-                        <x-admin.input-error :messages="$errors->get('highlight_title')" class="mt-2" />
-                    </div>
-                </div>
-
-                <div class="grid gap-4 mt-3 grid-cols-1">
-                    <div>
-                        <x-admin.input-label for="highlight-description" :value="__('Description')" />
-                        <x-admin.textarea id="highlight-description" class="block" type="text" name="highlight_description" :value="old('highlight_description')" placeholder="Enter Description" maxlength="1000" />
-                        <x-admin.input-error :messages="$errors->get('highlight_description')" class="mt-2" />
-                    </div>
-                </div>
-            </div>
-
-            <div id="moreHighlightsContainer"></div>
-
-            <div class="grid gap-4 mt-4 grid-cols-1">
-                <a 
-                    href="javascript: void(0)" 
-                    class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500" 
-                    id="addMoreHighlights" 
-                >
-                    <div class="flex items-center">
-                        <div class="w-3 h-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
-                        </div>
-                        Add More
-                    </div>
-                </a>
-            </div>
-
-            <div class="mt-4 flex space-x-2 justify-between">
-                {{-- <x-admin.button
-                    element="button"
-                    tag="primary"
-                    type="submit"
-                    title="Import">
-                    @slot('icon')
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
-                    @endslot
-                    {{ __('Import') }}
-                </x-admin.button> --}}
-
-                <x-admin.button
-                    element="a"
-                    tag="secondary"
-                    href="javascript: void(0)"
-                    title="Cancel"
-                    class="border"
-                    x-on:click="$dispatch('close')"
-                >
-                    {{ __('Cancel') }}
-                </x-admin.button>
-            </div>
-        </div>
-    </x-admin.modal>
 </x-admin-app-layout>
 
 @vite([

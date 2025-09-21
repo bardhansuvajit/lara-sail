@@ -71,14 +71,19 @@
                         <div x-data="{ open: {{ (old('short_description') || !empty($data->short_description)) ? 'true' : 'false' }} }">
                             <a href="javascript: void(0)" class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500 {{ !empty($data->short_description) ? 'hidden' : '' }}" @click="open = !open">
                                 <div class="flex items-center">
-                                    <div class="w-3 h-3">
+                                    <div class="w-3 h-3" x-show="!open">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
                                     </div>
-                                    Add Short description
+
+                                    <span x-text="open ? 'Close Short description Form' : 'Add Short description'"></span>
+
+                                    <div class="w-3 h-3 ml-1" x-show="open">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                                    </div>
                                 </div>
                             </a>
 
-                            <div x-show="open" class="{{ !empty($data->short_description) ? '' : 'mt-4' }}">
+                            <div x-show="open" class="{{ !empty($data->short_description) ? '' : 'mt-3' }}">
                                 <x-admin.input-label for="short_description" :value="__('Short Description')" />
                                 <x-admin.textarea id="short_description" class="block" type="text" name="short_description" :value="old('short_description') ? old('short_description') : $data->short_description" placeholder="Enter Short Description" maxlength="1000" />
                                 <x-admin.input-error :messages="$errors->get('short_description')" class="mt-2" />
@@ -86,24 +91,11 @@
                         </div>
                     </div>
 
-                    <div class="grid gap-4 mb-3 grid-cols-1">
-                        <a 
-                            href="javascript: void(0)" 
-                            class="text-xs inline-block text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-500" 
-                            id="highlightButton" 
-                            x-data="" 
-                            x-on:click.prevent="
-                                $dispatch('open-modal', 'highlight');
-                            " 
-                        >
-                            <div class="flex items-center">
-                                <div class="w-3 h-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
-                                </div>
-                                Add Highlights
-                            </div>
-                        </a>
-                    </div>
+                    {{-- Highlights --}}
+                    @livewire('product-page-highlight', [
+                        'product_id' => $data->id,
+                        'highlights' => $data->highlights
+                    ])
 
                     <div class="grid gap-2 mb-3 grid-cols-1">
                         <div class="image-uploader-container space-y-4">
@@ -227,7 +219,6 @@
 
                     @livewire('product-variant', [
                         'product_id' => $data->id,
-                        // 'product_pricings' => $data->pricings->pluck('selling_price', 'country')->toArray(),
                         'category_id' => $data->category_id,
                     ])
 

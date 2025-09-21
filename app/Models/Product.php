@@ -100,6 +100,11 @@ class Product extends Model
         return $this->hasMany('App\Models\ProductBadgeCombination', 'product_id', 'id');
     }
 
+    public function highlights()
+    {
+        return $this->hasMany('App\Models\ProductHighlightList', 'product_id', 'id')->orderBy('position', 'asc');
+    }
+
     /*
     public function getFinalPriceAttribute()
     {

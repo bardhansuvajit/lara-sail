@@ -856,5 +856,4 @@
         // Hide any previous error message
         document.getElementById('variationCurrencyLimitMsg').classList.add('hidden');
     }
-
 </script>

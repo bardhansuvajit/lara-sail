@@ -219,14 +219,20 @@
                     </div>
                 @endif
 
+                @if ($status->slug == "limited")
+                    <div class="text-end">
+                        <p class="text-sm font-semibold text-red-600 bg-red-100 px-3 py-1 rounded-md inline-block dark:text-red-400 dark:bg-red-900/30">
+                            Hurry! Only a few items left
+                        </p>
+                    </div>
+                @endif
+
                 <!-- Quantity & Cart Actions -->
                 @if ( !empty($product->FDPricing) && ($status->allow_order == 1) )
                     <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
                         <!-- Qty block -->
                         <div class="flex items-start sm:items-center gap-3">
                             <div>
-                            {{-- <label for="qtyInput" class="text-xs font-semibold block mb-1">Qty</label> --}}
-
                                 <div
                                     id="qtyGroup"
                                     class="inline-flex items-stretch {{ FD['rounded'] }} overflow-hidden border border-gray-300 dark:border-gray-600"
@@ -288,7 +294,6 @@
                                 type="button"
                                 class="flex-1 sm:flex-none px-4 py-2 {{ FD['rounded'] }} bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm inline-flex items-center justify-center disabled:opacity-50 transition-shadow add-to-cart"
                                 aria-label="Add to cart"
-                                {{-- data-action="add-to-cart" --}}
                                 data-prod-id="{{$product->id}}" 
                                 data-purchase-type="cart"
                                 data-variation-data="{{ json_encode($variation['data']) }}"
@@ -314,21 +319,36 @@
                         </div>
                     </div>
                 @else
-                    {{-- <div class="flex flex-col">
-                        <h5 class="text-2xl text-amber-600">{{ $status->title_frontend }}</h5>
-                        <p class="text-sm text-amber-700">{{ $status->description_frontend }}</p>
-                    </div> --}}
+                    @php
+                        $bgColor = $status->bg_tailwind_classes;
+                        $mainColor = $status->title_tailwind_classes;
+                        $descColor = $status->description_tailwind_classes;
+                        $emailNotify = $status->notify_by_email;
+                        if ($emailNotify) {
+                            $sectionClasses = "items-center p-2 $bgColor";
+                        } else {
+                            $sectionClasses = "items-start";
+                        }
+                    @endphp
 
-                    <div class="flex flex-col items-start gap-1">
-                        <h5 class="text-2xl font-semibold text-amber-700 flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4a2 2 0 00-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
+                    <div class="flex flex-col gap-1 {{ $sectionClasses }}">
+                        <h5 class="text-2xl font-semibold flex items-center gap-2 {{ $mainColor }}">
+                            <div class="w-6 h-6 {{ $mainColor }}">{!! $status->icon !!}</div>
                             {{ $status->title_frontend }}
                         </h5>
-                        <p class="text-sm text-amber-800">
+
+                        <p class="text-sm {{ $descColor }}">
                             {{ $status->description_frontend }}
                         </p>
+
+                        @if ($emailNotify)
+                            <div class="my-4">
+                                @livewire('product-interest-form', [
+                                    'product_id' => $product->id,
+                                    'product_variation_id' => null,
+                                ])
+                            </div>
+                        @endif
                     </div>
                 @endif
 

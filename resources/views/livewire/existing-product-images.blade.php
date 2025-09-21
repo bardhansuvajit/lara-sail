@@ -1,6 +1,6 @@
 <div>
     @if (count($images) > 0)
-        <div class="border border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-700 p-2 rounded-lg">
+        <div class="border border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-700 p-2 rounded">
             <div class="border-b border-gray-300 dark:border-gray-500 pb-2">
                 <h5 class="text-gray-700 dark:text-gray-300 font-medium text-xs">Uploaded Images</h5>
             </div>
