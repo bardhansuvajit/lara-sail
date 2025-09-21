@@ -135,72 +135,6 @@ return new class extends Migration
             'icons_classes' => 'w-3 h-3 text-green-600 dark:text-green-600'
         ]);
 
-        // $product_status = json_encode([
-        //     [
-        //         'title' => 'Draft',
-        //         'slug' => 'draft',
-        //         'allow_preorder' => 0,
-        //         'allow_order' => 0,
-        //         'description' => '',
-        //         'title_frontend' => '',
-        //         'decription_frontend' => '',
-        //     ],
-        //     [
-        //         'title' => 'Active',
-        //         'slug' => 'active',
-        //         'allow_preorder' => 0,
-        //         'allow_order' => 1,
-        //         'description' => '',
-        //         'title_frontend' => '',
-        //         'decription_frontend' => '',
-        //     ],
-        //     [
-        //         'title' => 'Unavailable',
-        //         'slug' => 'unavailable',
-        //         'allow_preorder' => 0,
-        //         'allow_order' => 0,
-        //         'description' => '',
-        //         'title_frontend' => '',
-        //         'decription_frontend' => '',
-        //     ],
-        //     [
-        //         'title' => 'Archived',
-        //         'slug' => 'archived',
-        //         'allow_preorder' => 0,
-        //         'allow_order' => 0,
-        //         'description' => '',
-        //         'title_frontend' => '',
-        //         'decription_frontend' => '',
-        //     ],
-        //     [
-        //         'title' => 'Pending',
-        //         'slug' => 'pending',
-        //         'allow_preorder' => 0,
-        //         'allow_order' => 0,
-        //         'description' => '',
-        //         'title_frontend' => '',
-        //         'decription_frontend' => '',
-        //     ],
-        //     [
-        //         'title' => 'Limited',
-        //         'slug' => 'limited',
-        //         'allow_preorder' => 0,
-        //         'allow_order' => 1,
-        //         'description' => '',
-        //         'title_frontend' => '',
-        //         'decription_frontend' => '',
-        //     ],
-        //     [
-        //         'title' => 'Coming Soon',
-        //         'slug' => 'coming-soon',
-        //         'allow_preorder' => 1,
-        //         'allow_order' => 0,
-        //         'description' => '',
-        //         'title_frontend' => '',
-        //         'decription_frontend' => '',
-        //     ]
-        // ]);
-
         $order_status = json_encode([
             [
                 'title' => 'Pending',
@@ -289,12 +223,6 @@ return new class extends Migration
                 'value' => $product_highlight_icons,
                 'description' => '',
             ],
-            // [
-            //     'category' => 'product',
-            //     'key' => 'product_status',
-            //     'value' => $product_status,
-            //     'description' => '',
-            // ],
             [
                 'category' => 'order',
                 'key' => 'order_status',
