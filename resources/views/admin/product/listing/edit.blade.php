@@ -90,7 +90,7 @@
                             </div>
                         </div>
                     </div>
- 
+
                     {{-- Highlights --}}
                     @livewire('product-page-highlight', [
                         'product_id' => $data->id,
