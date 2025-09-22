@@ -250,7 +250,8 @@ class ProductListingController
         // dd($productData);
 
         $resp = $this->productListingRepository->store($productData);
-        return redirect()->route('admin.product.listing.index')->with($resp['status'], $resp['message']);
+        $productId = $resp['data']->id;
+        return redirect()->route('admin.product.listing.edit', $productId)->with($resp['status'], $resp['message']);
     }
 
     public function edit(Int $id): View|RedirectResponse

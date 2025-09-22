@@ -95,6 +95,12 @@ class Product extends Model
         return $this->hasMany('App\Models\ProductReview', 'product_id', 'id');
     }
 
+    public function activeReviews()
+    {
+        return $this->hasMany('App\Models\ProductReview', 'product_id', 'id')
+            ->where('status', 1);
+    }
+
     public function badges()
     {
         return $this->hasMany('App\Models\ProductBadgeCombination', 'product_id', 'id');
@@ -103,6 +109,25 @@ class Product extends Model
     public function highlights()
     {
         return $this->hasMany('App\Models\ProductHighlightList', 'product_id', 'id')->orderBy('position', 'asc');
+    }
+
+    public function activeHighlights()
+    {
+        return $this->hasMany('App\Models\ProductHighlightList', 'product_id', 'id')
+            ->where('status', 1)
+            ->orderBy('position', 'asc');
+    }
+
+    public function Faqs()
+    {
+        return $this->hasMany('App\Models\ProductFaq', 'product_id', 'id')->orderBy('position', 'asc');
+    }
+
+    public function activeFaqs()
+    {
+        return $this->hasMany('App\Models\ProductFaq', 'product_id', 'id')
+            ->where('status', 1)
+            ->orderBy('position', 'asc');
     }
 
     /*

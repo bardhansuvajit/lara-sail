@@ -15,6 +15,8 @@ const marginEl = document.getElementById('margin');
 */
 const imagesPositionToggleButton = document.getElementById('imagesPositionToggleButton');
 const variantsPositionToggleButton = document.getElementById('variantsPositionToggleButton');
+const highlightPositionToggleButton = document.getElementById('highlightPositionToggleButton');
+const faqPositionToggleButton = document.getElementById('faqPositionToggleButton');
 const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const maxFileSize = 2000; // in kb
 const positionButton = document.getElementById('positionButton');
@@ -415,6 +417,30 @@ if (imagesPositionToggleButton) {
 if (variantsPositionToggleButton) {
     variantsPositionToggleButton.addEventListener('click', function () {
         document.querySelectorAll('.position-selector').forEach(el => {
+            if (!el.classList.contains('hidden')) {
+                el.classList.add('hidden');
+            } else {
+                el.classList.remove('hidden');
+            }
+        })
+    });
+}
+
+if (highlightPositionToggleButton) {
+    highlightPositionToggleButton.addEventListener('click', function () {
+        document.querySelectorAll('.highlight-position-selector').forEach(el => {
+            if (!el.classList.contains('hidden')) {
+                el.classList.add('hidden');
+            } else {
+                el.classList.remove('hidden');
+            }
+        })
+    });
+}
+
+if (faqPositionToggleButton) {
+    faqPositionToggleButton.addEventListener('click', function () {
+        document.querySelectorAll('.faq-position-selector').forEach(el => {
             if (!el.classList.contains('hidden')) {
                 el.classList.add('hidden');
             } else {

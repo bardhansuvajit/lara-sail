@@ -5,6 +5,8 @@ namespace App\Livewire;
 use Livewire\Component;
 use Illuminate\Support\Collection;
 use App\Models\ProductHighlightList;
+use App\Interfaces\ProductHighlightInterface;
+use Livewire\Attributes\On;
 
 class ProductPageHighlight extends Component
 {
@@ -15,6 +17,7 @@ class ProductPageHighlight extends Component
     public string $icon = '';
     public string $highlight_title = '';
     public string $highlight_description = '';
+    private ProductHighlightInterface $productHighlightRepository;
 
     protected $rules = [
         'icon' => 'required|string',
@@ -22,9 +25,16 @@ class ProductPageHighlight extends Component
         'highlight_description' => 'nullable|string|max:10000',
     ];
 
-    public function mount()
+    public function mount(ProductHighlightInterface $productHighlightRepository)
     {
-        $this->highlights = ProductHighlightList::where('product_id', $this->product_id)->get();
+        $this->loadHighlights();
+    }
+
+    public function loadHighlights()
+    {
+        $this->highlights = ProductHighlightList::where('product_id', $this->product_id)
+                            ->orderBy('position', 'asc')
+                            ->get();
     }
 
     public function createHighlight()
@@ -70,6 +80,27 @@ class ProductPageHighlight extends Component
             'title' => 'Success!',
             'message' => 'Highlight deleted successfully',
         ]);
+    }
+
+    #[On('updateProductHighlightsOrder')]
+    public function updateHighlightOrder(array $ids)
+    {
+        $productHighlightRepository = app(ProductHighlightInterface::class);
+        $positionResp = $productHighlightRepository->position($ids);
+
+        if ($positionResp['code'] == 200) {
+            $this->dispatch('notificationSend', [
+                'variant' => 'success',
+                'title' => 'Position updated',
+            ]);
+
+            $this->loadHighlights();
+        } else {
+            $this->dispatch('notificationSend', [
+                'variant' => 'warning',
+                'title' => $positionResp['message'],
+            ]);
+        }
     }
 
     public function render()

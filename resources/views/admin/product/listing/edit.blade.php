@@ -94,7 +94,7 @@
                     {{-- Highlights --}}
                     @livewire('product-page-highlight', [
                         'product_id' => $data->id,
-                        'highlights' => $data->highlights
+                        // 'highlights' => $data->highlights
                     ])
 
                     <div class="grid gap-2 mb-3 grid-cols-1">
@@ -213,6 +213,7 @@
                         </div>
                     </div>
 
+                    {{-- Variants --}}
                     <div class="border-t border-gray-200 dark:border-gray-700"></div>
 
                     <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Variants</h4>
@@ -220,6 +221,15 @@
                     @livewire('product-variant', [
                         'product_id' => $data->id,
                         'category_id' => $data->category_id,
+                    ])
+
+                    {{-- FAQ --}}
+                    <div class="border-t border-gray-200 dark:border-gray-700"></div>
+
+                    <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">FAQ</h4>
+
+                    @livewire('product-page-faq', [
+                        'product_id' => $data->id,
                     ])
 
                     <div class="border-t border-gray-200 dark:border-gray-700"></div>
@@ -258,7 +268,7 @@
         </div>
 
         <div class="col-span-2">
-            <div class="w-full mt-2">
+            <div class="w-full mt-2 space-y-2">
                 <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Status</h4>
 
                 <div>
@@ -276,6 +286,19 @@
                         @endslot
                     </x-admin.input-select>
                     <x-admin.input-error :messages="$errors->get('status')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-admin.button
+                        element="a"
+                        tag="secondary" 
+                        target="_blank"
+                        :href="route('front.product.detail', $data->slug)">
+                        @slot('icon')
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m640-280-57-56 184-184-184-184 57-56 240 240-240 240ZM80-200v-160q0-83 58.5-141.5T280-560h247L383-704l57-56 240 240-240 240-57-56 144-144H280q-50 0-85 35t-35 85v160H80Z"/></svg>
+                        @endslot
+                        {{ __('See Product in Website') }}
+                    </x-admin.button>
                 </div>
             </div>
         </div>

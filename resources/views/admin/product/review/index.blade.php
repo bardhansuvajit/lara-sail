@@ -241,7 +241,7 @@
                         <th scope="col" class="px-2 py-1">Product</th>
                         <th scope="col" class="px-2 py-1">User</th>
                         <th scope="col" class="px-2 py-1">Rating</th>
-                        <th scope="col" class="px-2 py-1 w-12">Review</th>
+                        <th scope="col" class="px-2 py-1">Review</th>
                         <th scope="col" class="px-2 py-1">Datetime</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
@@ -278,7 +278,7 @@
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 {!! adminRatingHtml($item->rating) !!}
                             </td>
-                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white w-12">
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 <div>
                                     @if ($item->title)
                                         <p class="text-xs">{{ $item->title }}</p>

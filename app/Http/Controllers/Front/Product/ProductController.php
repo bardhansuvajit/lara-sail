@@ -35,6 +35,9 @@ class ProductController extends Controller
                 'activeImagesCount' => count($product->activeImages),
                 'variation' => $variation,
                 'upsells' => [],
+                'highlights' => $product->activeHighlights,
+                'faqs' => $product->activeFaqs,
+                'reviews' => $product->activeReviews,
             ]);
         } else {
             return redirect()->route('front.error.404');

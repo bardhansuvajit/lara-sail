@@ -583,150 +583,261 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div class="lg:col-span-8 space-y-6">
                         <div class="space-y-4">
-                            <div id="long-description">
-                                <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                                    <div>
-                                        <h2 class="text-sm font-semibold mb-3">Product description</h2>
-                                    </div>
-                                </header>
 
-                                <div class="text-sm space-y-4">
-                                    <p class="text-sm text-gray-700 dark:text-gray-300">Short compelling product pitch. Use benefit-first language focusing on the customer's pain points and how the product solves them. Keep it scannable; expand below.</p>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-                                        <figure class="{{ FD['rounded'] }} overflow-hidden border border-gray-100 dark:border-gray-800">
-                                        <img src="https://dummyimage.com/800x600/eeeeee/888888&text=Feature+image+1" alt="Feature 1" class="w-full h-56 object-cover">
-                                        </figure>
-
+                            <!-- Highlight -->
+                            @if ($highlights && count($highlights) > 0)
+                                <div id="highlights">
+                                    <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                                         <div>
-                                        <h4 class="text-lg font-semibold">What makes it different</h4>
-                                        <ul class="mt-3 space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                                            <li class="flex items-start gap-2"><svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>Precision-built</strong> components for long-lasting performance.</span></li>
-                                            <li class="flex items-start gap-2"><svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none"><path d="M12 8v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>Fast setup</strong> — ready to use out of the box with guided instructions.</span></li>
-                                            <li class="flex items-start gap-2"><svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none"><path d="M3 12h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>Eco-friendly</strong> materials and low power consumption.</span></li>
-                                        </ul>
-
-                                        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">Tip: Use bullet highlights like these to improve scan-ability. Convert each bullet into a short microcopy for mobile.</p>
+                                            <h2 class="text-sm font-semibold mb-3">Highlights</h2>
                                         </div>
-                                    </div>
+                                    </header>
 
-                                    <!-- Long-form folded description with 'Read more' -->
-                                    <div class="prose prose-sm dark:prose-invert bg-gray-50 dark:bg-gray-800 p-4 {{ FD['rounded'] }} border border-gray-100 dark:border-gray-800">
-                                        <p class="text-sm text-gray-700 dark:text-gray-300">Longer, SEO-friendly product description that expands on technical details, benefits, and use cases. This should be crafted with keywords and structured headings. Use short paragraphs and subheads for readability.</p>
-
-                                        <div id="longDescription" class="mt-3 text-sm text-gray-700 dark:text-gray-300 max-h-24 overflow-hidden transition-all">
-                                            <p>Detailed paragraph 1 — describe how this product solves a user's top problem. Include measurable outcomes (e.g., "reduces setup time by 40%"), and concrete examples.</p>
-                                            <p>Detailed paragraph 2 — talk about materials, construction, certifications, and compatibility with accessories.</p>
-                                            <p>Detailed paragraph 3 — include warranty and service details, support channels, and any exclusives.</p>
-                                        </div>
-
-                                        <button id="toggleLongDesc" class="mt-3 text-sm font-medium underline text-blue-600 dark:text-blue-400" aria-expanded="false">Read more</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr class="dark:border-gray-600">
-
-                            <div id="faq">
-                                <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                                     <div>
-                                        <h2 class="text-sm font-semibold mb-3">Frequently asked questions</h2>
-                                    </div>
-                                </header>
-                                <div class="space-y-4">
-                                    <div class="flex items-center gap-2">
-                                        <input id="faqSearch" type="search" placeholder="Search FAQs" class="w-full px-3 py-2 border rounded text-sm" aria-label="Search FAQs" />
-                                    </div>
+                                        @foreach($highlights as $highlight)
+                                            <div 
+                                                class="flex items-center justify-between p-1 dark:hover:bg-gray-800/40"
+                                            >
 
-                                    <div id="faqsWrapper" class="mt-2 space-y-2">
-                                    {{-- @foreach($faqs as $f)
-                                        <div class="faq-item border dark:border-slate-700 p-3 {{ FD['rounded'] }}">
-                                            <button class="faq-q w-full text-left flex items-center justify-between" aria-expanded="false">
-                                                <span class="font-medium text-sm">{{ $f['q'] }}</span>
-                                                <svg class="w-4 h-4 transform transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
-                                            </button>
-                                            <div class="faq-a mt-2 hidden text-sm text-slate-600 dark:text-slate-400">{{ $f['a'] }}</div>
-                                        </div>
-                                    @endforeach --}}
+                                                <div class="flex items-center gap-2">
+                                                    <span class="w-5 h-5">{!! $highlight->icon !!}</span>
+
+                                                    <div>
+                                                        <p class="font-medium text-gray-800 dark:text-gray-300 text-xs">{{ $highlight->title }}</p>
+                                                        <p class="text-xs text-gray-600 dark:text-gray-400">{{ $highlight->description }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
-                            </div>
 
-                            <hr class="dark:border-gray-600">
+                                <hr class="dark:border-gray-600">
+                            @endif
 
-                            {{-- <div id="reviews">
+                            <!-- Long Description -->
+                            @if ($product->long_description)
+                                <div id="long-description">
+                                    <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                                        <div>
+                                            <h2 class="text-sm font-semibold mb-3">Description</h2>
+                                        </div>
+                                    </header>
+
+                                    <div class="text-xs leading-tight">
+                                        {!! nl2br($product->long_description) !!}
+                                    </div>
+                                </div>
+
+                                <hr class="dark:border-gray-600">
+                            @endif
+
+                            <!-- Faq -->
+                            @if ($faqs && count($faqs) > 0)
+                                <div id="faqs" class="scroll-mt-20">
+                                    <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
+                                        <div>
+                                            <h2 class="text-sm font-semibold">Frequently asked questions</h2>
+                                            <p class="text-xs text-gray-600 dark:text-gray-400">{{ count($faqs) }} questions answered</p>
+                                        </div>
+
+                                        {{-- <div class="flex items-center gap-3">
+                                            <div class="relative">
+                                                <div class="absolute z-1 inset-y-0 flex items-center pointer-events-none start-0 ps-3">
+                                                    <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"></path></svg>
+                                                </div>
+
+                                                <input type="search" id="default-search" value="{{ request()->input('q') }}" class="block w-full px-1 py-2 {{FD['text']}} text-gray-900 border border-gray-100 {{FD['rounded']}} ps-8 bg-gray-100 focus:ring-primary-500 focus:border-primary-500  dark:bg-gray-700 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search FAQs..." autocomplete="off">
+                                            </div>
+
+                                            <!-- Sort Dropdown -->
+                                            <div class="relative">
+                                                <select id="faq-sort" class="appearance-none pl-3 pr-8 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer">
+                                                    <option value="most-helpful">Most Helpful</option>
+                                                    <option value="newest">Newest First</option>
+                                                    <option value="oldest">Oldest First</option>
+                                                    <option value="most-viewed">Most Viewed</option>
+                                                </select>
+                                                <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                                    <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div> --}}
+                                    </header>
+
+                                    <!-- FAQ List -->
+                                    <div class="space-y-3" id="faq-list">
+                                        @foreach($faqs as $index => $faq)
+                                            <div class="@if (!$loop->last) border-b border-gray-200/50 dark:border-gray-700/50 @endif">
+                                                <p class="font-medium text-gray-900 dark:text-white text-sm pr-4">
+                                                    {{ $faq->question }}
+                                                </p>
+
+                                                <!-- Helpfulness Badge -->
+                                                {{-- <div class="flex items-center gap-3">
+                                                    @if($faq->helpful_yes + $faq->helpful_no > 0)
+                                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium 
+                                                            {{ $faq->helpful_score >= 70 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 
+                                                            ($faq->helpful_score >= 40 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : 
+                                                            'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200') }}">
+                                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                                            </svg>
+                                                            {{ $faq->helpful_score }}%
+                                                        </span>
+                                                    @endif
+                                                </div> --}}
+
+                                                <div id="faq-answer-{{ $index }}" class="faq-answer overflow-hidden transition-all duration-300">
+                                                    <div class="">
+                                                        <p class="text-gray-600 dark:text-gray-300 text-xs leading-tight mb-4">
+                                                            {{ $faq->answer }}
+                                                        </p>
+
+                                                        <!-- FAQ Meta & Actions -->
+                                                        {{-- <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
+                                                            <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                                                                <span class="flex items-center gap-1">
+                                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                                    </svg>
+                                                                    {{ $faq->view_count }} views
+                                                                </span>
+                                                                <span>{{ $faq->created_at->diffForHumans() }}</span>
+                                                            </div>
+                                                            
+                                                            <div class="flex items-center gap-2">
+                                                                <span class="text-xs text-gray-500 dark:text-gray-400 mr-2">
+                                                                    Was this helpful?
+                                                                </span>
+                                                                <button 
+                                                                    class="helpful-btn helpful-yes inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md transition-colors duration-200"
+                                                                    data-faq-id="{{ $faq->id }}"
+                                                                    data-vote="yes"
+                                                                >
+                                                                    <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905a3.61 3.61 0 01-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
+                                                                    </svg>
+                                                                    Yes ({{ $faq->helpful_yes }})
+                                                                </button>
+                                                                <button 
+                                                                    class="helpful-btn helpful-no inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md transition-colors duration-200"
+                                                                    data-faq-id="{{ $faq->id }}"
+                                                                    data-vote="no"
+                                                                >
+                                                                    <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018c.163 0 .326.02.485.06L17 4m-7 10v5a2 2 0 002 2h.095c.5 0 .905-.405.905-.905a3.61 3.61 0 01.608-2.006L17 13V4m-7 10h2m-7 0H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
+                                                                    </svg>
+                                                                    No ({{ $faq->helpful_no }})
+                                                                </button>
+                                                            </div>
+                                                        </div> --}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                <hr class="dark:border-gray-600">
+                            @endif
+
+                            <!-- Reviews -->
+                            <div id="reviews">
                                 <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                                    <div>
-                                    <h2 class="text-lg font-semibold">Customer reviews</h2>
-                                    <div class="text-xs text-slate-500 mt-1">Verified buyers • Most recent first</div>
-                                    </div>
+                                    <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                                        <div>
+                                            <h2 class="text-sm font-semibold">Customer reviews</h2>
+                                            <p class="text-xs text-gray-600 dark:text-gray-400">
+                                                {{ count($reviews).' '.(count($reviews) == 1 ? 'review' : 'reviews') }} found
+                                            </p>
+                                        </div>
+                                    </header>
 
                                     <div class="flex items-center gap-2">
-                                    <label for="sortReviews" class="text-xs">Sort</label>
-                                    <select id="sortReviews" class="px-2 py-1 border rounded text-sm">
-                                        <option value="recent">Most recent</option>
-                                        <option value="rating_desc">Top rated</option>
-                                        <option value="rating_asc">Lowest rated</option>
-                                    </select>
+                                        <label for="sortReviews" class="text-xs">Sort</label>
+                                        <select id="sortReviews" class="px-2 py-1 border rounded text-sm">
+                                            <option value="recent">Most recent</option>
+                                            <option value="rating_desc">Top rated</option>
+                                            <option value="rating_asc">Lowest rated</option>
+                                        </select>
                                     </div>
                                 </div>
 
-                                <hr class="my-3 dark:border-slate-700"/>
+                                <hr class="my-3 border-gray-200/50 dark:border-gray-700/50"/>
 
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div class="md:col-span-1 bg-amber-50 dark:bg-amber-900 p-4 {{ FD['rounded'] }}">
-                                    <div class="text-center">
-                                        <div class="text-3xl font-bold">@php
-                                        $avg = 0; $total = count($reviews); if($total){ foreach($reviews as $r) $avg += $r['rating']; $avg = round($avg/$total,1); }
-                                        echo $total ? $avg : '0.0';
-                                        @endphp</div>
-                                        <div class="text-xs text-slate-600 mt-1">based on @php echo $total @endphp reviews</div>
-                                    </div>
-
-                                    @php
-                                        $ratingBuckets = [5=>0,4=>0,3=>0,2=>0,1=>0];
-                                        foreach($reviews as $r) $ratingBuckets[$r['rating']]++;
-                                    @endphp
-
-                                    <div class="mt-3 space-y-2 text-sm">
-                                        @foreach($ratingBuckets as $star => $count)
-                                        <div class="flex items-center gap-2">
-                                            <div class="w-10 text-xs">@php echo $star @endphp★</div>
-                                            <div class="flex-1 bg-slate-200 dark:bg-slate-700 h-2 rounded overflow-hidden">
-                                            <div style="width:@php echo $total? intval(($count/$total)*100):0 @endphp%" class="h-2 bg-amber-600"></div>
-                                            </div>
-                                            <div class="w-8 text-xs text-right">@php echo $count @endphp</div>
+                                        <div class="text-center">
+                                            <div class="text-3xl font-bold">@php
+                                            $avg = 0; $total = count($reviews); if($total){ foreach($reviews as $r) $avg += $r['rating']; $avg = round($avg/$total,1); }
+                                            echo $total ? $avg : '0.0';
+                                            @endphp</div>
+                                            <div class="text-xs text-slate-600 mt-1">based on @php echo $total @endphp reviews</div>
                                         </div>
-                                        @endforeach
-                                    </div>
 
-                                    <button id="openReviewModal2" class="mt-4 w-full px-3 py-2 {{ FD['rounded'] }} bg-amber-600 text-white text-sm">Write a review</button>
+                                        @php
+                                            $ratingBuckets = [5=>0,4=>0,3=>0,2=>0,1=>0];
+                                            foreach($reviews as $r) $ratingBuckets[$r['rating']]++;
+                                        @endphp
+
+                                        <div class="mt-3 space-y-2 text-sm">
+                                            @foreach($ratingBuckets as $star => $count)
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-10 text-xs">@php echo $star @endphp★</div>
+                                                <div class="flex-1 bg-slate-200 dark:bg-slate-700 h-2 rounded overflow-hidden">
+                                                <div style="width:@php echo $total? intval(($count/$total)*100):0 @endphp%" class="h-2 bg-amber-600"></div>
+                                                </div>
+                                                <div class="w-8 text-xs text-right">@php echo $count @endphp</div>
+                                            </div>
+                                            @endforeach
+                                        </div>
+
+                                        <a href="" class="block mt-4 w-full px-3 py-2 {{ FD['rounded'] }} bg-amber-600 text-white text-sm">Write a review</a>
                                     </div>
 
                                     <div class="md:col-span-2" id="reviewsList">
-                                    @foreach($reviews as $r)
-                                        <article class="p-3 border dark:border-slate-700 {{ FD['rounded'] }} mb-3">
-                                        <header class="flex items-start justify-between gap-3">
-                                            <div>
-                                            <div class="font-semibold">{{ $r['name'] }} <span class="text-xs text-slate-400">· {{ $r['date'] }}</span></div>
-                                            <div class="flex items-center gap-1 mt-1">@for($i=0;$i<5;$i++) {!! $i < $r['rating'] ? '<svg class="w-3 h-3 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' : '<svg class="w-3 h-3 text-slate-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' !!} @endfor</div>
-                                            </div>
-                                            <div class="text-xs text-slate-500">Verified purchase</div>
-                                        </header>
-                                        <div class="mt-2">
-                                            <div class="font-semibold text-sm">{{ $r['title'] }}</div>
-                                            <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">{{ $r['body'] }}</p>
-                                        </div>
-                                        </article>
-                                    @endforeach
+                                        @foreach($reviews as $r)
+                                            <article class="p-3 border dark:border-slate-700 {{ FD['rounded'] }} mb-3">
+                                                <header class="flex items-start justify-between gap-3 mb-3">
+                                                    <div>
+                                                        <div class="flex gap-2">
+                                                            <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                                                                <span class="font-medium text-gray-600 dark:text-gray-300">
+                                                                    {{ substr($r->user->first_name, 0, 1) }}{{ substr($r->user->last_name, 0, 1) }}
+                                                                </span>
+                                                            </div>
 
-                                    <!-- Load more (demo) -->
-                                    <div class="text-center mt-4">
-                                        <button id="loadMoreReviews" class="px-4 py-2 {{ FD['rounded'] }} border text-sm">Load more reviews</button>
-                                    </div>
+                                                            <div>
+                                                                <p class="text-sm">{{ $r->user->first_name }} {{ $r->user->last_name }}</p>
+                                                                <div class="flex items-center gap-1 mt-1">@for($i=0;$i<5;$i++) {!! $i < $r->rating ? '<svg class="w-3 h-3 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' : '<svg class="w-3 h-3 text-slate-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' !!} @endfor</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="text-end">
+                                                        <p class="{{ FD['text-0'] }} text-slate-500">Verified purchase</p>
+                                                        <p class="{{ FD['text-0'] }} text-slate-500">{{ $r->created_at }}</p>
+                                                    </div>
+                                                </header>
+                                                <div class="mt-2">
+                                                    <div class="font-semibold text-xs">{{ $r->title }}</div>
+                                                    <p class="mt-1 text-xs text-slate-700 dark:text-slate-300 description-wrapper">{{ $r->review }}</p>
+                                                </div>
+                                            </article>
+                                        @endforeach
+
+                                        <!-- Load more (demo) -->
+                                        <div class="text-center mt-4">
+                                            <button id="loadMoreReviews" class="px-4 py-2 {{ FD['rounded'] }} border text-sm">Load more reviews</button>
+                                        </div>
                                     </div>
                                 </div>
 
-                            </div> --}}
+                            </div>
                         </div>
                     </div>
 
