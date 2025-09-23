@@ -765,34 +765,35 @@
                                         </div>
                                     </div> --}}
 
+                                    @php
+                                        $total = $product->review_count; 
+                                    @endphp
+
                                     <x-front.product-detail-block-header
                                         title="Customer reviews"
-                                        subtitle="{{ count($reviews).' '.(count($reviews) == 1 ? 'review' : 'reviews') }} found"
+                                        subtitle="{{ formatIndianMoney($total).' '.($total == 1 ? 'review' : 'reviews') }} found"
                                     />
 
                                     {{-- <hr class="my-3 border-gray-200/50 dark:border-gray-700/50"/> --}}
 
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         {{-- Review highlight section with fixed height --}}
-                                        <div class="md:col-span-1 bg-primary-50 dark:bg-gray-900/50 p-4 {{ FD['rounded'] }} h-fit sticky top-4">
+                                        <div class="md:col-span-1 bg-primary-50 dark:bg-gray-900/50 p-4 {{ FD['rounded'] }} h-fit">
                                             <div class="text-center">
                                                 <div class="flex justify-center">
-                                                    @php
-                                                        $avg = 0; $total = count($reviews); if($total){ foreach($reviews as $r) $avg += $r['rating']; $avg = round($avg/$total,1); }
-                                                    @endphp
-
-                                                    <p class="text-3xl font-bold text-gray-800 dark:text-white">{{ $total ? $avg : '0.0' }}</p>
+                                                    <p class="text-3xl font-bold text-gray-800 dark:text-white">{{ $product->average_rating }}</p>
 
                                                     <div class="w-8 h-8 text-amber-500 dark:text-amber-400">
                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m305-704 112-145q12-16 28.5-23.5T480-880q18 0 34.5 7.5T543-849l112 145 170 57q26 8 41 29.5t15 47.5q0 12-3.5 24T866-523L756-367l4 164q1 35-23 59t-56 24q-2 0-22-3l-179-50-179 50q-5 2-11 2.5t-11 .5q-32 0-56-24t-23-59l4-165L95-523q-8-11-11.5-23T80-570q0-25 14.5-46.5T135-647l170-57Z"/></svg>
                                                     </div>
                                                 </div>
-                                                <div class="text-xs text-gray-600 dark:text-gray-300 mt-1">based on {{ $total }} reviews</div>
+
+                                                <div class="text-xs text-gray-600 dark:text-gray-500 mt-1">Based on {{ formatIndianMoney($product->review_count) }} reviews</div>
                                             </div>
 
                                             @php
                                                 $ratingBuckets = [5=>0,4=>0,3=>0,2=>0,1=>0];
-                                                foreach($reviews as $r) $ratingBuckets[$r['rating']]++;
+                                                foreach($allReviews as $r) $ratingBuckets[$r['rating']]++;
                                             @endphp
 
                                             <div class="mt-3 mb-5 space-y-2 {{ FD['text-1'] }}">
@@ -807,7 +808,9 @@
                                                         <div class="flex-1 bg-gray-300 dark:bg-gray-700 h-2 rounded overflow-hidden">
                                                             <div style="width:@php echo $total? intval(($count/$total)*100):0 @endphp%" class="h-2 bg-amber-600 dark:bg-amber-500"></div>
                                                         </div>
-                                                        <div class="w-8 text-xs text-right text-gray-800 dark:text-white">@php echo $count @endphp</div>
+                                                        <div class="w-8 text-xs text-right text-gray-800 dark:text-white">
+                                                            {{ $count }}
+                                                        </div>
                                                     </div>
                                                 @endforeach
                                             </div>
@@ -824,51 +827,26 @@
 
                                         <div class="md:col-span-2" id="reviewsList">
                                             @foreach($reviews as $r)
-                                                <article class="p-3 border dark:border-slate-700 {{ FD['rounded'] }} mb-3">
-                                                    <header class="flex items-start justify-between gap-3 mb-3">
-                                                        <div>
-                                                            <div class="flex gap-2">
-                                                                <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                                                                    <span class="font-medium text-gray-600 dark:text-gray-300">
-                                                                        {{ substr($r->user->first_name, 0, 1) }}{{ substr($r->user->last_name, 0, 1) }}
-                                                                    </span>
-                                                                </div>
-
-                                                                <div>
-                                                                    <p class="{{ FD['text-1'] }}">{{ $r->user->first_name }} {{ $r->user->last_name }}</p>
-                                                                    <div class="flex items-center gap-1 mt-1">@for($i=0;$i<5;$i++) {!! $i < $r->rating ? '<svg class="w-3 h-3 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' : '<svg class="w-3 h-3 text-slate-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' !!} @endfor</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="text-end">
-                                                            <p class="{{ FD['text-0'] }} text-slate-500">Verified purchase</p>
-                                                            <p class="{{ FD['text-0'] }} text-slate-500">{{ $r->created_at }}</p>
-                                                        </div>
-                                                    </header>
-                                                    <div class="mt-2">
-                                                        <p class="font-semibold {{ FD['text'] }} text-slate-800 dark:text-white">{{ $r->title }}</p>
-
-                                                        <p class="mt-1 {{ FD['text'] }} text-slate-500 dark:text-slate-400/80 description-wrapper">{!! nl2br($r->review) !!}</p>
-                                                    </div>
-                                                </article>
+                                                <x-front.product-review-block 
+                                                    :data="$r"
+                                                />
                                             @endforeach
 
-                                            <!-- Load more (demo) -->
-                                            <div class="flex justify-center mt-4">
-                                                {{-- <button id="loadMoreReviews" class="px-4 py-2 {{ FD['rounded'] }} border {{ FD['text-1'] }}">Load more reviews</button> --}}
-                                                <x-front.button
-                                                    element="a"
-                                                    tag="secondary"
-                                                    class="w-full sm:w-40"
-                                                    :href="route('front.review.list', $product->slug)"
-                                                >
-                                                    @slot('icon')
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm160-320h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80Z"/></svg>
-                                                    @endslot
-                                                    {{ __('See all Reviews') }}
-                                                </x-front.button>
-                                            </div>
+                                            @if ($total > 3)
+                                                <div class="flex justify-center mt-4">
+                                                    <x-front.button
+                                                        element="a"
+                                                        tag="secondary"
+                                                        class="w-full sm:w-40"
+                                                        :href="route('front.review.list', $product->slug)"
+                                                    >
+                                                        @slot('icon')
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm160-320h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80Z"/></svg>
+                                                        @endslot
+                                                        {{ __('See all Reviews') }}
+                                                    </x-front.button>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
 

@@ -404,4 +404,72 @@ class ProductReviewRepository implements ProductReviewInterface
             ];
         }
     }
+
+    public function activeFDReviewsByProductId(Int $productId, Int $count)
+    {
+        try {
+            $data = ProductReview::with(['user', 'images'])
+                ->where('product_id', $productId)
+                ->where('status', 1)
+                ->limit($count)
+                ->get();
+
+            if (count($data) > 0) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function allActivePaginatedReviewsByProductId(Int $productId)
+    {
+        try {
+            $data = ProductReview::with(['user', 'images'])
+                ->where('product_id', $productId)
+                ->where('status', 1)
+                ->paginate(15)
+                ->withQueryString();
+
+            if (count($data) > 0) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
 }

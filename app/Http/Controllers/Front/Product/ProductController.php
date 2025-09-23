@@ -8,26 +8,35 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Interfaces\ProductListingInterface;
 use App\Interfaces\ProductVariationInterface;
+use App\Interfaces\ProductReviewInterface;
 
 class ProductController extends Controller
 {
     private ProductListingInterface $productListingRepository;
     private ProductVariationInterface $productVariationRepository;
+    private ProductReviewInterface $productReviewRepository;
 
-    public function __construct(ProductListingInterface $productListingRepository, ProductVariationInterface $productVariationRepository)
+    public function __construct(
+        ProductListingInterface $productListingRepository, 
+        ProductVariationInterface $productVariationRepository,
+        ProductReviewInterface $productReviewRepository
+    )
     {
         $this->productListingRepository = $productListingRepository;
         $this->productVariationRepository = $productVariationRepository;
+        $this->productReviewRepository = $productReviewRepository;
     }
 
     public function detail($slug): RedirectResponse|View
     {
+        $topReviewsToShow = 3;
         $resp = $this->productListingRepository->getBySlugFDCustomArr($slug);
 
         if ($resp['code'] == 200) {
             $product = $resp['data'];
             $pricingCountry = COUNTRY['country'];
             $variation = $this->productVariationRepository->groupedVariation($product->id, $pricingCountry);
+            $reviews = $this->productReviewRepository->activeFDReviewsByProductId($product->id, $topReviewsToShow);
 
             return view('front.product.detail', [
                 'product' => $product,
@@ -37,7 +46,8 @@ class ProductController extends Controller
                 'upsells' => [],
                 'highlights' => $product->activeHighlights,
                 'faqs' => $product->activeFaqs,
-                'reviews' => $product->activeReviews,
+                'reviews' => ($reviews['code'] == 200) ? $reviews['data'] : [],
+                'allReviews' => $product->activeReviews,
             ]);
         } else {
             return redirect()->route('front.error.404');
