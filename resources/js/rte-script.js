@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
             editorDiv.setAttribute('contenteditable', 'true');
             editorDiv.setAttribute('onkeyup', 'updateToolbar()');
             editorDiv.setAttribute('onmouseup', 'updateToolbar()');
-            editorDiv.className = 'p-3 rounded min-h-20 block w-full text-sm text-gray-800 bg-white border-0 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400 shadow-sm border-gray-300 dark:border-gray-700 focus:outline-0';
+            editorDiv.className = 'p-3 rounded min-h-20 block w-full text-sm text-gray-800 bg-white border-0 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400 shadow-sm border-gray-300 dark:border-gray-700 focus:outline-0 overflow-hidden';
             editorDiv.innerHTML = '<p>&nbsp;</p>'; // Add an empty paragraph
             wrapper.appendChild(editorDiv);
 

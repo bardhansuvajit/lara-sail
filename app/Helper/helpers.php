@@ -26,9 +26,10 @@ define("FAILSAFE", [
 define("FD", [
     'rounded'           => '',
     'text-0'            => 'text-[10px]',
-    'text'              => 'text-xs',
-    'text-1'            => 'text-sm',
-    'text-2'            => 'text-lg',
+    'text'              => 'text-[10px] md:text-xs',
+    'text-1'            => 'text-xs md:text-sm',
+    // 'text-1'            => 'text-sm',
+    'text-2'            => 'text-base md:text-lg',
     'iconClass'         => 'w-4 h-4',
 
     'activeClass'       => 'text-green-500 dark:text-green-600',

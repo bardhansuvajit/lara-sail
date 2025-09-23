@@ -9,13 +9,14 @@ use App\Http\Controllers\Front\Collection\CollectionController;
 use App\Http\Controllers\Front\Cart\CartController;
 use App\Http\Controllers\Front\Checkout\CheckoutController;
 use App\Http\Controllers\Front\Profile\LoginController;
-use App\Http\Controllers\Front\Product\ProductController;
 use App\Http\Controllers\Front\Order\OrderController;
 use App\Http\Controllers\Front\Wishlist\WishlistController;
 use App\Http\Controllers\Front\Search\SearchController;
 use App\Http\Controllers\Front\Content\ContentPageController;
 use App\Http\Controllers\Front\Faq\FaqController;
 use App\Http\Controllers\Front\Error\ErrorPageController;
+use App\Http\Controllers\Front\Product\ProductController;
+use App\Http\Controllers\Front\Review\ProductReviewController;
 
 Route::name('front.')->group(function () {
     // home
@@ -94,6 +95,11 @@ Route::name('front.')->group(function () {
     // pages
     Route::name('error.')->group(function() {
         Route::get('/404', [ErrorPageController::class, 'err404'])->name('404');
+    });
+
+    // reviews
+    Route::name('review.')->prefix('product-reviews')->controller(ProductReviewController::class)->group(function() {
+        Route::get('{slug}', 'listByProduct')->name('list');
     });
 
     // product

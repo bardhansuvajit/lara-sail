@@ -187,7 +187,7 @@
                     <div class="space-y-4" id="variationTab">
                         @foreach ($variation['data']['attributes'] as $attrIndex => $attribute)
                             <div>
-                                <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">
+                                <h3 class="{{FD['text-1']}} font-semibold mb-2 dark:text-gray-500">
                                     {{ $attribute['title'] }}
                                 </h3>
 
@@ -221,7 +221,7 @@
 
                 @if ($status->slug == "limited")
                     <div class="text-end">
-                        <p class="text-sm font-semibold text-red-600 bg-red-100 px-3 py-1 rounded-md inline-block dark:text-red-400 dark:bg-red-900/30">
+                        <p class="{{ FD['text-1'] }} font-semibold text-red-600 bg-red-100 px-3 py-1 rounded-md inline-block dark:text-red-400 dark:bg-red-900/30">
                             Hurry! Only a few items left
                         </p>
                     </div>
@@ -246,7 +246,7 @@
                                     <button
                                         id="qtyDec"
                                         type="button"
-                                        class="w-9 h-9 flex items-center justify-center text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
+                                        class="w-9 h-9 flex items-center justify-center {{ FD['text-1'] }} focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
                                         aria-label="Decrease quantity"
                                         title="Decrease quantity"
                                     >
@@ -268,7 +268,7 @@
                                         value="1"
                                         readonly
                                         aria-readonly="true"
-                                        class="w-20 sm:w-16 text-center text-sm bg-white dark:bg-slate-800 outline-none border-l border-r border-transparent focus:outline-none focus:ring-0 px-2 cursor-default"
+                                        class="w-20 sm:w-16 text-center {{ FD['text-1'] }} bg-white dark:bg-slate-800 outline-none border-l border-r border-transparent focus:outline-none focus:ring-0 px-2 cursor-default"
                                         style="min-width:3.5rem;"
                                         tabindex="0"
                                     />
@@ -276,7 +276,7 @@
                                     <button
                                         id="qtyInc"
                                         type="button"
-                                        class="w-9 h-9 flex items-center justify-center text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
+                                        class="w-9 h-9 flex items-center justify-center {{ FD['text-1'] }} focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
                                         aria-label="Increase quantity"
                                         title="Increase quantity"
                                     >
@@ -292,7 +292,7 @@
                             <button
                                 id="addToCart"
                                 type="button"
-                                class="flex-1 sm:flex-none px-4 py-2 {{ FD['rounded'] }} bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm inline-flex items-center justify-center disabled:opacity-50 transition-shadow add-to-cart"
+                                class="flex-1 sm:flex-none px-4 py-2 {{ FD['rounded'] }} bg-amber-600 hover:bg-amber-700 text-white font-semibold {{ FD['text-1'] }} inline-flex items-center justify-center disabled:opacity-50 transition-shadow add-to-cart"
                                 aria-label="Add to cart"
                                 data-prod-id="{{$product->id}}" 
                                 data-purchase-type="cart"
@@ -307,7 +307,7 @@
                             <button
                                 id="buyNow"
                                 type="button"
-                                class="px-4 py-2 {{ FD['rounded'] }} border border-amber-600 text-amber-600 dark:text-amber-300 text-sm font-semibold  add-to-cart"
+                                class="px-4 py-2 {{ FD['rounded'] }} border border-amber-600 text-amber-600 dark:text-amber-300 {{ FD['text-1'] }} font-semibold  add-to-cart"
                                 aria-label="Buy now"
                                 {{-- data-action="buy-now" --}}
                                 data-prod-id="{{$product->id}}" 
@@ -337,7 +337,7 @@
                             {{ $status->title_frontend }}
                         </h5>
 
-                        <p class="text-sm {{ $descColor }}">
+                        <p class="{{ FD['text-1'] }} {{ $descColor }}">
                             {{ $status->description_frontend }}
                         </p>
 
@@ -415,7 +415,7 @@
         @if (count($upsells) > 0)
             <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm">
                 <div class="flex items-start justify-between mb-3">
-                    <h3 class="text-sm font-semibold">Frequently bought together</h3>
+                    <h3 class="{{ FD['text-1'] }} font-semibold">Frequently bought together</h3>
 
                     {{-- Top-level CTAs --}}
                     <div class="flex gap-2 items-center">
@@ -471,7 +471,7 @@
                                     <div class="text-xs text-slate-400 line-through">@php echo $product['currency'] . number_format($base_mrp,2) @endphp</div>
                                 @endif
 
-                                <div class="text-sm font-semibold">@php echo $product['currency'] . number_format($base_price,2) @endphp</div>
+                                <div class="{{ FD['text-1'] }} font-semibold">@php echo $product['currency'] . number_format($base_price,2) @endphp</div>
                             </div>
                         </div>
 
@@ -546,7 +546,7 @@
                                         <div class="text-xs text-slate-400 line-through">@php echo $product['currency'] . number_format($mrp,2) @endphp</div>
                                     @endif
 
-                                    <div class="text-sm font-semibold">@php echo $product['currency'] . number_format($price,2) @endphp</div>
+                                    <div class="{{ FD['text-1'] }} font-semibold">@php echo $product['currency'] . number_format($price,2) @endphp</div>
                                 </div>
                             </div>
 
@@ -583,25 +583,18 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div class="lg:col-span-8 space-y-6">
                         <div class="space-y-4">
-
                             <!-- Highlight -->
                             @if ($highlights && count($highlights) > 0)
                                 <div id="highlights">
-                                    <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                                        <div>
-                                            <h2 class="text-sm font-semibold mb-3">Highlights</h2>
-                                        </div>
-                                    </header>
+                                    <x-front.product-detail-block-header
+                                        title="Highlights"
+                                    />
 
                                     <div>
                                         @foreach($highlights as $highlight)
-                                            <div 
-                                                class="flex items-center justify-between p-1 dark:hover:bg-gray-800/40"
-                                            >
-
+                                            <div class="flex items-center justify-between py-1 dark:hover:bg-gray-800/40">
                                                 <div class="flex items-center gap-2">
-                                                    <span class="w-5 h-5">{!! $highlight->icon !!}</span>
-
+                                                    <span class="{{ FD['iconClass'] }}">{!! $highlight->icon !!}</span>
                                                     <div>
                                                         <p class="font-medium text-gray-800 dark:text-gray-300 text-xs">{{ $highlight->title }}</p>
                                                         <p class="text-xs text-gray-600 dark:text-gray-400">{{ $highlight->description }}</p>
@@ -618,11 +611,9 @@
                             <!-- Long Description -->
                             @if ($product->long_description)
                                 <div id="long-description">
-                                    <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                                        <div>
-                                            <h2 class="text-sm font-semibold mb-3">Description</h2>
-                                        </div>
-                                    </header>
+                                    <x-front.product-detail-block-header
+                                        title="Description"
+                                    />
 
                                     <div class="text-xs leading-tight">
                                         {!! nl2br($product->long_description) !!}
@@ -635,13 +626,13 @@
                             <!-- Faq -->
                             @if ($faqs && count($faqs) > 0)
                                 <div id="faqs" class="scroll-mt-20">
-                                    <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
+                                    {{-- <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
                                         <div>
-                                            <h2 class="text-sm font-semibold">Frequently asked questions</h2>
-                                            <p class="text-xs text-gray-600 dark:text-gray-400">{{ count($faqs) }} questions answered</p>
+                                            <h2 class="{{ FD['text-1'] }} font-semibold">Frequently asked questions</h2>
+                                            <p class="{{ FD['text'] }} text-gray-600 dark:text-gray-400">{{ count($faqs) }} questions answered</p>
                                         </div>
 
-                                        {{-- <div class="flex items-center gap-3">
+                                        <div class="flex items-center gap-3">
                                             <div class="relative">
                                                 <div class="absolute z-1 inset-y-0 flex items-center pointer-events-none start-0 ps-3">
                                                     <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"></path></svg>
@@ -652,7 +643,7 @@
 
                                             <!-- Sort Dropdown -->
                                             <div class="relative">
-                                                <select id="faq-sort" class="appearance-none pl-3 pr-8 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer">
+                                                <select id="faq-sort" class="appearance-none pl-3 pr-8 py-2 {{ FD['text-1'] }} border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer">
                                                     <option value="most-helpful">Most Helpful</option>
                                                     <option value="newest">Newest First</option>
                                                     <option value="oldest">Oldest First</option>
@@ -664,14 +655,20 @@
                                                     </svg>
                                                 </div>
                                             </div>
-                                        </div> --}}
-                                    </header>
+                                        </div>
+                                    </header> --}}
+
+                                    <x-front.product-detail-block-header
+                                        title="Frequently asked questions"
+                                        subtitle="{{ count($faqs) }} questions answered"
+                                    />
 
                                     <!-- FAQ List -->
                                     <div class="space-y-3" id="faq-list">
                                         @foreach($faqs as $index => $faq)
-                                            <div class="@if (!$loop->last) border-b border-gray-200/50 dark:border-gray-700/50 @endif">
-                                                <p class="font-medium text-gray-900 dark:text-white text-sm pr-4">
+                                            <article class="p-3 border dark:border-slate-700 {{ FD['rounded'] }} mb-3">
+                                            {{-- <article class="@if (!$loop->last) border-b border-gray-200/50 dark:border-gray-700/50 @endif"> --}}
+                                                <p class="font-semibold {{ FD['text'] }} text-slate-800 dark:text-white">
                                                     {{ $faq->question }}
                                                 </p>
 
@@ -692,8 +689,8 @@
 
                                                 <div id="faq-answer-{{ $index }}" class="faq-answer overflow-hidden transition-all duration-300">
                                                     <div class="">
-                                                        <p class="text-gray-600 dark:text-gray-300 text-xs leading-tight mb-4">
-                                                            {{ $faq->answer }}
+                                                        <p class="mt-1 {{ FD['text'] }} text-slate-500 dark:text-slate-400/80 description-wrapper">
+                                                            {!! nl2br($faq->answer) !!}
                                                         </p>
 
                                                         <!-- FAQ Meta & Actions -->
@@ -737,7 +734,7 @@
                                                         </div> --}}
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </article>
                                         @endforeach
                                     </div>
                                 </div>
@@ -746,98 +743,164 @@
                             @endif
 
                             <!-- Reviews -->
-                            <div id="reviews">
-                                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                                    <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                                        <div>
-                                            <h2 class="text-sm font-semibold">Customer reviews</h2>
-                                            <p class="text-xs text-gray-600 dark:text-gray-400">
-                                                {{ count($reviews).' '.(count($reviews) == 1 ? 'review' : 'reviews') }} found
-                                            </p>
-                                        </div>
-                                    </header>
-
-                                    <div class="flex items-center gap-2">
-                                        <label for="sortReviews" class="text-xs">Sort</label>
-                                        <select id="sortReviews" class="px-2 py-1 border rounded text-sm">
-                                            <option value="recent">Most recent</option>
-                                            <option value="rating_desc">Top rated</option>
-                                            <option value="rating_asc">Lowest rated</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <hr class="my-3 border-gray-200/50 dark:border-gray-700/50"/>
-
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div class="md:col-span-1 bg-amber-50 dark:bg-amber-900 p-4 {{ FD['rounded'] }}">
-                                        <div class="text-center">
-                                            <div class="text-3xl font-bold">@php
-                                            $avg = 0; $total = count($reviews); if($total){ foreach($reviews as $r) $avg += $r['rating']; $avg = round($avg/$total,1); }
-                                            echo $total ? $avg : '0.0';
-                                            @endphp</div>
-                                            <div class="text-xs text-slate-600 mt-1">based on @php echo $total @endphp reviews</div>
-                                        </div>
-
-                                        @php
-                                            $ratingBuckets = [5=>0,4=>0,3=>0,2=>0,1=>0];
-                                            foreach($reviews as $r) $ratingBuckets[$r['rating']]++;
-                                        @endphp
-
-                                        <div class="mt-3 space-y-2 text-sm">
-                                            @foreach($ratingBuckets as $star => $count)
-                                            <div class="flex items-center gap-2">
-                                                <div class="w-10 text-xs">@php echo $star @endphp★</div>
-                                                <div class="flex-1 bg-slate-200 dark:bg-slate-700 h-2 rounded overflow-hidden">
-                                                <div style="width:@php echo $total? intval(($count/$total)*100):0 @endphp%" class="h-2 bg-amber-600"></div>
-                                                </div>
-                                                <div class="w-8 text-xs text-right">@php echo $count @endphp</div>
+                            @if ($reviews && count($reviews) > 0)
+                                <div id="reviews">
+                                    {{-- <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+                                        <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                                            <div>
+                                                <h2 class="{{ FD['text-1'] }} font-semibold">Customer reviews</h2>
+                                                <p class="{{ FD['text'] }} text-gray-600 dark:text-gray-400">
+                                                    {{ count($reviews).' '.(count($reviews) == 1 ? 'review' : 'reviews') }} found
+                                                </p>
                                             </div>
-                                            @endforeach
+                                        </header>
+
+                                        <div class="flex items-center gap-2">
+                                            <label for="sortReviews" class="text-xs">Sort</label>
+                                            <select id="sortReviews" class="px-2 py-1 border rounded {{ FD['text-1'] }}">
+                                                <option value="recent">Most recent</option>
+                                                <option value="rating_desc">Top rated</option>
+                                                <option value="rating_asc">Lowest rated</option>
+                                            </select>
                                         </div>
+                                    </div> --}}
 
-                                        <a href="" class="block mt-4 w-full px-3 py-2 {{ FD['rounded'] }} bg-amber-600 text-white text-sm">Write a review</a>
-                                    </div>
+                                    <x-front.product-detail-block-header
+                                        title="Customer reviews"
+                                        subtitle="{{ count($reviews).' '.(count($reviews) == 1 ? 'review' : 'reviews') }} found"
+                                    />
 
-                                    <div class="md:col-span-2" id="reviewsList">
-                                        @foreach($reviews as $r)
-                                            <article class="p-3 border dark:border-slate-700 {{ FD['rounded'] }} mb-3">
-                                                <header class="flex items-start justify-between gap-3 mb-3">
-                                                    <div>
-                                                        <div class="flex gap-2">
-                                                            <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                                                                <span class="font-medium text-gray-600 dark:text-gray-300">
-                                                                    {{ substr($r->user->first_name, 0, 1) }}{{ substr($r->user->last_name, 0, 1) }}
-                                                                </span>
-                                                            </div>
+                                    {{-- <hr class="my-3 border-gray-200/50 dark:border-gray-700/50"/> --}}
 
-                                                            <div>
-                                                                <p class="text-sm">{{ $r->user->first_name }} {{ $r->user->last_name }}</p>
-                                                                <div class="flex items-center gap-1 mt-1">@for($i=0;$i<5;$i++) {!! $i < $r->rating ? '<svg class="w-3 h-3 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' : '<svg class="w-3 h-3 text-slate-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' !!} @endfor</div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        {{-- Review highlight section with fixed height --}}
+                                        <div class="md:col-span-1 bg-primary-50 dark:bg-gray-900/50 p-4 {{ FD['rounded'] }} h-fit sticky top-4">
+                                            <div class="text-center">
+                                                <div class="flex justify-center">
+                                                    @php
+                                                        $avg = 0; $total = count($reviews); if($total){ foreach($reviews as $r) $avg += $r['rating']; $avg = round($avg/$total,1); }
+                                                    @endphp
+
+                                                    <p class="text-3xl font-bold text-gray-800 dark:text-white">{{ $total ? $avg : '0.0' }}</p>
+
+                                                    <div class="w-8 h-8 text-amber-500 dark:text-amber-400">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m305-704 112-145q12-16 28.5-23.5T480-880q18 0 34.5 7.5T543-849l112 145 170 57q26 8 41 29.5t15 47.5q0 12-3.5 24T866-523L756-367l4 164q1 35-23 59t-56 24q-2 0-22-3l-179-50-179 50q-5 2-11 2.5t-11 .5q-32 0-56-24t-23-59l4-165L95-523q-8-11-11.5-23T80-570q0-25 14.5-46.5T135-647l170-57Z"/></svg>
+                                                    </div>
+                                                </div>
+                                                <div class="text-xs text-gray-600 dark:text-gray-300 mt-1">based on {{ $total }} reviews</div>
+                                            </div>
+
+                                            @php
+                                                $ratingBuckets = [5=>0,4=>0,3=>0,2=>0,1=>0];
+                                                foreach($reviews as $r) $ratingBuckets[$r['rating']]++;
+                                            @endphp
+
+                                            <div class="mt-3 mb-5 space-y-2 {{ FD['text-1'] }}">
+                                                @foreach($ratingBuckets as $star => $count)
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="w-10 flex gap-1 items-center">
+                                                            <p class="!w-2 text-xs text-gray-800 dark:text-white">{{ $star }}</p>
+                                                            <div class="w-3 h-3 text-amber-500 dark:text-amber-400">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m305-704 112-145q12-16 28.5-23.5T480-880q18 0 34.5 7.5T543-849l112 145 170 57q26 8 41 29.5t15 47.5q0 12-3.5 24T866-523L756-367l4 164q1 35-23 59t-56 24q-2 0-22-3l-179-50-179 50q-5 2-11 2.5t-11 .5q-32 0-56-24t-23-59l4-165L95-523q-8-11-11.5-23T80-570q0-25 14.5-46.5T135-647l170-57Z"/></svg>
                                                             </div>
                                                         </div>
+                                                        <div class="flex-1 bg-gray-300 dark:bg-gray-700 h-2 rounded overflow-hidden">
+                                                            <div style="width:@php echo $total? intval(($count/$total)*100):0 @endphp%" class="h-2 bg-amber-600 dark:bg-amber-500"></div>
+                                                        </div>
+                                                        <div class="w-8 text-xs text-right text-gray-800 dark:text-white">@php echo $count @endphp</div>
                                                     </div>
+                                                @endforeach
+                                            </div>
 
-                                                    <div class="text-end">
-                                                        <p class="{{ FD['text-0'] }} text-slate-500">Verified purchase</p>
-                                                        <p class="{{ FD['text-0'] }} text-slate-500">{{ $r->created_at }}</p>
+                                            <x-front.button
+                                                class="w-full"
+                                                element="a">
+                                                @slot('icon')
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Z"/></svg>
+                                                @endslot
+                                                {{ __('Write a review') }}
+                                            </x-front.button>
+                                        </div>
+
+                                        <div class="md:col-span-2" id="reviewsList">
+                                            @foreach($reviews as $r)
+                                                <article class="p-3 border dark:border-slate-700 {{ FD['rounded'] }} mb-3">
+                                                    <header class="flex items-start justify-between gap-3 mb-3">
+                                                        <div>
+                                                            <div class="flex gap-2">
+                                                                <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                                                                    <span class="font-medium text-gray-600 dark:text-gray-300">
+                                                                        {{ substr($r->user->first_name, 0, 1) }}{{ substr($r->user->last_name, 0, 1) }}
+                                                                    </span>
+                                                                </div>
+
+                                                                <div>
+                                                                    <p class="{{ FD['text-1'] }}">{{ $r->user->first_name }} {{ $r->user->last_name }}</p>
+                                                                    <div class="flex items-center gap-1 mt-1">@for($i=0;$i<5;$i++) {!! $i < $r->rating ? '<svg class="w-3 h-3 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' : '<svg class="w-3 h-3 text-slate-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.748l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.595 0 9.748l8.332-1.73L12 .587z"/></svg>' !!} @endfor</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="text-end">
+                                                            <p class="{{ FD['text-0'] }} text-slate-500">Verified purchase</p>
+                                                            <p class="{{ FD['text-0'] }} text-slate-500">{{ $r->created_at }}</p>
+                                                        </div>
+                                                    </header>
+                                                    <div class="mt-2">
+                                                        <p class="font-semibold {{ FD['text'] }} text-slate-800 dark:text-white">{{ $r->title }}</p>
+
+                                                        <p class="mt-1 {{ FD['text'] }} text-slate-500 dark:text-slate-400/80 description-wrapper">{!! nl2br($r->review) !!}</p>
                                                     </div>
-                                                </header>
-                                                <div class="mt-2">
-                                                    <div class="font-semibold text-xs">{{ $r->title }}</div>
-                                                    <p class="mt-1 text-xs text-slate-700 dark:text-slate-300 description-wrapper">{{ $r->review }}</p>
-                                                </div>
-                                            </article>
-                                        @endforeach
+                                                </article>
+                                            @endforeach
 
-                                        <!-- Load more (demo) -->
-                                        <div class="text-center mt-4">
-                                            <button id="loadMoreReviews" class="px-4 py-2 {{ FD['rounded'] }} border text-sm">Load more reviews</button>
+                                            <!-- Load more (demo) -->
+                                            <div class="flex justify-center mt-4">
+                                                {{-- <button id="loadMoreReviews" class="px-4 py-2 {{ FD['rounded'] }} border {{ FD['text-1'] }}">Load more reviews</button> --}}
+                                                <x-front.button
+                                                    element="a"
+                                                    tag="secondary"
+                                                    class="w-full sm:w-40"
+                                                    :href="route('front.review.list', $product->slug)"
+                                                >
+                                                    @slot('icon')
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm160-320h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80Z"/></svg>
+                                                    @endslot
+                                                    {{ __('See all Reviews') }}
+                                                </x-front.button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            @else
+                                <div id="reviews">
+                                    <x-front.product-detail-block-header
+                                        title="Customer reviews"
+                                        subtitle="No reviews yet"
+                                    />
+
+                                    <div class="text-center py-12 border dark:border-slate-700 {{ FD['rounded'] }} bg-slate-50 dark:bg-slate-800/50">
+                                        <svg class="mx-auto h-12 w-12 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                                        </svg>
+
+                                        <h3 class="mt-4 {{ FD['text-1'] }} font-semibold text-slate-900 dark:text-white">No reviews yet</h3>
+                                        <p class="mt-2 {{ FD['text'] }} text-slate-600 dark:text-slate-400">Be the first to share your thoughts about this product</p>
+
+                                        <div class="flex justify-center mt-3">
+                                            <x-front.button
+                                                class="w-full md:w-40"
+                                                element="a">
+                                                @slot('icon')
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-400h80v-120h120v-80H520v-120h-80v120H320v80h120v120ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Z"/></svg>
+                                                @endslot
+                                                {{ __('Write the first review') }}
+                                            </x-front.button>
                                         </div>
                                     </div>
                                 </div>
-
-                            </div>
+                            @endif
                         </div>
                     </div>
 
@@ -845,10 +908,10 @@
                         <div class="{{ FD['rounded'] }} border border-gray-100 dark:border-gray-800 p-4 bg-gray-50 dark:bg-gray-900 shadow-sm">
                             <div class="flex items-start justify-between gap-4">
                                 <div>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Limited time deal</p>
+                                    <p class="{{ FD['text-1'] }} text-gray-500 dark:text-gray-400">Limited time deal</p>
                                     <div class="flex items-baseline gap-3">
                                         <div class="text-2xl font-extrabold">₹9,499</div>
-                                        <div class="text-sm line-through text-gray-500">₹12,999</div>
+                                        <div class="{{ FD['text-1'] }} line-through text-gray-500">₹12,999</div>
                                     </div>
                                     <p class="text-xs text-green-600 dark:text-green-400 mt-1">Save ₹3,500 (27%)</p>
                                 </div>
@@ -865,26 +928,26 @@
                                 <div class="{{ FD['iconClass'] }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                                 </div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400">Offer ends in <span id="dealCountdown" class="font-medium">02:13:45</span></div>
+                                <div class="{{ FD['text-1'] }} text-gray-600 dark:text-gray-400">Offer ends in <span id="dealCountdown" class="font-medium">02:13:45</span></div>
                             </div>
 
                             <div class="mt-4 grid grid-cols-2 gap-2">
-                                <button class="py-2 px-3 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-800 text-sm font-medium">Add to cart</button>
-                                <button class="py-2 px-3 {{ FD['rounded'] }} bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">Buy now</button>
+                                <button class="py-2 px-3 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-800 {{ FD['text-1'] }} font-medium">Add to cart</button>
+                                <button class="py-2 px-3 {{ FD['rounded'] }} bg-blue-600 text-white {{ FD['text-1'] }} font-medium hover:bg-blue-700">Buy now</button>
                             </div>
 
                             <div class="mt-3 text-xs text-gray-500 dark:text-gray-400">Free delivery & easy returns. EMI options available.</div>
                         </div>
 
                         <!-- Small ad / cross-sell card -->
-                        <div class="{{ FD['rounded'] }} border border-dashed border-gray-100 dark:border-gray-800 p-3 text-sm bg-gradient-to-br from-yellow-50 to-white dark:from-yellow-900 dark:to-gray-900">
+                        <div class="{{ FD['rounded'] }} border border-dashed border-gray-100 dark:border-gray-800 p-3 {{ FD['text-1'] }} bg-gradient-to-br from-yellow-50 to-white dark:from-yellow-900 dark:to-gray-900">
                             <div class="flex items-start gap-3">
                                 <div class="flex-shrink-0 w-12 h-12 {{ FD['rounded'] }} overflow-hidden">
                                 <img src="https://dummyimage.com/120x120/eeeeee/888888&text=Bundle" alt="Bundle" class="w-full h-full object-cover">
                                 </div>
                                 <div class="flex-1">
                                 <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-semibold">Bundle & Save</h4>
+                                    <h4 class="{{ FD['text-1'] }} font-semibold">Bundle & Save</h4>
                                     <span class="text-xs text-green-600 dark:text-green-400">-15%</span>
                                 </div>
                                 <p class="mt-1 text-xs text-gray-600 dark:text-gray-300">Add a matching accessory and get 15% off. Limited stock.</p>
@@ -894,11 +957,11 @@
                         </div>
 
                         <div class="bg-gray-50 dark:bg-slate-900 {{ FD['rounded'] }} p-4 shadow-sm sticky top-28">
-                            <div class="text-sm font-semibold">Need help deciding?</div>
+                            <div class="{{ FD['text-1'] }} font-semibold">Need help deciding?</div>
                             <div class="mt-2 text-xs text-slate-600">Chat with our product experts for advice, bulk orders, or assembly help.</div>
                             <div class="mt-3 flex gap-2">
-                                <button class="px-3 py-2 {{ FD['rounded'] }} bg-amber-600 text-white text-sm">Chat now</button>
-                                <button class="px-3 py-2 {{ FD['rounded'] }} border text-sm">Call</button>
+                                <button class="px-3 py-2 {{ FD['rounded'] }} bg-amber-600 text-white {{ FD['text-1'] }}">Chat now</button>
+                                <button class="px-3 py-2 {{ FD['rounded'] }} border {{ FD['text-1'] }}">Call</button>
                             </div>
 
                             <div class="mt-4 border-t pt-3 text-xs text-slate-600">
@@ -918,13 +981,13 @@
                 <div class="flex items-center gap-3">
                     <img src="https://dummyimage.com/64x64/cccccc/666666&text=P" alt="product" class="w-12 h-12 {{ FD['rounded'] }} object-cover">
                     <div>
-                    <div class="text-sm font-medium">₹9,499</div>
+                    <div class="{{ FD['text-1'] }} font-medium">₹9,499</div>
                     <div class="text-xs text-gray-500 dark:text-gray-400">Free delivery</div>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button class="px-3 py-2 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-700 text-sm">Add</button>
-                    <button class="px-4 py-2 {{ FD['rounded'] }} bg-blue-600 text-white text-sm">Buy</button>
+                    <button class="px-3 py-2 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-700 {{ FD['text-1'] }}">Add</button>
+                    <button class="px-4 py-2 {{ FD['rounded'] }} bg-blue-600 text-white {{ FD['text-1'] }}">Buy</button>
                 </div>
                 </div>
             </div>
