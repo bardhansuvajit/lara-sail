@@ -63,6 +63,11 @@ return new class extends Migration
                 'model' => 'City',
                 'file_path' => 'cities.csv',
                 'description' => 'Cities',
+            ],
+            [
+                'model' => 'ProductReview',
+                'file_path' => 'product_reviews.csv',
+                'description' => 'Product Reviews',
             ]
         ];
 

@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Product Variations — Demo (click unavailable)</title>
+
+  <!-- Tailwind Play CDN for quick prototyping -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* visually mark unavailable but keep clickable */
+    .unavailable {
+      opacity: 0.55;
+    }
+    /* optional focus-visible style for keyboard focus */
+    .variation-label:focus-visible {
+      outline: 2px solid rgba(59,130,246,0.45);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-slate-900 min-h-screen p-6">
+
+  <div class="max-w-3xl mx-auto bg-white dark:bg-slate-800 rounded-xl p-6 shadow">
+    <h1 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Product variations (demo)</h1>
+
+    <!-- Price / info block -->
+    <div id="priceBlock" class="mb-6 p-4 rounded-md bg-gray-100 dark:bg-slate-700">
+      <div class="flex items-baseline space-x-4">
+        <div>
+          <div class="text-2xl font-extrabold text-gray-900 dark:text-gray-100" id="sellingPrice">—</div>
+          <div class="text-sm text-gray-500 dark:text-gray-300" id="mrpPrice">—</div>
+        </div>
+        <div class="ml-auto text-right">
+          <div class="text-sm text-green-600 dark:text-green-400 font-medium" id="savings">—</div>
+          <div class="text-xs text-gray-500" id="discount">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Variation tab container (will be filled by JS) -->
+    <div id="variationTab" class="space-y-4"></div>
+
+    <!-- Add to cart area -->
+    <div class="mt-6 flex items-center space-x-4">
+      <button id="addToCart" class="px-4 py-2 bg-red-600/90 dark:bg-red-500 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
+        Add to cart
+      </button>
+
+      <div id="selectedCombo" class="text-sm text-gray-600 dark:text-gray-300"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ====== productData as provided by you (kept identical) ====== */
+    const productData = {
+      attributes: [
+        {
+          id: 2,
+          title: "Color",
+          slug: "color",
+          values: [
+            { id: 64, title: "Midnight", slug: "midnight" },
+            { id: 67, title: "Silver", slug: "silver" },
+            { id: 66, title: "Starlight", slug: "starlight" },
+            { id: 65, title: "Sky Blue", slug: "sky-blue" }
+          ]
+        },
+        {
+          id: 3,
+          title: "RAM",
+          slug: "ram",
+          values: [
+            { id: 8, title: "16GB", slug: "16gb" },
+            { id: 9, title: "24 GB", slug: "24-gb" }
+          ]
+        },
+        {
+          id: 4,
+          title: "Internal Memory",
+          slug: "internal-memory",
+          values: [
+            { id: 11, title: "256 GB", slug: "256-gb" },
+            { id: 12, title: "512 GB", slug: "512-gb" }
+          ]
+        }
+      ],
+
+      combinations: [
+        { id: 1, variation_identifier: "midnight-16gb-256-gb", pricing: [ { country_code: "IN", selling_price_formatted: "97,000", mrp_formatted: "99,000", savings_formatted: "2,000", discount: 2 } ], min_quantity:1, status:1 },
+        { id: 2, variation_identifier: "silver-16gb-256-gb", pricing: [ { country_code: "IN", selling_price_formatted: "97,000", mrp_formatted: "99,000", savings_formatted: "2,000", discount: 2 } ], min_quantity:1, status:1 },
+        { id: 3, variation_identifier: "starlight-16gb-256-gb", pricing: [ { country_code: "IN", selling_price_formatted: "97,000", mrp_formatted: "99,000", savings_formatted: "2,000", discount: 2 } ], min_quantity:1, status:1 },
+        { id: 4, variation_identifier: "sky-blue-16gb-256-gb", pricing: [ { country_code: "IN", selling_price_formatted: "97,000", mrp_formatted: "99,000", savings_formatted: "2,000", discount: 2 } ], min_quantity:1, status:1 },
+
+        { id: 5, variation_identifier: "midnight-16gb-512-gb", pricing: [ { country_code: "IN", selling_price_formatted: "1,19,000", mrp_formatted: "99,000", savings_formatted: "-20,000", discount: 0 } ], min_quantity:1, status:1 },
+        { id: 6, variation_identifier: "midnight-24-gb-512-gb", pricing: [ { country_code: "IN", selling_price_formatted: "1,39,000", mrp_formatted: "99,000", savings_formatted: "-40,000", discount: 0 } ], min_quantity:1, status:1 },
+        { id: 7, variation_identifier: "sky-blue-24-gb-512-gb", pricing: [ { country_code: "IN", selling_price_formatted: "1,39,000", mrp_formatted: "99,000", savings_formatted: "-40,000", discount: 0 } ], min_quantity:1, status:1 }
+      ]
+    };
+
+    /* ====== Utility helpers ====== */
+
+    const combosByIdentifier = {};
+    productData.combinations.forEach(c => combosByIdentifier[c.variation_identifier] = c);
+
+    function identifierToSlugs(identifier) {
+      return identifier.split('-');
+    }
+
+    function initialSelection() {
+      if (productData.combinations.length === 0) return {};
+      const first = productData.combinations[0].variation_identifier;
+      // robust parse (re-usable)
+      return parseIdentifierToMap(first);
+    }
+
+    function parseIdentifierToMap(identifier) {
+      const map = {};
+      const tokens = identifier.split('-');
+      let i = 0;
+      for (const attr of productData.attributes) {
+        let matched = null;
+        for (let take = 1; take <= tokens.length - i; take++) {
+          const candidate = tokens.slice(i, i + take).join('-');
+          if (attr.values.some(v => v.slug === candidate)) {
+            matched = candidate;
+            i += take;
+            break;
+          }
+        }
+        if (!matched) matched = attr.values[0].slug;
+        map[attr.slug] = matched;
+      }
+      return map;
+    }
+
+    function findCombinationForSelection(selection) {
+      const slugs = productData.attributes.map(a => selection[a.slug]).filter(Boolean);
+      if (slugs.length !== productData.attributes.length) return null;
+      const identifier = slugs.join('-');
+      return combosByIdentifier[identifier] || null;
+    }
+
+    function isValueValid(attrSlug, valueSlug, partialSelection) {
+      return productData.combinations.some(c => {
+        const map = combinationToMap(c);
+        for (const [k, v] of Object.entries(partialSelection)) {
+          if (map[k] !== v) return false;
+        }
+        return map[attrSlug] === valueSlug;
+      });
+    }
+
+    function combinationToMap(c) {
+      return parseIdentifierToMap(c.variation_identifier);
+    }
+
+    /* ====== New: pick best combo that includes a chosen attribute value ====== */
+    function chooseBestComboForAttributeValue(attrSlug, valueSlug, currentPartial) {
+      // find combos that have this attribute = valueSlug
+      const candidates = productData.combinations
+        .map(c => ({ combo: c, map: combinationToMap(c) }))
+        .filter(x => x.map[attrSlug] === valueSlug);
+
+      if (candidates.length === 0) return null;
+
+      // score by how many attributes match currentPartial (higher score preferred)
+      let best = candidates[0];
+      let bestScore = -1;
+      for (const c of candidates) {
+        let score = 0;
+        for (const [k, v] of Object.entries(currentPartial)) {
+          if (c.map[k] && c.map[k] === v) score++;
+        }
+        // prefer combos that match more of currentPartial; tie-breaker: first found
+        if (score > bestScore) {
+          bestScore = score;
+          best = c;
+        }
+      }
+      return best.map;
+    }
+
+    /* ====== Renderers & UI logic ====== */
+
+    const variationTab = document.getElementById('variationTab');
+    const priceBlock = {
+      sellingPrice: document.getElementById('sellingPrice'),
+      mrpPrice: document.getElementById('mrpPrice'),
+      savings: document.getElementById('savings'),
+      discount: document.getElementById('discount'),
+    };
+    const addToCartBtn = document.getElementById('addToCart');
+    const selectedComboEl = document.getElementById('selectedCombo');
+
+    let currentSelection = initialSelection();
+
+    function renderVariationTab() {
+      variationTab.innerHTML = '';
+      productData.attributes.forEach((attribute, attrIndex) => {
+        const wrapper = document.createElement('div');
+
+        // title
+        const title = document.createElement('h3');
+        title.className = 'text-sm font-semibold mb-2 text-gray-600 dark:text-gray-500';
+        title.textContent = attribute.title;
+        wrapper.appendChild(title);
+
+        // values container
+        const valuesContainer = document.createElement('div');
+        valuesContainer.className = 'flex flex-wrap space-x-2';
+        attribute.values.forEach((value, valueIndex) => {
+          const group = document.createElement('div');
+          group.className = 'group';
+
+          // input radio (keep enabled so label click toggles normally)
+          const input = document.createElement('input');
+          input.type = 'radio';
+          input.id = `attr${attrIndex}${valueIndex}`;
+          input.name = `variation-${attribute.slug}`;
+          input.value = value.slug;
+          input.className = 'hidden peer';
+          if (currentSelection[attribute.slug] === value.slug) input.checked = true;
+
+          // label (click handler will implement "intent")
+          const label = document.createElement('label');
+          label.setAttribute('for', input.id);
+          label.tabIndex = 0;
+          label.className = [
+            'inline-block',
+            'rounded-full',
+            'cursor-pointer',
+            'text-gray-700',
+            'dark:text-gray-200',
+            'bg-gray-200',
+            'dark:bg-gray-600',
+            'border-2',
+            'border-gray-200',
+            'dark:border-gray-600',
+            'hover:bg-gray-100',
+            'dark:hover:bg-gray-700',
+            'peer-checked:bg-gray-100',
+            'dark:peer-checked:bg-gray-800',
+            'peer-checked:border-red-700',
+            'dark:peer-checked:border-red-600',
+            'peer-checked:text-gray-900',
+            'dark:peer-checked:text-gray-100',
+            'px-2',
+            'py-1',
+            'mb-2',
+            'mr-2',
+            'transition',
+            'duration-150',
+            'variation-label'
+          ].join(' ');
+
+          label.innerHTML = `<p class="text-sm font-medium">${value.title}</p>`;
+
+          group.appendChild(input);
+          group.appendChild(label);
+          valuesContainer.appendChild(group);
+
+          // normal change handler (when clicking available option)
+          input.addEventListener('change', (e) => {
+            if (e.target.checked) {
+              // set selection for this attribute then try to keep others if possible
+              const best = chooseBestComboForAttributeValue(attribute.slug, value.slug, currentSelection) || {};
+              // if chooseBest returns a map, set selection to that map; otherwise just set the attribute
+              if (Object.keys(best).length) currentSelection = { ...best };
+              else currentSelection[attribute.slug] = value.slug;
+              updateUI();
+            }
+          });
+
+          // label click — handle "intent" even when the value currently looks unavailable.
+          label.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            // find best combo that includes this clicked value while trying to preserve other selections
+            const bestMap = chooseBestComboForAttributeValue(attribute.slug, value.slug, currentSelection);
+            if (bestMap) {
+              currentSelection = { ...bestMap };
+            } else {
+              // fallback: just set the attribute and let autoFix fill others
+              currentSelection[attribute.slug] = value.slug;
+            }
+            updateUI();
+            // programmatically mark the radio as checked for accessibility/peer styles
+            const inputEl = document.getElementById(`attr${attrIndex}${valueIndex}`);
+            inputEl.checked = true;
+          });
+
+          // keyboard activation
+          label.addEventListener('keydown', (ev) => {
+            if (ev.key === 'Enter' || ev.key === ' ') {
+              ev.preventDefault();
+              label.click();
+            }
+          });
+        });
+
+        wrapper.appendChild(valuesContainer);
+        variationTab.appendChild(wrapper);
+      });
+
+      updateUI();
+    }
+
+    // update labels & styles & price panel
+    function updateUI() {
+      productData.attributes.forEach((attribute, attrIndex) => {
+        attribute.values.forEach((value, valueIndex) => {
+          const input = document.getElementById(`attr${attrIndex}${valueIndex}`);
+          const label = input.nextElementSibling;
+
+          // build partial selection excluding the attribute being tested
+          const partial = {};
+          for (const [k, v] of Object.entries(currentSelection)) {
+            if (k !== attribute.slug && v) partial[k] = v;
+          }
+
+          // determine if value appears in ANY combo compatible with partial
+          const valid = isValueValid(attribute.slug, value.slug, partial);
+
+          if (!valid) {
+            // visually mark unavailable but DO NOT disable -> user can still click
+            label.classList.add('unavailable');
+            label.setAttribute('title', 'Not available with current selection (click to switch)');
+            // ensure it's not checked unless currentSelection specifically set it (we'll set checked below)
+            input.checked = currentSelection[attribute.slug] === value.slug;
+          } else {
+            label.classList.remove('unavailable');
+            label.removeAttribute('title');
+            input.checked = currentSelection[attribute.slug] === value.slug;
+          }
+        });
+      });
+
+      // update selected combination display & price
+      const combo = findCombinationForSelection(currentSelection);
+      if (combo) {
+        const p = combo.pricing && combo.pricing[0] ? combo.pricing[0] : null;
+        priceBlock.sellingPrice.textContent = p ? (p.selling_price_formatted || p.selling_price || '—') : '—';
+        priceBlock.mrpPrice.textContent = p ? `MRP: ${p.mrp_formatted || p.mrp || '—'}` : '';
+        priceBlock.savings.textContent = p ? (p.savings_formatted || '') : '';
+        priceBlock.discount.textContent = p ? (p.discount ? `${p.discount}% off` : '') : '';
+        addToCartBtn.disabled = false;
+        selectedComboEl.textContent = `Selected: ${combo.variation_identifier} (id: ${combo.id})`;
+      } else {
+        priceBlock.sellingPrice.textContent = '—';
+        priceBlock.mrpPrice.textContent = '';
+        priceBlock.savings.textContent = '';
+        priceBlock.discount.textContent = '';
+        addToCartBtn.disabled = true;
+        selectedComboEl.textContent = 'Please select a valid combination';
+      }
+
+      // ensure radio DOM reflects selection
+      productData.attributes.forEach((attribute, attrIndex) => {
+        attribute.values.forEach((value, valueIndex) => {
+          const input = document.getElementById(`attr${attrIndex}${valueIndex}`);
+          input.checked = currentSelection[attribute.slug] === value.slug;
+        });
+      });
+    }
+
+    // initial render
+    renderVariationTab();
+
+    // Add to cart demo
+    addToCartBtn.addEventListener('click', () => {
+      const combo = findCombinationForSelection(currentSelection);
+      if (!combo) {
+        alert('Select a valid combination first');
+        return;
+      }
+      alert(`Adding combination id ${combo.id} (${combo.variation_identifier}) to cart — demo`);
+    });
+
+    // ensure initial selection is valid on load
+    window.addEventListener('load', () => {
+      if (!findCombinationForSelection(currentSelection)) {
+        currentSelection = combinationToMap(productData.combinations[0]);
+      }
+      updateUI();
+    });
+
+  </script>
+</body>
+</html>

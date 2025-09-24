@@ -182,18 +182,18 @@
                 @endif
 
                 <!-- Variations -->
-                {{-- {{ dd($variation['data']) }} --}}
+                {{ dd($variation['data']) }}
                 @if ($variation['code'] == 200)
                     <div class="space-y-4" id="variationTab">
                         @foreach ($variation['data']['attributes'] as $attrIndex => $attribute)
                             <div>
-                                <h3 class="{{FD['text-1']}} font-semibold mb-2 dark:text-gray-500">
+                                <h3 class="{{FD['text-1']}} font-semibold mb-2 text-gray-600 dark:text-gray-500">
                                     {{ $attribute['title'] }}
                                 </h3>
 
-                                <div class="w-full grid grid-cols-4 lg:grid-cols-6 gap-4">
+                                <div class="flex flex-wrap space-x-2">
                                     @foreach ($attribute['values'] as $valueIndex => $value)
-                                        <x-front.radio-input-button 
+                                        {{-- <x-front.radio-input-button 
                                             id="attr{{$attrIndex}}{{$valueIndex}}" 
                                             name="variation-{{ $attribute['slug'] }}" 
                                             value="{{ $value['slug'] }}" 
@@ -211,7 +211,32 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </x-front.radio-input-button>
+                                        </x-front.radio-input-button> --}}
+
+                                        <div class="group">
+                                            <input 
+                                                type="radio" 
+                                                id="attr{{$attrIndex}}{{$valueIndex}}" 
+                                                name="variation-{{ $attribute['slug'] }}" 
+                                                value="{{ $value['slug'] }}"
+                                                class="hidden peer"
+                                            />
+
+                                            <label for="attr{{$attrIndex}}{{$valueIndex}}" class="inline-block 
+                                                rounded-full cursor-pointer
+                                                text-gray-700 dark:text-gray-200
+                                                bg-gray-200 dark:bg-gray-600
+                                                border-2 border-gray-200 dark:border-gray-600
+                                                hover:bg-gray-100 dark:hover:bg-gray-700
+                                                peer-checked:bg-gray-100 dark:peer-checked:bg-gray-800 
+                                                peer-checked:border-primary-700 dark:peer-checked:border-primary-600 
+                                                peer-checked:text-gray-900 dark:peer-checked:text-gray-100
+                                            ">
+                                                <div class="px-2 py-1">
+                                                    <p class="text-sm font-medium">{{ $value['title'] }}</p>
+                                                </div>
+                                            </label>
+                                        </div>
                                     @endforeach
                                 </div>
                             </div>
@@ -221,7 +246,7 @@
 
                 @if ($status->slug == "limited")
                     <div class="text-end">
-                        <p class="{{ FD['text-1'] }} font-semibold text-red-600 bg-red-100 px-3 py-1 rounded-md inline-block dark:text-red-400 dark:bg-red-900/30">
+                        <p class="{{ FD['text-1'] }} font-semibold text-red-600 bg-red-100 px-3 py-1 {{ FD['rounded'] }} inline-block dark:text-red-400 dark:bg-red-900/30">
                             Hurry! Only a few items left
                         </p>
                     </div>
@@ -886,12 +911,16 @@
                         <div class="{{ FD['rounded'] }} border border-gray-100 dark:border-gray-800 p-4 bg-gray-50 dark:bg-gray-900 shadow-sm">
                             <div class="flex items-start justify-between gap-4">
                                 <div>
-                                    <p class="{{ FD['text-1'] }} text-gray-500 dark:text-gray-400">Limited time deal</p>
-                                    <div class="flex items-baseline gap-3">
-                                        <div class="text-2xl font-extrabold">₹9,499</div>
-                                        <div class="{{ FD['text-1'] }} line-through text-gray-500">₹12,999</div>
-                                    </div>
-                                    <p class="text-xs text-green-600 dark:text-green-400 mt-1">Save ₹3,500 (27%)</p>
+                                    <p class="{{ FD['text-1'] }} text-gray-500 dark:text-gray-400">{{ $product->title }}</p>
+                                    
+                                    <!-- Price block -->
+                                    @if ( !empty($product->FDPricing) )
+                                        <div class="flex items-baseline gap-3">
+                                            <div class="text-2xl font-extrabold">₹9,499</div>
+                                            <div class="{{ FD['text-1'] }} line-through text-gray-500">₹12,999</div>
+                                        </div>
+                                        <p class="text-xs text-green-600 dark:text-green-400 mt-1">Save ₹3,500 (27%)</p>
+                                    @endif
                                 </div>
 
                                 <div class="w-24 h-24 flex-shrink-0 {{ FD['rounded'] }} overflow-hidden border border-gray-100 dark:border-gray-800">

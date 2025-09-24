@@ -26,9 +26,9 @@ class ToggleStatusProduct extends Component
         CartItemInterface $cartItemRepository
     )
     {
+        $this->productId = $productId;
         $productStatusRepository = app(ProductStatusInterface::class);
         $statusResp = $productStatusRepository->list('', ['status' => 1], 'all', 'position', 'asc');
-        $this->productId = $productId;
         $this->allStatus = $statusResp['data'];
         $this->selectedStatusId = $currentStatus;
     }

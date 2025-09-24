@@ -4,9 +4,11 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\ProductVariationAttribute;
+use Illuminate\Database\Eloquent\Collection;
 use App\Models\ProductVariation;
 use Livewire\Attributes\On;
 use App\Interfaces\ProductVariationInterface;
+use App\Interfaces\ProductStatusInterface;
 
 class ProductVariant extends Component
 {
@@ -18,17 +20,29 @@ class ProductVariant extends Component
     public string $sortOrder = 'asc';
     private ProductVariationInterface $productVariationRepository;
     public $existingVariations = [];
-    // protected $listeners = ['variation-added' => 'loadExistingVariations'];
+
+    public Collection $allStatus;
+    private ProductStatusInterface $productStatusRepository;
+
     protected $listeners = [
         'variation-added' => 'onVariationAdded'
     ];
 
-    public function mount($product_id, $category_id, ProductVariationInterface $productVariationRepository)
+    public function mount(
+        $product_id,
+        $category_id,
+        ProductVariationInterface $productVariationRepository,
+        ProductStatusInterface $productStatusRepository
+    )
     {
         $this->product_id = $product_id;
         $this->category_id = $category_id;
         $this->loadVariations();
         $this->loadExistingVariations();
+
+        $productStatusRepository = app(ProductStatusInterface::class);
+        $statusResp = $productStatusRepository->list('', ['status' => 1], 'all', 'position', 'asc');
+        $this->allStatus = $statusResp['data'];
     }
 
     public function updatedSearch()
@@ -110,6 +124,7 @@ class ProductVariant extends Component
                     'price_adjustment' => $variation->price_adjustment,
                     'adjustment_type' => $variation->adjustment_type,
                     'pricings' => $variation->pricings,
+                    'status' => $variation->status,
                     'created_at' => $variation->created_at->format('M d, Y'),
                 ];
             });
@@ -194,6 +209,62 @@ class ProductVariant extends Component
                 'title' => $positionResp['message'],
             ]);
         }
+    }
+
+    public function updateStatus()
+    {
+        if (empty($this->selectedStatusId)) {
+            $this->dispatch('notificationSend', [
+                'variant' => 'error',
+                'title' => 'Error',
+                'message' => 'No status selected'
+            ]);
+            return;
+        }
+
+        $productListingRepository = app(ProductListingInterface::class);
+        $data = $productListingRepository->getById($this->productId);
+
+        if ($data['code'] != 200) {
+            $this->dispatch('notificationSend', [
+                'variant' => 'error',
+                'title' => 'Error',
+                'message' => 'Product not found'
+            ]);
+            return;
+        }
+
+        $product = $data['data'];
+        $product->status = $this->selectedStatusId;
+        
+        if (!$product->save()) {
+            $this->dispatch('notificationSend', [
+                'variant' => 'error',
+                'title' => 'Error',
+                'message' => 'Failed to update product status'
+            ]);
+            return;
+        }
+
+        $statusDetail = $product->statusDetail;
+
+        // Update CART if product cannot be ORDERED
+        // if ($statusDetail->allow_order != 1) {
+
+            $cartItemRepository = app(CartItemInterface::class);
+            $statusResp = $cartItemRepository->updateAvailability([
+                'product_id' => $this->productId,
+                'is_available' => $statusDetail->allow_order,
+                'title_frontend' => $statusDetail->title_frontend,
+                'allow_order' => $statusDetail->allow_order,
+            ]);
+        // }
+
+        $this->dispatch('notificationSend', [
+            'variant' => 'success',
+            'title' => 'Status updated',
+            'message' => $product->title . ' is ' . $statusDetail->title
+        ]);
     }
 
     public function render()

@@ -275,13 +275,13 @@
                                     </a>
                                 </div>
                             </td>
-                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                            <td scope="row" class="px-2 py-1">
                                 @if ($item->average_rating > 0)
-                                    <a href="{{ route('admin.product.review.index', ['productId' => $item->id]) }}" class="hover:underline">
+                                    <a href="{{ route('admin.product.review.index', ['productId' => $item->id]) }}">
                                         <div class="flex space-x-2 items-center">
                                             {!! adminRatingHtml($item->average_rating) !!}
-                                            <p class="text-xs">
-                                                <span class="text-gray-500">{{ $item->review_count }} {{ ($item->review_count == 1) ? 'review' : 'reviews' }}</span>
+                                            <p class="text-xs text-gray-900 dark:text-gray-400 underline hover:no-underline">
+                                                {{ $item->review_count }} {{ ($item->review_count == 1) ? 'review' : 'reviews' }}
                                             </p>
                                         </div>
                                     </a>

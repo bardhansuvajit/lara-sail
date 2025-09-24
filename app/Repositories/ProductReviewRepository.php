@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
 use App\Interfaces\ProductReviewImageInterface;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 use App\Exports\ProductReviewsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -305,6 +307,95 @@ class ProductReviewRepository implements ProductReviewInterface
 
     public function import(UploadedFile $file)
     {
+        $summary = [
+            'processed' => 0,
+            'created'   => 0,
+            'failed'    => 0,
+            'errors'    => [],
+        ];
+
+        $toIntOrNull = fn($v) => ($v === '' || $v === null) ? null : (int)$v;
+        $toStrOrNull = fn($v) => ($v === '' || $v === null) ? null : trim($v);
+
+        try {
+            $filePath = fileStore($file);
+            $rows = readCsvFile(public_path($filePath)); // returns array of assoc rows
+
+            foreach ($rows as $i => $row) {
+                $summary['processed']++;
+
+                // sanitize inputs
+                $productId = $toIntOrNull(Arr::get($row, 'product_id'));
+                $userId    = $toIntOrNull(Arr::get($row, 'user_id'));
+                $rating    = $toIntOrNull(Arr::get($row, 'rating')) ?: 1;
+                $title     = $toStrOrNull(Arr::get($row, 'title'));
+                $review    = $toStrOrNull(Arr::get($row, 'review'));
+                $status    = $toIntOrNull(Arr::get($row, 'status')) ?? 0;
+
+                // validation
+                if (!$productId) {
+                    $summary['failed']++;
+                    $summary['errors'][] = ['row' => $i + 1, 'reason' => 'missing product_id'];
+                    continue;
+                }
+                if (!$review) {
+                    $summary['failed']++;
+                    $summary['errors'][] = ['row' => $i + 1, 'reason' => 'missing review'];
+                    continue;
+                }
+
+                try {
+                    DB::beginTransaction();
+
+                    // Optionally, check if product exists
+                    $productExists = \App\Models\Product::where('id', $productId)->exists();
+                    if (!$productExists) {
+                        throw new \Exception("Invalid product_id: {$productId}");
+                    }
+
+                    $reviewData = [
+                        'product_id' => $productId,
+                        'user_id'    => $userId,
+                        'rating'     => $rating,
+                        'title'      => $title,
+                        'review'     => $review,
+                        'status'     => $status,
+                    ];
+
+                    // create new review (no dedupe unless you want to check user+product unique)
+                    \App\Models\ProductReview::create($reviewData);
+
+                    DB::commit();
+                    $summary['created']++;
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    $summary['failed']++;
+                    $summary['errors'][] = ['row' => $i + 1, 'reason' => $e->getMessage()];
+                    Log::error("CSV import row ".($i+1)." failed: ".$e->getMessage());
+                    continue;
+                }
+            }
+
+            return [
+                'code'    => 200,
+                'status'  => 'success',
+                'message' => "{$summary['created']} / {$summary['processed']} rows processed. {$summary['failed']} failed.",
+                'data'    => $summary,
+            ];
+        } catch (\Throwable $e) {
+            Log::error('CSV Import Error (Reviews): ' . $e->getMessage());
+            return [
+                'code'    => 500,
+                'status'  => 'error',
+                'message' => 'Import failed: ' . $e->getMessage(),
+                'error'   => $e->getMessage(),
+            ];
+        }
+    }
+
+    /*
+    public function import(UploadedFile $file)
+    {
         try {
             $filePath = fileStore($file);
             $data = readCsvFile(public_path($filePath));
@@ -352,6 +443,7 @@ class ProductReviewRepository implements ProductReviewInterface
             ];
         }
     }
+    */
 
     public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {

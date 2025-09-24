@@ -9,6 +9,10 @@ class ProductReview extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = [
+        'product_id', 'user_id', 'rating', 'title', 'review', 'status'
+    ];
+
     // automatically update the product ratings when a review is created/ updated or deleted
     protected static function booted()
     {

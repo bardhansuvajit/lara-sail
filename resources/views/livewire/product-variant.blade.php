@@ -75,10 +75,29 @@
 
                                                 <div class="flex space-x-2 items-center justify-end">
                                                     <div wire:key="toggle-wrapper-{{ $variation['id'] }}">
-                                                        @livewire('toggle-status', [
+                                                        {{-- @livewire('toggle-status', [
                                                             'model' => 'ProductVariation',
                                                             'modelId' => $variation['id'],
-                                                        ], key('toggle-'.$variation['id']))
+                                                        ], key('toggle-'.$variation['id'])) --}}
+
+                                                        <x-admin.input-select 
+                                                            id="status" 
+                                                            class="w-full"
+                                                            name="status" 
+                                                            wire:model="selectedStatusId"
+                                                            wire:change="updateStatus"
+                                                        >
+                                                            @slot('options')
+                                                                @foreach ($allStatus as $status)
+                                                                    <x-admin.input-select-option 
+                                                                        value="{{$status->id}}" 
+                                                                        :selected="$variation['status'] == $status->id"
+                                                                    >
+                                                                        {{ $status->title }}
+                                                                    </x-admin.input-select-option>
+                                                                @endforeach
+                                                            @endslot
+                                                        </x-admin.input-select>
                                                     </div>
 
                                                     <x-admin.button-icon

@@ -6,10 +6,6 @@
     ]"
 >
 
-    {{-- @if(Session::has('success'))
-    <h1>hereee</h1>
-    @endif --}}
-
     <section class="sm:rounded-lg overflow-hidden px-1 py-2">
         {{-- add data --}}
         <div class="flex space-x-2 justify-end">
