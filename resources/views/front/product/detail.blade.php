@@ -166,24 +166,63 @@
                     <div class="flex items-center">
                         <div>
                             <div id="sellingPriceEl" class="text-xl sm:text-2xl font-bold">
-                                <span class="currency-icon">{{ $currencySymbol }}</span><span id="priceBox">{{ formatIndianMoney($p->selling_price) }}</span>
+                                <span class="currency-icon">{{ $currencySymbol }}</span><span class="priceBox">{{ formatIndianMoney($p->selling_price) }}</span>
                             </div>
                             <div id="mrpEl" class="text-xs text-slate-500 dark:text-slate-400">
                                 <span class="line-through">
-                                    <span class="currency-icon">{{ $currencySymbol }}</span><span id="mrpBox">{{ formatIndianMoney($p->mrp) }}</span>
+                                    <span class="currency-icon">{{ $currencySymbol }}</span><span class="mrpBox">{{ formatIndianMoney($p->mrp) }}</span>
                                 </span>
                             </div>
                             <div id="savingsEl" class="text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
-                                You save <span class="currency-icon">{{ $currencySymbol }}</span><span id="savingsBox">{{ formatIndianMoney($p->mrp - $p->selling_price) }}</span> 
-                                (<span id="discountBox">{{ $p->discount }}</span>% off)
+                                You save <span class="currency-icon">{{ $currencySymbol }}</span><span class="savingsBox">{{ formatIndianMoney($p->mrp - $p->selling_price) }}</span> 
+                                (<span class="discountBox">{{ $p->discount }}</span>% off)
                             </div>
                         </div>
                     </div>
                 @endif
 
                 <!-- Variations -->
-                {{-- {{ dd($variation['data']) }} --}}
+                {{-- {{ dd($variation) }} --}}
                 @if ($variation['code'] == 200)
+                    <div class="space-y-4" id="variationTab">
+                        @foreach ($variation['data']['attributes'] as $attrIndex => $attribute)
+                        <div>
+                            <fieldset>
+                            <legend id="legend-{{ $attribute['slug'] }}" class="{{ FD['text-1'] }} font-semibold mb-2 text-gray-600 dark:text-gray-500">
+                                {{ $attribute['title'] }}
+                            </legend>
+
+                            <div class="flex flex-wrap space-x-2" role="radiogroup" aria-labelledby="legend-{{ $attribute['slug'] }}">
+                                @foreach ($attribute['values'] as $valueIndex => $value)
+                                <div class="group">
+                                    {{-- input BEFORE label so peer-checked works --}}
+                                    <input
+                                    type="radio"
+                                    id="attr{{ $attrIndex }}{{ $valueIndex }}"
+                                    name="variation-{{ $attribute['slug'] }}"
+                                    value="{{ $value['slug'] }}"
+                                    class="sr-only peer" {{-- sr-only keeps it visible to assistive tech; peer enables CSS variants --}}
+                                    />
+
+                                    <label
+                                    for="attr{{ $attrIndex }}{{ $valueIndex }}"
+                                    role="radio"
+                                    aria-checked="false"
+                                    tabindex="0"
+                                    class="inline-block rounded-full cursor-pointer text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-600 border-2 border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 peer-checked:bg-gray-100 dark:peer-checked:bg-gray-800 peer-checked:border-primary-700 dark:peer-checked:border-primary-600 peer-checked:text-gray-900 dark:peer-checked:text-gray-100 px-2 py-1 mb-2 mr-2 transition duration-150 variation-label"
+                                    >
+                                    <p class="text-sm font-medium">{{ $value['title'] }}</p>
+                                    </label>
+                                </div>
+                                @endforeach
+                            </div>
+                            </fieldset>
+                        </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                {{-- @if ($variation['code'] == 200)
                     <div class="space-y-4" id="variationTab">
                         @foreach ($variation['data']['attributes'] as $attrIndex => $attribute)
                             <div>
@@ -192,7 +231,7 @@
                                 </h3>
 
                                 <div class="flex flex-wrap space-x-2">
-                                    @foreach ($attribute['values'] as $valueIndex => $value)
+                                    @foreach ($attribute['values'] as $valueIndex => $value) --}}
                                         {{-- <x-front.radio-input-button 
                                             id="attr{{$attrIndex}}{{$valueIndex}}" 
                                             name="variation-{{ $attribute['slug'] }}" 
@@ -213,7 +252,7 @@
                                             </div>
                                         </x-front.radio-input-button> --}}
 
-                                        <div class="group">
+                                        {{-- <div class="group">
                                             <input 
                                                 type="radio" 
                                                 id="attr{{$attrIndex}}{{$valueIndex}}" 
@@ -242,12 +281,14 @@
                             </div>
                         @endforeach
                     </div>
-                @endif
+                @endif --}}
 
-                @if ($status->slug == "limited")
+                @if ($status->allow_order == 1)
                     <div class="text-end">
-                        <p class="{{ FD['text-1'] }} font-semibold text-red-600 bg-red-100 px-3 py-1 {{ FD['rounded'] }} inline-block dark:text-red-400 dark:bg-red-900/30">
-                            Hurry! Only a few items left
+                        <p class="{{ FD['text'] }} font-semibold {{ FD['rounded'] }} inline-block">
+                            <span id="prodStatDetail" class="{{ $status->title_tailwind_classes }} {{ $status->bg_tailwind_classes }} px-3 py-1">
+                                {{ $status->title_frontend }}
+                            </span>
                         </p>
                     </div>
                 @endif
@@ -321,7 +362,7 @@
                                 aria-label="Add to cart"
                                 data-prod-id="{{$product->id}}" 
                                 data-purchase-type="cart"
-                                data-variation-data="{{ json_encode($variation['data']) }}"
+                                {{-- data-variation-data="{{ json_encode($variation['data']) }}" --}}
                             >
                             <span class="mr-2 inline-flex items-center" aria-hidden="true">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4"><path d="M289.42-105.77q-28.14 0-47.88-19.7-19.73-19.7-19.73-47.84 0-28.15 19.7-47.88 19.7-19.73 47.84-19.73 28.14 0 47.88 19.7 19.73 19.7 19.73 47.84 0 28.14-19.7 47.88-19.7 19.73-47.84 19.73Zm380.42 0q-28.14 0-47.88-19.7-19.73-19.7-19.73-47.84 0-28.15 19.7-47.88 19.7-19.73 47.84-19.73 28.15 0 47.88 19.7 19.73 19.7 19.73 47.84 0 28.14-19.7 47.88-19.7 19.73-47.84 19.73ZM242.23-729.19l101.39 212.31h268.65q3.46 0 6.15-1.74 2.7-1.73 4.62-4.8l107.31-195q2.3-4.23.38-7.5-1.92-3.27-6.54-3.27H242.23Zm-27.15-55.96h544.57q24.35 0 36.52 20.41 12.17 20.42.98 41.51l-124.92 226.5q-9.04 16.81-25.1 26.31-16.06 9.5-34.52 9.5H325.62l-47.12 86.23q-3.08 4.61-.19 10 2.88 5.38 8.65 5.38H709.5q11.43 0 19.66 8.23 8.22 8.22 8.22 19.66 0 11.65-8.22 19.86-8.23 8.21-19.66 8.21H289.32q-38.71 0-58.38-33.07t-1.48-66.27l57.08-101.63-143.92-303.26H96.15q-11.65 0-19.86-8.21-8.21-8.21-8.21-19.77 0-11.56 8.21-19.77 8.21-8.21 19.86-8.21h60.5q9.89 0 17.87 5.27t12.4 14.12l28.16 59Zm128.54 268.27h275.96-275.96Z"/></svg>
@@ -1018,934 +1059,609 @@
     const mainWrap  = document.getElementById('mainImageWrapper');
     const thumbs    = document.querySelectorAll('.thumb-item');
     const lens      = document.getElementById('imgLens');
-    let zoomPane = null;          // the zoom pane element appended to body
-    let currentSrc = mainImage.src;
-    let boundHandlers = {};
+
+    if (mainImage) {
+        let zoomPane = null;          // the zoom pane element appended to body
+        let currentSrc = mainImage.src;
+        let boundHandlers = {};
 
 
-    const qtyGroup = document.getElementById('qtyGroup');
-    const qtyInput = document.getElementById('qtyInput');
-    const decBtn = document.getElementById('qtyDec');
-    const incBtn = document.getElementById('qtyInc');
-    const stockHelper = document.getElementById('stockHelper');
-    const addToCart = document.getElementById('addToCart');
+        const qtyGroup = document.getElementById('qtyGroup');
+        const qtyInput = document.getElementById('qtyInput');
+        const decBtn = document.getElementById('qtyDec');
+        const incBtn = document.getElementById('qtyInc');
+        const stockHelper = document.getElementById('stockHelper');
+        const addToCart = document.getElementById('addToCart');
 
-    // Settings
-    const minQty = parseInt(qtyGroup.dataset.minQty || '1', 10);
-    const serverMax = parseInt(qtyGroup.dataset.maxStock || '99', 10);
-    const step = parseInt(qtyGroup.dataset.step || '1', 10);
+        // Settings
+        const minQty = parseInt(qtyGroup.dataset.minQty || '1', 10);
+        const serverMax = parseInt(qtyGroup.dataset.maxStock || '99', 10);
+        const step = parseInt(qtyGroup.dataset.step || '1', 10);
 
-    // Hard cap for business rule
-    const HARD_MAX = 99;
+        // Hard cap for business rule
+        const HARD_MAX = 99;
 
-    // acceleration settings for long-press buttons
-    const accelerateIntervalStart = 400; // ms
-    const accelerateIntervalMin = 60; // ms
+        // acceleration settings for long-press buttons
+        const accelerateIntervalStart = 400; // ms
+        const accelerateIntervalMin = 60; // ms
 
-    // compute effective max stock (clamped to HARD_MAX)
-    let maxStock = Math.min(Math.max(0, serverMax), HARD_MAX);
-    // -----------------
+        // compute effective max stock (clamped to HARD_MAX)
+        let maxStock = Math.min(Math.max(0, serverMax), HARD_MAX);
+        // -----------------
 
 
 
-    // --- THUMBNAIL HOVER: change main image on pointerenter / focus ---
-    // Add border to first thumbnail on page load
-    const firstThumb = document.querySelector('.thumb-item');
-    if (firstThumb) {
-        firstThumb.classList.add('border-2', 'border-amber-300', 'dark:border-amber-300');
-    }
-    thumbs.forEach(btn => {
-        // pointerenter covers mouse & pen; also handle keyboard focus
-        btn.addEventListener('pointerenter', () => {
-            btn.classList.add('border-2', 'border-amber-300', 'dark:border-amber-300');
-            const src = btn.dataset.img;
-            if (src && src !== currentSrc) {
-                currentSrc = src;
-                mainImage.src = src;
+        // --- THUMBNAIL HOVER: change main image on pointerenter / focus ---
+        // Add border to first thumbnail on page load
+        const firstThumb = document.querySelector('.thumb-item');
+        if (firstThumb) {
+            firstThumb.classList.add('border-2', 'border-amber-300', 'dark:border-amber-300');
+        }
+        thumbs.forEach(btn => {
+            // pointerenter covers mouse & pen; also handle keyboard focus
+            btn.addEventListener('pointerenter', () => {
+                btn.classList.add('border-2', 'border-amber-300', 'dark:border-amber-300');
+                const src = btn.dataset.img;
+                if (src && src !== currentSrc) {
+                    currentSrc = src;
+                    mainImage.src = src;
+                }
+                // visual focus state
+                // thumbs.forEach(t => t.classList.remove('ring-2','ring-slate-300'));
+                // btn.classList.add('ring-2','ring-slate-300','ring-inset');
+                thumbs.forEach(t => t.classList.remove('border-2', 'border-amber-300', 'dark:border-amber-300'));
+                btn.classList.add('border-2', 'border-amber-300', 'dark:border-amber-300');
+            });
+
+            btn.addEventListener('focus', () => {
+                btn.dispatchEvent(new Event('pointerenter'));
+            });
+
+            // optional: on pointerleave remove ring (keeps last selected)
+            btn.addEventListener('pointerleave', () => {
+                // keep ring on the last hovered; comment out to remove ring on leave
+                // btn.classList.remove('ring-2','ring-slate-300');
+            });
+        });
+
+        // --- LIGHTBOX / GALLERY (unchanged) ---
+        document.getElementById('openGallery').addEventListener('click', () => {
+            const src = mainImage.src;
+            const light = document.createElement('div');
+            light.className = 'fixed inset-0 z-60 bg-black/80 flex items-center justify-center p-4';
+            light.innerHTML = `<div class="max-w-4xl w-full"><img src="${src}" class="w-full h-auto {{ FD['rounded'] }}" alt="preview" /></div>`;
+            light.addEventListener('click', (e) => {
+            if (e.target === light) document.body.removeChild(light);
+            });
+            document.body.appendChild(light);
+            const escHandler = e => { if (e.key === 'Escape') { if (document.body.contains(light)) document.body.removeChild(light); document.removeEventListener('keydown', escHandler); } };
+            document.addEventListener('keydown', escHandler);
+        });
+
+        // --- ZOOM PANE CREATION ---
+        function getZoomPane() {
+            // reuse existing element if present
+            let pane = document.getElementById('zoomPane');
+            if (pane) {
+                zoomPane = pane;
+                return zoomPane;
             }
-            // visual focus state
-            // thumbs.forEach(t => t.classList.remove('ring-2','ring-slate-300'));
-            // btn.classList.add('ring-2','ring-slate-300','ring-inset');
-            thumbs.forEach(t => t.classList.remove('border-2', 'border-amber-300', 'dark:border-amber-300'));
-            btn.classList.add('border-2', 'border-amber-300', 'dark:border-amber-300');
-        });
 
-        btn.addEventListener('focus', () => {
-            btn.dispatchEvent(new Event('pointerenter'));
-        });
+            // create it lazily
+            pane = document.createElement('div');
+            pane.id = 'zoomPane';
 
-        // optional: on pointerleave remove ring (keeps last selected)
-        btn.addEventListener('pointerleave', () => {
-            // keep ring on the last hovered; comment out to remove ring on leave
-            // btn.classList.remove('ring-2','ring-slate-300');
-        });
-    });
+            // base classes (matches previous HTML)
+            pane.classList.add('hidden', 'lg:block', 'overflow-hidden', 'shadow-lg');
 
-    // --- LIGHTBOX / GALLERY (unchanged) ---
-    document.getElementById('openGallery').addEventListener('click', () => {
-        const src = mainImage.src;
-        const light = document.createElement('div');
-        light.className = 'fixed inset-0 z-60 bg-black/80 flex items-center justify-center p-4';
-        light.innerHTML = `<div class="max-w-4xl w-full"><img src="${src}" class="w-full h-auto {{ FD['rounded'] }}" alt="preview" /></div>`;
-        light.addEventListener('click', (e) => {
-        if (e.target === light) document.body.removeChild(light);
-        });
-        document.body.appendChild(light);
-        const escHandler = e => { if (e.key === 'Escape') { if (document.body.contains(light)) document.body.removeChild(light); document.removeEventListener('keydown', escHandler); } };
-        document.addEventListener('keydown', escHandler);
-    });
+            // copy a "rounded*" class from mainWrap if present so visual style matches FD['rounded']
+            try {
+                if (mainWrap && mainWrap.classList && mainWrap.classList.length) {
+                    for (const c of mainWrap.classList) {
+                        if (c.startsWith('rounded')) { pane.classList.add(c); break; }
+                    }
+                }
+            } catch (err) {
+                // ignore if mainWrap not available yet
+            }
 
-    // --- ZOOM PANE CREATION ---
-    function getZoomPane() {
-        // reuse existing element if present
-        let pane = document.getElementById('zoomPane');
-        if (pane) {
+            // inline styles (same intent as your removed HTML)
+            pane.style.position = 'fixed';
+            pane.style.zIndex = '70';                 // safe high z-index
+            pane.style.display = 'none';
+            pane.style.backgroundRepeat = 'no-repeat';
+            pane.style.backgroundPosition = 'center';
+            pane.style.backgroundColor = '#fff';
+            pane.setAttribute('aria-hidden', 'true');
+
+            // make pane non-interactive so it doesn't steal pointer events
+            pane.style.pointerEvents = 'none';
+
+            document.body.appendChild(pane);
             zoomPane = pane;
             return zoomPane;
         }
 
-        // create it lazily
-        pane = document.createElement('div');
-        pane.id = 'zoomPane';
+        function showZoomPane() {
+            if (window.innerWidth < SHOW_ON_WIDTH) return;
+            const pane = getZoomPane();
+            pane.style.display = 'block';
+            pane.classList.remove('hidden'); // keep Tailwind happy if used
+            // NOTE: pointermove handler will update pane size/position/background-image
+        }
 
-        // base classes (matches previous HTML)
-        pane.classList.add('hidden', 'lg:block', 'overflow-hidden', 'shadow-lg');
+        function hideZoomPane() {
+            const pane = document.getElementById('zoomPane');
+            if (!pane) return;
+            pane.style.display = 'none';
+            pane.classList.add('hidden');
+        }
 
-        // copy a "rounded*" class from mainWrap if present so visual style matches FD['rounded']
-        try {
-            if (mainWrap && mainWrap.classList && mainWrap.classList.length) {
-                for (const c of mainWrap.classList) {
-                    if (c.startsWith('rounded')) { pane.classList.add(c); break; }
-                }
+        // --- MOUSE MOVE handler to update zoom area ---
+        function onPointerMove(e) {
+            const pane = getZoomPane();
+            if (!pane) return;
+
+            // bounding boxes
+            const imgRect = mainImage.getBoundingClientRect();
+            const wrapRect = mainWrap.getBoundingClientRect();
+
+            // natural image size (guard)
+            const nw = mainImage.naturalWidth || imgRect.width;
+            const nh = mainImage.naturalHeight || imgRect.height;
+            if (!nw || !nh) return;
+
+            const boxW = imgRect.width;
+            const boxH = imgRect.height;
+            const imgRatio = nw / nh;
+            const boxRatio = boxW / boxH;
+
+            // compute actual displayed image size (object-fit: contain / scale-down behavior)
+            let dispW, dispH;
+            if (imgRatio > boxRatio) {
+                // image is relatively wider -> fit to box width
+                dispW = boxW;
+                dispH = boxW / imgRatio;
+            } else {
+                // image is relatively taller -> fit to box height
+                dispH = boxH;
+                dispW = boxH * imgRatio;
             }
-        } catch (err) {
-            // ignore if mainWrap not available yet
+
+            // offset of the drawn image inside the img element (centered)
+            const offsetX = (boxW - dispW) / 2;
+            const offsetY = (boxH - dispH) / 2;
+
+            // compute pointer position relative to the drawn image (not the outer box)
+            const imageLeft = imgRect.left + offsetX + window.scrollX;
+            const imageTop  = imgRect.top + offsetY + window.scrollY;
+            const x = (e.clientX + window.scrollX) - imageLeft;
+            const y = (e.clientY + window.scrollY) - imageTop;
+
+            // clamp to image content
+            const clampedX = Math.max(0, Math.min(dispW, x));
+            const clampedY = Math.max(0, Math.min(dispH, y));
+
+            // background (use natural size so aspect is preserved)
+            const bgW = Math.round(nw * ZOOM_FACTOR);
+            const bgH = Math.round(nh * ZOOM_FACTOR);
+
+            // relative position inside drawn image
+            const relX = clampedX / dispW;
+            const relY = clampedY / dispH;
+
+            // pane size (unchanged logic)
+            const paneWidth = Math.min(420, Math.round(imgRect.width * 0.9));
+            const paneHeight = Math.round(imgRect.height);
+            pane.style.width = paneWidth + 'px';
+            pane.style.height = paneHeight + 'px';
+
+            // place pane (try right, then left, same as before)
+            const spaceRight = window.innerWidth - (imgRect.right + 16);
+            const spaceLeft  = imgRect.left - 16;
+            let left;
+            if (spaceRight >= paneWidth) {
+                left = imgRect.right + 12 + window.scrollX;
+            } else if (spaceLeft >= paneWidth) {
+                left = imgRect.left - paneWidth - 12 + window.scrollX;
+            } else {
+                left = Math.max(12 + window.scrollX, window.innerWidth - paneWidth - 12 + window.scrollX);
+            }
+            const top = imageTop; // align the pane with the actual image content top
+            pane.style.left = left + 'px';
+            pane.style.top  = top + 'px';
+
+            // compute background offsets (center the focused pixel)
+            const bgCenterX = Math.round(relX * bgW);
+            const bgCenterY = Math.round(relY * bgH);
+            const bgPosX = Math.max(0, Math.min(bgW - paneWidth, bgCenterX - Math.round(paneWidth / 2)));
+            const bgPosY = Math.max(0, Math.min(bgH - paneHeight, bgCenterY - Math.round(paneHeight / 2)));
+
+            pane.style.backgroundImage = `url("${mainImage.src}")`;
+            pane.style.backgroundSize  = `${bgW}px ${bgH}px`;
+            pane.style.backgroundPosition = `-${bgPosX}px -${bgPosY}px`;
+
+            // lens: size based on paneWidth (same approach you had) and positioned relative to wrapper
+            const lensSize = Math.max(40, Math.round(paneWidth / ZOOM_FACTOR));
+            lens.style.width = lensSize + 'px';
+            lens.style.height = lensSize + 'px';
+
+            // compute lens left/top relative to wrapper (mainWrap)
+            const lensLeft = Math.round((imageLeft - wrapRect.left) + clampedX - lensSize / 2);
+            const lensTop  = Math.round((imageTop - wrapRect.top)  + clampedY - lensSize / 2);
+            lens.style.left = lensLeft + 'px';
+            lens.style.top  = lensTop + 'px';
         }
 
-        // inline styles (same intent as your removed HTML)
-        pane.style.position = 'fixed';
-        pane.style.zIndex = '70';                 // safe high z-index
-        pane.style.display = 'none';
-        pane.style.backgroundRepeat = 'no-repeat';
-        pane.style.backgroundPosition = 'center';
-        pane.style.backgroundColor = '#fff';
-        pane.setAttribute('aria-hidden', 'true');
 
-        // make pane non-interactive so it doesn't steal pointer events
-        pane.style.pointerEvents = 'none';
+        function attachZoomHandlers() {
+            // pointerenter -> create and show pane
+            boundHandlers.enter = (e) => {
+            showZoomPane();
+            lens.classList.remove('hidden');
+            // update immediately so pane appears under current cursor
+            onPointerMove(e);
+            };
+            boundHandlers.move = onPointerMove;
+            boundHandlers.leave = () => {
+            hideZoomPane();
+            lens.classList.add('hidden');
+            };
 
-        document.body.appendChild(pane);
-        zoomPane = pane;
-        return zoomPane;
-    }
-
-    function showZoomPane() {
-        if (window.innerWidth < SHOW_ON_WIDTH) return;
-        const pane = getZoomPane();
-        pane.style.display = 'block';
-        pane.classList.remove('hidden'); // keep Tailwind happy if used
-        // NOTE: pointermove handler will update pane size/position/background-image
-    }
-
-    function hideZoomPane() {
-        const pane = document.getElementById('zoomPane');
-        if (!pane) return;
-        pane.style.display = 'none';
-        pane.classList.add('hidden');
-    }
-
-    // --- MOUSE MOVE handler to update zoom area ---
-    function onPointerMove(e) {
-        const pane = getZoomPane();
-        if (!pane) return;
-
-        // bounding boxes
-        const imgRect = mainImage.getBoundingClientRect();
-        const wrapRect = mainWrap.getBoundingClientRect();
-
-        // natural image size (guard)
-        const nw = mainImage.naturalWidth || imgRect.width;
-        const nh = mainImage.naturalHeight || imgRect.height;
-        if (!nw || !nh) return;
-
-        const boxW = imgRect.width;
-        const boxH = imgRect.height;
-        const imgRatio = nw / nh;
-        const boxRatio = boxW / boxH;
-
-        // compute actual displayed image size (object-fit: contain / scale-down behavior)
-        let dispW, dispH;
-        if (imgRatio > boxRatio) {
-            // image is relatively wider -> fit to box width
-            dispW = boxW;
-            dispH = boxW / imgRatio;
-        } else {
-            // image is relatively taller -> fit to box height
-            dispH = boxH;
-            dispW = boxH * imgRatio;
+            // Use pointer events for broad device coverage
+            mainImage.addEventListener('pointerenter', boundHandlers.enter);
+            mainImage.addEventListener('pointermove', boundHandlers.move);
+            mainImage.addEventListener('pointerleave', boundHandlers.leave);
+            // also hide on scroll or resize to avoid mispositioned pane
+            boundHandlers.onScroll = () => { hideZoomPane(); lens.classList.add('hidden'); };
+            window.addEventListener('scroll', boundHandlers.onScroll, { passive: true });
+            window.addEventListener('resize', boundHandlers.onScroll);
         }
 
-        // offset of the drawn image inside the img element (centered)
-        const offsetX = (boxW - dispW) / 2;
-        const offsetY = (boxH - dispH) / 2;
-
-        // compute pointer position relative to the drawn image (not the outer box)
-        const imageLeft = imgRect.left + offsetX + window.scrollX;
-        const imageTop  = imgRect.top + offsetY + window.scrollY;
-        const x = (e.clientX + window.scrollX) - imageLeft;
-        const y = (e.clientY + window.scrollY) - imageTop;
-
-        // clamp to image content
-        const clampedX = Math.max(0, Math.min(dispW, x));
-        const clampedY = Math.max(0, Math.min(dispH, y));
-
-        // background (use natural size so aspect is preserved)
-        const bgW = Math.round(nw * ZOOM_FACTOR);
-        const bgH = Math.round(nh * ZOOM_FACTOR);
-
-        // relative position inside drawn image
-        const relX = clampedX / dispW;
-        const relY = clampedY / dispH;
-
-        // pane size (unchanged logic)
-        const paneWidth = Math.min(420, Math.round(imgRect.width * 0.9));
-        const paneHeight = Math.round(imgRect.height);
-        pane.style.width = paneWidth + 'px';
-        pane.style.height = paneHeight + 'px';
-
-        // place pane (try right, then left, same as before)
-        const spaceRight = window.innerWidth - (imgRect.right + 16);
-        const spaceLeft  = imgRect.left - 16;
-        let left;
-        if (spaceRight >= paneWidth) {
-            left = imgRect.right + 12 + window.scrollX;
-        } else if (spaceLeft >= paneWidth) {
-            left = imgRect.left - paneWidth - 12 + window.scrollX;
-        } else {
-            left = Math.max(12 + window.scrollX, window.innerWidth - paneWidth - 12 + window.scrollX);
+        function detachZoomHandlers() {
+            if (!boundHandlers.enter) return;
+            mainImage.removeEventListener('pointerenter', boundHandlers.enter);
+            mainImage.removeEventListener('pointermove', boundHandlers.move);
+            mainImage.removeEventListener('pointerleave', boundHandlers.leave);
+            window.removeEventListener('scroll', boundHandlers.onScroll);
+            window.removeEventListener('resize', boundHandlers.onScroll);
         }
-        const top = imageTop; // align the pane with the actual image content top
-        pane.style.left = left + 'px';
-        pane.style.top  = top + 'px';
 
-        // compute background offsets (center the focused pixel)
-        const bgCenterX = Math.round(relX * bgW);
-        const bgCenterY = Math.round(relY * bgH);
-        const bgPosX = Math.max(0, Math.min(bgW - paneWidth, bgCenterX - Math.round(paneWidth / 2)));
-        const bgPosY = Math.max(0, Math.min(bgH - paneHeight, bgCenterY - Math.round(paneHeight / 2)));
+        // initialize
+        attachZoomHandlers();
 
-        pane.style.backgroundImage = `url("${mainImage.src}")`;
-        pane.style.backgroundSize  = `${bgW}px ${bgH}px`;
-        pane.style.backgroundPosition = `-${bgPosX}px -${bgPosY}px`;
+        // When the main image src changes (thumbnail hover), we should update currentSrc & make sure zoom uses the new image.
+        // We already set src on pointerenter thumbs; listen for src changes to ensure lens/zoom pane reflect new image (no extra action needed).
+        // But to be safe, re-create zoom pane image on load so background size will be correct.
+        mainImage.addEventListener('load', () => {
+            // no-op for now; the zoom pane uses the up-to-date mainImage.src when pointer moves
+        });
 
-        // lens: size based on paneWidth (same approach you had) and positioned relative to wrapper
-        const lensSize = Math.max(40, Math.round(paneWidth / ZOOM_FACTOR));
-        lens.style.width = lensSize + 'px';
-        lens.style.height = lensSize + 'px';
-
-        // compute lens left/top relative to wrapper (mainWrap)
-        const lensLeft = Math.round((imageLeft - wrapRect.left) + clampedX - lensSize / 2);
-        const lensTop  = Math.round((imageTop - wrapRect.top)  + clampedY - lensSize / 2);
-        lens.style.left = lensLeft + 'px';
-        lens.style.top  = lensTop + 'px';
+        // Cleanup on page unload (optional)
+        window.addEventListener('unload', () => {
+            detachZoomHandlers();
+            if (zoomPane && document.body.contains(zoomPane)) document.body.removeChild(zoomPane);
+        });
     }
+})();
+</script>
 
+<script>
+(function () {
+    const prodStatDetail = document.getElementById('prodStatDetail');
+    // productData injected from Blade
+    const productData = @json($variation['data']);
 
-    function attachZoomHandlers() {
-        // pointerenter -> create and show pane
-        boundHandlers.enter = (e) => {
-        showZoomPane();
-        lens.classList.remove('hidden');
-        // update immediately so pane appears under current cursor
-        onPointerMove(e);
-        };
-        boundHandlers.move = onPointerMove;
-        boundHandlers.leave = () => {
-        hideZoomPane();
-        lens.classList.add('hidden');
-        };
-
-        // Use pointer events for broad device coverage
-        mainImage.addEventListener('pointerenter', boundHandlers.enter);
-        mainImage.addEventListener('pointermove', boundHandlers.move);
-        mainImage.addEventListener('pointerleave', boundHandlers.leave);
-        // also hide on scroll or resize to avoid mispositioned pane
-        boundHandlers.onScroll = () => { hideZoomPane(); lens.classList.add('hidden'); };
-        window.addEventListener('scroll', boundHandlers.onScroll, { passive: true });
-        window.addEventListener('resize', boundHandlers.onScroll);
-    }
-
-    function detachZoomHandlers() {
-        if (!boundHandlers.enter) return;
-        mainImage.removeEventListener('pointerenter', boundHandlers.enter);
-        mainImage.removeEventListener('pointermove', boundHandlers.move);
-        mainImage.removeEventListener('pointerleave', boundHandlers.leave);
-        window.removeEventListener('scroll', boundHandlers.onScroll);
-        window.removeEventListener('resize', boundHandlers.onScroll);
-    }
-
-    // initialize
-    attachZoomHandlers();
-
-    // When the main image src changes (thumbnail hover), we should update currentSrc & make sure zoom uses the new image.
-    // We already set src on pointerenter thumbs; listen for src changes to ensure lens/zoom pane reflect new image (no extra action needed).
-    // But to be safe, re-create zoom pane image on load so background size will be correct.
-    mainImage.addEventListener('load', () => {
-        // no-op for now; the zoom pane uses the up-to-date mainImage.src when pointer moves
+    // helpers
+    const combosByIdentifier = {};
+    (productData.combinations || []).forEach(c => {
+        combosByIdentifier[c.variation_identifier] = c;
     });
 
-    // Cleanup on page unload (optional)
-    window.addEventListener('unload', () => {
-        detachZoomHandlers();
-        if (zoomPane && document.body.contains(zoomPane)) document.body.removeChild(zoomPane);
-    });
+    function parseIdentifierToMap(identifier) {
+        const map = {};
+        const tokens = identifier ? identifier.split('-') : [];
+        let i = 0;
+        for (const attr of productData.attributes) {
+        let matched = null;
+        for (let take = 1; take <= tokens.length - i; take++) {
+            const candidate = tokens.slice(i, i + take).join('-');
+            if (attr.values.some(v => v.slug === candidate)) {
+            matched = candidate;
+            i += take;
+            break;
+            }
+        }
+        if (!matched) matched = attr.values[0].slug;
+        map[attr.slug] = matched;
+        }
+        return map;
+    }
 
-    /*
-    // helper: build combo key based on variantOrder
-    function comboKeyFromSelected(selected){ return variantOrder.map(g => selected[g] ?? '').join('|'); }
+    function combinationToMap(c) { return parseIdentifierToMap(c.variation_identifier); }
 
-    // selected state
-    const selected = {};
+    function findCombinationForSelection(selection) {
+        const slugs = productData.attributes.map(a => selection[a.slug]).filter(Boolean);
+        if (slugs.length !== productData.attributes.length) return null;
+        const identifier = slugs.join('-');
+        return combosByIdentifier[identifier] || null;
+    }
 
-    // mark active in a group element
-    function markActiveForGroup(groupEl, value){
-        groupEl.querySelectorAll('[data-variant-value]').forEach(btn=>{
-        const v = btn.dataset.variantValue;
-        const active = v === value;
-        btn.setAttribute('aria-checked', active ? 'true' : 'false');
-        // btn.classList.toggle('ring-2', active);
-        btn.classList.toggle('border-2', active);
-        btn.classList.toggle('ring-amber-500', active);
-        btn.classList.toggle('opacity-60', btn.disabled && !active);
+    function isValueValid(attrSlug, valueSlug, partialSelection) {
+        return (productData.combinations || []).some(c => {
+        const map = combinationToMap(c);
+        for (const [k, v] of Object.entries(partialSelection)) {
+            if (map[k] !== v) return false;
+        }
+        return map[attrSlug] === valueSlug;
         });
     }
 
-    // update UI: summary, note, price and enable/disable actions
-    function updateVariantUI(){
-        // summary
-        const summaryEl = document.getElementById('selectedSummary');
-        if (summaryEl) {
-        const parts = variantOrder.map(g => (variants[g] && variants[g][selected[g]]) ? variants[g][selected[g]] : (selected[g] || '—'));
-        summaryEl.textContent = parts.join(' / ');
+    function chooseBestComboForAttributeValue(attrSlug, valueSlug, currentPartial) {
+        const candidates = (productData.combinations || [])
+        .map(c => ({ combo: c, map: combinationToMap(c) }))
+        .filter(x => x.map[attrSlug] === valueSlug);
+
+        if (candidates.length === 0) return null;
+
+        let best = candidates[0];
+        let bestScore = -1;
+        for (const c of candidates) {
+        let score = 0;
+        for (const [k, v] of Object.entries(currentPartial)) {
+            if (c.map[k] && c.map[k] === v) score++;
         }
-
-        // find combo info
-        const key = comboKeyFromSelected(selected);
-        const info = combos[key] || null;
-        // const noteEl = document.getElementById('variantNote');
-        const stockHelper = document.getElementById('stockHelper');
-        const priceEl = document.getElementById('sellingPriceEl');
-        const mrpEl = document.getElementById('mrpEl');
-        const savingsEl = document.getElementById('savingsEl');
-        const addToCart = document.getElementById('addToCart');
-        const buyNow = document.getElementById('buyNow');
-
-        if (!info) {
-            // if (noteEl) { noteEl.textContent = 'This combination is unavailable'; noteEl.classList.remove('hidden'); }
-            if (stockHelper) stockHelper.textContent = '';
-            if (priceEl) priceEl.innerHTML = '<span class="text-red-500 dark:text-amber-700">Unavailable</span>';
-            if (addToCart) { addToCart.disabled = true; addToCart.classList.add('opacity-60'); }
-            if (buyNow) { buyNow.disabled = true; buyNow.classList.add('opacity-60'); }
-            if (mrpEl) mrpEl.textContent = '';
-            if (savingsEl) savingsEl.textContent = '';
-            return;
+        if (score > bestScore) { bestScore = score; best = c; }
         }
-
-    }
-    */
-
-    /*
-    // wire variant groups: set initial selected and attach handlers
-    document.querySelectorAll('[data-variant-group]').forEach(groupEl => {
-        const groupKey = groupEl.getAttribute('data-variant-group');
-
-        // initial: pick first enabled option
-        const first = groupEl.querySelector('[data-variant-value]:not([disabled])');
-        selected[groupKey] = first ? first.dataset.variantValue : null;
-        markActiveForGroup(groupEl, selected[groupKey]);
-
-        // click delegation
-        groupEl.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-variant-value]');
-        if (!btn || btn.disabled) return;
-        selected[groupKey] = btn.dataset.variantValue;
-        markActiveForGroup(groupEl, selected[groupKey]);
-        updateVariantUI();
-        });
-
-        // keyboard navigation
-        const buttons = Array.from(groupEl.querySelectorAll('[data-variant-value]'));
-        buttons.forEach((btn, idx) => {
-        btn.addEventListener('keydown', ev => {
-            if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') {
-            ev.preventDefault();
-            const next = buttons[(idx + 1) % buttons.length];
-            if (!next.disabled) next.focus();
-            } else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') {
-            ev.preventDefault();
-            const prev = buttons[(idx - 1 + buttons.length) % buttons.length];
-            if (!prev.disabled) prev.focus();
-            } else if (ev.key === 'Enter' || ev.key === ' ') {
-            ev.preventDefault();
-            btn.click();
-            }
-        });
-        });
-    });
-
-    // get current combo key
-    function getCurrentComboKey(){ return comboKeyFromSelected(selected); }
-
-    // qty handlers (clamp by stock)
-    const qtyInput = document.getElementById('qtyInput');
-    function clampQty(){
-        let v = parseInt(qtyInput.value || 1, 10);
-        if (isNaN(v) || v < 1) v = 1;
-        const key = getCurrentComboKey();
-        const info = combos[key];
-        if (info && info.stock) v = Math.min(v, info.stock);
-        qtyInput.value = v;
-    }
-    document.getElementById('qtyInc').addEventListener('click', ()=>{
-        qtyInput.value = Math.max(1, parseInt(qtyInput.value||1,10)+1);
-        clampQty();
-        updateVariantUI();
-    });
-    document.getElementById('qtyDec').addEventListener('click', ()=>{
-        qtyInput.value = Math.max(1, parseInt(qtyInput.value||1,10)-1);
-        clampQty();
-        updateVariantUI();
-    });
-    qtyInput.addEventListener('input', ()=>{ clampQty(); updateVariantUI(); });
-
-    // init UI
-    updateVariantUI();
-    */
-
-
-
-
-
-
-    /*
-    function clamp(v) {
-        if (isNaN(v)) return minQty;
-        v = Math.round(v);
-        if (v < minQty) return minQty;
-        if (v > maxStock) return maxStock;
-        return v;
+        return best.map;
     }
 
-    function updateUI(qty) {
-        qty = clamp(qty);
-        qtyInput.value = qty;
-        qtyInput.setAttribute('aria-valuenow', qty);
-        qtyInput.setAttribute('aria-valuemax', Math.min(maxStock, HARD_MAX));
-        decBtn.disabled = qty <= minQty;
-        incBtn.disabled = qty >= maxStock;
-        // Add to cart is managed server-side; we only reflect disable state here
-        if (addToCart) addToCart.disabled = qty < minQty || maxStock === 0;
-
-        // Stock helper messages
-        if (maxStock === 0) {
-        stockHelper.textContent = 'Out of stock';
-        stockHelper.classList.remove('text-slate-500');
-        stockHelper.classList.add('text-red-600');
-        } else if (maxStock <= 5) {
-        stockHelper.textContent = 'Only ' + maxStock + ' left — order soon';
-        stockHelper.classList.remove('text-slate-500', 'text-green-600');
-        stockHelper.classList.add('text-amber-600');
-        } else {
-        stockHelper.textContent = '';
-        stockHelper.classList.remove('text-amber-600', 'text-red-600');
-        stockHelper.classList.add('text-slate-500');
-        }
+    // URL helpers
+    function getVariantFromURL() {
+        try { return new URLSearchParams(window.location.search).get('variant'); }
+        catch (e) { return null; }
+    }
+    function updateURL(selection) {
+        const slugs = productData.attributes.map(a => selection[a.slug]).filter(Boolean);
+        if (slugs.length !== productData.attributes.length) return;
+        const identifier = slugs.join('-');
+        const url = new URL(window.location.href);
+        url.searchParams.set('variant', identifier);
+        history.replaceState(null, '', url.toString());
     }
 
-    // Initialize
-    updateUI(parseInt(qtyInput.value || minQty, 10));
-
-    // change by delta (only via buttons)
-    function changeBy(delta) {
-        const current = clamp(parseInt(qtyInput.value || minQty, 10));
-        updateUI(current + delta);
+    // initial selection: try URL, else fallback to first available combo
+    function initialSelection() {
+        if (!productData.combinations || productData.combinations.length === 0) return {};
+        const urlVariant = getVariantFromURL();
+        if (urlVariant && combosByIdentifier[urlVariant]) return parseIdentifierToMap(urlVariant);
+        // prefer the first combination that has allow_order === true (if any), else first combo
+        const firstAllowed = productData.combinations.find(c => c.allow_order);
+        return parseIdentifierToMap((firstAllowed || productData.combinations[0]).variation_identifier);
     }
 
-    // Button click handlers (only way to update qty)
-    decBtn.addEventListener('click', () => changeBy(-step));
-    incBtn.addEventListener('click', () => changeBy(step));
+    // DOM helpers (IDs are rendered by Blade as attr{attrIndex}{valueIndex})
+    function buildRadioId(attrIndex, valueIndex) { return `attr${attrIndex}${valueIndex}`; }
 
-    // Long-press accelerate for inc/dec (mobile friendly)
-    let accelTimer = null;
-    let accelInterval = accelerateIntervalStart;
-    let accelDirection = 0;
-
-    function startAccel(dir) {
-        accelDirection = dir;
-        accelInterval = accelerateIntervalStart;
-        accelTimer = setTimeout(accelerateStep, accelInterval);
-    }
-    function accelerateStep() {
-        if (!accelDirection) return stopAccel();
-        changeBy(accelDirection * step);
-        accelInterval = Math.max(accelerateIntervalMin, Math.round(accelInterval * 0.85));
-        accelTimer = setTimeout(accelerateStep, accelInterval);
-    }
-    function stopAccel() {
-        clearTimeout(accelTimer);
-        accelTimer = null;
-        accelDirection = 0;
+    // find label for a given input id
+    function labelFor(inputId) { 
+        const input = document.getElementById(inputId);
+        if (!input) return null;
+        // label is immediate sibling in your Blade markup
+        return input.nextElementSibling && input.nextElementSibling.tagName === 'LABEL' ? input.nextElementSibling : document.querySelector(`label[for="${inputId}"]`);
     }
 
-    ['mousedown','touchstart'].forEach(evt => {
-        incBtn.addEventListener(evt, (e) => {
-        e.preventDefault();
-        startAccel(1);
-        }, {passive:false});
-        decBtn.addEventListener(evt, (e) => {
-        e.preventDefault();
-        startAccel(-1);
-        }, {passive:false});
-    });
-    ['mouseup','mouseleave','touchend','touchcancel'].forEach(evt => {
-        incBtn.addEventListener(evt, stopAccel);
-        decBtn.addEventListener(evt, stopAccel);
-    });
+    let currentSelection = initialSelection();
 
-    // Prevent typing/editing in input (explicitly required)
-    // readonly attribute is present, but also block key events to be extra-safe.
-    qtyInput.addEventListener('keydown', function (e) {
-        // allow Tab (9) and Shift+Tab navigation; block other keys that could mutate input
-        if (e.key === 'Tab' || (e.key === 'Tab' && e.shiftKey)) return;
-        e.preventDefault();
-    });
+    // attach listeners to existing inputs/labels rendered by Blade
+    function attachHandlers() {
+        productData.attributes.forEach((attribute, attrIndex) => {
+            attribute.values.forEach((value, valueIndex) => {
+                const id = buildRadioId(attrIndex, valueIndex);
+                const input = document.getElementById(id);
+                const label = labelFor(id);
+                if (!input || !label) return;
 
-    // Prevent paste / drop into input
-    qtyInput.addEventListener('paste', (e) => e.preventDefault());
-    qtyInput.addEventListener('drop', (e) => e.preventDefault());
+                // make sure label has role=radio and is focusable (Blade sets this but safeguard)
+                label.setAttribute('role', 'radio');
+                label.tabIndex = label.tabIndex >= 0 ? label.tabIndex : 0;
 
-    // Expose API for other scripts: set max stock (server push) and get qty
-    window.__qtyWidget = {
-        getQty: () => clamp(parseInt(qtyInput.value || minQty, 10)),
-        setMaxStock: (n) => {
-        const parsed = Math.min(HARD_MAX, Math.max(0, parseInt(n || 0, 10)));
-        maxStock = parsed;
-        qtyInput.setAttribute('aria-valuemax', Math.min(maxStock, HARD_MAX));
-        updateUI(window.__qtyWidget.getQty());
-        },
-        setQty: (n) => updateUI(clamp(parseInt(n || minQty, 10)))
-    };
-    */
-
-
-
-
-
-
-
-
-
-
-
-    @if ($variation['code'] == 200)
-        document.addEventListener("DOMContentLoaded", () => {
-            const productCombinations = @json($variation['data']['combinations']);
-            const variationAttributes = @json($variation['data']['attributes']);
-            const selectedOptions = {};
-
-            // Helpers
-            function tokensOf(identifier) {
-                return identifier.split('-').map(t => t.trim()).filter(Boolean);
-            }
-
-            function findCombination(options) {
-                console.log('options>>', options);
-
-                return productCombinations.find(c => {
-                    const tokens = tokensOf(c.variation_identifier);
-                    return Object.values(options).every(v => tokens.includes(v));
-                });
-            }
-
-            function autoSelectNext(attrSlug) {
-                console.log('attrSlug>>', attrSlug);
-                
-                const combo = findCombination(selectedOptions);
-                if (!combo) return;
-
-                const tokens = tokensOf(combo.variation_identifier);
-                variationAttributes.forEach(attr => {
-                    if (!selectedOptions[attr.slug]) {
-                        const token = tokens.find(t =>
-                            attr.values.some(v => v.slug === t)
-                        );
-                        if (token) {
-                            const el = document.querySelector(
-                                `.attr-val-generate[data-attr-slug="${attr.slug}"][data-value-slug="${token}"]`
-                            );
-                            if (el) {
-                                el.checked = true;
-                                selectedOptions[attr.slug] = token;
-                            }
-                        }
-                    }
-                });
-            }
-
-            function updateUI(combo) {
-                console.log(combo);
-                if (combo && combo.pricing?.length > 0) {
-                    const price = combo.pricing[0].selling_price_formatted;
-                    const priceBox = document.getElementById('priceBox');
-                    if (priceBox) {
-                        priceBox.innerText = price;
-                    }
-                }
-                disableInvalidOptions();
-            }
-
-            function disableInvalidOptions() {
-                variationAttributes.forEach(attr => {
-                    attr.values.forEach(val => {
-                        const el = document.querySelector(
-                            `.attr-val-generate[data-attr-slug="${attr.slug}"][data-value-slug="${val.slug}"]`
-                        );
-                        if (!el) return;
-
-                        // Check if this value can exist with currently selected options
-                        const testOptions = { ...selectedOptions, [attr.slug]: val.slug };
-                        const valid = productCombinations.some(c => {
-                            const tokens = tokensOf(c.variation_identifier);
-                            return Object.values(testOptions).every(v => tokens.includes(v));
-                        });
-
-                        if (valid) {
-                            el.parentElement.classList.remove("opacity-50");
+                // input change (screen reader / native interaction)
+                input.addEventListener('change', (ev) => {
+                    if (ev.target.checked) {
+                        const best = chooseBestComboForAttributeValue(attribute.slug, value.slug, currentSelection) || {};
+                        if (Object.keys(best).length) {
+                            currentSelection = { ...best };
                         } else {
-                            el.parentElement.classList.add("opacity-50");
+                            currentSelection[attribute.slug] = value.slug;
                         }
-                    });
-                });
-            }
-
-            // Attach events
-            document.querySelectorAll('.attr-val-generate').forEach(el => {
-                el.addEventListener('change', function () {
-                    const attrSlug = this.dataset.attrSlug;
-                    const valueSlug = this.dataset.valueSlug;
-
-                    // console.log('attrSlug>>', attrSlug); // Color/ Size
-                    // console.log('valueSlug>>', valueSlug);// Red/ XL
-
-                    selectedOptions[attrSlug] = valueSlug;
-
-                    autoSelectNext(attrSlug);
-
-                    const combo = findCombination(selectedOptions);
-                    updateUI(combo);
-                });
-            });
-
-            // Auto-select first valid combination
-            const firstCombo = productCombinations[0];
-            if (firstCombo) {
-                const tokens = tokensOf(firstCombo.variation_identifier);
-                variationAttributes.forEach(attr => {
-                    const token = tokens.find(t =>
-                        attr.values.some(v => v.slug === t)
-                    );
-                    if (token) {
-                        const el = document.querySelector(
-                            `.attr-val-generate[data-attr-slug="${attr.slug}"][data-value-slug="${token}"]`
-                        );
-                        if (el) {
-                            el.checked = true;
-                            selectedOptions[attr.slug] = token;
-                        }
+                        updateUI();
                     }
                 });
-                updateUI(firstCombo);
-            }
-        });
-    @endif
 
+                // label click (intent) - allow clicking unavailable options
+                label.addEventListener('click', (ev) => {
+                    ev.preventDefault();
+                    const bestMap = chooseBestComboForAttributeValue(attribute.slug, value.slug, currentSelection);
+                    if (bestMap) currentSelection = { ...bestMap };
+                    else currentSelection[attribute.slug] = value.slug;
 
+                    // mark input checked
+                    input.checked = true;
+                    updateUI();
+                });
 
-
-
-
-    // Variation
-    @if ($variation['code'] == 200)
-        /*
-        const productCombinations = @json($variation['data']['combinations']);
-        const attributes = @json($variation['data']['attributes']);
-        const selectedOptions = {};
-
-        // Helpers
-        function tokensOf(identifier) {
-            return identifier.split('-').map(t => t.trim()).filter(Boolean);
-        }
-
-        function findCombination(options) {
-            return productCombinations.find(c => {
-                const tokens = tokensOf(c.variation_identifier);
-                return Object.values(options).every(v => tokens.includes(v));
-            });
-        }
-
-        function autoSelectNext(attrSlug) {
-            const combo = findCombination(selectedOptions);
-            if (!combo) return;
-
-            const tokens = tokensOf(combo.variation_identifier);
-            attributes.forEach(attr => {
-                if (!selectedOptions[attr.slug]) {
-                    const token = tokens.find(t =>
-                        attr.values.some(v => v.slug === t)
-                    );
-                    if (token) {
-                        const el = document.querySelector(
-                            `.attr-val-generate[data-attr-slug="${attr.slug}"][data-value-slug="${token}"]`
-                        );
-                        if (el) {
-                            el.checked = true;
-                            selectedOptions[attr.slug] = token;
-                        }
-                    }
+                // keyboard interactions for label
+                label.addEventListener('keydown', (ev) => {
+                if (ev.key === 'Enter' || ev.key === ' ') {
+                    ev.preventDefault();
+                    label.click();
+                    return;
                 }
-            });
-        }
-
-        function updateUI(combo) {
-            if (combo && combo.pricing?.length > 0) {
-                const price = combo.pricing[0].selling_price_formatted;
-                document.getElementById('priceBox').innerText = price;
-            }
-        }
-
-        // Attach events
-        document.querySelectorAll('.attr-val-generate').forEach(el => {
-            el.addEventListener('change', function () {
-                const attrSlug = this.dataset.attrSlug;
-                const valueSlug = this.dataset.valueSlug;
-
-                selectedOptions[attrSlug] = valueSlug;
-
-                autoSelectNext(attrSlug);
-
-                const combo = findCombination(selectedOptions);
-                updateUI(combo);
+                if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') {
+                    ev.preventDefault();
+                    focusSiblingWithinGroup(attribute.slug, label, +1);
+                    return;
+                }
+                if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') {
+                    ev.preventDefault();
+                    focusSiblingWithinGroup(attribute.slug, label, -1);
+                    return;
+                }
+                });
             });
         });
+    }
 
-        // Auto-select first valid combination
-        const firstCombo = productCombinations[0];
-        if (firstCombo) {
-            const tokens = tokensOf(firstCombo.variation_identifier);
-            attributes.forEach(attr => {
-                const token = tokens.find(t =>
-                    attr.values.some(v => v.slug === t)
-                );
-                if (token) {
-                    const el = document.querySelector(
-                        `.attr-val-generate[data-attr-slug="${attr.slug}"][data-value-slug="${token}"]`
-                    );
-                    if (el) {
-                        el.checked = true;
-                        selectedOptions[attr.slug] = token;
-                    }
+    function focusSiblingWithinGroup(attrSlug, currentLabel, direction) {
+        const fieldset = currentLabel.closest('fieldset');
+        if (!fieldset) return;
+        const labels = Array.from(fieldset.querySelectorAll('label[role="radio"]'));
+        const idx = labels.indexOf(currentLabel);
+        if (idx === -1) return;
+        let next = idx + direction;
+        if (next < 0) next = labels.length - 1;
+        if (next >= labels.length) next = 0;
+        labels[next].focus();
+    }
+
+    // update UI: toggle classes, aria attributes, price text (if present), and URL
+    function updateUI() {
+        productData.attributes.forEach((attribute, attrIndex) => {
+            attribute.values.forEach((value, valueIndex) => {
+                const inputId = buildRadioId(attrIndex, valueIndex);
+                const input = document.getElementById(inputId);
+                const label = labelFor(inputId);
+                if (!input || !label) return;
+
+                // partial selection excluding this attribute
+                const partial = {};
+                for (const [k, v] of Object.entries(currentSelection)) {
+                    if (k !== attribute.slug && v) partial[k] = v;
                 }
-            });
-            updateUI(firstCombo);
-        }
-        */
 
+                const valid = isValueValid(attribute.slug, value.slug, partial);
 
-
-
-
-
-
-
-        /*
-        const productCombinations = @json($variation['data']['combinations']);
-        const attributeSlugs = @json(array_map(function($a){ return $a['slug']; }, $variation['data']['attributes']));
-        const selectedOptions = {};
-
-        // Cache DOM elements
-        const priceBoxEl = document.getElementById('priceBox');
-        const mrpBoxEl = document.getElementById('mrpBox');
-        const savingsBoxEl = document.getElementById('savingsBox');
-        const discountBoxEl = document.getElementById('discountBox');
-        const optionInputs = Array.from(document.querySelectorAll('.attr-val-generate'));
-
-        // Helpers
-        const tokensOf = identifier => identifier.split('-').map(t => t.trim()).filter(Boolean);
-        const combinationMatchesSelectionTokens = (tokens, selectionObj) => 
-            Object.entries(selectionObj).every(([k, v]) => !v || tokens.includes(v));
-        
-        const findExactMatch = selectedObj => {
-            const values = attributeSlugs.map(s => selectedObj[s]).filter(Boolean);
-            if (values.length !== attributeSlugs.length) return null;
-            
-            const normalized = values.slice().sort().join('|');
-            return productCombinations.find(c => {
-                const tokens = tokensOf(c.variation_identifier);
-                return tokens.length === attributeSlugs.length && 
-                    tokens.slice().sort().join('|') === normalized;
-            }) || null;
-        };
-
-        const getLabelFor = input => {
-            if (!input) return null;
-            if (input.id) {
-                const lab = document.querySelector(`label[for="${input.id}"]`);
-                if (lab) return lab;
-            }
-            return input.closest('label') || 
-                input.nextElementSibling?.tagName === 'LABEL' && input.nextElementSibling ||
-                input.parentElement?.querySelector('label') ||
-                input.parentElement;
-        };
-
-        const enableLabel = label => {
-            if (!label) return;
-            label.classList.remove('opacity-50');
-            label.setAttribute('aria-disabled', 'false');
-        };
-        
-        const disableLabel = label => {
-            if (!label) return;
-            label.classList.add('opacity-50');
-            label.setAttribute('aria-disabled', 'true');
-        };
-
-        const updatePrice = combination => {
-            if (combination?.pricing?.length) {
-                const p = combination.pricing[0];
-                if (priceBoxEl) priceBoxEl.innerText = p.selling_price_formatted ?? p.selling_price ?? '';
-                if (mrpBoxEl) mrpBoxEl.innerText = p.mrp_formatted ?? p.mrp ?? '';
-                if (savingsBoxEl) savingsBoxEl.innerText = p.savings_formatted ?? ((+p.mrp || 0) - (+p.selling_price || 0)) ?? '';
-                if (discountBoxEl) discountBoxEl.innerText = p.discount ?? '';
-            }
-        };
-
-        const updateOptionsAvailability = () => {
-            optionInputs.forEach(input => {
-                const attr = input.dataset.attrSlug;
-                const val = input.dataset.valueSlug ?? input.value;
-                const testSelection = {...selectedOptions, [attr]: val};
-                
-                const isValid = productCombinations.some(c => 
-                    combinationMatchesSelectionTokens(tokensOf(c.variation_identifier), testSelection)
-                );
-                
-                const label = getLabelFor(input);
-                isValid ? enableLabel(label) : disableLabel(label);
-                
-                // Update aria-checked for selected state
-                const isSelected = selectedOptions[attr] === val;
-                if (label) label.setAttribute('aria-checked', isSelected.toString());
-            });
-        };
-
-        // Event handler for option selection
-        const handleOptionSelection = ev => {
-            const input = ev.target.matches('input') ? ev.target : 
-                        (ev.target.tagName === 'LABEL' ? document.getElementById(ev.target.htmlFor) : null);
-            
-            if (!input) return;
-            
-            const attrSlug = input.dataset.attrSlug;
-            const valueSlug = input.dataset.valueSlug ?? input.value;
-            
-            // Update selected options
-            selectedOptions[attrSlug] = valueSlug;
-            
-            // Ensure input is checked
-            if ('checked' in input) input.checked = true;
-            
-            updateCombinationsUI();
-        };
-
-        // Initialize selectedOptions from checked inputs or first available
-        (function initDefaults() {
-            attributeSlugs.forEach(slug => {
-                const checkedInput = optionInputs.find(i => 
-                    i.dataset.attrSlug === slug && (i.checked || i.hasAttribute('checked'))
-                );
-                
-                if (checkedInput) {
-                    selectedOptions[slug] = checkedInput.dataset.valueSlug ?? checkedInput.value;
+                if (!valid) {
+                    label.classList.add('opacity-40');
+                    label.setAttribute('title', 'Not available with current selection (click to switch)');
                 } else {
-                    const first = optionInputs.find(i => i.dataset.attrSlug === slug);
-                    if (first) {
-                        selectedOptions[slug] = first.dataset.valueSlug ?? first.value;
-                        if ('checked' in first) first.checked = true;
-                    }
+                    label.classList.remove('opacity-40');
+                    label.removeAttribute('title');
                 }
+
+                // reflect checked state & aria
+                const checked = currentSelection[attribute.slug] === value.slug;
+                input.checked = checked;
+                input.setAttribute('aria-checked', String(checked));
+                label.setAttribute('aria-checked', String(checked));
             });
-
-            updateCombinationsUI();
-        })();
-
-        // Attach event listeners using event delegation
-        document.addEventListener('click', ev => {
-            if (ev.target.matches('.attr-val-generate, label[for]')) {
-                handleOptionSelection(ev);
-            }
         });
 
-        function updateCombinationsUI() {
-            // Update price
-            updatePrice(findExactMatch(selectedOptions));
-            
-            // Update options availability
-            updateOptionsAvailability();
-            
-            // Auto-fix invalid selected options
-            let changed = false;
-            
-            attributeSlugs.forEach(attr => {
-                const cur = selectedOptions[attr];
-                if (!cur) return;
-                
-                const stillValid = productCombinations.some(c => 
-                    combinationMatchesSelectionTokens(tokensOf(c.variation_identifier), selectedOptions)
-                );
-                
-                if (!stillValid) {
-                    const candidateInput = optionInputs
-                        .filter(i => i.dataset.attrSlug === attr)
-                        .find(opt => {
-                            const val = opt.dataset.valueSlug ?? opt.value;
-                            const testSel = {...selectedOptions, [attr]: val};
-                            return productCombinations.some(c => 
-                                combinationMatchesSelectionTokens(tokensOf(c.variation_identifier), testSel)
-                            );
-                        });
-                        
-                    if (candidateInput) {
-                        const val = candidateInput.dataset.valueSlug ?? candidateInput.value;
-                        selectedOptions[attr] = val;
-                        if ('checked' in candidateInput) candidateInput.checked = true;
-                        changed = true;
-                    } else {
-                        delete selectedOptions[attr];
-                        changed = true;
-                    }
-                }
-            });
+        // update selected combo & price (if you have elements with these IDs in the blade)
+        const combo = findCombinationForSelection(currentSelection);
 
-            if (changed) {
-                updatePrice(findExactMatch(selectedOptions));
-                updateOptionsAvailability();
+        // Safely remove previous status classes and add new ones
+        if (prodStatDetail) {
+            // compute new status classes array (split by whitespace)
+            const newClasses = combo && combo.status_classes
+                ? combo.status_classes.trim().split(/\s+/).filter(Boolean)
+                : [];
+
+            // remove previously-applied status classes (if any)
+            const prev = prodStatDetail.dataset.prevStatusClasses;
+            if (prev) {
+                const prevTokens = prev.split(/\s+/).filter(Boolean);
+                if (prevTokens.length) prodStatDetail.classList.remove(...prevTokens);
             }
+
+            // add the new status classes (if any)
+            if (newClasses.length) {
+                prodStatDetail.classList.add(...newClasses);
+                // remember them so we can remove later
+                prodStatDetail.dataset.prevStatusClasses = newClasses.join(' ');
+            } else {
+                // no new classes: clear stored prev
+                delete prodStatDetail.dataset.prevStatusClasses;
+            }
+
+            // update text
+            prodStatDetail.textContent = combo ? (combo.status_title || '') : '';
         }
-        */
-    @endif
+
+        // ---- price update using .priceBox / .mrpBox / .savingsBox / .discountBox within nearest root ----
+        const priceRoot = findPriceRoot();
+
+        // query all matching elements inside the found root (may be multiple — update them all)
+        const priceEls = priceRoot.querySelectorAll('.priceBox');
+        const mrpEls = priceRoot.querySelectorAll('.mrpBox');
+        const savingsEls = priceRoot.querySelectorAll('.savingsBox');
+        const discountEls = priceRoot.querySelectorAll('.discountBox');
+        const addToCartBtn = document.getElementById('addToCart');
+        const selectedComboEl = document.getElementById('selectedCombo');
+
+        // console.log('combo>>', combo);
+
+        if (combo.allow_order == true) {
+            const p = combo.pricing && combo.pricing[0] ? combo.pricing[0] : null;
+
+            const sellingText = p ? (p.selling_price_formatted || p.selling_price || '—') : '—';
+            const mrpText = p ? (p.mrp_formatted || p.mrp || '') : '';
+            const savingsText = p ? (p.savings_formatted || '') : '';
+            const discountText = p ? (p.discount ? `${p.discount}% off` : '') : '';
+
+            priceEls.forEach(el => { el.textContent = sellingText; });
+            mrpEls.forEach(el => { el.textContent = mrpText; });
+            savingsEls.forEach(el => { el.textContent = savingsText; });
+            discountEls.forEach(el => { el.textContent = discountText; });
+
+            if (addToCartBtn) addToCartBtn.disabled = !combo.allow_order;
+            if (selectedComboEl) selectedComboEl.textContent = `Selected: ${combo.variation_identifier} (id: ${combo.id})`;
+        } else {
+            console.log('no price');
+            
+            priceEls.forEach(el => { el.textContent = '—'; });
+            mrpEls.forEach(el => { el.textContent = ''; });
+            savingsEls.forEach(el => { el.textContent = ''; });
+            discountEls.forEach(el => { el.textContent = ''; });
+
+            if (addToCartBtn) addToCartBtn.disabled = true;
+            if (selectedComboEl) selectedComboEl.textContent = 'Please select a valid combination';
+        }
 
 
+        // sync URL for shareable state
+        updateURL(currentSelection);
+    }
+
+    // find the nearest ancestor (starting from variationTab) that contains any .priceBox
+    function findPriceRoot() {
+        const variationTabEl = document.getElementById('variationTab');
+        if (!variationTabEl) return document; // fallback
+
+        // walk up ancestors — return the first ancestor that contains at least one .priceBox
+        let ancestor = variationTabEl;
+        while (ancestor && ancestor !== document.body) {
+            if (ancestor.querySelector && ancestor.querySelector('.priceBox')) {
+                return ancestor;
+            }
+            ancestor = ancestor.parentElement;
+        }
+
+        // fallback to document if nothing found
+        return document;
+    }
+
+
+    // start
+    attachHandlers();
+    // ensure selection is valid on load
+    if (!findCombinationForSelection(currentSelection)) {
+        currentSelection = combinationToMap(productData.combinations[0]);
+    }
+    // push default/initial variant to URL so it is shareable
+    updateURL(currentSelection);
+    updateUI();
 })();
 </script>
 

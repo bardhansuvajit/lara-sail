@@ -61,6 +61,11 @@ class ProductVariation extends Model
         return $this->hasMany('App\Models\ProductPricing', 'product_variation_id', 'id');
     }
 
+    public function statusDetail()
+    {
+        return $this->belongsTo('App\Models\ProductStatus', 'status', 'id');
+    }
+
     /*
     public function getFinalPriceAttribute()
     {

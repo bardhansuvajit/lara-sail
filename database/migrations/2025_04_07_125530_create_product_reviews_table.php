@@ -20,9 +20,15 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
 
+            // Review details
             $table->unsignedTinyInteger('rating')->default(1);
             $table->text('title')->nullable();
             $table->longText('review');
+
+            $table->unsignedTinyInteger('helpful_score')->default(0); // how helpful the review is | helpful_score = (helpful_yes ÷ (helpful_yes + helpful_no)) × 100
+            $table->unsignedInteger('view_count')->default(0);
+            $table->unsignedInteger('helpful_yes')->default(0);
+            $table->unsignedInteger('helpful_no')->default(0);
 
             $table->tinyInteger('status')->default(0)->comment('approval status');
             $table->softDeletes();

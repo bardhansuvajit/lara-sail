@@ -643,12 +643,17 @@ class ProductVariationRepository implements ProductVariationInterface
             $variations = ProductVariation::with([
                 'combinations.attribute',
                 'combinations.attributeValue',
-                'pricings'
+                'pricings',
+                'statusDetail'
             ])
             ->where('product_id', $id)
-            ->where('status', 1)
+            // ->whereHas('statusDetail', function ($q) {
+            //     $q->where('allow_order', 1);
+            // })
             ->orderBy('position', 'asc')
             ->get();
+
+            // dd('herevars', $variations);
 
             if (count($variations) == 0) {
                 return [
@@ -728,7 +733,10 @@ class ProductVariationRepository implements ProductVariationInterface
                     'allow_backorders' => $variation->allow_backorders,
                     'pricing' => $pricingData,
                     'min_quantity' => $variation->pricings->first()->min_quantity ?? 1,
-                    'status' => $variation->status,
+                    'status_id' => $variation->status,
+                    'allow_order' => $variation->statusDetail->allow_order,
+                    'status_title' => $variation->statusDetail->title_frontend,
+                    'status_classes' => $variation->statusDetail->title_tailwind_classes.' '.$variation->statusDetail->bg_tailwind_classes,
                 ];
             })->values()->toArray();
 

@@ -35,8 +35,10 @@ class ProductController extends Controller
         if ($resp['code'] == 200) {
             $product = $resp['data'];
             $pricingCountry = COUNTRY['country'];
-            $variation = $this->productVariationRepository->groupedVariation($product->id, $pricingCountry);
             $reviews = $this->productReviewRepository->activeFDReviewsByProductId($product->id, $topReviewsToShow);
+            $variation = $this->productVariationRepository->groupedVariation($product->id, $pricingCountry);
+
+            // dd($variation['data']['combinations']);
 
             return view('front.product.detail', [
                 'product' => $product,
@@ -53,19 +55,5 @@ class ProductController extends Controller
             return redirect()->route('front.error.404');
         }
 
-        /*
-        $resp = $this->productListingRepository->getBySlug($slug);
-
-        if ($resp['code'] == 200) {
-            $variation = $this->productVariationRepository->groupedVariation($resp['data']->id);
-
-            return view('front.product.detail', [
-                'product' => $resp['data'],
-                'variation' => $variation
-            ]);
-        } else {
-            return redirect()->route('front.error.404');
-        }
-        */
     }
 }

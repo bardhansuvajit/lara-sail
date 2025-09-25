@@ -218,23 +218,13 @@ class ProductVariant extends Component
         }
     }
 
-    public function updateVariationStatus()
+    public function updateVariationStatus(int $variationId, $statusId)
     {
-        if (empty($this->selectedVariationId)) {
-            $this->dispatch('notificationSend', [
-                'variant' => 'error',
-                'title' => 'Error',
-                'message' => 'No variation selected'
-            ]);
-            return;
-        }
-
         try {
-            $variation = ProductVariation::findOrFail($this->selectedVariationId);
-            $variation->status = $this->selectedStatusId;
+            $variation = ProductVariation::findOrFail($variationId);
+            $variation->status = $statusId;
             $variation->save();
 
-            // Reload the variations to reflect the change
             $this->loadExistingVariations();
 
             $this->dispatch('notificationSend', [
@@ -242,11 +232,6 @@ class ProductVariant extends Component
                 'title' => 'Success!',
                 'message' => 'Variation status updated successfully',
             ]);
-
-            // Reset the selected values
-            $this->selectedVariationId = null;
-            $this->selectedStatusId = null;
-
         } catch (\Exception $e) {
             $this->dispatch('notificationSend', [
                 'variant' => 'danger',
