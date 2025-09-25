@@ -158,24 +158,28 @@
 
                 <!-- Price block -->
 		        @if ( !empty($product->FDPricing) )
-                    @php
-                        $p = $product->FDPricing;
-                        $currencySymbol = $p->country->currency_symbol;
-                    @endphp
+                    <div class="pricing-block">
+                        @php
+                            $p = $product->FDPricing;
+                            $currencySymbol = $p->country->currency_symbol;
+                        @endphp
 
-                    <div class="flex items-center">
-                        <div>
-                            <div id="sellingPriceEl" class="text-xl sm:text-2xl font-bold">
-                                <span class="currency-icon">{{ $currencySymbol }}</span><span class="priceBox">{{ formatIndianMoney($p->selling_price) }}</span>
-                            </div>
-                            <div id="mrpEl" class="text-xs text-slate-500 dark:text-slate-400">
-                                <span class="line-through">
-                                    <span class="currency-icon">{{ $currencySymbol }}</span><span class="mrpBox">{{ formatIndianMoney($p->mrp) }}</span>
-                                </span>
-                            </div>
-                            <div id="savingsEl" class="text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
-                                You save <span class="currency-icon">{{ $currencySymbol }}</span><span class="savingsBox">{{ formatIndianMoney($p->mrp - $p->selling_price) }}</span> 
-                                (<span class="discountBox">{{ $p->discount }}</span>% off)
+                        <div class="flex items-center">
+                            <div>
+                                <div id="sellingPriceEl" class="text-xl sm:text-2xl font-bold">
+                                    <span class="currency-icon">{{ $currencySymbol }}</span><span class="priceBox">{{ formatIndianMoney($p->selling_price) }}</span>
+                                </div>
+                                @if ($p->mrp > 0)
+                                    <div id="mrpEl" class="text-xs text-slate-500 dark:text-slate-400">
+                                        <span class="line-through">
+                                            <span class="currency-icon">{{ $currencySymbol }}</span><span class="mrpBox">{{ formatIndianMoney($p->mrp) }}</span>
+                                        </span>
+                                    </div>
+                                    <div id="savingsEl" class="text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
+                                        You save <span class="currency-icon">{{ $currencySymbol }}</span><span class="savingsBox">{{ formatIndianMoney($p->mrp - $p->selling_price) }}</span> 
+                                        (<span class="discountBox">{{ $p->discount }}</span>% off)
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -195,13 +199,12 @@
                             <div class="flex flex-wrap space-x-2" role="radiogroup" aria-labelledby="legend-{{ $attribute['slug'] }}">
                                 @foreach ($attribute['values'] as $valueIndex => $value)
                                 <div class="group">
-                                    {{-- input BEFORE label so peer-checked works --}}
                                     <input
-                                    type="radio"
-                                    id="attr{{ $attrIndex }}{{ $valueIndex }}"
-                                    name="variation-{{ $attribute['slug'] }}"
-                                    value="{{ $value['slug'] }}"
-                                    class="sr-only peer" {{-- sr-only keeps it visible to assistive tech; peer enables CSS variants --}}
+                                        type="radio"
+                                        id="attr{{ $attrIndex }}{{ $valueIndex }}"
+                                        name="variation-{{ $attribute['slug'] }}"
+                                        value="{{ $value['slug'] }}"
+                                        class="sr-only peer"
                                     />
 
                                     <label
@@ -221,67 +224,6 @@
                         @endforeach
                     </div>
                 @endif
-
-                {{-- @if ($variation['code'] == 200)
-                    <div class="space-y-4" id="variationTab">
-                        @foreach ($variation['data']['attributes'] as $attrIndex => $attribute)
-                            <div>
-                                <h3 class="{{FD['text-1']}} font-semibold mb-2 text-gray-600 dark:text-gray-500">
-                                    {{ $attribute['title'] }}
-                                </h3>
-
-                                <div class="flex flex-wrap space-x-2">
-                                    @foreach ($attribute['values'] as $valueIndex => $value) --}}
-                                        {{-- <x-front.radio-input-button 
-                                            id="attr{{$attrIndex}}{{$valueIndex}}" 
-                                            name="variation-{{ $attribute['slug'] }}" 
-                                            value="{{ $value['slug'] }}" 
-                                            class="attr-val-generate" 
-                                            data-attr-slug="{{ $attribute['slug'] }}"
-                                            data-value-slug="{{ $value['slug'] }}"
-                                            data-attr-id="{{ $attribute['id'] }}"
-                                            data-value-id="{{ $value['id'] }}"
-                                            :checked="$valueIndex == 0"
-                                        >
-                                            <div class="text-center">
-                                                <div class="flex flex-col items-center gap-2">
-                                                    <div>
-                                                        <div class="{{FD['text']}} font-semibold">{{ $value['title'] }}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </x-front.radio-input-button> --}}
-
-                                        {{-- <div class="group">
-                                            <input 
-                                                type="radio" 
-                                                id="attr{{$attrIndex}}{{$valueIndex}}" 
-                                                name="variation-{{ $attribute['slug'] }}" 
-                                                value="{{ $value['slug'] }}"
-                                                class="hidden peer"
-                                            />
-
-                                            <label for="attr{{$attrIndex}}{{$valueIndex}}" class="inline-block 
-                                                rounded-full cursor-pointer
-                                                text-gray-700 dark:text-gray-200
-                                                bg-gray-200 dark:bg-gray-600
-                                                border-2 border-gray-200 dark:border-gray-600
-                                                hover:bg-gray-100 dark:hover:bg-gray-700
-                                                peer-checked:bg-gray-100 dark:peer-checked:bg-gray-800 
-                                                peer-checked:border-primary-700 dark:peer-checked:border-primary-600 
-                                                peer-checked:text-gray-900 dark:peer-checked:text-gray-100
-                                            ">
-                                                <div class="px-2 py-1">
-                                                    <p class="text-sm font-medium">{{ $value['title'] }}</p>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif --}}
 
                 @if ($status->allow_order == 1)
                     <div class="text-end">
@@ -1593,7 +1535,9 @@
         const priceRoot = findPriceRoot();
 
         // query all matching elements inside the found root (may be multiple — update them all)
+        const priceBlocks = priceRoot.querySelectorAll('.pricing-block');
         const priceEls = priceRoot.querySelectorAll('.priceBox');
+        const fullMrpEls = priceRoot.querySelectorAll('.mrpEl');
         const mrpEls = priceRoot.querySelectorAll('.mrpBox');
         const savingsEls = priceRoot.querySelectorAll('.savingsBox');
         const discountEls = priceRoot.querySelectorAll('.discountBox');
@@ -1610,16 +1554,25 @@
             const savingsText = p ? (p.savings_formatted || '') : '';
             const discountText = p ? (p.discount ? p.discount : '') : '';
 
+            priceBlocks.forEach(el => { el.style.display = 'block'; });
             priceEls.forEach(el => { el.textContent = sellingText; });
-            mrpEls.forEach(el => { el.textContent = mrpText; });
+            mrpEls.forEach(el => { 
+                el.textContent = mrpText;
+
+                if (p.mrp > 0 && p.mrp > p.selling_price) {
+                    el.style.display = 'inline-block';
+                    el.style.textDecorationLine = 'line-through';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
             savingsEls.forEach(el => { el.textContent = savingsText; });
             discountEls.forEach(el => { el.textContent = discountText; });
 
             if (addToCartBtn) addToCartBtn.disabled = !combo.allow_order;
             if (selectedComboEl) selectedComboEl.textContent = `Selected: ${combo.variation_identifier} (id: ${combo.id})`;
         } else {
-            console.log('no price');
-            
+            priceBlocks.forEach(el => { el.style.display = 'none'; });
             priceEls.forEach(el => { el.textContent = '—'; });
             mrpEls.forEach(el => { el.textContent = ''; });
             savingsEls.forEach(el => { el.textContent = ''; });

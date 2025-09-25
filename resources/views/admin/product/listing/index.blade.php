@@ -231,6 +231,7 @@
                         <th scope="col" class="px-2 py-1">Title</th>
                         <th scope="col" class="px-2 py-1">Category</th>
                         <th scope="col" class="px-2 py-1">Rating</th>
+                        <th scope="col" class="px-2 py-1">Variations</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
@@ -282,6 +283,17 @@
                                             {!! adminRatingHtml($item->average_rating) !!}
                                             <p class="text-xs text-gray-900 dark:text-gray-400 underline hover:no-underline">
                                                 {{ $item->review_count }} {{ ($item->review_count == 1) ? 'review' : 'reviews' }}
+                                            </p>
+                                        </div>
+                                    </a>
+                                @endif
+                            </td>
+                            <td scope="row" class="px-2 py-1">
+                                @if (count($item->variations) > 0)
+                                    <a href="{{ route('admin.product.listing.edit', $item->id) }}">
+                                        <div class="flex space-x-2 items-center">
+                                            <p class="text-xs text-gray-900 dark:text-gray-400 underline hover:no-underline">
+                                                {{ count($item->activeVariations) }}/ {{ count($item->variations) }} active
                                             </p>
                                         </div>
                                     </a>

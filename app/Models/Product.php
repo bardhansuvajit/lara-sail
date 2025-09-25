@@ -87,7 +87,13 @@ class Product extends Model
 
     public function activeVariations()
     {
-        return $this->hasMany('App\Models\ProductVariation', 'product_id', 'id')->where('status', 1)->orderBy('position', 'asc');
+        // return $this->hasMany('App\Models\ProductVariation', 'product_id', 'id')->where('status', 1)->orderBy('position', 'asc');
+
+        return $this->hasMany('App\Models\ProductVariation', 'product_id', 'id')
+            ->whereHas('statusDetail', function ($q) {
+                $q->where('allow_order', 1);
+            })
+            ->orderBy('position', 'asc');
     }
 
     public function reviews()

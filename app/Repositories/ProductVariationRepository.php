@@ -175,59 +175,53 @@ class ProductVariationRepository implements ProductVariationInterface
             if (count($array['currency_adjustments']) > 0) {
                 // Looping through adjustments based on Country
                 foreach ($array['currency_adjustments'] as $key => $currencyAdjust) {
-                    // Add only if there is Adjustment
-                    // if ($currencyAdjust['price_adjustment'] > 0) {
+                    // get base pricing details first
+                    $existingProdPricing = $this->productPricingRepository->getByProductIdCountryCode($productId, $currencyAdjust['country_code']);
 
-                        // get base pricing details first
-                        $existingProdPricing = $this->productPricingRepository->getByProductIdCountryCode($productId, $currencyAdjust['country_code']);
+                    if ($existingProdPricing['code'] == 200) {
+                        // dd($array);
+                        $existingPricingData = $existingProdPricing['data'];
 
-                        if ($existingProdPricing['code'] == 200) {
-                            // dd($array);
-                            $existingPricingData = $existingProdPricing['data'];
+                        // dd($existingPricingData->selling_price);
 
-                            // return [
-                            //     'code' => 409,
-                            //     'status' => 'warning',
-                            //     'message' => 'No Base Price found for this currency. Please add Base Price first',
-                            //     'data' => []
-                            // ];
-
-                            // dd($existingPricingData->selling_price);
-
-                            // Set Selling Price
-                            if ($currencyAdjust['price_adjustment'] != 0) {
-                                $variationSellingPrice = floatConvert($currencyAdjust['price_adjustment']);
-                            } else {
-                                $variationSellingPrice = $existingPricingData->selling_price;
-                            }
-
-                            // treat empty MRP as 0 (or null)
-                            $mrpRaw = $existingPricingData['mrp'] ?? null;
-                            $mrp = ($mrpRaw === '' || is_null($mrpRaw)) ? 0.0 : floatConvert($mrpRaw);
-
-                            // Discount, Cost, Profit, Margin
-                            $discountPercentage = ($mrp > 0) ? discountPercentageCalc($variationSellingPrice, $mrp) : 0;
-
-                            $costRaw = $existingPricingData['cost'] ?? null;
-                            $cost = ($costRaw === '' || is_null($costRaw)) ? 0.0 : floatConvert($costRaw);
-
-                            $profit = ($cost > 0) ? profitCalc($variationSellingPrice, $cost) : 0;
-                            $marginPercentage = ($cost > 0) ? marginCalc($variationSellingPrice, $cost) : 0;
-
-                            $pricingData = [
-                                'product_id' => $productId,
-                                'product_variation_id' => $data->id,
-                                'country_code' => $currencyAdjust['country_code'],
-                                'selling_price' => $variationSellingPrice,
-                                'mrp' => $mrp,
-                                'discount' => $discountPercentage,
-                                'cost' => $cost,
-                                'profit' => $profit,
-                                'margin' => $marginPercentage,
-                            ];
-                            $pricingResp = $this->productPricingRepository->store($pricingData);
+                        // Set Selling Price
+                        if ($currencyAdjust['price_adjustment'] != 0) {
+                            $variationSellingPrice = floatConvert($currencyAdjust['price_adjustment']);
+                        } else {
+                            $variationSellingPrice = $existingPricingData->selling_price;
                         }
-                    // }
+
+                        // treat empty MRP as 0 (or null)
+                        $mrpRaw = $existingPricingData['mrp'] ?? null;
+                        $mrp = ($mrpRaw === '' || is_null($mrpRaw)) ? 0.0 : floatConvert($mrpRaw);
+
+                        // if base MRP is less than current variant selling Price, set the MRP (and Discount/ Profit/ Margin) to 0
+                        if ($variationSellingPrice > $mrp) {
+                            $mrp = 0;
+                        }
+
+                        // Discount, Cost, Profit, Margin
+                        $discountPercentage = ($mrp > 0) ? discountPercentageCalc($variationSellingPrice, $mrp) : 0;
+
+                        $costRaw = $existingPricingData['cost'] ?? null;
+                        $cost = ($costRaw === '' || is_null($costRaw)) ? 0.0 : floatConvert($costRaw);
+
+                        $profit = ($cost > 0) ? profitCalc($variationSellingPrice, $cost) : 0;
+                        $marginPercentage = ($cost > 0) ? marginCalc($variationSellingPrice, $cost) : 0;
+
+                        $pricingData = [
+                            'product_id' => $productId,
+                            'product_variation_id' => $data->id,
+                            'country_code' => $currencyAdjust['country_code'],
+                            'selling_price' => $variationSellingPrice,
+                            'mrp' => $mrp,
+                            'discount' => $discountPercentage,
+                            'cost' => $cost,
+                            'profit' => $profit,
+                            'margin' => $marginPercentage,
+                        ];
+                        $pricingResp = $this->productPricingRepository->store($pricingData);
+                    }
                 }
             }
 
