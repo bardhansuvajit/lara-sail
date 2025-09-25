@@ -1608,7 +1608,7 @@
             const sellingText = p ? (p.selling_price_formatted || p.selling_price || '—') : '—';
             const mrpText = p ? (p.mrp_formatted || p.mrp || '') : '';
             const savingsText = p ? (p.savings_formatted || '') : '';
-            const discountText = p ? (p.discount ? `${p.discount}% off` : '') : '';
+            const discountText = p ? (p.discount ? p.discount : '') : '';
 
             priceEls.forEach(el => { el.textContent = sellingText; });
             mrpEls.forEach(el => { el.textContent = mrpText; });
