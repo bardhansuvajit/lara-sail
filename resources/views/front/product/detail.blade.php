@@ -182,7 +182,7 @@
                 @endif
 
                 <!-- Variations -->
-                {{ dd($variation['data']) }}
+                {{-- {{ dd($variation['data']) }} --}}
                 @if ($variation['code'] == 200)
                     <div class="space-y-4" id="variationTab">
                         @foreach ($variation['data']['attributes'] as $attrIndex => $attribute)

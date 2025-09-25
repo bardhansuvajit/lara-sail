@@ -234,7 +234,7 @@
     {{-- TRENDING PRODUCTS --}}
     <div id="featured-products" class="mb-5">
         <div class="bg-red-500 px-4 py-2">
-            <h2 class="text-base font-bold text-white">Trending (Min 4 products)</h2>
+            <h2 class="text-base font-bold text-white">Trending (Min 6 products)</h2>
             <h5 class="text-xs font-medium text-gray-100">Trending Products List will be displayed in Homepage, Category page as Trending products</h5>
         </div>
 

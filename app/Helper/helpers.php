@@ -50,7 +50,11 @@ define("FD", [
     ]
 ]);
 
-define("PRICE_REGEX", "/^\d+(\.\d{1,2})?$/"); // regex for up to 2 decimal places
+// regex for up to 2 decimal places
+define("PRICE_REGEX", "/^\d+(\.\d{1,2})?$/");
+
+// default product listing/ variation create status
+define('DEFAULT_PROD_STAT_ID', 4);
 
 if (!function_exists('fileStore')) {
     /**

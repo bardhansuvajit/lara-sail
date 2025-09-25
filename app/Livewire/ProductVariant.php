@@ -21,6 +21,8 @@ class ProductVariant extends Component
     private ProductVariationInterface $productVariationRepository;
     public $existingVariations = [];
 
+    // public $selectedVariationId;
+    // public $selectedStatusId;
     public Collection $allStatus;
     private ProductStatusInterface $productStatusRepository;
 
@@ -37,11 +39,16 @@ class ProductVariant extends Component
     {
         $this->product_id = $product_id;
         $this->category_id = $category_id;
+        
+        // Assign to class properties
+        $this->productVariationRepository = $productVariationRepository;
+        $this->productStatusRepository = $productStatusRepository;
+        
         $this->loadVariations();
         $this->loadExistingVariations();
 
-        $productStatusRepository = app(ProductStatusInterface::class);
-        $statusResp = $productStatusRepository->list('', ['status' => 1], 'all', 'position', 'asc');
+        // Use the injected repository directly
+        $statusResp = $this->productStatusRepository->list('', ['status' => 1], 'all', 'position', 'asc');
         $this->allStatus = $statusResp['data'];
     }
 
@@ -211,60 +218,42 @@ class ProductVariant extends Component
         }
     }
 
-    public function updateStatus()
+    public function updateVariationStatus()
     {
-        if (empty($this->selectedStatusId)) {
+        if (empty($this->selectedVariationId)) {
             $this->dispatch('notificationSend', [
                 'variant' => 'error',
                 'title' => 'Error',
-                'message' => 'No status selected'
+                'message' => 'No variation selected'
             ]);
             return;
         }
 
-        $productListingRepository = app(ProductListingInterface::class);
-        $data = $productListingRepository->getById($this->productId);
+        try {
+            $variation = ProductVariation::findOrFail($this->selectedVariationId);
+            $variation->status = $this->selectedStatusId;
+            $variation->save();
 
-        if ($data['code'] != 200) {
+            // Reload the variations to reflect the change
+            $this->loadExistingVariations();
+
             $this->dispatch('notificationSend', [
-                'variant' => 'error',
-                'title' => 'Error',
-                'message' => 'Product not found'
+                'variant' => 'success',
+                'title' => 'Success!',
+                'message' => 'Variation status updated successfully',
             ]);
-            return;
-        }
 
-        $product = $data['data'];
-        $product->status = $this->selectedStatusId;
-        
-        if (!$product->save()) {
+            // Reset the selected values
+            $this->selectedVariationId = null;
+            $this->selectedStatusId = null;
+
+        } catch (\Exception $e) {
             $this->dispatch('notificationSend', [
-                'variant' => 'error',
-                'title' => 'Error',
-                'message' => 'Failed to update product status'
+                'variant' => 'danger',
+                'title' => 'OOPS!',
+                'message' => 'Failed to update variation status: ' . $e->getMessage()
             ]);
-            return;
         }
-
-        $statusDetail = $product->statusDetail;
-
-        // Update CART if product cannot be ORDERED
-        // if ($statusDetail->allow_order != 1) {
-
-            $cartItemRepository = app(CartItemInterface::class);
-            $statusResp = $cartItemRepository->updateAvailability([
-                'product_id' => $this->productId,
-                'is_available' => $statusDetail->allow_order,
-                'title_frontend' => $statusDetail->title_frontend,
-                'allow_order' => $statusDetail->allow_order,
-            ]);
-        // }
-
-        $this->dispatch('notificationSend', [
-            'variant' => 'success',
-            'title' => 'Status updated',
-            'message' => $product->title . ' is ' . $statusDetail->title
-        ]);
     }
 
     public function render()

@@ -80,12 +80,33 @@
                                                             'modelId' => $variation['id'],
                                                         ], key('toggle-'.$variation['id'])) --}}
 
-                                                        <x-admin.input-select 
+                                                        {{-- <x-admin.input-select 
                                                             id="status" 
                                                             class="w-full"
                                                             name="status" 
                                                             wire:model="selectedStatusId"
                                                             wire:change="updateStatus"
+                                                        >
+                                                            @slot('options')
+                                                                @foreach ($allStatus as $status)
+                                                                    <x-admin.input-select-option 
+                                                                        value="{{$status->id}}" 
+                                                                        :selected="$variation['status'] == $status->id"
+                                                                    >
+                                                                        {{ $status->title }}
+                                                                    </x-admin.input-select-option>
+                                                                @endforeach
+                                                            @endslot
+                                                        </x-admin.input-select> --}}
+
+                                                        <x-admin.input-select 
+                                                            id="status-{{ $variation['id'] }}" 
+                                                            class="w-full"
+                                                            name="status" 
+                                                            wire:model="selectedStatusId"
+                                                            wire:change="updateVariationStatus"
+                                                            x-data=""
+                                                            x-on:change="$wire.set('selectedVariationId', {{ $variation['id'] }})"
                                                         >
                                                             @slot('options')
                                                                 @foreach ($allStatus as $status)

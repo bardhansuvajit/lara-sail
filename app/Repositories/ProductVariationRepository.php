@@ -155,7 +155,7 @@ class ProductVariationRepository implements ProductVariationInterface
             ->max('position');
             $data->position = $lastPosition ? $lastPosition + 1 : 1;
 
-            $data->status = !empty($array['status']) ? $array['status'] : 0;
+            $data->status = !empty($array['status']) ? $array['status'] : DEFAULT_PROD_STAT_ID;
             $data->save();
 
             if (!empty($array['variations']) && count($array['variations']) > 0) {

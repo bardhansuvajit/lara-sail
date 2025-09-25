@@ -122,7 +122,7 @@ class ProductListingRepository implements ProductListingInterface
             $data->allow_backorders = $array['allow_backorders'];
             $data->meta_title = $array['meta_title'];
             $data->meta_desc = $array['meta_description'];
-            $data->status = 2;
+            $data->status = DEFAULT_PROD_STAT_ID;
             $data->save();
 
             // PRICING
@@ -665,8 +665,8 @@ class ProductListingRepository implements ProductListingInterface
                         'meta_title' => Arr::get($row, 'meta_title') ?: null,
                         'meta_desc' => Arr::get($row, 'meta_desc') ?: null,
                         'type' => Arr::get($row, 'type', 'physical-product') ?: 'physical-product',
-                        // use status from CSV if provided; default to 4 so it matches your CSV defaults
-                        'status' => $toIntOrNull(Arr::get($row, 'status', 4)) ?? 4,
+                        // use status from CSV if provided; default to 4/DEFAULT_PROD_STAT_ID so it matches your CSV defaults
+                        'status' => $toIntOrNull(Arr::get($row, 'status', DEFAULT_PROD_STAT_ID)) ?? DEFAULT_PROD_STAT_ID,
                     ];
 
                     // OPTIONAL: avoid duplicate SKUs/slugs — if SKU exists, update instead of create
