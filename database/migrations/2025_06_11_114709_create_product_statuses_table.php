@@ -15,9 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
+
             // $table->boolean('allow_preorder')->default(false);
             $table->boolean('allow_order')->default(false);
             $table->boolean('notify_by_email')->default(false);
+            $table->boolean('show_in_frontend')->default(true);
+
             $table->text('icon');
             $table->string('bg_tailwind_classes');
             $table->string('title_frontend');
@@ -39,6 +42,7 @@ return new class extends Migration
                 'slug' => 'active',
                 'allow_order' => true,
                 'notify_by_email' => false,
+                'show_in_frontend' => true,
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>',
                 'title_frontend' => 'In Stock',
                 'description_frontend' => 'This product is ready to ship',
@@ -52,6 +56,7 @@ return new class extends Migration
                 'slug' => 'archived',
                 'allow_order' => false,
                 'notify_by_email' => false,
+                'show_in_frontend' => true,
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" /></svg>',
                 'title_frontend' => 'Discontinued',
                 'description_frontend' => 'This product is no longer available',
@@ -65,6 +70,7 @@ return new class extends Migration
                 'slug' => 'coming-soon',
                 'allow_order' => false,
                 'notify_by_email' => true,
+                'show_in_frontend' => true,
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
                 'title_frontend' => 'Coming Soon',
                 'description_frontend' => 'Pre-order now for early delivery',
@@ -78,6 +84,7 @@ return new class extends Migration
                 'slug' => 'draft',
                 'allow_order' => false,
                 'notify_by_email' => false,
+                'show_in_frontend' => false,
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>',
                 'title_frontend' => 'Unavailable',
                 'description_frontend' => 'This product will be available soon',
@@ -91,6 +98,7 @@ return new class extends Migration
                 'slug' => 'limited',
                 'allow_order' => true,
                 'notify_by_email' => false,
+                'show_in_frontend' => true,
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4a2 2 0 00-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>',
                 'title_frontend' => 'Limited Stock',
                 'description_frontend' => 'Hurry! Only a few items left',
@@ -104,6 +112,7 @@ return new class extends Migration
                 'slug' => 'out-of-stock',
                 'allow_order' => false,
                 'notify_by_email' => true,
+                'show_in_frontend' => true,
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>',
                 'title_frontend' => 'Out of Stock',
                 'description_frontend' => 'This product is currently sold out',
@@ -117,6 +126,7 @@ return new class extends Migration
                 'slug' => 'pending',
                 'allow_order' => false,
                 'notify_by_email' => false,
+                'show_in_frontend' => false,
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>',
                 'title_frontend' => 'Unavailable',
                 'description_frontend' => 'This product is pending approval',
@@ -130,6 +140,7 @@ return new class extends Migration
                 'slug' => 'unavailable',
                 'allow_order' => false,
                 'notify_by_email' => true,
+                'show_in_frontend' => true,
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>',
                 'title_frontend' => 'Temporarily Unavailable',
                 'description_frontend' => 'This product is currently out of stock',

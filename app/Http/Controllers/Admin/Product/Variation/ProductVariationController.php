@@ -66,12 +66,12 @@ class ProductVariationController
             'selling_price.*'    => ['required','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
             // mrp can be nullable per item
             'mrp'                => 'nullable|array',
-            'mrp.*'              => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            'mrp.*'              => ['nullable','numeric','min:0.0','max:1000000','regex:'.PRICE_REGEX],
             // discount/profit/margin arrays (readonly front-end but validate anyway)
             'discount'           => 'nullable|array',
             'discount.*'         => ['nullable','numeric','min:0','max:100'],
             'cost'               => 'nullable|array',
-            'cost.*'             => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            'cost.*'             => ['nullable','numeric','min:0.0','max:1000000','regex:'.PRICE_REGEX],
             'profit'             => 'nullable|array',
             'profit.*'           => ['nullable','numeric','min:0','max:1000000','regex:'.PRICE_REGEX],
             'margin'             => 'nullable|array',

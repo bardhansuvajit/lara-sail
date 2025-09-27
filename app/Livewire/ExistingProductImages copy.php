@@ -3,32 +3,24 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Illuminate\Database\Eloquent\Collection;
 use App\Interfaces\ProductImageInterface;
 use Livewire\Attributes\On;
-use App\Models\Product;
 
 class ExistingProductImages extends Component
 {
-    public int $productId;
+    public Collection $images;
     public string $type;
-    public $images = [];
+    // public int $imageId;
     private ProductImageInterface $productImageRepository;
 
-    public function mount(int $productId, String $type, ProductImageInterface $productImageRepository)
+    public function mount(Collection $images, String $type, ProductImageInterface $productImageRepository)
     {
-        $this->productId = $productId;
+        $this->images = $images;
         $this->type = $type;
         $this->productImageRepository = $productImageRepository;
-        $this->loadImages();
     }
 
-    public function loadImages()
-    {
-        $images = Product::with('imagesNoVariations')->find($this->productId);
-        $this->images = $images->imagesNoVariations;
-    }
-
-    // Delete image
     public function deleteImage(int $imageId)
     {
         $productImageRepository = app(ProductImageInterface::class);
@@ -42,7 +34,6 @@ class ExistingProductImages extends Component
         ]);
     }
 
-    // Image position
     #[On('updateProductImageOrder')]
     public function updateFeatureOrder(array $images)
     {
@@ -55,7 +46,15 @@ class ExistingProductImages extends Component
                 'title' => 'Position updated',
             ]);
 
-            $this->loadImages();
+            // Refresh the images collection with the new order
+            $this->images = $productImageRepository->list('', [
+                'product_id' => $this->images->first()->product_id,
+                'product_variation_id' => null
+            ], 'all', 'position', 'asc')['data'];
+
+            dd($this->images);
+
+            // $this->reloadProducts();
         } else {
             $this->dispatch('notificationSend', [
                 'variant' => 'warning',

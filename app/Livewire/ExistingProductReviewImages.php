@@ -33,10 +33,10 @@ class ExistingProductReviewImages extends Component
     }
 
     #[On('updateProductImageOrder')]
-    public function updateFeatureOrder(array $ids)
+    public function updateFeatureOrder(array $images)
     {
         $productReviewImageRepository = app(ProductReviewImageInterface::class);
-        $positionResp = $productReviewImageRepository->position($ids);
+        $positionResp = $productReviewImageRepository->position($images);
 
         if ($positionResp['code'] == 200) {
             $this->dispatch('notificationSend', [

@@ -80,46 +80,6 @@
                                                             'modelId' => $variation['id'],
                                                         ], key('toggle-'.$variation['id'])) --}}
 
-                                                        {{-- <x-admin.input-select 
-                                                            id="status" 
-                                                            class="w-full"
-                                                            name="status" 
-                                                            wire:model="selectedStatusId"
-                                                            wire:change="updateStatus"
-                                                        >
-                                                            @slot('options')
-                                                                @foreach ($allStatus as $status)
-                                                                    <x-admin.input-select-option 
-                                                                        value="{{$status->id}}" 
-                                                                        :selected="$variation['status'] == $status->id"
-                                                                    >
-                                                                        {{ $status->title }}
-                                                                    </x-admin.input-select-option>
-                                                                @endforeach
-                                                            @endslot
-                                                        </x-admin.input-select> --}}
-
-                                                        {{-- <x-admin.input-select 
-                                                            id="status-{{ $variation['id'] }}" 
-                                                            class="w-full"
-                                                            name="status" 
-                                                            wire:model="selectedStatusId"
-                                                            wire:change="updateVariationStatus"
-                                                            x-data=""
-                                                            x-on:change="$wire.set('selectedVariationId', {{ $variation['id'] }})"
-                                                        >
-                                                            @slot('options')
-                                                                @foreach ($allStatus as $status)
-                                                                    <x-admin.input-select-option 
-                                                                        value="{{$status->id}}" 
-                                                                        :selected="$variation['status'] == $status->id"
-                                                                    >
-                                                                        {{ $status->title }}
-                                                                    </x-admin.input-select-option>
-                                                                @endforeach
-                                                            @endslot
-                                                        </x-admin.input-select> --}}
-
                                                         <x-admin.input-select 
                                                             id="status-{{ $variation['id'] }}"
                                                             class="w-full"
@@ -262,7 +222,7 @@
                                                                     <p class="text-[10px] text-green-700 dark:text-green-200 font-bold">
                                                                         <span class="currency-icon">{{ $currencySymbol }}</span>
                                                                         {{ formatIndianMoney($pricing['selling_price']) }}
-                                                                        ({{ $pricing['discount'] }}%)
+                                                                        @if ($pricing['discount'] != 0) ({{ $pricing['discount'] }}%) @endif
                                                                     </p>
                                                                 @endforeach
                                                             </div>

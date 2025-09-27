@@ -95,10 +95,11 @@ class ProductImageRepository implements ProductImageInterface
             if (!empty($array['product_variation_id'])) $data->product_variation_id = $array['product_variation_id'];
             if (!empty($array['is_variation_specific'])) $data->is_variation_specific = $array['is_variation_specific'];
             if (!empty($array['alt_text'])) $data->alt_text = $array['alt_text'];
-            
+
             // get max position for given attribute_id and type
             $lastPosition = ProductImage::where('product_id', $array['product_id'])
             ->max('position');
+            // dd($lastPosition);
             $data->position = $lastPosition ? $lastPosition + 1 : 1;
 
             $data->status = 1;
@@ -367,6 +368,38 @@ class ProductImageRepository implements ProductImageInterface
         }
     }
 
+    public function position(array $images)
+    {
+        try {
+            foreach ($images as $index => $image) {
+                ProductImage::where('id', $image['id'])
+                    ->where('product_id', $image['product_id'])
+                    // ->when(!empty($image['product_variation_id']), function ($query) use ($image) {
+                    //     $query->where('product_variation_id', $image['product_variation_id']);
+                    // })
+                    ->update([
+                        'position' => $index + 1,
+                    ]);
+            }
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Positions updated successfully',
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating positions.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+
+
+    /*
     public function position(Array $ids)
     {
         try {
@@ -390,4 +423,5 @@ class ProductImageRepository implements ProductImageInterface
             ];
         }
     }
+    */
 }

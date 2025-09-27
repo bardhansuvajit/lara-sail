@@ -41,6 +41,7 @@ class ProductController extends Controller
             // dd($variation['data']['combinations']);
 
             return view('front.product.detail', [
+                'currencyIcon' => COUNTRY['icon'],
                 'product' => $product,
                 'status' => $product->statusDetail,
                 'activeImagesCount' => count($product->activeImages),

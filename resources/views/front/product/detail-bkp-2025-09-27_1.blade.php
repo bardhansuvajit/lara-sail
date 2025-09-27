@@ -165,7 +165,7 @@
                         @endphp
 
                         <div class="flex items-center">
-                            <div class="singleProdPricingBox">
+                            <div id="entirePricingBox">
                                 <div class="sellingPriceEl text-xl sm:text-2xl font-bold">
                                     <span class="currency-icon">{{ $currencySymbol }}</span><span class="priceBox">{{ formatIndianMoney($p->selling_price) }}</span>
                                 </div>
@@ -226,23 +226,7 @@
                 @endif
 
                 @if ($status->allow_order == 1)
-                    <div class="flex justify-between">
-                        <!-- Variation status card (Tailwind) -->
-                        <div id="variationStatusCard" class="max-w-xs w-full p-3 rounded-2xl shadow-sm bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 transition-all" aria-live="polite" aria-atomic="true">
-                            <div id="variationStatusRow" class="flex items-center gap-3">
-                                <!-- Icon container (will be updated by JS) -->
-                                <div id="variationStatusIcon" class="flex-none w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/40 flex items-center justify-center">
-                                <!-- default icon: info -->
-                                <svg class="w-5 h-5 text-emerald-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M9 9h2v6H9V9z"/><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 110-12 6 6 0 010 12z" clip-rule="evenodd"/></svg>
-                                </div>
-
-                                <div class="flex-1 min-w-0">
-                                <div id="variationStatusTitle" class="text-sm font-semibold text-slate-800 dark:text-slate-100 leading-tight">Loading status…</div>
-                                <div id="variationStatusSubtitle" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">—</div>
-                                </div>
-                            </div>
-                        </div>
-
+                    <div class="text-end">
                         <p class="{{ FD['text'] }} font-semibold {{ FD['rounded'] }} inline-block">
                             <span id="prodStatDetail" class="{{ $status->title_tailwind_classes }} {{ $status->bg_tailwind_classes }} px-3 py-1">
                                 {{ $status->title_frontend }}
@@ -253,93 +237,93 @@
 
                 <!-- Quantity & Cart Actions -->
                 @if ( !empty($product->FDPricing) && ($status->allow_order == 1) )
-                    <div class="w-full orderPlaceButtons">
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                            <!-- Qty block -->
-                            <div class="flex items-start sm:items-center gap-3">
-                                    <div
-                                        id="qtyGroup"
-                                        class="inline-flex items-stretch {{ FD['rounded'] }} overflow-hidden border border-gray-300 dark:border-gray-600"
-                                        role="group"
-                                        aria-label="Quantity selector"
-                                        data-max-stock="12"
-                                        data-min-qty="1"
-                                        data-step="1"
-                                        data-product-id="{{ $product->id ?? '' }}"
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
+                        <!-- Qty block -->
+                        <div class="flex items-start sm:items-center gap-3">
+                            <div>
+                                <div
+                                    id="qtyGroup"
+                                    class="inline-flex items-stretch {{ FD['rounded'] }} overflow-hidden border border-gray-300 dark:border-gray-600"
+                                    role="group"
+                                    aria-label="Quantity selector"
+                                    data-max-stock="12"
+                                    data-min-qty="1"
+                                    data-step="1"
+                                    data-product-id="{{ $product->id ?? '' }}"
+                                >
+                                    <button
+                                        id="qtyDec"
+                                        type="button"
+                                        class="w-9 h-9 flex items-center justify-center {{ FD['text-1'] }} focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
+                                        aria-label="Decrease quantity"
+                                        title="Decrease quantity"
                                     >
-                                        <button
-                                            id="qtyDec"
-                                            type="button"
-                                            class="w-9 h-9 flex items-center justify-center {{ FD['text-1'] }} focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
-                                            aria-label="Decrease quantity"
-                                            title="Decrease quantity"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4" aria-hidden="true"><path d="M200-440v-80h560v80H200Z"/></svg>
-                                        </button>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4" aria-hidden="true"><path d="M200-440v-80h560v80H200Z"/></svg>
+                                    </button>
 
-                                        <!-- readonly input: user cannot type; only buttons change value -->
-                                        <input
-                                            id="qtyInput"
-                                            type="text"
-                                            inputmode="numeric"
-                                            pattern="\d*"
-                                            aria-live="polite"
-                                            aria-label="Quantity"
-                                            role="spinbutton"
-                                            aria-valuemin="1"
-                                            aria-valuemax="99"
-                                            aria-valuenow="1"
-                                            value="1"
-                                            readonly
-                                            aria-readonly="true"
-                                            class="w-20 sm:w-16 text-center {{ FD['text-1'] }} bg-white dark:bg-slate-800 outline-none border-l border-r border-transparent focus:outline-none focus:ring-0 px-2 cursor-default"
-                                            style="min-width:3.5rem;"
-                                            tabindex="0"
-                                        />
+                                    <!-- readonly input: user cannot type; only buttons change value -->
+                                    <input
+                                        id="qtyInput"
+                                        type="text"
+                                        inputmode="numeric"
+                                        pattern="\d*"
+                                        aria-live="polite"
+                                        aria-label="Quantity"
+                                        role="spinbutton"
+                                        aria-valuemin="1"
+                                        aria-valuemax="99"
+                                        aria-valuenow="1"
+                                        value="1"
+                                        readonly
+                                        aria-readonly="true"
+                                        class="w-20 sm:w-16 text-center {{ FD['text-1'] }} bg-white dark:bg-slate-800 outline-none border-l border-r border-transparent focus:outline-none focus:ring-0 px-2 cursor-default"
+                                        style="min-width:3.5rem;"
+                                        tabindex="0"
+                                    />
 
-                                        <button
-                                            id="qtyInc"
-                                            type="button"
-                                            class="w-9 h-9 flex items-center justify-center {{ FD['text-1'] }} focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
-                                            aria-label="Increase quantity"
-                                            title="Increase quantity"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4" aria-hidden="true"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
-                                        </button>
-                                    </div>
+                                    <button
+                                        id="qtyInc"
+                                        type="button"
+                                        class="w-9 h-9 flex items-center justify-center {{ FD['text-1'] }} focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
+                                        aria-label="Increase quantity"
+                                        title="Increase quantity"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4" aria-hidden="true"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                                    </button>
+                                </div>
 
-                                    <div id="stockHelper" class="mt-2 ml-1 text-xs text-slate-500 dark:text-slate-400" aria-live="polite"></div>
+                                <div id="stockHelper" class="mt-2 ml-1 text-xs text-slate-500 dark:text-slate-400" aria-live="polite"></div>
                             </div>
+                        </div>
 
-                            <div class="flex-1 flex gap-2 w-full sm:w-auto justify-end items-center">
-                                <button
-                                    id="addToCart"
-                                    type="button"
-                                    class="flex-1 sm:flex-none px-4 py-2 {{ FD['rounded'] }} bg-amber-600 hover:bg-amber-700 text-white font-semibold {{ FD['text-1'] }} inline-flex items-center justify-center disabled:opacity-50 transition-shadow add-to-cart"
-                                    aria-label="Add to cart"
-                                    data-prod-id="{{$product->id}}" 
-                                    data-purchase-type="cart"
-                                    {{-- data-variation-data="{{ json_encode($variation['data']) }}" --}}
-                                >
-                                <span class="mr-2 inline-flex items-center" aria-hidden="true">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4"><path d="M289.42-105.77q-28.14 0-47.88-19.7-19.73-19.7-19.73-47.84 0-28.15 19.7-47.88 19.7-19.73 47.84-19.73 28.14 0 47.88 19.7 19.73 19.7 19.73 47.84 0 28.14-19.7 47.88-19.7 19.73-47.84 19.73Zm380.42 0q-28.14 0-47.88-19.7-19.73-19.7-19.73-47.84 0-28.15 19.7-47.88 19.7-19.73 47.84-19.73 28.15 0 47.88 19.7 19.73 19.7 19.73 47.84 0 28.14-19.7 47.88-19.7 19.73-47.84 19.73ZM242.23-729.19l101.39 212.31h268.65q3.46 0 6.15-1.74 2.7-1.73 4.62-4.8l107.31-195q2.3-4.23.38-7.5-1.92-3.27-6.54-3.27H242.23Zm-27.15-55.96h544.57q24.35 0 36.52 20.41 12.17 20.42.98 41.51l-124.92 226.5q-9.04 16.81-25.1 26.31-16.06 9.5-34.52 9.5H325.62l-47.12 86.23q-3.08 4.61-.19 10 2.88 5.38 8.65 5.38H709.5q11.43 0 19.66 8.23 8.22 8.22 8.22 19.66 0 11.65-8.22 19.86-8.23 8.21-19.66 8.21H289.32q-38.71 0-58.38-33.07t-1.48-66.27l57.08-101.63-143.92-303.26H96.15q-11.65 0-19.86-8.21-8.21-8.21-8.21-19.77 0-11.56 8.21-19.77 8.21-8.21 19.86-8.21h60.5q9.89 0 17.87 5.27t12.4 14.12l28.16 59Zm128.54 268.27h275.96-275.96Z"/></svg>
-                                </span>
-                                Add to Cart
-                                </button>
+                        <div class="flex-1 flex gap-2 w-full sm:w-auto justify-end items-center">
+                            <button
+                                id="addToCart"
+                                type="button"
+                                class="flex-1 sm:flex-none px-4 py-2 {{ FD['rounded'] }} bg-amber-600 hover:bg-amber-700 text-white font-semibold {{ FD['text-1'] }} inline-flex items-center justify-center disabled:opacity-50 transition-shadow add-to-cart"
+                                aria-label="Add to cart"
+                                data-prod-id="{{$product->id}}" 
+                                data-purchase-type="cart"
+                                {{-- data-variation-data="{{ json_encode($variation['data']) }}" --}}
+                            >
+                            <span class="mr-2 inline-flex items-center" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4"><path d="M289.42-105.77q-28.14 0-47.88-19.7-19.73-19.7-19.73-47.84 0-28.15 19.7-47.88 19.7-19.73 47.84-19.73 28.14 0 47.88 19.7 19.73 19.7 19.73 47.84 0 28.14-19.7 47.88-19.7 19.73-47.84 19.73Zm380.42 0q-28.14 0-47.88-19.7-19.73-19.7-19.73-47.84 0-28.15 19.7-47.88 19.7-19.73 47.84-19.73 28.15 0 47.88 19.7 19.73 19.7 19.73 47.84 0 28.14-19.7 47.88-19.7 19.73-47.84 19.73ZM242.23-729.19l101.39 212.31h268.65q3.46 0 6.15-1.74 2.7-1.73 4.62-4.8l107.31-195q2.3-4.23.38-7.5-1.92-3.27-6.54-3.27H242.23Zm-27.15-55.96h544.57q24.35 0 36.52 20.41 12.17 20.42.98 41.51l-124.92 226.5q-9.04 16.81-25.1 26.31-16.06 9.5-34.52 9.5H325.62l-47.12 86.23q-3.08 4.61-.19 10 2.88 5.38 8.65 5.38H709.5q11.43 0 19.66 8.23 8.22 8.22 8.22 19.66 0 11.65-8.22 19.86-8.23 8.21-19.66 8.21H289.32q-38.71 0-58.38-33.07t-1.48-66.27l57.08-101.63-143.92-303.26H96.15q-11.65 0-19.86-8.21-8.21-8.21-8.21-19.77 0-11.56 8.21-19.77 8.21-8.21 19.86-8.21h60.5q9.89 0 17.87 5.27t12.4 14.12l28.16 59Zm128.54 268.27h275.96-275.96Z"/></svg>
+                            </span>
+                            Add to Cart
+                            </button>
 
-                                <button
-                                    id="buyNow"
-                                    type="button"
-                                    class="px-4 py-2 {{ FD['rounded'] }} border border-amber-600 text-amber-600 dark:text-amber-300 {{ FD['text-1'] }} font-semibold  add-to-cart"
-                                    aria-label="Buy now"
-                                    {{-- data-action="buy-now" --}}
-                                    data-prod-id="{{$product->id}}" 
-                                    data-purchase-type="cart"
-                                    data-variation-data="{{ json_encode($variation['data']) }}"
-                                >
-                                Buy Now
-                                </button>
-                            </div>
+                            <button
+                                id="buyNow"
+                                type="button"
+                                class="px-4 py-2 {{ FD['rounded'] }} border border-amber-600 text-amber-600 dark:text-amber-300 {{ FD['text-1'] }} font-semibold  add-to-cart"
+                                aria-label="Buy now"
+                                {{-- data-action="buy-now" --}}
+                                data-prod-id="{{$product->id}}" 
+                                data-purchase-type="cart"
+                                data-variation-data="{{ json_encode($variation['data']) }}"
+                            >
+                            Buy Now
+                            </button>
                         </div>
                     </div>
                 @else
@@ -914,13 +898,11 @@
                                     
                                     <!-- Price block -->
                                     @if ( !empty($product->FDPricing) )
-                                        <div class="singleProdPricingBox">
-                                            <div class="flex items-baseline gap-3">
-                                                <div class="text-2xl font-extrabold">₹9,499</div>
-                                                <div class="{{ FD['text-1'] }} line-through text-gray-500">₹12,999</div>
-                                            </div>
-                                            <p class="text-xs text-green-600 dark:text-green-400 mt-1">Save ₹3,500 (27%)</p>
+                                        <div class="flex items-baseline gap-3">
+                                            <div class="text-2xl font-extrabold">₹9,499</div>
+                                            <div class="{{ FD['text-1'] }} line-through text-gray-500">₹12,999</div>
                                         </div>
+                                        <p class="text-xs text-green-600 dark:text-green-400 mt-1">Save ₹3,500 (27%)</p>
                                     @endif
                                 </div>
 
@@ -939,11 +921,9 @@
                                 <div class="{{ FD['text-1'] }} text-gray-600 dark:text-gray-400">Offer ends in <span id="dealCountdown" class="font-medium">02:13:45</span></div>
                             </div>
 
-                            <div class="mt-4 orderPlaceButtons">
-                                <div class="grid grid-cols-2 gap-2">
-                                    <button class="py-2 px-3 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-800 {{ FD['text-1'] }} font-medium">Add to cart</button>
-                                    <button class="py-2 px-3 {{ FD['rounded'] }} bg-blue-600 text-white {{ FD['text-1'] }} font-medium hover:bg-blue-700">Buy now</button>
-                                </div>
+                            <div class="mt-4 grid grid-cols-2 gap-2">
+                                <button class="py-2 px-3 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-800 {{ FD['text-1'] }} font-medium">Add to cart</button>
+                                <button class="py-2 px-3 {{ FD['rounded'] }} bg-blue-600 text-white {{ FD['text-1'] }} font-medium hover:bg-blue-700">Buy now</button>
                             </div>
 
                             <div class="mt-3 text-xs text-gray-500 dark:text-gray-400">Free delivery & easy returns. EMI options available.</div>
@@ -1310,11 +1290,9 @@
 
 <script>
 (function () {
-    const currencyIcon = '{{ $currencyIcon }}';
     const prodStatDetail = document.getElementById('prodStatDetail');
     // productData injected from Blade
     const productData = @json($variation['data']);
-    // console.log('productData>>', JSON.stringify(productData));
 
     // helpers
     const combosByIdentifier = {};
@@ -1324,24 +1302,20 @@
 
     function parseIdentifierToMap(identifier) {
         const map = {};
-        if (!identifier) return map;
-        const tokens = identifier.split('-');
+        const tokens = identifier ? identifier.split('-') : [];
         let i = 0;
-
         for (const attr of productData.attributes) {
-            let matched = null;
-            // try longest-first to allow multi-token values (e.g. '256-gb')
-            for (let take = Math.min(tokens.length - i, tokens.length); take >= 1; take--) {
-                const candidate = tokens.slice(i, i + take).join('-');
-                if (attr.values.some(v => v.slug === candidate)) {
-                    matched = candidate;
-                    i += take;
-                    break;
-                }
+        let matched = null;
+        for (let take = 1; take <= tokens.length - i; take++) {
+            const candidate = tokens.slice(i, i + take).join('-');
+            if (attr.values.some(v => v.slug === candidate)) {
+            matched = candidate;
+            i += take;
+            break;
             }
-            // IMPORTANT: do NOT default to attr.values[0].slug when nothing matches.
-            if (matched) map[attr.slug] = matched;
-            // otherwise leave this attribute absent (partial selection)
+        }
+        if (!matched) matched = attr.values[0].slug;
+        map[attr.slug] = matched;
         }
         return map;
     }
@@ -1349,20 +1323,10 @@
     function combinationToMap(c) { return parseIdentifierToMap(c.variation_identifier); }
 
     function findCombinationForSelection(selection) {
-        // quick exact identifier match when selection has all attributes
         const slugs = productData.attributes.map(a => selection[a.slug]).filter(Boolean);
-        const identifier = slugs.length ? slugs.join('-') : '';
-
-        if (identifier && combosByIdentifier[identifier]) {
-            return combosByIdentifier[identifier];
-        }
-
-        // fallback: find any combo that matches all keys present in selection
-        const providedKeys = Object.keys(selection).filter(k => selection[k]);
-        return (productData.combinations || []).find(c => {
-            const map = combinationToMap(c);
-            return providedKeys.every(k => map[k] === selection[k]);
-        }) || null;
+        if (slugs.length !== productData.attributes.length) return null;
+        const identifier = slugs.join('-');
+        return combosByIdentifier[identifier] || null;
     }
 
     function isValueValid(attrSlug, valueSlug, partialSelection) {
@@ -1399,39 +1363,14 @@
         try { return new URLSearchParams(window.location.search).get('variant'); }
         catch (e) { return null; }
     }
-
-    function updateURL(selectionOrCombo) {
-        try {
-            const url = new URL(window.location.href);
-            let identifier = '';
-
-            if (!selectionOrCombo) {
-                // nothing -> remove param
-                url.searchParams.delete('variant');
-                history.replaceState(null, '', url.toString());
-                return;
-            }
-
-            // if a combo object is passed, prefer its canonical identifier
-            if (selectionOrCombo.variation_identifier) {
-                identifier = selectionOrCombo.variation_identifier;
-            } else {
-                // otherwise build from selection slugs (may be partial)
-                const slugs = productData.attributes
-                    .map(a => selectionOrCombo[a.slug])
-                    .filter(Boolean);
-                if (slugs.length) identifier = slugs.join('-');
-            }
-
-            if (identifier) url.searchParams.set('variant', identifier);
-            else url.searchParams.delete('variant');
-
-            history.replaceState(null, '', url.toString());
-        } catch (e) {
-            // ignore URL failures (e.g. non-browser env)
-        }
+    function updateURL(selection) {
+        const slugs = productData.attributes.map(a => selection[a.slug]).filter(Boolean);
+        if (slugs.length !== productData.attributes.length) return;
+        const identifier = slugs.join('-');
+        const url = new URL(window.location.href);
+        url.searchParams.set('variant', identifier);
+        history.replaceState(null, '', url.toString());
     }
-
 
     // initial selection: try URL, else fallback to first available combo
     function initialSelection() {
@@ -1592,79 +1531,89 @@
             prodStatDetail.textContent = combo ? (combo.status_title || '') : '';
         }
 
-        // ---- Price Update ----
-        // console.log('combo>>', combo);
-        const priceBoxEls = document.querySelectorAll('.singleProdPricingBox');
-        const orderEls = document.querySelectorAll('.orderPlaceButtons');
+        // ---- price update using .priceBox / .mrpBox / .savingsBox / .discountBox within nearest root ----
+        const priceRoot = findPriceRoot();
 
-        if (combo.allow_order) {
+        // query all matching elements inside the found root (may be multiple — update them all)
+        const priceBlocks = priceRoot.querySelectorAll('.pricing-block');
+        const priceEls = priceRoot.querySelectorAll('.priceBox');
+        const fullMrpEls = priceRoot.querySelectorAll('.mrpEl');
+        const mrpEls = priceRoot.querySelectorAll('.mrpBox');
+        const savingsEls = priceRoot.querySelectorAll('.savingsBox');
+        const discountEls = priceRoot.querySelectorAll('.discountBox');
+        const addToCartBtn = document.getElementById('addToCart');
+        const selectedComboEl = document.getElementById('selectedCombo');
+
+        // console.log('combo>>', combo);
+
+        if (combo.allow_order == true) {
             const p = combo.pricing && combo.pricing[0] ? combo.pricing[0] : null;
+
             const sellingText = p ? (p.selling_price_formatted || p.selling_price || '—') : '—';
             const mrpText = p ? (p.mrp_formatted || p.mrp || '') : '';
             const savingsText = p ? (p.savings_formatted || '') : '';
             const discountText = p ? (p.discount ? p.discount : '') : '';
 
-            // load HTML content
-            let boxContent = `
-            <div class="sellingPriceEl text-xl sm:text-2xl font-bold">
-                <span class="currency-icon">${currencyIcon}</span><span class="priceBox">${sellingText}</span>
-            </div>
-            `;
+            priceBlocks.forEach(el => { el.style.display = 'block'; });
+            priceEls.forEach(el => { el.textContent = sellingText; });
+            mrpEls.forEach(el => { 
+                el.textContent = mrpText;
 
-            if (p && p.mrp > 0) {
-                boxContent += `
-                <div class="mrpEl text-xs text-slate-500 dark:text-slate-400">
-                    <span class="line-through">
-                        <span class="currency-icon">${currencyIcon}</span><span class="mrpBox">${mrpText}</span>
-                    </span>
-                </div>
-                <div class="savingsEl text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
-                    You save <span class="currency-icon">${currencyIcon}</span><span class="savingsBox">${savingsText}</span> 
-                    (<span class="discountBox">${discountText}</span>% off)
-                </div>
-                `;
-            }
-
-            priceBoxEls.forEach(el => {
-                el.innerHTML = boxContent;
-                el.style.display = 'block';
+                if (p.mrp > 0 && p.mrp > p.selling_price) {
+                    el.style.display = 'inline-block';
+                    el.style.textDecorationLine = 'line-through';
+                } else {
+                    el.style.display = 'none';
+                }
             });
+            savingsEls.forEach(el => { el.textContent = savingsText; });
+            discountEls.forEach(el => { el.textContent = discountText; });
 
-            orderEls.forEach(el => {
-                el.style.display = 'block';
-            });
+            if (addToCartBtn) addToCartBtn.disabled = !combo.allow_order;
+            if (selectedComboEl) selectedComboEl.textContent = `Selected: ${combo.variation_identifier} (id: ${combo.id})`;
         } else {
-            priceBoxEls.forEach(el => {
-                el.style.display = 'none';
-            });
-            orderEls.forEach(el => {
-                el.style.display = 'none';
-            });
+            priceBlocks.forEach(el => { el.style.display = 'none'; });
+            priceEls.forEach(el => { el.textContent = '—'; });
+            mrpEls.forEach(el => { el.textContent = ''; });
+            savingsEls.forEach(el => { el.textContent = ''; });
+            discountEls.forEach(el => { el.textContent = ''; });
+
+            if (addToCartBtn) addToCartBtn.disabled = true;
+            if (selectedComboEl) selectedComboEl.textContent = 'Please select a valid combination';
         }
 
-        // ensure we prefer the canonical combo identifier in the URL,
-        // and also fill missing attributes from the combo into currentSelection
-        if (combo) {
-            // merge combo map so inputs + price match perfectly
-            currentSelection = { ...currentSelection, ...combinationToMap(combo) };
-        }
 
-        // write a meaningful variant param: prefer combo if present, otherwise use partial selection
-        updateURL(combo || currentSelection);
-
+        // sync URL for shareable state
+        updateURL(currentSelection);
     }
+
+    // find the nearest ancestor (starting from variationTab) that contains any .priceBox
+    function findPriceRoot() {
+        const variationTabEl = document.getElementById('variationTab');
+        if (!variationTabEl) return document; // fallback
+
+        // walk up ancestors — return the first ancestor that contains at least one .priceBox
+        let ancestor = variationTabEl;
+        while (ancestor && ancestor !== document.body) {
+            if (ancestor.querySelector && ancestor.querySelector('.priceBox')) {
+                return ancestor;
+            }
+            ancestor = ancestor.parentElement;
+        }
+
+        // fallback to document if nothing found
+        return document;
+    }
+
 
     // start
     attachHandlers();
-
     // ensure selection is valid on load
     if (!findCombinationForSelection(currentSelection)) {
         currentSelection = combinationToMap(productData.combinations[0]);
     }
-
     // push default/initial variant to URL so it is shareable
-    const initialCombo = findCombinationForSelection(currentSelection);
-    updateURL(initialCombo || currentSelection);
+    updateURL(currentSelection);
     updateUI();
 })();
 </script>

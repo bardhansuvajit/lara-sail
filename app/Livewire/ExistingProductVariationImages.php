@@ -33,16 +33,15 @@ class ExistingProductVariationImages extends Component
     }
 
     #[On('updateProductVariationImageOrder')]
-    public function updateFeatureOrder(array $ids)
+    public function updateFeatureOrder(array $images)
     {
         $productImageRepository = app(ProductImageInterface::class);
-        $positionResp = $productImageRepository->position($ids);
+        $positionResp = $productImageRepository->position($images);
 
         if ($positionResp['code'] == 200) {
             $this->dispatch('notificationSend', [
                 'variant' => 'success',
                 'title' => 'Position updated',
-                // 'message' => $this->productTitle . ' is removed'
             ]);
 
             // Refresh the images collection with the new order

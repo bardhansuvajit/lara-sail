@@ -54,9 +54,20 @@ class Product extends Model
         return $this->hasMany('App\Models\ProductImage', 'product_id', 'id')->orderBy('position')->orderBy('id', 'desc');
     }
 
+    public function imagesNoVariations()
+    {
+        return $this->hasMany('App\Models\ProductImage', 'product_id', 'id')
+            ->where('product_variation_id', null)
+            ->orderBy('position', 'asc')
+            ->orderBy('id', 'desc');
+    }
+
     public function activeImages()
     {
-        return $this->hasMany('App\Models\ProductImage', 'product_id', 'id')->where('status', 1)->orderBy('position');
+        return $this->hasMany('App\Models\ProductImage', 'product_id', 'id')
+            ->where('product_variation_id', null)
+            ->where('status', 1)
+            ->orderBy('position');
     }
 
     public function pricings()

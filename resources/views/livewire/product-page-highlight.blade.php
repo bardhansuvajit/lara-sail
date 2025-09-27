@@ -98,23 +98,21 @@
         @if($highlights && $highlights->count())
             <div class="space-y-1 bg-gray-50 dark:bg-gray-700 rounded p-2">
                 <div class="border-b border-gray-300 dark:border-gray-500 pb-2">
-                    <div class="flex justify-between">
+                    <div class="flex justify-between items-center">
                         <h5 class="text-gray-700 dark:text-gray-300 font-medium text-xs">Highlights' List</h5>
 
-                        <div>
-                            <button 
-                                type="button"
-                                class="text-xs inline-block text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-500" 
-                                id="highlightPositionToggleButton" 
-                            >
-                                <div class="flex items-center">
-                                    <div class="w-3 h-3 mr-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"/></svg>
-                                    </div>
-                                    Change position
+                        <button 
+                            type="button"
+                            class="text-xs inline-block text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-500" 
+                            id="highlightPositionToggleButton" 
+                        >
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 mr-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"/></svg>
                                 </div>
-                            </button>
-                        </div>
+                                Change position
+                            </div>
+                        </button>
                     </div>
                 </div>
 

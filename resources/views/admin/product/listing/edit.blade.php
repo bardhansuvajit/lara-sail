@@ -126,9 +126,9 @@
                             <div class="imagePreview"></div>
 
                             <div class="existing-images">
-                                @if ($data->images && count($data->images) > 0)
+                                @if ($data->imagesNoVariations && count($data->imagesNoVariations) > 0)
                                     @livewire('existing-product-images', [
-                                        'images' => $data->images,
+                                        'productId' => $data->id,
                                         'type' => $data->type,
                                     ])
                                 @else

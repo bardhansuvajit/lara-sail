@@ -196,7 +196,7 @@ class ProductVariationRepository implements ProductVariationInterface
                         $mrp = ($mrpRaw === '' || is_null($mrpRaw)) ? 0.0 : floatConvert($mrpRaw);
 
                         // if base MRP is less than current variant selling Price, set the MRP (and Discount/ Profit/ Margin) to 0
-                        if ($variationSellingPrice > $mrp) {
+                        if ($variationSellingPrice > $mrp || $variationSellingPrice == $mrp) {
                             $mrp = 0;
                         }
 
@@ -641,9 +641,9 @@ class ProductVariationRepository implements ProductVariationInterface
                 'statusDetail'
             ])
             ->where('product_id', $id)
-            // ->whereHas('statusDetail', function ($q) {
-            //     $q->where('allow_order', 1);
-            // })
+            ->whereHas('statusDetail', function ($q) {
+                $q->where('show_in_frontend', 1);
+            })
             ->orderBy('position', 'asc')
             ->get();
 
@@ -709,7 +709,7 @@ class ProductVariationRepository implements ProductVariationInterface
                             'selling_price_formatted' => formatIndianMoney($pricing->selling_price) ?? 0,
                             'mrp' => $pricing->mrp ?? 0,
                             'mrp_formatted' => formatIndianMoney($pricing->mrp) ?? 0,
-                            'savings_formatted' => formatIndianMoney(($pricing->mrp - $pricing->selling_price), 0) ?? 0,
+                            'savings_formatted' => ($pricing->mrp > $pricing->selling_price) ? formatIndianMoney(($pricing->mrp - $pricing->selling_price), 0) : 0,
                             'discount' => $pricing->discount ?? 0,
 
                             'status' => formatIndianMoney($pricing->status) ?? 0,

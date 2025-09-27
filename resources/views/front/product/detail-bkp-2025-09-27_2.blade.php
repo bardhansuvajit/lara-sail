@@ -226,23 +226,7 @@
                 @endif
 
                 @if ($status->allow_order == 1)
-                    <div class="flex justify-between">
-                        <!-- Variation status card (Tailwind) -->
-                        <div id="variationStatusCard" class="max-w-xs w-full p-3 rounded-2xl shadow-sm bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 transition-all" aria-live="polite" aria-atomic="true">
-                            <div id="variationStatusRow" class="flex items-center gap-3">
-                                <!-- Icon container (will be updated by JS) -->
-                                <div id="variationStatusIcon" class="flex-none w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/40 flex items-center justify-center">
-                                <!-- default icon: info -->
-                                <svg class="w-5 h-5 text-emerald-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M9 9h2v6H9V9z"/><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 110-12 6 6 0 010 12z" clip-rule="evenodd"/></svg>
-                                </div>
-
-                                <div class="flex-1 min-w-0">
-                                <div id="variationStatusTitle" class="text-sm font-semibold text-slate-800 dark:text-slate-100 leading-tight">Loading status…</div>
-                                <div id="variationStatusSubtitle" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">—</div>
-                                </div>
-                            </div>
-                        </div>
-
+                    <div class="text-end">
                         <p class="{{ FD['text'] }} font-semibold {{ FD['rounded'] }} inline-block">
                             <span id="prodStatDetail" class="{{ $status->title_tailwind_classes }} {{ $status->bg_tailwind_classes }} px-3 py-1">
                                 {{ $status->title_frontend }}
@@ -1310,11 +1294,13 @@
 
 <script>
 (function () {
+    // console.log(JSON.stringify($variation['data']));
+
     const currencyIcon = '{{ $currencyIcon }}';
     const prodStatDetail = document.getElementById('prodStatDetail');
     // productData injected from Blade
     const productData = @json($variation['data']);
-    // console.log('productData>>', JSON.stringify(productData));
+    console.log('productData>>', JSON.stringify(productData));
 
     // helpers
     const combosByIdentifier = {};
@@ -1324,24 +1310,20 @@
 
     function parseIdentifierToMap(identifier) {
         const map = {};
-        if (!identifier) return map;
-        const tokens = identifier.split('-');
+        const tokens = identifier ? identifier.split('-') : [];
         let i = 0;
-
         for (const attr of productData.attributes) {
-            let matched = null;
-            // try longest-first to allow multi-token values (e.g. '256-gb')
-            for (let take = Math.min(tokens.length - i, tokens.length); take >= 1; take--) {
-                const candidate = tokens.slice(i, i + take).join('-');
-                if (attr.values.some(v => v.slug === candidate)) {
-                    matched = candidate;
-                    i += take;
-                    break;
-                }
+        let matched = null;
+        for (let take = 1; take <= tokens.length - i; take++) {
+            const candidate = tokens.slice(i, i + take).join('-');
+            if (attr.values.some(v => v.slug === candidate)) {
+            matched = candidate;
+            i += take;
+            break;
             }
-            // IMPORTANT: do NOT default to attr.values[0].slug when nothing matches.
-            if (matched) map[attr.slug] = matched;
-            // otherwise leave this attribute absent (partial selection)
+        }
+        if (!matched) matched = attr.values[0].slug;
+        map[attr.slug] = matched;
         }
         return map;
     }
@@ -1349,20 +1331,10 @@
     function combinationToMap(c) { return parseIdentifierToMap(c.variation_identifier); }
 
     function findCombinationForSelection(selection) {
-        // quick exact identifier match when selection has all attributes
         const slugs = productData.attributes.map(a => selection[a.slug]).filter(Boolean);
-        const identifier = slugs.length ? slugs.join('-') : '';
-
-        if (identifier && combosByIdentifier[identifier]) {
-            return combosByIdentifier[identifier];
-        }
-
-        // fallback: find any combo that matches all keys present in selection
-        const providedKeys = Object.keys(selection).filter(k => selection[k]);
-        return (productData.combinations || []).find(c => {
-            const map = combinationToMap(c);
-            return providedKeys.every(k => map[k] === selection[k]);
-        }) || null;
+        if (slugs.length !== productData.attributes.length) return null;
+        const identifier = slugs.join('-');
+        return combosByIdentifier[identifier] || null;
     }
 
     function isValueValid(attrSlug, valueSlug, partialSelection) {
@@ -1399,39 +1371,14 @@
         try { return new URLSearchParams(window.location.search).get('variant'); }
         catch (e) { return null; }
     }
-
-    function updateURL(selectionOrCombo) {
-        try {
-            const url = new URL(window.location.href);
-            let identifier = '';
-
-            if (!selectionOrCombo) {
-                // nothing -> remove param
-                url.searchParams.delete('variant');
-                history.replaceState(null, '', url.toString());
-                return;
-            }
-
-            // if a combo object is passed, prefer its canonical identifier
-            if (selectionOrCombo.variation_identifier) {
-                identifier = selectionOrCombo.variation_identifier;
-            } else {
-                // otherwise build from selection slugs (may be partial)
-                const slugs = productData.attributes
-                    .map(a => selectionOrCombo[a.slug])
-                    .filter(Boolean);
-                if (slugs.length) identifier = slugs.join('-');
-            }
-
-            if (identifier) url.searchParams.set('variant', identifier);
-            else url.searchParams.delete('variant');
-
-            history.replaceState(null, '', url.toString());
-        } catch (e) {
-            // ignore URL failures (e.g. non-browser env)
-        }
+    function updateURL(selection) {
+        const slugs = productData.attributes.map(a => selection[a.slug]).filter(Boolean);
+        if (slugs.length !== productData.attributes.length) return;
+        const identifier = slugs.join('-');
+        const url = new URL(window.location.href);
+        url.searchParams.set('variant', identifier);
+        history.replaceState(null, '', url.toString());
     }
-
 
     // initial selection: try URL, else fallback to first available combo
     function initialSelection() {
@@ -1593,7 +1540,7 @@
         }
 
         // ---- Price Update ----
-        // console.log('combo>>', combo);
+        console.log('combo>>', combo);
         const priceBoxEls = document.querySelectorAll('.singleProdPricingBox');
         const orderEls = document.querySelectorAll('.orderPlaceButtons');
 
@@ -1642,29 +1589,92 @@
             });
         }
 
-        // ensure we prefer the canonical combo identifier in the URL,
-        // and also fill missing attributes from the combo into currentSelection
-        if (combo) {
-            // merge combo map so inputs + price match perfectly
-            currentSelection = { ...currentSelection, ...combinationToMap(combo) };
+        /*
+        const priceRoot = findPriceRoot();
+
+        // query all matching elements inside the found root (may be multiple — update them all)
+        const priceBlocks = priceRoot.querySelectorAll('.pricing-block');
+        const priceEls = priceRoot.querySelectorAll('.priceBox');
+        const fullMrpEls = priceRoot.querySelectorAll('.mrpEl');
+        const mrpEls = priceRoot.querySelectorAll('.mrpBox');
+        const savingsEls = priceRoot.querySelectorAll('.savingsBox');
+        const discountEls = priceRoot.querySelectorAll('.discountBox');
+        const addToCartBtn = document.getElementById('addToCart');
+        const selectedComboEl = document.getElementById('selectedCombo');
+
+        // console.log('combo>>', combo);
+
+        if (combo.allow_order == true) {
+            const p = combo.pricing && combo.pricing[0] ? combo.pricing[0] : null;
+
+            const sellingText = p ? (p.selling_price_formatted || p.selling_price || '—') : '—';
+            const mrpText = p ? (p.mrp_formatted || p.mrp || '') : '';
+            const savingsText = p ? (p.savings_formatted || '') : '';
+            const discountText = p ? (p.discount ? p.discount : '') : '';
+
+            priceBlocks.forEach(el => { el.style.display = 'block'; });
+            priceEls.forEach(el => { el.textContent = sellingText; });
+            mrpEls.forEach(el => { 
+                el.textContent = mrpText;
+
+                if (p.mrp > 0 && p.mrp > p.selling_price) {
+                    el.style.display = 'inline-block';
+                    el.style.textDecorationLine = 'line-through';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+            savingsEls.forEach(el => { el.textContent = savingsText; });
+            discountEls.forEach(el => { el.textContent = discountText; });
+
+            if (addToCartBtn) addToCartBtn.disabled = !combo.allow_order;
+            if (selectedComboEl) selectedComboEl.textContent = `Selected: ${combo.variation_identifier} (id: ${combo.id})`;
+        } else {
+            priceBlocks.forEach(el => { el.style.display = 'none'; });
+            priceEls.forEach(el => { el.textContent = '—'; });
+            mrpEls.forEach(el => { el.textContent = ''; });
+            savingsEls.forEach(el => { el.textContent = ''; });
+            discountEls.forEach(el => { el.textContent = ''; });
+
+            if (addToCartBtn) addToCartBtn.disabled = true;
+            if (selectedComboEl) selectedComboEl.textContent = 'Please select a valid combination';
+        }
+        */
+
+
+        // sync URL for shareable state
+        updateURL(currentSelection);
+    }
+
+    // find the nearest ancestor (starting from variationTab) that contains any .priceBox
+    /*
+    function findPriceRoot() {
+        const variationTabEl = document.getElementById('variationTab');
+        if (!variationTabEl) return document; // fallback
+
+        // walk up ancestors — return the first ancestor that contains at least one .priceBox
+        let ancestor = variationTabEl;
+        while (ancestor && ancestor !== document.body) {
+            if (ancestor.querySelector && ancestor.querySelector('.priceBox')) {
+                return ancestor;
+            }
+            ancestor = ancestor.parentElement;
         }
 
-        // write a meaningful variant param: prefer combo if present, otherwise use partial selection
-        updateURL(combo || currentSelection);
-
+        // fallback to document if nothing found
+        return document;
     }
+    */
+
 
     // start
     attachHandlers();
-
     // ensure selection is valid on load
     if (!findCombinationForSelection(currentSelection)) {
         currentSelection = combinationToMap(productData.combinations[0]);
     }
-
     // push default/initial variant to URL so it is shareable
-    const initialCombo = findCombinationForSelection(currentSelection);
-    updateURL(initialCombo || currentSelection);
+    updateURL(currentSelection);
     updateUI();
 })();
 </script>

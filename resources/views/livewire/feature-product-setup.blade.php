@@ -404,7 +404,7 @@
     </x-admin.modal>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js"></script>
+{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js"></script> --}}
 
 <script>
 window.addEventListener('load', () => {
