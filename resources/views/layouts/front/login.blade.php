@@ -138,18 +138,14 @@
         <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p>
     </div>
 
-    {{-- form buttons --}}
-    {{-- <div class="fixed z-[1] sm:static bottom-16 sm:bottom-0 w-full -ml-[17px] -mb-[8px] sm:m-0 space-y-0 sm:space-y-4 {{FD['rounded']}} border sm:border-0 border-gray-200 bg-white px-2 py-3 sm:p-0 dark:border-0 dark:bg-gray-800"> --}}
-        {{-- <div class="w-full sm:w-max flex space-x-2 sm:space-x-4 mt-2 sm:mt-8"> --}}
-        <div class="w-full mt-5">
-            <button type="submit" class="w-full sm:w-max flex items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                {{-- Login --}}
-                {{ $buttonText }}
-            </button>
-        </div>
-    {{-- </div> --}}
+    <div class="w-full mt-5">
+        <button type="submit" class="w-full sm:w-max flex items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+            {{ $buttonText }}
+        </button>
+    </div>
 
     <input type="hidden" name="remember" value="on">
+    <input type="hidden" name="redirect" value="{{ $redirect }}">
     <input type="hidden" name="phone_country_code" value="{{COUNTRY['country']}}"> <!-- returns 'IN' -->
     <input type="hidden" name="request_path" value="{{request()->path()}}"> <!-- returns 'checkout' -->
 </form>

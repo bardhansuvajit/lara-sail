@@ -8,10 +8,10 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
     <div class="bg-white p-10 rounded-2xl shadow-xl text-center max-w-lg">
-        <h1 class="text-3xl font-bold text-gray-800 mb-4">🚧 We’ll Be Back Soon</h1>
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">🚧 We'll Be Back Soon</h1>
         <p class="text-gray-600 mb-6">
             Our site is currently down for scheduled maintenance.<br>
-            We’re working hard to bring it back online as quickly as possible.
+            We're working hard to bring it back online as quickly as possible.
         </p>
         <p class="text-sm text-gray-400">Thanks for your patience 🙏</p>
     </div>

@@ -268,10 +268,9 @@
         </div>
 
         <div class="col-span-2">
-            <div class="w-full mt-2 space-y-2">
-                <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Status</h4>
-
+            <div class="w-full mt-2 space-y-4">
                 <div>
+                    <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Status</h4>
                     {{-- <x-admin.input-label for="status" :value="__('Status')" /> --}}
                     <x-admin.input-select id="status" name="status" title="Select Status..." class="w-full" form="productForm">
                         @slot('options')
@@ -299,6 +298,21 @@
                         @endslot
                         {{ __('See Product in Website') }}
                     </x-admin.button>
+                </div>
+
+                <div>
+                    @if ($data->average_rating > 0)
+                        <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Rating</h4>
+
+                        <a href="{{ route('admin.product.review.index', ['productId' => $data->id]) }}">
+                            <div class="flex space-x-2 items-center">
+                                {!! adminRatingHtml($data->average_rating) !!}
+                                <p class="text-xs text-gray-900 dark:text-gray-400 underline hover:no-underline">
+                                    {{ $data->review_count }} {{ ($data->review_count == 1) ? 'review' : 'reviews' }}
+                                </p>
+                            </div>
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

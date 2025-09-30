@@ -2,7 +2,7 @@
     screen="max-w-screen-xl"
     title="{{ __('Product') }}">
 
-<div class="px-2 md:px-0 pt-2 md:pt-4">
+<div class="px-2 md:px-0 pt-2 md:pt-4 space-y-2 md:space-y-0">
     @php
         // If there are no product images stretch the height of Left & Right section
         if ($activeImagesCount > 0) {
@@ -14,12 +14,8 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 md:gap-4 {{ $itemsClass }}">
         <!-- Left: Images + thumbnails -->
-        <div class="lg:col-span-5 bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm md:sticky md:top-[130px] md:mb-4">
+        <div class="lg:col-span-5 bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-0 md:p-4 shadow-sm md:sticky md:top-[130px] md:mb-4">
             @if ($activeImagesCount > 0)
-                @php
-                    $images = $product->activeImages;
-                @endphp
-
                 <div class="flex flex-col gap-2 md:gap-4">
                     <!-- Main image area (wrapper is relative for lens) -->
                     <div id="mainImageWrapper" class="relative {{ FD['rounded'] }} overflow-hidden border dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
@@ -59,7 +55,7 @@
                 {{-- <div id="zoomPane" class="hidden lg:block {{ FD['rounded'] }} overflow-hidden shadow-lg" style="position:fixed; z-index:10; display:none; background-repeat:no-repeat; background-position:center; background-color:#fff;" aria-hidden="true"></div> --}}
             @else
                 <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
-					{!! str_replace('w-32 h-32', 'w-96 h-96', FD['brokenImageFront']) !!}
+					{!! str_replace('w-32 h-32', 'w-72 h-72 md:w-96 md:h-96', FD['brokenImageFront']) !!}
 				</div>
             @endif
         </div>
@@ -71,7 +67,7 @@
                     <div class="flex-1 space-y-2">
                         <!-- Breadcrumb -->
                         <nav class="{{ FD['text-0'] }} text-gray-500" aria-label="breadcrumb">
-                            <ol class="flex items-center gap-2 flex-wrap">
+                            <ol class="flex items-center gap-1 md:gap-2 flex-nowrap">
                                 <li><a href="{{ route('front.home.index') }}" class="hover:underline text-gray-500 dark:text-gray-500">Home</a></li>
 
                                 <!-- Category parents -->
@@ -103,7 +99,7 @@
                                 </li>
 
                                 <li>/</li>
-                                <li><span class="text-gray-800 font-medium dark:text-gray-300" title="{{ $product->title }}">{{ Str::limit($product->title, 25) }}</span></li>
+                                <li><span class="text-gray-800 font-medium dark:text-gray-300 line-clamp-1" title="{{ $product->title }}">{{ Str::limit($product->title, 25) }}</span></li>
                             </ol>
                         </nav>
 
@@ -183,12 +179,25 @@
                             </div>
                         </div>
                     </div>
+                @else
+                    <section class="w-full flex items-center justify-center">
+                        <div class="w-full text-center border border-slate-200 dark:border-slate-700 p-2 md:p-4 {{ FD['rounded'] }} bg-gray-100 dark:bg-slate-900 shadow-sm">
+                            <div class="mb-2 md:mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-6 w-6 md:h-12 md:w-12 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12A9 9 0 1112 3a9 9 0 019 9z" /></svg>
+                            </div>
+                            <h2 class="{{ FD['text-2'] }} font-semibold text-slate-800 dark:text-slate-200">Pricing not available</h2>
+                            <p class="mt-2 {{ FD['text'] }} text-slate-600 dark:text-slate-400">
+                                Product pricing is not available for your selected country.<br>
+                                Please try changing your country to see updated prices.
+                            </p>
+                        </div>
+                    </section>
                 @endif
 
                 <!-- Variations -->
                 {{-- {{ dd($variation) }} --}}
                 @if ($variation['code'] == 200)
-                    <div class="space-y-4" id="variationTab">
+                    <div class="space-y-2 md:space-y-4" id="variationTab">
                         @foreach ($variation['data']['attributes'] as $attrIndex => $attribute)
                         <div>
                             <fieldset>
@@ -196,7 +205,7 @@
                                     {{ $attribute['title'] }}
                                 </legend>
 
-                                <div class="flex flex-wrap space-x-2" role="radiogroup" aria-labelledby="legend-{{ $attribute['slug'] }}">
+                                <div class="flex flex-wrap space-x-0 md:space-x-2" role="radiogroup" aria-labelledby="legend-{{ $attribute['slug'] }}">
                                     @foreach ($attribute['values'] as $valueIndex => $value)
                                     <div class="group">
                                         <input
@@ -214,7 +223,7 @@
                                             tabindex="0"
                                             class="inline-block rounded-full cursor-pointer text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-600 border-2 border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 peer-checked:bg-gray-100 dark:peer-checked:bg-gray-800 peer-checked:border-primary-700 dark:peer-checked:border-primary-600 peer-checked:text-gray-900 dark:peer-checked:text-gray-100 px-2 py-1 mb-2 mr-2 transition duration-150 variation-label"
                                         >
-                                            <p class="text-sm font-medium">{{ $value['title'] }}</p>
+                                            <p class="text-xs font-normal md:text-sm md:font-medium">{{ $value['title'] }}</p>
                                         </label>
                                     </div>
                                     @endforeach
@@ -226,28 +235,25 @@
                 @endif
 
                 @if ($status->allow_order == 1)
-                    <div class="flex justify-between">
-                        <!-- Variation status card (Tailwind) -->
-                        <div id="variationStatusCard" class="max-w-xs w-full p-3 rounded-2xl shadow-sm bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 transition-all" aria-live="polite" aria-atomic="true">
-                            <div id="variationStatusRow" class="flex items-center gap-3">
-                                <!-- Icon container (will be updated by JS) -->
-                                <div id="variationStatusIcon" class="flex-none w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/40 flex items-center justify-center">
-                                <!-- default icon: info -->
-                                <svg class="w-5 h-5 text-emerald-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M9 9h2v6H9V9z"/><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 110-12 6 6 0 010 12z" clip-rule="evenodd"/></svg>
-                                </div>
-
-                                <div class="flex-1 min-w-0">
-                                <div id="variationStatusTitle" class="text-sm font-semibold text-slate-800 dark:text-slate-100 leading-tight">Loading status…</div>
-                                <div id="variationStatusSubtitle" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">—</div>
+                    <div class="flex justify-between items-center">
+                        @if ($variation['code'] == 200)
+                            <div class="selected-varaition" aria-live="polite" aria-atomic="true">
+                                <div class="flex gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                    <p class="text-slate-500 dark:text-slate-300">Selected: </p>
+                                    <div class="variationStatusSubtitle">
+                                        <span class="italic">Loading...</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
 
-                        <p class="{{ FD['text'] }} font-semibold {{ FD['rounded'] }} inline-block">
-                            <span id="prodStatDetail" class="{{ $status->title_tailwind_classes }} {{ $status->bg_tailwind_classes }} px-3 py-1">
-                                {{ $status->title_frontend }}
-                            </span>
-                        </p>
+                        <div>
+                            <p class="{{ FD['text'] }} font-semibold {{ FD['rounded'] }} inline-block">
+                                <span id="prodStatDetail" class="{{ $status->title_tailwind_classes }} {{ $status->bg_tailwind_classes }} px-3 py-1">
+                                    {{ $status->title_frontend }}
+                                </span>
+                            </p>
+                        </div>
                     </div>
                 @endif
 
@@ -256,179 +262,184 @@
                     <div class="w-full orderPlaceButtons">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                             <!-- Qty block -->
-                            <div class="flex items-start sm:items-center gap-3">
-                                    <div
-                                        id="qtyGroup"
-                                        class="inline-flex items-stretch {{ FD['rounded'] }} overflow-hidden border border-gray-300 dark:border-gray-600"
-                                        role="group"
-                                        aria-label="Quantity selector"
-                                        data-max-stock="12"
-                                        data-min-qty="1"
-                                        data-step="1"
-                                        data-product-id="{{ $product->id ?? '' }}"
+                            {{-- <div class="flex items-start sm:items-center gap-3">
+                                <div
+                                    id="qtyGroup"
+                                    class="inline-flex items-stretch {{ FD['rounded'] }} overflow-hidden border border-gray-300 dark:border-gray-600"
+                                    role="group"
+                                    aria-label="Quantity selector"
+                                    data-max-stock="12"
+                                    data-min-qty="1"
+                                    data-step="1"
+                                    data-product-id="{{ $product->id ?? '' }}"
+                                >
+                                    <button
+                                        id="qtyDec"
+                                        type="button"
+                                        class="w-9 h-9 flex items-center justify-center {{ FD['text-1'] }} focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
+                                        aria-label="Decrease quantity"
+                                        title="Decrease quantity"
                                     >
-                                        <button
-                                            id="qtyDec"
-                                            type="button"
-                                            class="w-9 h-9 flex items-center justify-center {{ FD['text-1'] }} focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
-                                            aria-label="Decrease quantity"
-                                            title="Decrease quantity"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4" aria-hidden="true"><path d="M200-440v-80h560v80H200Z"/></svg>
-                                        </button>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4" aria-hidden="true"><path d="M200-440v-80h560v80H200Z"/></svg>
+                                    </button>
 
-                                        <!-- readonly input: user cannot type; only buttons change value -->
-                                        <input
-                                            id="qtyInput"
-                                            type="text"
-                                            inputmode="numeric"
-                                            pattern="\d*"
-                                            aria-live="polite"
-                                            aria-label="Quantity"
-                                            role="spinbutton"
-                                            aria-valuemin="1"
-                                            aria-valuemax="99"
-                                            aria-valuenow="1"
-                                            value="1"
-                                            readonly
-                                            aria-readonly="true"
-                                            class="w-20 sm:w-16 text-center {{ FD['text-1'] }} bg-white dark:bg-slate-800 outline-none border-l border-r border-transparent focus:outline-none focus:ring-0 px-2 cursor-default"
-                                            style="min-width:3.5rem;"
-                                            tabindex="0"
-                                        />
+                                    <!-- readonly input: user cannot type; only buttons change value -->
+                                    <input
+                                        id="qtyInput"
+                                        type="text"
+                                        inputmode="numeric"
+                                        pattern="\d*"
+                                        aria-live="polite"
+                                        aria-label="Quantity"
+                                        role="spinbutton"
+                                        aria-valuemin="1"
+                                        aria-valuemax="99"
+                                        aria-valuenow="1"
+                                        value="1"
+                                        readonly
+                                        aria-readonly="true"
+                                        class="w-20 sm:w-16 text-center {{ FD['text-1'] }} bg-white dark:bg-slate-800 outline-none border-l border-r border-transparent focus:outline-none focus:ring-0 px-2 cursor-default"
+                                        style="min-width:3.5rem;"
+                                        tabindex="0"
+                                    />
 
-                                        <button
-                                            id="qtyInc"
-                                            type="button"
-                                            class="w-9 h-9 flex items-center justify-center {{ FD['text-1'] }} focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
-                                            aria-label="Increase quantity"
-                                            title="Increase quantity"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4" aria-hidden="true"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
-                                        </button>
-                                    </div>
+                                    <button
+                                        id="qtyInc"
+                                        type="button"
+                                        class="w-9 h-9 flex items-center justify-center {{ FD['text-1'] }} focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
+                                        aria-label="Increase quantity"
+                                        title="Increase quantity"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4" aria-hidden="true"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                                    </button>
+                                </div>
 
-                                    <div id="stockHelper" class="mt-2 ml-1 text-xs text-slate-500 dark:text-slate-400" aria-live="polite"></div>
-                            </div>
+                                <div id="stockHelper" class="mt-2 ml-1 text-xs text-slate-500 dark:text-slate-400" aria-live="polite"></div>
+                            </div> --}}
 
-                            <div class="flex-1 flex gap-2 w-full sm:w-auto justify-end items-center">
+                            <div class="flex gap-2 w-full md:w-auto md:justify-end items-center">
                                 <button
-                                    id="addToCart"
+                                    id="addToCartBtn"
                                     type="button"
-                                    class="flex-1 sm:flex-none px-4 py-2 {{ FD['rounded'] }} bg-amber-600 hover:bg-amber-700 text-white font-semibold {{ FD['text-1'] }} inline-flex items-center justify-center disabled:opacity-50 transition-shadow add-to-cart"
-                                    aria-label="Add to cart"
-                                    data-prod-id="{{$product->id}}" 
-                                    data-purchase-type="cart"
-                                    {{-- data-variation-data="{{ json_encode($variation['data']) }}" --}}
-                                >
-                                <span class="mr-2 inline-flex items-center" aria-hidden="true">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="w-4 h-4"><path d="M289.42-105.77q-28.14 0-47.88-19.7-19.73-19.7-19.73-47.84 0-28.15 19.7-47.88 19.7-19.73 47.84-19.73 28.14 0 47.88 19.7 19.73 19.7 19.73 47.84 0 28.14-19.7 47.88-19.7 19.73-47.84 19.73Zm380.42 0q-28.14 0-47.88-19.7-19.73-19.7-19.73-47.84 0-28.15 19.7-47.88 19.7-19.73 47.84-19.73 28.15 0 47.88 19.7 19.73 19.7 19.73 47.84 0 28.14-19.7 47.88-19.7 19.73-47.84 19.73ZM242.23-729.19l101.39 212.31h268.65q3.46 0 6.15-1.74 2.7-1.73 4.62-4.8l107.31-195q2.3-4.23.38-7.5-1.92-3.27-6.54-3.27H242.23Zm-27.15-55.96h544.57q24.35 0 36.52 20.41 12.17 20.42.98 41.51l-124.92 226.5q-9.04 16.81-25.1 26.31-16.06 9.5-34.52 9.5H325.62l-47.12 86.23q-3.08 4.61-.19 10 2.88 5.38 8.65 5.38H709.5q11.43 0 19.66 8.23 8.22 8.22 8.22 19.66 0 11.65-8.22 19.86-8.23 8.21-19.66 8.21H289.32q-38.71 0-58.38-33.07t-1.48-66.27l57.08-101.63-143.92-303.26H96.15q-11.65 0-19.86-8.21-8.21-8.21-8.21-19.77 0-11.56 8.21-19.77 8.21-8.21 19.86-8.21h60.5q9.89 0 17.87 5.27t12.4 14.12l28.16 59Zm128.54 268.27h275.96-275.96Z"/></svg>
-                                </span>
-                                Add to Cart
+                                    class="w-full md:w-max relative inline-flex items-center gap-3 {{ FD['rounded'] }} 
+                                        px-2 py-1 md:px-4 md:py-2 
+                                        text-sm md:text-xl font-bold
+                                        bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500
+                                        text-gray-900 shadow-lg shadow-amber-300/30 dark:shadow-amber-900/40
+                                        transform transition-all duration-180
+                                        focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/40 focus-visible:ring-offset-1
+                                        disabled:opacity-60 disabled:cursor-not-allowed add-to-cart"
+                                        aria-label="Add to cart"
+                                        data-prod-id="{{$product->id}}" 
+                                        data-purchase-type="cart"
+                                        data-variation-data="{{ json_encode($variation['data']['combinations'] ?? []) }}"
+                                    >
+
+                                    <span class="buttonIcon flex-none flex items-center justify-center">
+                                        <div class="w-8 h-8">
+                                            <svg viewBox="-2.4 -2.4 28.80 28.80" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" stroke-width="0.00024000000000000003" transform="rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0" transform="translate(0,0), scale(1)"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z" fill="#000000"></path> <path d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z" fill="#000000"></path> <path opacity="0.5" d="M2.08368 2.7512C2.22106 2.36044 2.64921 2.15503 3.03998 2.29242L3.34138 2.39838C3.95791 2.61511 4.48154 2.79919 4.89363 3.00139C5.33426 3.21759 5.71211 3.48393 5.99629 3.89979C6.27827 4.31243 6.39468 4.76515 6.44841 5.26153C6.47247 5.48373 6.48515 5.72967 6.49184 6H17.1301C18.815 6 20.3318 6 20.7757 6.57708C21.2197 7.15417 21.0461 8.02369 20.699 9.76275L20.1992 12.1875C19.8841 13.7164 19.7266 14.4808 19.1748 14.9304C18.6231 15.38 17.8426 15.38 16.2816 15.38H10.9787C8.18979 15.38 6.79534 15.38 5.92894 14.4662C5.06254 13.5523 4.9993 12.5816 4.9993 9.64L4.9993 7.03832C4.9993 6.29837 4.99828 5.80316 4.95712 5.42295C4.91779 5.0596 4.84809 4.87818 4.75783 4.74609C4.66977 4.61723 4.5361 4.4968 4.23288 4.34802C3.91003 4.18961 3.47128 4.03406 2.80367 3.79934L2.54246 3.7075C2.1517 3.57012 1.94629 3.14197 2.08368 2.7512Z" fill="#000000"></path> <path d="M13.75 9C13.75 8.58579 13.4142 8.25 13 8.25C12.5858 8.25 12.25 8.58579 12.25 9V10.25H11C10.5858 10.25 10.25 10.5858 10.25 11C10.25 11.4142 10.5858 11.75 11 11.75H12.25V13C12.25 13.4142 12.5858 13.75 13 13.75C13.4142 13.75 13.75 13.4142 13.75 13V11.75H15C15.4142 11.75 15.75 11.4142 15.75 11C15.75 10.5858 15.4142 10.25 15 10.25H13.75V9Z" fill="#000000"></path> </g></svg>
+                                        </div>
+                                    </span>
+
+                                    <span class="buttonLoader hidden">
+                                        <div class="flex-none flex items-center justify-center">
+                                            <div class="w-8 h-8">
+                                                <svg class="animate-spin" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path fill="none" d="M0 0h24v24H0z"></path> <path d="M18.364 5.636L16.95 7.05A7 7 0 1 0 19 12h2a9 9 0 1 1-2.636-6.364z"></path> </g> </g></svg>
+                                            </div>
+                                        </div>
+                                    </span>
+
+                                    <span class="buttonLabel">Add to Cart</span>
                                 </button>
 
                                 <button
-                                    id="buyNow"
+                                    id="buyNowBtn"
                                     type="button"
-                                    class="px-4 py-2 {{ FD['rounded'] }} border border-amber-600 text-amber-600 dark:text-amber-300 {{ FD['text-1'] }} font-semibold  add-to-cart"
-                                    aria-label="Buy now"
-                                    {{-- data-action="buy-now" --}}
-                                    data-prod-id="{{$product->id}}" 
-                                    data-purchase-type="cart"
-                                    data-variation-data="{{ json_encode($variation['data']) }}"
-                                >
-                                Buy Now
+                                    class="w-full md:w-max relative inline-flex items-center gap-3 {{ FD['rounded'] }} 
+                                        px-2 py-1 md:px-4 md:py-2 
+                                        text-sm md:text-xl font-bold
+                                        bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700
+                                        text-white shadow-lg shadow-sky-300/30 dark:shadow-indigo-900/40
+                                        transform transition-all duration-180
+                                        focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-300/40 focus-visible:ring-offset-1
+                                        disabled:opacity-60 disabled:cursor-not-allowed add-to-cart"
+                                        aria-label="Buy now"
+                                        data-prod-id="{{$product->id}}" 
+                                        data-purchase-type="buy"
+                                        data-variation-data="{{ json_encode($variation['data']['combinations'] ?? []) }}"
+                                        >
+
+                                    <span class="buttonIcon flex-none flex items-center justify-center">
+                                        <div class="w-8 h-8">
+                                            <svg viewBox="-2.4 -2.4 28.80 28.80" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" stroke-width="0.00024000000000000003" transform="rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0" transform="translate(0,0), scale(1)"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z" fill="#3cc039"></path> <path d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z" fill="#3cc039"></path> <path opacity="0.5" d="M2.08368 2.7512C2.22106 2.36044 2.64921 2.15503 3.03998 2.29242L3.34138 2.39838C3.95791 2.61511 4.48154 2.79919 4.89363 3.00139C5.33426 3.21759 5.71211 3.48393 5.99629 3.89979C6.27827 4.31243 6.39468 4.76515 6.44841 5.26153C6.47247 5.48373 6.48515 5.72967 6.49184 6H17.1301C18.815 6 20.3318 6 20.7757 6.57708C21.2197 7.15417 21.0461 8.02369 20.699 9.76275L20.1992 12.1875C19.8841 13.7164 19.7266 14.4808 19.1748 14.9304C18.6231 15.38 17.8426 15.38 16.2816 15.38H10.9787C8.18979 15.38 6.79534 15.38 5.92894 14.4662C5.06254 13.5523 4.9993 12.5816 4.9993 9.64L4.9993 7.03832C4.9993 6.29837 4.99828 5.80316 4.95712 5.42295C4.91779 5.0596 4.84809 4.87818 4.75783 4.74609C4.66977 4.61723 4.5361 4.4968 4.23288 4.34802C3.91003 4.18961 3.47128 4.03406 2.80367 3.79934L2.54246 3.7075C2.1517 3.57012 1.94629 3.14197 2.08368 2.7512Z" fill="#3cc039"></path> <path d="M13.75 9C13.75 8.58579 13.4142 8.25 13 8.25C12.5858 8.25 12.25 8.58579 12.25 9V10.25H11C10.5858 10.25 10.25 10.5858 10.25 11C10.25 11.4142 10.5858 11.75 11 11.75H12.25V13C12.25 13.4142 12.5858 13.75 13 13.75C13.4142 13.75 13.75 13.4142 13.75 13V11.75H15C15.4142 11.75 15.75 11.4142 15.75 11C15.75 10.5858 15.4142 10.25 15 10.25H13.75V9Z" fill="#3cc039"></path> </g></svg>
+                                        </div>
+                                    </span>
+
+                                    <span class="buttonLoader hidden">
+                                        <div class="flex-none flex items-center justify-center">
+                                            <div class="w-8 h-8">
+                                                <svg class="animate-spin" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path fill="none" d="M0 0h24v24H0z"></path> <path d="M18.364 5.636L16.95 7.05A7 7 0 1 0 19 12h2a9 9 0 1 1-2.636-6.364z"></path> </g> </g></svg>
+                                            </div>
+                                        </div>
+                                    </span>
+
+                                    <span class="buttonLabel">Buy Now</span>
                                 </button>
                             </div>
+
                         </div>
                     </div>
                 @else
-                    @php
-                        $bgColor = $status->bg_tailwind_classes;
-                        $mainColor = $status->title_tailwind_classes;
-                        $descColor = $status->description_tailwind_classes;
-                        $emailNotify = $status->notify_by_email;
-                        if ($emailNotify) {
-                            $sectionClasses = "items-center p-2 $bgColor";
-                        } else {
-                            $sectionClasses = "items-start";
-                        }
-                    @endphp
+                    @if (!empty($product->FDPricing))
+                        @php
+                            $bgColor = $status->bg_tailwind_classes;
+                            $mainColor = $status->title_tailwind_classes;
+                            $descColor = $status->description_tailwind_classes;
+                            $emailNotify = $status->notify_by_email;
+                            if ($emailNotify) {
+                                $sectionClasses = "items-center p-2 $bgColor";
+                            } else {
+                                $sectionClasses = "items-start";
+                            }
+                        @endphp
 
-                    <div class="flex flex-col gap-1 {{ $sectionClasses }}">
-                        <h5 class="text-2xl font-semibold flex items-center gap-2 {{ $mainColor }}">
-                            <div class="w-6 h-6 {{ $mainColor }}">{!! $status->icon !!}</div>
-                            {{ $status->title_frontend }}
-                        </h5>
+                        <div class="flex flex-col gap-1 {{ $sectionClasses }}">
+                            <h5 class="text-2xl font-semibold flex items-center gap-2 {{ $mainColor }}">
+                                <div class="w-6 h-6 {{ $mainColor }}">{!! $status->icon !!}</div>
+                                {{ $status->title_frontend }}
+                            </h5>
 
-                        <p class="{{ FD['text-1'] }} {{ $descColor }}">
-                            {{ $status->description_frontend }}
-                        </p>
+                            <p class="{{ FD['text-1'] }} {{ $descColor }}">
+                                {{ $status->description_frontend }}
+                            </p>
 
-                        @if ($emailNotify)
-                            <div class="my-4">
-                                @livewire('product-interest-form', [
-                                    'product_id' => $product->id,
-                                    'product_variation_id' => null,
-                                ])
-                            </div>
-                        @endif
-                    </div>
+                            @if ($emailNotify)
+                                <div class="my-4">
+                                    @livewire('product-interest-form', [
+                                        'product_id' => $product->id,
+                                        'product_variation_id' => null,
+                                    ])
+                                </div>
+                            @endif
+                        </div>
+                    @endif
                 @endif
 
                 <hr class="mt-5 mb-2 dark:border-gray-600">
 
                 <!-- productBadges -->
                 <div id="productBadges" class="">
-                    <div class="grid grid-cols-4 gap-2 md:gap-4">
-                        <!-- Badge: Delivery -->
-                        <div role="listitem" class="flex flex-col items-center text-center p-3 bg-white dark:bg-slate-800 {{ FD['rounded'] }} shadow-sm">
-                            <div class="w-8 h-8 flex items-center justify-center mb-2 text-gray-600 dark:text-gray-300" aria-hidden="true">
-                                <!-- truck icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M280-160q-50 0-85-35t-35-85H60l18-80h113q17-19 40-29.5t49-10.5q26 0 49 10.5t40 29.5h167l84-360H182l4-17q6-28 27.5-45.5T264-800h456l-37 160h117l120 160-40 200h-80q0 50-35 85t-85 35q-50 0-85-35t-35-85H400q0 50-35 85t-85 35Zm357-280h193l4-21-74-99h-95l-28 120Zm-19-273 2-7-84 360 2-7 34-146 46-200ZM20-427l20-80h220l-20 80H20Zm80-146 20-80h260l-20 80H100Zm180 333q17 0 28.5-11.5T320-280q0-17-11.5-28.5T280-320q-17 0-28.5 11.5T240-280q0 17 11.5 28.5T280-240Zm400 0q17 0 28.5-11.5T720-280q0-17-11.5-28.5T680-320q-17 0-28.5 11.5T640-280q0 17 11.5 28.5T680-240Z"/></svg>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
+                        @foreach ($allBadges as $badge)
+                            <div role="listitem" class="flex flex-col items-center text-center p-0 md:p-3 bg-white dark:bg-slate-800 {{ FD['rounded'] }} shadow-sm">
+                                <div class="w-5 h-5 md:w-8 md:h-8 flex items-center justify-center mb-2 text-gray-600 dark:text-gray-300" aria-hidden="true">
+                                    {!! $badge['icon'] !!}
+                                </div>
+                                <h5 class="text-[10px] md:text-xs font-medium text-gray-800 dark:text-gray-100">{{ $badge['title'] }}</h5>
+                                <p class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400">{{ $badge['desc'] }}</p>
                             </div>
-                            <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Delivery</h5>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                Standard delivery
-                            </p>
-                        </div>
-
-                        <!-- Badge: Cash on Delivery -->
-                        <div role="listitem" class="flex flex-col items-center text-center p-3 bg-white dark:bg-slate-800 {{ FD['rounded'] }} shadow-sm">
-                            <div class="w-8 h-8 flex items-center justify-center mb-2 text-gray-600 dark:text-gray-300" aria-hidden="true">
-                                @if (COUNTRY['currency'] == 'INR')
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M549-120 280-400v-80h140q53 0 91.5-34.5T558-600H240v-80h306q-17-35-50.5-57.5T420-760H240v-80h480v80H590q14 17 25 37t17 43h88v80h-81q-8 85-70 142.5T420-400h-29l269 280H549Z"/></svg>
-                                @else
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M441-120v-86q-53-12-91.5-46T293-348l74-30q15 48 44.5 73t77.5 25q41 0 69.5-18.5T587-356q0-35-22-55.5T463-458q-86-27-118-64.5T313-614q0-65 42-101t86-41v-84h80v84q50 8 82.5 36.5T651-650l-74 32q-12-32-34-48t-60-16q-44 0-67 19.5T393-614q0 33 30 52t104 40q69 20 104.5 63.5T667-358q0 71-42 108t-104 46v84h-80Z"/></svg>
-                                @endif
-                            </div>
-                            <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Cash on Delivery</h5>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                Available in many pin codes — select at checkout
-                            </p>
-                        </div>
-
-                        <!-- Badge: Easy Returns -->
-                        <div role="listitem" class="flex flex-col items-center text-center p-3 bg-white dark:bg-slate-800 {{ FD['rounded'] }} shadow-sm">
-                            <div class="w-8 h-8 flex items-center justify-center mb-2 text-gray-600 dark:text-gray-300" aria-hidden="true">
-                                <!-- return icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"/></svg>
-                            </div>
-                            <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Easy Returns</h5>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">7-day hassle-free returns on eligible items</p>
-                        </div>
-
-                        <!-- Badge: Secure Payments -->
-                        <div role="listitem" class="flex flex-col items-center text-center p-3 bg-white dark:bg-slate-800 {{ FD['rounded'] }} shadow-sm">
-                            <div class="w-8 h-8 flex items-center justify-center mb-2 text-gray-600 dark:text-gray-300" aria-hidden="true">
-                                <!-- shield icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-113.23q-6 0-11.64-1-5.64-1-10.9-3-124.31-44.5-197.25-156.5t-72.94-242.5v-177.19q0-21.37 12.37-38.71t31.9-25.02L456-841.34q12.1-4.43 24-4.43t24.19 4.43l224.46 84.19q19.34 7.68 31.71 25.02 12.37 17.34 12.37 38.71v177.19q0 130.5-72.94 242.5t-197.06 156.5q-5.45 2-11.09 3t-11.64 1Z"/></svg>
-                            </div>
-                            <h5 class="text-xs font-medium text-gray-800 dark:text-gray-100">Secure Payments</h5>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">SSL encrypted • Trusted payment gateways</p>
-                        </div>
+                        @endforeach
                     </div>
-
                 </div>
             </div>
         </div>
@@ -437,7 +448,7 @@
     <div class="flex flex-col gap-4">
         <!-- UPSELL -->
         @if (count($upsells) > 0)
-            <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm">
+            <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm">
                 <div class="flex items-start justify-between mb-3">
                     <h3 class="{{ FD['text-1'] }} font-semibold">Frequently bought together</h3>
 
@@ -602,9 +613,9 @@
         @endif
 
         <!-- Description, Reviews, FAQs, CTA -->
-        <section id="pdp-description" class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm">
+        <section id="pdp-description" class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm">
             <div class="mx-auto">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 md:gap-4">
                     <div class="lg:col-span-8 space-y-6">
                         <div class="space-y-4">
                             <!-- Highlight -->
@@ -639,7 +650,7 @@
                                         title="Description"
                                     />
 
-                                    <div class="text-xs leading-tight">
+                                    <div class="text-xs leading-tight text-gray-600 dark:text-gray-400">
                                         {!! nl2br($product->long_description) !!}
                                     </div>
                                 </div>
@@ -690,8 +701,7 @@
                                     <!-- FAQ List -->
                                     <div class="space-y-3" id="faq-list">
                                         @foreach($faqs as $index => $faq)
-                                            <article class="p-3 border dark:border-slate-700 {{ FD['rounded'] }} mb-3">
-                                            {{-- <article class="@if (!$loop->last) border-b border-gray-200/50 dark:border-gray-700/50 @endif"> --}}
+                                            <article class="p-3 md:border dark:border-slate-700 {{ FD['rounded'] }} mb-2 md:mb-4">
                                                 <p class="font-semibold {{ FD['text'] }} text-slate-800 dark:text-white">
                                                     {{ $faq->question }}
                                                 </p>
@@ -800,53 +810,15 @@
 
                                     {{-- <hr class="my-3 border-gray-200/50 dark:border-gray-700/50"/> --}}
 
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4">
                                         {{-- Review highlight section with fixed height --}}
                                         <div class="md:col-span-1 bg-primary-50 dark:bg-gray-900/50 p-4 {{ FD['rounded'] }} h-fit">
-                                            <div class="text-center">
-                                                <div class="flex justify-center">
-                                                    <p class="text-3xl font-bold text-gray-800 dark:text-white">{{ $product->average_rating }}</p>
-
-                                                    <div class="w-8 h-8 text-amber-500 dark:text-amber-400">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m305-704 112-145q12-16 28.5-23.5T480-880q18 0 34.5 7.5T543-849l112 145 170 57q26 8 41 29.5t15 47.5q0 12-3.5 24T866-523L756-367l4 164q1 35-23 59t-56 24q-2 0-22-3l-179-50-179 50q-5 2-11 2.5t-11 .5q-32 0-56-24t-23-59l4-165L95-523q-8-11-11.5-23T80-570q0-25 14.5-46.5T135-647l170-57Z"/></svg>
-                                                    </div>
-                                                </div>
-
-                                                <div class="text-xs text-gray-600 dark:text-gray-500 mt-1">Based on {{ formatIndianMoney($product->review_count) }} reviews</div>
-                                            </div>
-
-                                            @php
-                                                $ratingBuckets = [5=>0,4=>0,3=>0,2=>0,1=>0];
-                                                foreach($allReviews as $r) $ratingBuckets[$r['rating']]++;
-                                            @endphp
-
-                                            <div class="mt-3 mb-5 space-y-2 {{ FD['text-1'] }}">
-                                                @foreach($ratingBuckets as $star => $count)
-                                                    <div class="flex items-center gap-2">
-                                                        <div class="w-10 flex gap-1 items-center">
-                                                            <p class="!w-2 text-xs text-gray-800 dark:text-white">{{ $star }}</p>
-                                                            <div class="w-3 h-3 text-amber-500 dark:text-amber-400">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m305-704 112-145q12-16 28.5-23.5T480-880q18 0 34.5 7.5T543-849l112 145 170 57q26 8 41 29.5t15 47.5q0 12-3.5 24T866-523L756-367l4 164q1 35-23 59t-56 24q-2 0-22-3l-179-50-179 50q-5 2-11 2.5t-11 .5q-32 0-56-24t-23-59l4-165L95-523q-8-11-11.5-23T80-570q0-25 14.5-46.5T135-647l170-57Z"/></svg>
-                                                            </div>
-                                                        </div>
-                                                        <div class="flex-1 bg-gray-300 dark:bg-gray-700 h-2 rounded overflow-hidden">
-                                                            <div style="width:@php echo $total? intval(($count/$total)*100):0 @endphp%" class="h-2 bg-amber-600 dark:bg-amber-500"></div>
-                                                        </div>
-                                                        <div class="w-8 text-xs text-right text-gray-800 dark:text-white">
-                                                            {{ $count }}
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-
-                                            <x-front.button
-                                                class="w-full"
-                                                element="a">
-                                                @slot('icon')
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Z"/></svg>
-                                                @endslot
-                                                {{ __('Write a review') }}
-                                            </x-front.button>
+                                            <x-front.product-review-highlight 
+                                                :product_slug="$product->slug"
+                                                :average_rating="$product->average_rating"
+                                                :review_count="$product->review_count"
+                                                :all_reviews="$allReviews"
+                                            />
                                         </div>
 
                                         <div class="md:col-span-2" id="reviewsList">
@@ -857,7 +829,7 @@
                                             @endforeach
 
                                             @if ($total > 3)
-                                                <div class="flex justify-center mt-4">
+                                                <div class="flex justify-center mt-2 md:mt-4">
                                                     <x-front.button
                                                         element="a"
                                                         tag="secondary"
@@ -906,45 +878,102 @@
                         </div>
                     </div>
 
-                    <aside class="lg:col-span-4 sticky md:top-[8.1rem] self-start space-y-4" id="pdpAsideQuickBar">
-                        <div class="{{ FD['rounded'] }} border border-gray-100 dark:border-gray-800 p-4 bg-gray-50 dark:bg-gray-900 shadow-sm">
+                    <aside class="lg:col-span-4 sticky md:top-[8.1rem] self-start space-y-2 md:space-y-4" id="pdpAsideQuickBar">
+                        <div class="{{ FD['rounded'] }} border border-gray-100 dark:border-gray-800 p-4 bg-slate-100 dark:bg-gray-900 shadow-sm">
                             <div class="flex items-start justify-between gap-4">
                                 <div>
-                                    <p class="{{ FD['text-1'] }} text-gray-500 dark:text-gray-400">{{ $product->title }}</p>
+                                    <p class="{{ FD['text-1'] }} text-gray-500 dark:text-gray-300">{{ $product->title }}</p>
+
+                                    @if ($status->allow_order == 1)
+                                        <div class="flex justify-between items-center mb-2">
+                                            @if ($variation['code'] == 200)
+                                                <div class="selected-varaition max-w-xs w-full" aria-live="polite" aria-atomic="true">
+                                                    <div class="flex gap-2 text-xs text-slate-500 dark:text-slate-600">
+                                                        <div class="variationStatusSubtitle">
+                                                            <span class="italic">Loading...</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
                                     
                                     <!-- Price block -->
                                     @if ( !empty($product->FDPricing) )
                                         <div class="singleProdPricingBox">
-                                            <div class="flex items-baseline gap-3">
-                                                <div class="text-2xl font-extrabold">₹9,499</div>
-                                                <div class="{{ FD['text-1'] }} line-through text-gray-500">₹12,999</div>
+                                            <div class="sellingPriceEl text-xl sm:text-2xl font-bold">
+                                                <span class="currency-icon">{{ $currencySymbol }}</span><span class="priceBox">{{ formatIndianMoney($p->selling_price) }}</span>
                                             </div>
-                                            <p class="text-xs text-green-600 dark:text-green-400 mt-1">Save ₹3,500 (27%)</p>
+                                            @if ($p->mrp > 0)
+                                                <div class="mrpEl text-xs text-slate-500 dark:text-slate-400">
+                                                    <span class="line-through">
+                                                        <span class="currency-icon">{{ $currencySymbol }}</span><span class="mrpBox">{{ formatIndianMoney($p->mrp) }}</span>
+                                                    </span>
+                                                </div>
+                                                <div class="savingsEl text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
+                                                    You save <span class="currency-icon">{{ $currencySymbol }}</span><span class="savingsBox">{{ formatIndianMoney($p->mrp - $p->selling_price) }}</span> 
+                                                    (<span class="discountBox">{{ $p->discount }}</span>% off)
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <div class="mt-4">
+                                            <div class="flex items-center gap-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-6 w-6 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12A9 9 0 1112 3a9 9 0 019 9z" /></svg>
+                                                <h2 class="{{ FD['text-1'] }} text-slate-800 dark:text-slate-200">Pricing not available</h2>
+                                            </div>
                                         </div>
                                     @endif
                                 </div>
 
-                                <div class="w-24 h-24 flex-shrink-0 {{ FD['rounded'] }} overflow-hidden border border-gray-100 dark:border-gray-800">
-                                    <img src="https://dummyimage.com/200x200/cccccc/666666&text=Deal" alt="Deal image" class="w-full h-full object-cover">
-                                </div>
+                                @if ($activeImagesCount > 0)
+                                    <div class="w-24 h-24 flex-shrink-0 {{ FD['rounded'] }} overflow-hidden border border-gray-100 dark:border-gray-800">
+                                    <img src="{{ Storage::url($images[0]->image_m) }}"
+                                        alt="Main product image"
+                                        class="w-full h-full object-cover transition-transform duration-300"
+                                        loading="lazy"
+                                        />
+                                    </div>
+                                @else
+                                    <div class="w-24 h-24 flex-shrink-0 {{ FD['rounded'] }} overflow-hidden">
+                                        <div class="w-full h-full object-cover">
+                                            {!! FD['brokenImageFront'] !!}
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
 
-                            <div class="mt-3 flex items-center gap-2">
-                                <!-- Countdown icon -->
-                                {{-- <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M12 8v5l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> --}}
-                                
+                            {{-- <div class="mt-3 flex items-center gap-2">
                                 <div class="{{ FD['iconClass'] }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                                 </div>
                                 <div class="{{ FD['text-1'] }} text-gray-600 dark:text-gray-400">Offer ends in <span id="dealCountdown" class="font-medium">02:13:45</span></div>
-                            </div>
+                            </div> --}}
 
-                            <div class="mt-4 orderPlaceButtons">
-                                <div class="grid grid-cols-2 gap-2">
-                                    <button class="py-2 px-3 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-800 {{ FD['text-1'] }} font-medium">Add to cart</button>
-                                    <button class="py-2 px-3 {{ FD['rounded'] }} bg-blue-600 text-white {{ FD['text-1'] }} font-medium hover:bg-blue-700">Buy now</button>
+                            @if ( !empty($product->FDPricing) )
+                                <div class="mt-4 orderPlaceButtons">
+                                    <div class="flex space-x-2">
+                                        <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 px-4 py-2 text-sm font-bold text-gray-800 shadow-lg hover:from-amber-500 hover:via-amber-600 hover:to-amber-700 focus:outline-none focus:ring-4 focus:ring-amber-300/40 focus:ring-offset-2 transition-all duration-200 add-to-cart"
+                                            aria-label="Add to cart"
+                                            data-prod-id="{{$product->id}}" 
+                                            data-purchase-type="cart"
+                                            data-variation-data="{{ json_encode($variation['data']['combinations'] ?? []) }}"
+                                            >
+                                            <span class="buttonLabel">Add to Cart</span>
+                                        </button>
+
+                                        <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-gradient-to-r from-indigo-500 via-indigo-600 to-indigo-700 px-4 py-2 text-sm font-bold text-white shadow-md hover:scale-101 hover:from-indigo-600 hover:via-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300/40 focus:ring-offset-2 transition-all duration-200 add-to-cart"
+                                            aria-label="Buy now"
+                                            data-prod-id="{{$product->id}}" 
+                                            data-purchase-type="buy"
+                                            data-variation-data="{{ json_encode($variation['data']['combinations'] ?? []) }}"
+                                            >
+                                            <span class="buttonLabel">Buy Now</span>
+                                        </button>
+
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
 
                             <div class="mt-3 text-xs text-gray-500 dark:text-gray-400">Free delivery & easy returns. EMI options available.</div>
                         </div>
@@ -966,19 +995,40 @@
                             </div>
                         </div>
 
-                        <div class="bg-gray-50 dark:bg-slate-900 {{ FD['rounded'] }} p-4 shadow-sm sticky top-28">
+                        <div class="bg-slate-100 dark:bg-slate-900 {{ FD['rounded'] }} p-4 shadow-sm sticky top-28">
                             <div class="{{ FD['text-1'] }} font-semibold">Need help deciding?</div>
-                            <div class="mt-2 text-xs text-slate-600">Chat with our product experts for advice, bulk orders, or assembly help.</div>
+                            <div class="mt-2 text-xs text-slate-500">Chat with our product experts for advice, bulk orders, or assembly help.</div>
                             <div class="mt-3 flex gap-2">
-                                <button class="px-3 py-2 {{ FD['rounded'] }} bg-amber-600 text-white {{ FD['text-1'] }}">Chat now</button>
-                                <button class="px-3 py-2 {{ FD['rounded'] }} border {{ FD['text-1'] }}">Call</button>
+                                <button class="px-3 py-2 {{ FD['rounded'] }} bg-sky-600 hover:bg-sky-700 active:ring-2 active:ring-sky-300 text-white {{ FD['text-1'] }} flex gap-2 items-center">
+                                    <div class="w-6 h-6">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.5" d="M12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1C5.92487 1 1 5.92487 1 12C1 13.7596 1.41318 15.4228 2.14781 16.8977C2.34303 17.2897 2.40801 17.7377 2.29483 18.1607L1.63966 20.6093C1.35525 21.6723 2.32772 22.6447 3.39068 22.3603L5.83932 21.7052C6.26233 21.592 6.71033 21.657 7.10228 21.8522C8.5772 22.5868 10.2404 23 12 23Z" fill="#c9c9c9"></path> <path d="M10.9 12.0004C10.9 12.6079 11.3925 13.1004 12 13.1004C12.6075 13.1004 13.1 12.6079 13.1 12.0004C13.1 11.3929 12.6075 10.9004 12 10.9004C11.3925 10.9004 10.9 11.3929 10.9 12.0004Z" fill="#c9c9c9"></path> <path d="M6.5 12.0004C6.5 12.6079 6.99249 13.1004 7.6 13.1004C8.20751 13.1004 8.7 12.6079 8.7 12.0004C8.7 11.3929 8.20751 10.9004 7.6 10.9004C6.99249 10.9004 6.5 11.3929 6.5 12.0004Z" fill="#c9c9c9"></path> <path d="M15.3 12.0004C15.3 12.6079 15.7925 13.1004 16.4 13.1004C17.0075 13.1004 17.5 12.6079 17.5 12.0004C17.5 11.3929 17.0075 10.9004 16.4 10.9004C15.7925 10.9004 15.3 11.3929 15.3 12.0004Z" fill="#c9c9c9"></path> </g></svg>
+                                    </div>
+                                    Chat now
+                                </button>
+
+                                <button class="px-3 py-2 {{ FD['rounded'] }} bg-lime-600 hover:bg-lime-700 active:ring-2 active:ring-lime-300 text-white {{ FD['text-1'] }} flex gap-2 items-center">
+                                    <div class="w-6 h-6">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.5" d="M14.5562 15.5477L14.1007 16.0272C14.1007 16.0272 13.0181 17.167 10.0631 14.0559C7.10812 10.9448 8.1907 9.80507 8.1907 9.80507L8.47752 9.50311C9.18407 8.75924 9.25068 7.56497 8.63424 6.6931L7.37326 4.90961C6.61028 3.8305 5.13596 3.68795 4.26145 4.60864L2.69185 6.26114C2.25823 6.71766 1.96765 7.30945 2.00289 7.96594C2.09304 9.64546 2.81071 13.259 6.81536 17.4752C11.0621 21.9462 15.0468 22.1239 16.6763 21.9631C17.1917 21.9122 17.6399 21.6343 18.0011 21.254L19.4217 19.7584C20.3806 18.7489 20.1102 17.0182 18.8833 16.312L16.9728 15.2123C16.1672 14.7486 15.1858 14.8848 14.5562 15.5477Z" fill="#a0e59f"></path> <path d="M17 12C19.7614 12 22 9.76142 22 7C22 4.23858 19.7614 2 17 2C14.2386 2 12 4.23858 12 7C12 7.79984 12.1878 8.55582 12.5217 9.22624C12.6105 9.4044 12.64 9.60803 12.5886 9.80031L12.2908 10.9133C12.1615 11.3965 12.6035 11.8385 13.0867 11.7092L14.1997 11.4114C14.392 11.36 14.5956 11.3895 14.7738 11.4783C15.4442 11.8122 16.2002 12 17 12Z" fill="#a0e59f"></path> </g></svg>
+                                    </div>
+                                    Call
+                                </button>
                             </div>
 
-                            <div class="mt-4 border-t pt-3 text-xs text-slate-600">
+                            <div class="mt-4 border-t border-slate-300 dark:border-slate-600 pt-3 text-xs text-slate-500 dark:text-slate-600 space-y-2">
+                                <div>
+                                    <strong>Delivery:</strong>
+                                    <p class="inline text-slate-800 dark:text-slate-400">2-5 days</p>
+                                </div>
+                                <div>
+                                    <strong>Return:</strong>
+                                    <p class="inline text-slate-800 dark:text-slate-400">7 days (eligible)</p>
+                                </div>
+                            </div>
+                            {{-- <div class="mt-4 border-t pt-3 text-xs text-slate-600">
                                 <div><strong>Delivery:</strong> @php echo ($product['shipping']['estimate_days'][0] ?? '—') . ' - ' . ($product['shipping']['estimate_days'][1] ?? '—') @endphp days</div>
                                 <div class="mt-1"><strong>Return:</strong> 7 days (eligible)</div>
                                 <div class="mt-1"><strong>Warranty:</strong> @php echo $product['specs']['Warranty'] ?? '—' @endphp</div>
-                            </div>
+                            </div> --}}
                         </div>
 
                     </aside>
@@ -986,21 +1036,84 @@
             </div>
 
             <!-- Mobile sticky CTA -->
-            <div id="mobileCta" class="fixed bottom-16 left-1/2 -translate-x-1/2 z-50 w-[92%] sm:hidden">
-                <div class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 {{ FD['rounded'] }} p-3 shadow-lg">
-                <div class="flex items-center gap-3">
-                    <img src="https://dummyimage.com/64x64/cccccc/666666&text=P" alt="product" class="w-12 h-12 {{ FD['rounded'] }} object-cover">
-                    <div>
-                    <div class="{{ FD['text-1'] }} font-medium">₹9,499</div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400">Free delivery</div>
+            @if ( !empty($product->FDPricing) )
+                <div id="mobileCta" class="fixed bottom-16 left-1/2 -translate-x-1/2 z-50 w-[96%] sm:hidden">
+                    <div class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 {{ FD['rounded'] }} p-2 md:p-4 shadow-lg">
+                        <div class="flex items-center gap-2">
+                            @if ($activeImagesCount > 0)
+                                <div class="w-12 h-12 flex-shrink-0 {{ FD['rounded'] }} overflow-hidden border border-gray-100 dark:border-gray-800">
+                                <img src="{{ Storage::url($images[0]->image_m) }}"
+                                    alt="Main product image"
+                                    class="w-full h-full object-cover transition-transform duration-300"
+                                    loading="lazy"
+                                    />
+                                </div>
+                            @else
+                                <div class="w-12 h-12 flex-shrink-0 {{ FD['rounded'] }} overflow-hidden">
+                                    <div class="w-full h-full object-cover">
+                                        {!! FD['brokenImageFront'] !!}
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Price block -->
+                            @if ( !empty($product->FDPricing) )
+                                <div class="singleProdPricingBox">
+                                    <div class="sellingPriceEl text-xl sm:text-2xl font-bold">
+                                        <span class="currency-icon">{{ $currencySymbol }}</span><span class="priceBox">{{ formatIndianMoney($p->selling_price) }}</span>
+                                    </div>
+                                    @if ($p->mrp > 0)
+                                        <div class="mrpEl text-xs text-slate-500 dark:text-slate-400">
+                                            <span class="line-through">
+                                                <span class="currency-icon">{{ $currencySymbol }}</span><span class="mrpBox">{{ formatIndianMoney($p->mrp) }}</span>
+                                            </span>
+                                        </div>
+                                        <div class="savingsEl text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
+                                            You save <span class="currency-icon">{{ $currencySymbol }}</span><span class="savingsBox">{{ formatIndianMoney($p->mrp - $p->selling_price) }}</span> 
+                                            (<span class="discountBox">{{ $p->discount }}</span>% off)
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button
+                                type="button"
+                                class="w-full md:w-max relative inline-flex items-center gap-3 {{ FD['rounded'] }} 
+                                    px-2 py-1 md:px-4 md:py-2 
+                                    text-sm md:text-xl font-bold
+                                    bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700
+                                    text-white shadow-lg shadow-sky-300/30 dark:shadow-indigo-900/40
+                                    transform transition-all duration-180
+                                    focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-300/40 focus-visible:ring-offset-1
+                                    disabled:opacity-60 disabled:cursor-not-allowed add-to-cart"
+                                    aria-label="Buy now"
+                                    data-prod-id="{{$product->id}}" 
+                                    data-purchase-type="buy"
+                                    data-variation-data="{{ json_encode($variation['data']['combinations'] ?? []) }}"
+                                    >
+
+                                <span class="buttonIcon flex-none flex items-center justify-center">
+                                    <div class="w-8 h-8">
+                                        <svg viewBox="-2.4 -2.4 28.80 28.80" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" stroke-width="0.00024000000000000003" transform="rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0" transform="translate(0,0), scale(1)"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z" fill="#3cc039"></path> <path d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z" fill="#3cc039"></path> <path opacity="0.5" d="M2.08368 2.7512C2.22106 2.36044 2.64921 2.15503 3.03998 2.29242L3.34138 2.39838C3.95791 2.61511 4.48154 2.79919 4.89363 3.00139C5.33426 3.21759 5.71211 3.48393 5.99629 3.89979C6.27827 4.31243 6.39468 4.76515 6.44841 5.26153C6.47247 5.48373 6.48515 5.72967 6.49184 6H17.1301C18.815 6 20.3318 6 20.7757 6.57708C21.2197 7.15417 21.0461 8.02369 20.699 9.76275L20.1992 12.1875C19.8841 13.7164 19.7266 14.4808 19.1748 14.9304C18.6231 15.38 17.8426 15.38 16.2816 15.38H10.9787C8.18979 15.38 6.79534 15.38 5.92894 14.4662C5.06254 13.5523 4.9993 12.5816 4.9993 9.64L4.9993 7.03832C4.9993 6.29837 4.99828 5.80316 4.95712 5.42295C4.91779 5.0596 4.84809 4.87818 4.75783 4.74609C4.66977 4.61723 4.5361 4.4968 4.23288 4.34802C3.91003 4.18961 3.47128 4.03406 2.80367 3.79934L2.54246 3.7075C2.1517 3.57012 1.94629 3.14197 2.08368 2.7512Z" fill="#3cc039"></path> <path d="M13.75 9C13.75 8.58579 13.4142 8.25 13 8.25C12.5858 8.25 12.25 8.58579 12.25 9V10.25H11C10.5858 10.25 10.25 10.5858 10.25 11C10.25 11.4142 10.5858 11.75 11 11.75H12.25V13C12.25 13.4142 12.5858 13.75 13 13.75C13.4142 13.75 13.75 13.4142 13.75 13V11.75H15C15.4142 11.75 15.75 11.4142 15.75 11C15.75 10.5858 15.4142 10.25 15 10.25H13.75V9Z" fill="#3cc039"></path> </g></svg>
+                                    </div>
+                                </span>
+
+                                <span class="buttonLoader hidden">
+                                    <div class="flex-none flex items-center justify-center">
+                                        <div class="w-8 h-8">
+                                            <svg class="animate-spin" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path fill="none" d="M0 0h24v24H0z"></path> <path d="M18.364 5.636L16.95 7.05A7 7 0 1 0 19 12h2a9 9 0 1 1-2.636-6.364z"></path> </g> </g></svg>
+                                        </div>
+                                    </div>
+                                </span>
+
+                                <span class="buttonLabel">Buy Now</span>
+                            </button>
+
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button class="px-3 py-2 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-700 {{ FD['text-1'] }}">Add</button>
-                    <button class="px-4 py-2 {{ FD['rounded'] }} bg-blue-600 text-white {{ FD['text-1'] }}">Buy</button>
-                </div>
-                </div>
-            </div>
+            @endif
 
         </section>
     </div>
@@ -1033,12 +1146,11 @@
         const decBtn = document.getElementById('qtyDec');
         const incBtn = document.getElementById('qtyInc');
         const stockHelper = document.getElementById('stockHelper');
-        const addToCart = document.getElementById('addToCart');
 
         // Settings
-        const minQty = parseInt(qtyGroup.dataset.minQty || '1', 10);
-        const serverMax = parseInt(qtyGroup.dataset.maxStock || '99', 10);
-        const step = parseInt(qtyGroup.dataset.step || '1', 10);
+        // const minQty = parseInt(qtyGroup.dataset.minQty || '1', 10);
+        // const serverMax = parseInt(qtyGroup.dataset.maxStock || '99', 10);
+        // const step = parseInt(qtyGroup.dataset.step || '1', 10);
 
         // Hard cap for business rule
         const HARD_MAX = 99;
@@ -1048,7 +1160,7 @@
         const accelerateIntervalMin = 60; // ms
 
         // compute effective max stock (clamped to HARD_MAX)
-        let maxStock = Math.min(Math.max(0, serverMax), HARD_MAX);
+        // let maxStock = Math.min(Math.max(0, serverMax), HARD_MAX);
         // -----------------
 
 
@@ -1312,6 +1424,16 @@
 (function () {
     const currencyIcon = '{{ $currencyIcon }}';
     const prodStatDetail = document.getElementById('prodStatDetail');
+    const variationDisplay = document.querySelectorAll('.variationStatusSubtitle');
+
+    const isMobile = () => {
+        if (window.matchMedia("(max-width: 767px)").matches) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // productData injected from Blade
     const productData = @json($variation['data']);
     // console.log('productData>>', JSON.stringify(productData));
@@ -1396,7 +1518,7 @@
 
     // URL helpers
     function getVariantFromURL() {
-        try { return new URLSearchParams(window.location.search).get('variant'); }
+        try { return new URLSearchParams(window.location.search).get('variation'); }
         catch (e) { return null; }
     }
 
@@ -1407,7 +1529,7 @@
 
             if (!selectionOrCombo) {
                 // nothing -> remove param
-                url.searchParams.delete('variant');
+                url.searchParams.delete('variation');
                 history.replaceState(null, '', url.toString());
                 return;
             }
@@ -1423,8 +1545,8 @@
                 if (slugs.length) identifier = slugs.join('-');
             }
 
-            if (identifier) url.searchParams.set('variant', identifier);
-            else url.searchParams.delete('variant');
+            if (identifier) url.searchParams.set('variation', identifier);
+            else url.searchParams.delete('variation');
 
             history.replaceState(null, '', url.toString());
         } catch (e) {
@@ -1528,6 +1650,25 @@
         labels[next].focus();
     }
 
+    function humanizeIdentifier(identifier) {
+        if (!identifier) return '';
+        const map = parseIdentifierToMap(identifier);
+        const parts = [];
+
+        for (const attr of productData.attributes) {
+            const slug = map[attr.slug];
+            if (!slug) continue;
+            const val = attr.values.find(v => v.slug === slug);
+            if (val) parts.push(val.title);
+            else {
+                // fallback: convert slug → Title Case
+                parts.push(slug.replace(/-/g, ' ')
+                            .replace(/\b\w/g, c => c.toUpperCase()));
+            }
+        }
+        return parts.join(', ');
+    }
+
     // update UI: toggle classes, aria attributes, price text (if present), and URL
     function updateUI() {
         productData.attributes.forEach((attribute, attrIndex) => {
@@ -1564,6 +1705,13 @@
         // update selected combo & price (if you have elements with these IDs in the blade)
         const combo = findCombinationForSelection(currentSelection);
 
+        console.log(combo.variation_identifier);
+
+        // Show selected Variation
+        variationDisplay.forEach(el => {
+            el.innerText = humanizeIdentifier(combo.variation_identifier);
+        });
+
         // Safely remove previous status classes and add new ones
         if (prodStatDetail) {
             // compute new status classes array (split by whitespace)
@@ -1596,6 +1744,7 @@
         // console.log('combo>>', combo);
         const priceBoxEls = document.querySelectorAll('.singleProdPricingBox');
         const orderEls = document.querySelectorAll('.orderPlaceButtons');
+        const orderElMobileCta = document.querySelector('#mobileCta');
 
         if (combo.allow_order) {
             const p = combo.pricing && combo.pricing[0] ? combo.pricing[0] : null;
@@ -1605,6 +1754,7 @@
             const discountText = p ? (p.discount ? p.discount : '') : '';
 
             // load HTML content
+            let discountContent = '';
             let boxContent = `
             <div class="sellingPriceEl text-xl sm:text-2xl font-bold">
                 <span class="currency-icon">${currencyIcon}</span><span class="priceBox">${sellingText}</span>
@@ -1618,21 +1768,32 @@
                         <span class="currency-icon">${currencyIcon}</span><span class="mrpBox">${mrpText}</span>
                     </span>
                 </div>
-                <div class="savingsEl text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
+                `;
+
+                discountContent +=
+                `<div class="savingsEl text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
                     You save <span class="currency-icon">${currencyIcon}</span><span class="savingsBox">${savingsText}</span> 
                     (<span class="discountBox">${discountText}</span>% off)
                 </div>
                 `;
             }
 
-            priceBoxEls.forEach(el => {
-                el.innerHTML = boxContent;
+            priceBoxEls.forEach( (el, index) => {
+                if (index === 2) {
+                    el.innerHTML = boxContent;
+                } else {
+                    el.innerHTML = boxContent+discountContent;
+                }
                 el.style.display = 'block';
             });
 
             orderEls.forEach(el => {
                 el.style.display = 'block';
             });
+
+            if (isMobile()) {
+                orderElMobileCta.style.display = 'block';
+            }
         } else {
             priceBoxEls.forEach(el => {
                 el.style.display = 'none';
@@ -1640,6 +1801,9 @@
             orderEls.forEach(el => {
                 el.style.display = 'none';
             });
+            if (isMobile()) {
+                orderElMobileCta.style.display = 'none';
+            }
         }
 
         // ensure we prefer the canonical combo identifier in the URL,
@@ -1654,18 +1818,20 @@
 
     }
 
-    // start
-    attachHandlers();
+    @if ($variation['code'] == 200)
+        // start
+        attachHandlers();
 
-    // ensure selection is valid on load
-    if (!findCombinationForSelection(currentSelection)) {
-        currentSelection = combinationToMap(productData.combinations[0]);
-    }
+        // ensure selection is valid on load
+        if (!findCombinationForSelection(currentSelection)) {
+            currentSelection = combinationToMap(productData.combinations[0]);
+        }
 
-    // push default/initial variant to URL so it is shareable
-    const initialCombo = findCombinationForSelection(currentSelection);
-    updateURL(initialCombo || currentSelection);
-    updateUI();
+        // push default/initial variant to URL so it is shareable
+        const initialCombo = findCombinationForSelection(currentSelection);
+        updateURL(initialCombo || currentSelection);
+        updateUI();
+    @endif
 })();
 </script>
 

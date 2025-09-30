@@ -143,8 +143,8 @@ class CartController extends Controller
 
             // dd($pricingData);
 
-            $baseSellingPrice = $pricingData->selling_price;
-            $baseMrp = $pricingData->mrp;
+            $sellingPrice = $pricingData->selling_price;
+            $mrp = $pricingData->mrp;
 
             // $countryBasedDBPricing = $pricingData->country_code;
             // dd($countryBasedDBPricing);
@@ -157,8 +157,8 @@ class CartController extends Controller
             // foreach ($pricingData as $pricingKey => $pricingValue) {
             //     dd($pricingValue);
             //     if ($pricingValue->country_code == COUNTRY['country']) {
-            //         $baseSellingPrice = $pricingValue->selling_price;
-            //         $baseMrp = $pricingValue->mrp;
+            //         $sellingPrice = $pricingValue->selling_price;
+            //         $mrp = $pricingValue->mrp;
             //     } else {
             //         return response()->json([
             //             'code' => 500,
@@ -172,7 +172,7 @@ class CartController extends Controller
             $variationData = [];
             $productVariationId = null;
             $variationAttributes = null;
-            $variationSellingPrice = $baseSellingPrice;
+            $variationSellingPrice = $sellingPrice;
 
             if ($request->has('variation')) {
                 $variations = json_decode($request->variation, true);
@@ -183,8 +183,6 @@ class CartController extends Controller
                     $variations
                 );
 
-                // dd($variationsUpdated);
-
                 // $variationsUpdated = [
                 //     "color" => "forest-green"
                 //     "screen-size" => "136-inch"
@@ -193,12 +191,10 @@ class CartController extends Controller
                 // ];
 
                 // Match variation combinations
-                /*
                 $productVariation = ProductVariation::where('product_id', $request->product_id)
                     ->whereHas('combinations', function ($query) use ($variationsUpdated) {
                         $query->where(function ($q) use ($variationsUpdated) {
                             foreach ($variationsUpdated as $attributeSlug => $valueSlug) {
-                                dd();
                                 $q->orWhere(function ($subQuery) use ($attributeSlug, $valueSlug) {
                                     $subQuery->whereHas('attribute', function ($q) use ($attributeSlug) {
                                         $q->where('slug', $attributeSlug);
@@ -214,37 +210,8 @@ class CartController extends Controller
                         $query->with(['attribute', 'attributeValue']);
                     }, 'activeImages'])
                     ->first();
-                */
 
-                $productVariation = ProductVariation::where('product_id', $request->product_id)
-                    ->where(function ($q) use ($variationsUpdated) {
-                        foreach ($variationsUpdated as $attributeSlug => $valueSlug) {
-                            $q->where('variation_identifier', $valueSlug);
-                            // $q->whereHas('combinations', function ($subQuery) use ($attributeSlug, $valueSlug) {
-                            //     $subQuery->whereHas('attribute', function ($q) use ($attributeSlug) {
-                            //         $q->where('slug', $attributeSlug);
-                            //     })
-                            //     ->whereHas('attributeValue', function ($q) use ($valueSlug) {
-                            //         $q->where('slug', $valueSlug);
-                            //     });
-                            // });
-                        }
-                    })
-                    ->whereHas('statusDetail', function ($q) {
-                        $q->where('allow_order', 1);
-                    })
-                    ->with([
-                        'combinations' => function($query) {
-                            $query->with(['attribute', 'attributeValue']);
-                        },
-                        'activeImages',
-                        'pricings',
-                        'statusDetail'
-                    ])
-                    ->first();
-
-
-                // dd($request->all(), $variationsUpdated, $productVariation);
+                // dd($productVariation);
 
                 if ($productVariation) {
                     $productVariationId = $productVariation->id;
@@ -260,46 +227,17 @@ class CartController extends Controller
                     $sku = $productVariation->sku ? $productVariation->sku : $productVariation->variation_identifier;
 
                     // Selling Price
-                    $pricingData = $productVariation->pricings;
-                    // dd($pricingData);
-                    if (count($pricingData) == 0) {
-                        return response()->json([
-                            'code' => 500,
-                            'status' => 'error',
-                            'message' => 'No variation pricing found. Please try again.'
-                        ]);
-                    }
+                    $sellingPriceAdjustment = $productVariation->price_adjustment;
+                    $priceAdjustmentType = $productVariation->adjustment_type;
 
-                    $countryCode = COUNTRY['country'];
-                    // dd($countryCode);
-                    foreach ($pricingData as $priceIndex => $priceData) {
-                        // dd($priceData);
-                        if ($countryCode != $priceData->country_code) {
-                            return response()->json([
-                                'code' => 500,
-                                'status' => 'error',
-                                'message' => 'No variation pricing found for this Currency. Please try again.'
-                            ]);
+                    if ($sellingPriceAdjustment > 0) {
+                        // dd('inside');
+                        if ($priceAdjustmentType == "fixed") {
+                            $variationSellingPrice = $sellingPrice + $sellingPriceAdjustment;
+                        } else {
+                            $variationSellingPrice = $sellingPrice + ($sellingPrice * ($sellingPriceAdjustment / 100));
                         }
-
-                        $variationSellingPrice = $priceData->selling_price ?? $baseSellingPrice;
-                        $variationMrp = $priceData->mrp ?? $baseMrp;
                     }
-
-                    // $variationSellingPrice = $productVariation->pricings?->selling_price ?? $baseSellingPrice;
-                    // $variationMrp = $productVariation->pricings?->mrp ?? $baseMrp;
-                    // dd($variationSellingPrice);
-                    // $sellingPriceAdjustment = $productVariation->price_adjustment;
-                    // $priceAdjustmentType = $productVariation->adjustment_type;
-
-                    // if ($sellingPriceAdjustment > 0) {
-                    //     // dd('inside');
-                    //     if ($priceAdjustmentType == "fixed") {
-                    //         $variationSellingPrice = $baseSellingPrice + $sellingPriceAdjustment;
-                    //     } else {
-                    //         $variationSellingPrice = $baseSellingPrice + ($baseSellingPrice * ($sellingPriceAdjustment / 100));
-                    //     }
-                    // }
 
                     // Image
                     if (isset($productVariation->activeImages) && count($productVariation->activeImages) > 0) {
@@ -333,10 +271,6 @@ class CartController extends Controller
                 // Update quantity if item exists
                 $this->cartItemRepository->update([
                     'id' => $existingItem->id,
-
-                    'selling_price' => $variationSellingPrice,
-                    'mrp' => $productVariationId ? ($variationMrp) : $baseMrp,
-
                     'quantity' => $existingItem->quantity + (int) $request->quantity,
                     'total' => ($existingItem->quantity + $request->quantity) * $existingItem->selling_price,
 
@@ -360,9 +294,9 @@ class CartController extends Controller
                     'variation_attributes' => $variationAttributes,
                     'sku' => $sku,
                     'selling_price' => $variationSellingPrice,
-                    'mrp' => $productVariationId ? ($variationMrp) : $baseMrp,
+                    'mrp' => $productVariationId ? ($variationSellingPrice > $mrp ? 0 : $mrp) : $mrp,
                     'quantity' => $request->quantity,
-                    'total' => $request->quantity * ($productVariationId ? $variationSellingPrice : $baseSellingPrice),
+                    'total' => $request->quantity * ($productVariationId ? $variationSellingPrice : $sellingPrice),
                     'product_url' => '/'.$product->slug,
                     'product_url_with_variation' => $product_url_with_variation,
                     'is_available' => 1,

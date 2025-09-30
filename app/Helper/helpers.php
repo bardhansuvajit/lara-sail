@@ -31,6 +31,7 @@ define("FD", [
     // 'text-1'            => 'text-sm',
     'text-2'            => 'text-base md:text-lg',
     'iconClass'         => 'w-4 h-4',
+    'iconClass-1'       => 'w-5 h-5',
 
     'activeClass'       => 'text-green-500 dark:text-green-600',
     'activeBgClass'     => 'bg-green-500 dark:bg-green-600 text-gray-900 dark:text-gray-100',

@@ -3,14 +3,14 @@
     title="{{ __('Product') }}">
 
 <div class="px-2 md:px-0">
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2 md:gap-4">
         <header class="bg-gray-100 dark:bg-gray-900 {{ FD['rounded'] }}">
             {{-- Breadcrumb --}}
             <nav class="{{ FD['text-0'] }} text-gray-500 mt-2 mb-1" aria-label="breadcrumb">
                 <ol class="flex items-center gap-2">
                     <li><a href="{{ route('front.home.index') }}" class="hover:underline text-gray-500 dark:text-gray-500">Home</a></li>
                     <li>/</li>
-                    <li><a href="{{ route('front.product.detail', $product->slug) }}" class="hover:underline text-gray-500 dark:text-gray-500">{{ $product->title }}</a></li>
+                    <li><a href="{{ route('front.product.detail', $product->slug) }}" class="hover:underline text-gray-500 dark:text-gray-500" title="{{ $product->title }}">{{ Str::limit($product->title, 25) }}</a></li>
                     <li>/</li>
                     <li><span class="text-gray-800 font-medium dark:text-gray-300">Customer reviews</span></li>
                 </ol>
@@ -24,14 +24,82 @@
             </div>
         </header>
 
-        <section class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-4 shadow-sm">
+        <section class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('front.product.detail', $product->slug) }}">
+                        @if ($activeImagesCount > 0)
+                            <div class="w-20 h-20 flex-shrink-0 {{ FD['rounded'] }} overflow-hidden border border-gray-100 dark:border-gray-800">
+                            <img src="{{ Storage::url($images[0]->image_m) }}"
+                                alt="Main product image"
+                                class="w-full h-full object-cover transition-transform duration-300"
+                                loading="lazy"
+                                />
+                            </div>
+                        @else
+                            <div class="w-16 h-16 flex-shrink-0 {{ FD['rounded'] }} overflow-hidden">
+                                <div class="w-full h-full object-cover">
+                                    {!! FD['brokenImageFront'] !!}
+                                </div>
+                            </div>
+                        @endif
+                    </a>
 
+                    <div>
+                        <a href="{{ route('front.product.detail', $product->slug) }}">
+                            <h1 class="text-base font-semibold leading-tight">{{ $product->title }}</h1>
+                        </a>
+
+                        <!-- Price block -->
+                        @if ( !empty($product->FDPricing) )
+                            @php
+                                $p = $product->FDPricing;
+                                $currencySymbol = $p->country->currency_symbol;
+                            @endphp
+
+                            <div class="singleProdPricingBox">
+                                <div class="flex items-baseline gap-2 my-2">
+                                    <div class="mrpEl text-xl text-slate-500 dark:text-slate-400">
+                                        <span class="line-through">
+                                            <span class="currency-icon">{{ $currencySymbol }}</span><span class="mrpBox">{{ formatIndianMoney($p->mrp) }}</span>
+                                        </span>
+                                    </div>
+                                    @if ($p->mrp > 0)
+                                        <div class="sellingPriceEl text-sm font-bold">
+                                            <span class="currency-icon">{{ $currencySymbol }}</span><span class="priceBox">{{ formatIndianMoney($p->selling_price) }}</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                @if ($p->mrp > 0)
+                                    <div class="savingsEl text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
+                                        You save <span class="currency-icon">{{ $currencySymbol }}</span><span class="savingsBox">{{ formatIndianMoney($p->mrp - $p->selling_price) }}</span> 
+                                        (<span class="discountBox">{{ $p->discount }}</span>% off)
+                                    </div>
+                                @endif
+                            </div>
+                        @else
+                            <div class="mt-4">
+                                <div class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12A9 9 0 1112 3a9 9 0 019 9z" /></svg>
+                                    <h2 class="{{ FD['text-1'] }} text-slate-800 dark:text-slate-200">Pricing not available</h2>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- <div class="{{ FD['text-1'] }} font-medium">₹9,499</div> --}}
+                        {{-- <div class="text-xs text-gray-500 dark:text-gray-400">Free delivery</div> --}}
+                    </div>
+                </div>
+                {{-- <div class="flex items-center gap-2">
+                    <button class="px-3 py-2 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-700 {{ FD['text-1'] }}">Add</button>
+                    <button class="px-4 py-2 {{ FD['rounded'] }} bg-blue-600 text-white {{ FD['text-1'] }}">Buy</button>
+                </div> --}}
+            </div>
+        </section>
+
+        <section class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm">
             @if ($reviews && count($reviews) > 0)
                 <div id="reviews">
-                    @php
-                        $total = $product->review_count; 
-                    @endphp
-
                     <x-front.product-detail-block-header
                         title="Customer reviews"
                         subtitle="{{ count($allReviews).' '.(count($allReviews) == 1 ? 'review' : 'reviews') }} found"
@@ -39,52 +107,13 @@
 
                     <hr class="my-4 border-gray-200/50 dark:border-gray-700/50"/>
 
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4">
                         <div class="md:col-span-1 bg-primary-50 dark:bg-gray-900/50 p-4 {{ FD['rounded'] }} h-fit">
-                            <div class="text-center">
-                                <div class="flex justify-center">
-                                    <p class="text-3xl font-bold text-gray-800 dark:text-white">{{ $product->average_rating }}</p>
-
-                                    <div class="w-8 h-8 text-amber-500 dark:text-amber-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m305-704 112-145q12-16 28.5-23.5T480-880q18 0 34.5 7.5T543-849l112 145 170 57q26 8 41 29.5t15 47.5q0 12-3.5 24T866-523L756-367l4 164q1 35-23 59t-56 24q-2 0-22-3l-179-50-179 50q-5 2-11 2.5t-11 .5q-32 0-56-24t-23-59l4-165L95-523q-8-11-11.5-23T80-570q0-25 14.5-46.5T135-647l170-57Z"/></svg>
-                                    </div>
-                                </div>
-
-                                <div class="text-xs text-gray-600 dark:text-gray-500 mt-1">Based on {{ $product->review_count }} reviews</div>
-                            </div>
-
-                            @php
-                                $ratingBuckets = [5=>0,4=>0,3=>0,2=>0,1=>0];
-                                foreach($allReviews as $r) $ratingBuckets[$r['rating']]++;
-                            @endphp
-
-                            <div class="mt-3 mb-5 space-y-2 {{ FD['text-1'] }}">
-                                @foreach($ratingBuckets as $star => $count)
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-10 flex gap-1 items-center">
-                                            <p class="!w-2 text-xs text-gray-800 dark:text-white">{{ $star }}</p>
-                                            <div class="w-3 h-3 text-amber-500 dark:text-amber-400">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m305-704 112-145q12-16 28.5-23.5T480-880q18 0 34.5 7.5T543-849l112 145 170 57q26 8 41 29.5t15 47.5q0 12-3.5 24T866-523L756-367l4 164q1 35-23 59t-56 24q-2 0-22-3l-179-50-179 50q-5 2-11 2.5t-11 .5q-32 0-56-24t-23-59l4-165L95-523q-8-11-11.5-23T80-570q0-25 14.5-46.5T135-647l170-57Z"/></svg>
-                                            </div>
-                                        </div>
-                                        <div class="flex-1 bg-gray-300 dark:bg-gray-700 h-2 rounded overflow-hidden">
-                                            <div style="width:@php echo $total? intval(($count/$total)*100):0 @endphp%" class="h-2 bg-amber-600 dark:bg-amber-500"></div>
-                                        </div>
-                                        <div class="w-8 text-xs text-right text-gray-800 dark:text-white">
-                                            {{ $count }}
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <x-front.button
-                                class="w-full"
-                                element="a">
-                                @slot('icon')
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Z"/></svg>
-                                @endslot
-                                {{ __('Write a review') }}
-                            </x-front.button>
+                            <x-front.product-review-highlight 
+                                :average_rating="$product->average_rating"
+                                :review_count="$product->review_count"
+                                :all_reviews="$allReviews"
+                            />
                         </div>
 
                         <div class="md:col-span-3" id="reviewsList">
@@ -129,7 +158,7 @@
             @endif
 
             <!-- Mobile sticky CTA -->
-            <div id="mobileCta" class="fixed bottom-16 left-1/2 -translate-x-1/2 z-50 w-[92%] sm:hidden">
+            {{-- <div id="mobileCta" class="fixed bottom-16 left-1/2 -translate-x-1/2 z-50 w-
                 <div class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 {{ FD['rounded'] }} p-3 shadow-lg">
                 <div class="flex items-center gap-3">
                     <img src="https://dummyimage.com/64x64/cccccc/666666&text=P" alt="product" class="w-12 h-12 {{ FD['rounded'] }} object-cover">
@@ -143,7 +172,7 @@
                     <button class="px-4 py-2 {{ FD['rounded'] }} bg-blue-600 text-white {{ FD['text-1'] }}">Buy</button>
                 </div>
                 </div>
-            </div>
+            </div> --}}
 
         </section>
     </div>

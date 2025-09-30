@@ -1,6 +1,6 @@
 @props(['data'])
 
-<article class="p-3 border dark:border-slate-700 {{ FD['rounded'] }} mb-3">
+<article class="p-3 border dark:border-slate-700 {{ FD['rounded'] }} mb-2 md:mb-4">
     <header class="flex items-start justify-between gap-3 mb-3">
         <div>
             <div class="flex gap-2">

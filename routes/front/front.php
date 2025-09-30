@@ -100,6 +100,8 @@ Route::name('front.')->group(function () {
     // reviews
     Route::name('review.')->prefix('product-reviews')->controller(ProductReviewController::class)->group(function() {
         Route::get('{slug}', 'listByProduct')->name('list');
+        Route::get('/create/{slug}', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
     });
 
     // product

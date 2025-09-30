@@ -54,6 +54,15 @@ function getCsrfToken() {
     return meta ? meta.getAttribute('content') : null;
 }
 
+// check if mobile device
+// const isMobile = () => {
+//     if (window.matchMedia("(max-width: 767px)").matches) {
+//         return true;
+//     } else {
+//         return false;
+//     }
+// }
+
 // Notification System
 const createNotification = () => {
     if (notificationElement) return;
@@ -451,9 +460,14 @@ const scrollToVariationTab = () => {
 };
 
 const checkAllVariationsSelected = (requiredVariations, selectedVariations) => {
+    console.log('requiredVariations>>', requiredVariations);
+    console.log('selectedVariations>>', selectedVariations);
+    
     const requiredParams = requiredVariations.map(v => 
-        `variation-${v.slug.toLowerCase().replace(/ /g, '-')}`
+        `variation-${v.variation_identifier.toLowerCase().replace(/ /g, '-')}`
     );
+
+    console.log('requiredParams>>', requiredParams);
     
     return requiredParams.every(param => 
         Object.prototype.hasOwnProperty.call(selectedVariations, param)
@@ -502,21 +516,30 @@ const handleCartAction = async (productId, quantity, selectedVariations) => {
 
         const data = await response.json();
 
-        if (!response.ok) {
+        if (!response.ok || data.code != 200) {
             throw new Error(data.message || 'Failed to add to cart');
-        }
+        }        
 
-        showNotification(data.message, { type: data.status });
-        updateCartCount(data.cart_count);
-        updateCartData(data.cart_info, data.cart_items);
+        // if (response.code == 200) {
+            showNotification(data.message, { type: data.status });
+            updateCartCount(data.cart_count);
+            updateCartData(data.cart_info, data.cart_items);
 
-        if (pageTitle() != 'cart' && pageTitle() != 'checkout') {
-            setTimeout(() => {
-                document.querySelector('#cart-btn').click();
-            }, 100);
-        }
+            if (pageTitle() != 'cart' && pageTitle() != 'checkout') {
+                // Check if device width is under 768px (mobile)
+                if (!window.matchMedia("(max-width: 767px)").matches) {
+                    setTimeout(() => {
+                        const cartBtn = document.querySelector('#cart-btn');
+                        if (cartBtn) {
+                            cartBtn.click();
+                        }
+                    }, 100);
+                }
+            }
 
-        return data;
+            return data;
+        // }
+
     } catch (error) {
         showNotification('Cart action error', { type: 'error' });
         console.error('Cart action error:', error);
@@ -732,11 +755,29 @@ document.addEventListener('click', async (e) => {
     if (!addToCartBtn) return;
 
     e.preventDefault();
+
+    // prevent double clicks
+    if (addToCartBtn.dataset.loading === '1') return;
+
     const originalHtml = addToCartBtn.innerHTML;
 
     try {
-        addToCartBtn.innerText = 'Loading...';
+        // Loading status Starts
+        const label = addToCartBtn.querySelector('.buttonLabel');
+        const icon = addToCartBtn.querySelector('.buttonIcon');
+        const loader = addToCartBtn.querySelector('.buttonLoader');
+
         addToCartBtn.disabled = true;
+        if (label) {
+            label.innerText = 'Loading...';
+        }
+        if (icon) {
+            icon.style.display = 'none';
+        }
+        if (loader) {
+            loader.style.display = 'inline-block';
+        }
+        // Loading status Ends
 
         const productId = addToCartBtn.dataset.prodId;
         const quantity = parseInt(addToCartBtn.dataset.quantity || 1);
@@ -744,11 +785,16 @@ document.addEventListener('click', async (e) => {
         const selectedVariations = {};
         const urlParams = getUrlParams();
 
+        // console.log('variationData>>', variationData);
+
         if (variationData.length > 0) {
             let hasSelectedVariations = false;
 
             urlParams.forEach((value, paramName) => {
-                if (paramName.startsWith('variation-')) {
+                // console.log('value>>', value);
+                // console.log('paramName>>', paramName);
+                
+                if (paramName.startsWith('variation')) {
                     selectedVariations[paramName] = value;
                     hasSelectedVariations = true;
                 }
@@ -760,15 +806,15 @@ document.addEventListener('click', async (e) => {
                 return;
             }
 
-            if (!checkAllVariationsSelected(variationData, selectedVariations)) {
-                const missing = variationData
-                    .filter(v => !selectedVariations[`variation-${v.slug.toLowerCase().replace(/ /g, '-')}`])
-                    .map(v => v.title);
-                
-                showNotification(`Missing selections: ${missing.join(', ')}`, { type: 'warning' });
-                scrollToVariationTab();
-                return;
-            }
+            // if (!checkAllVariationsSelected(variationData, selectedVariations)) {
+            //     const missing = variationData
+            //         .filter(v => !selectedVariations[`variation-${v.variation_identifier.toLowerCase().replace(/ /g, '-')}`])
+            //         .map(v => v.title);
+
+            //     showNotification(`Missing selections: ${missing.join(', ')}`, { type: 'warning' });
+            //     scrollToVariationTab();
+            //     return;
+            // }
         }
 
         await handleCartAction(productId, quantity, selectedVariations);
@@ -1129,6 +1175,149 @@ if (wrapper) {
         updatePositions();
     });
 }
+
+// image upload preview
+const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+const maxFileSize = 2000; // in kb
+
+document.querySelectorAll(".images").forEach((uploader) => {
+    uploader.addEventListener("change", function(event) {
+        const preview = uploader.closest(".image-uploader-container")?.querySelector(".imagePreview");
+        if (!preview) return;
+
+        const input = event.target;
+
+        preview.innerHTML = `
+            <div class="border border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-700 p-2 ${FDrounded}">
+                <h5 class="text-gray-700 dark:text-gray-300 font-medium mb-1 text-xs">Image Preview</h5>
+                <p class="text-gray-700 dark:text-gray-400 font-medium text-[10px] border-b border-gray-300 dark:border-gray-500 mb-3 pb-2">This is only a preview. Click <strong class="font-bold"><em>Save Data</em></strong> to upload.</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 mt-4 mb-3 flex-wrap gap-4 image-grid"></div>
+            </div>
+        `;
+        const imageGrid = preview.querySelector(".image-grid");
+        const files = Array.from(input.files);
+        const dataTransfer = new DataTransfer();
+        let hasInvalidFiles = false;
+
+        if (files.length > 0) {
+            // image text & warning
+            const previewNoticeEl = document.createElement('div');
+            previewNoticeEl.classList.add('col-span-8', 'flex', 'space-x-2', 'items-center', 'text-amber-500');
+            previewNoticeEl.innerHTML = `
+                <div class="w-3 h-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M109-120q-11 0-20-5.5T75-140q-5-9-5.5-19.5T75-180l370-640q6-10 15.5-15t19.5-5q10 0 19.5 5t15.5 15l370 640q6 10 5.5 20.5T885-140q-5 9-14 14.5t-20 5.5H109Zm69-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm0-120q17 0 28.5-11.5T520-400v-120q0-17-11.5-28.5T480-560q-17 0-28.5 11.5T440-520v120q0 17 11.5 28.5T480-360Zm0-100Z"/></svg>
+                </div>
+                <p class="text-[10px]">Unsupported files or files > ${maxFileSize/1000}MB will be ignored.</p>
+            `;
+            // imageGrid.appendChild(previewNoticeEl);
+
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                const fileType = file.type;
+                let fileSize = (file.size / 1024).toFixed(2);
+                let fileSizeText = fileSize + " KB";
+
+                if (!imageTypes.includes(file.type) || file.size > maxFileSize * 1024) {
+                    hasInvalidFiles = true;
+                }
+
+                if (fileSize > 1000) {
+                    let fileSizeMB = (fileSize / 1024).toFixed(2);
+                    fileSizeText = fileSizeMB + " MB";
+                }
+
+                // Parent container for each file preview
+                let fileWrapper = document.createElement("div");
+                fileWrapper.classList.add('flex', 'flex-col', 'items-center', 'space-y-1', 'text-center');
+                fileWrapper.dataset.index = index;
+
+                // Image or warning container
+                let fileContainer = document.createElement("div");
+                fileContainer.classList.add('relative', 'inline-block');
+
+                // Close button
+                let closeBtn = document.createElement("span");
+                closeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>`;
+                closeBtn.classList.add('w-5', 'h-5', 'absolute', '-top-2', '-right-2', 'bg-gray-200', 'hover:bg-gray-400', 'text-gray-800', 'dark:bg-gray-800', 'dark:hover:bg-gray-600', 'dark:text-white', 'border', 'rounded-full', 'cursor-pointer');
+
+                // Remove item on click
+                closeBtn.addEventListener("click", () => {
+                    fileWrapper.remove(); // Remove from DOM
+                    removeFile(file, input); // Remove from input
+                });
+
+                // File name
+                let fileInfo = document.createElement("p");
+                fileInfo.classList.add('text-[8px]', 'text-gray-700', 'dark:text-gray-200', 'truncate', 'w-24', 'overflow-hidden', 'break-words', 'max-h-10', 'line-clamp-2');
+                fileInfo.title = file.name;
+                fileInfo.textContent = `${file.name}`;
+
+                // File size
+                let fileSizeContainer = document.createElement("p");
+                fileSizeContainer.classList.add('text-[10px]', 'text-gray-700', 'truncate', 'w-24', 'overflow-hidden', 'break-words', 'max-h-10', 'line-clamp-2', 'font-medium');
+                if (fileSize <= 100) {
+                    fileSizeContainer.classList.add('text-green-600');
+                } else if (fileSize <= 1000) {
+                    fileSizeContainer.classList.add('text-yellow-600');
+                } else {
+                    fileSizeContainer.classList.add('text-orange-600', '!font-black');
+                }
+                fileSizeContainer.textContent = `(${fileSizeText})`;
+
+                if (imageTypes.includes(fileType)) {
+                    // Handle image preview
+                    reader.onload = function(e) {
+                        let img = document.createElement("img");
+                        img.src = e.target.result;
+                        img.classList.add('w-32', 'h-32', 'object-scale-down', 'border', 'rounded-xs');
+
+                        fileContainer.appendChild(img);
+                        fileContainer.appendChild(closeBtn);
+                        fileWrapper.appendChild(fileContainer);
+                        fileWrapper.appendChild(fileInfo);
+                        fileWrapper.appendChild(fileSizeContainer);
+                        imageGrid.appendChild(fileWrapper);
+                    };
+                    reader.readAsDataURL(file);
+
+                    // Add the file to the new FileList
+                    dataTransfer.items.add(file);
+                } else {
+                    // Handle unsupported formats (PDF, DOC, etc.)
+                    let warningIcon = document.createElement("div");
+                    warningIcon.innerHTML = `
+                        <div class="w-24 h-24 flex items-center justify-center bg-red-100 text-red-600 border border-red-500 rounded-xs">
+                            <span class="text-2xl font-bold w-10 h-10">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M840-240q-17 0-28.5-11.5T800-280v-240q0-17 11.5-28.5T840-560q17 0 28.5 11.5T880-520v240q0 17-11.5 28.5T840-240Zm0 160q-17 0-28.5-11.5T800-120q0-17 11.5-28.5T840-160q17 0 28.5 11.5T880-120q0 17-11.5 28.5T840-80Zm-360 0q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q75 0 147.5 28T754-770q12 12 12 28t-12 28L548-508q-19 19-43.5 8.5T480-537v-263q-134 0-227 93t-93 227q0 134 93 227t227 93q54 0 104-18.5t92-50.5q14-11 30-8t26 17q10 14 7.5 30.5T723-163q-54 40-115.5 61.5T480-80Z"/></svg>
+                            </span>
+                        </div>
+                    `;
+                    fileContainer.appendChild(warningIcon);
+                    fileContainer.appendChild(closeBtn);
+                    fileWrapper.appendChild(fileContainer);
+                    fileWrapper.appendChild(fileInfo);
+                    fileWrapper.appendChild(fileSizeContainer);
+                    imageGrid.appendChild(fileWrapper);
+                }
+            });
+
+            if (hasInvalidFiles) {
+                imageGrid.appendChild(previewNoticeEl); // Only show if invalid files exist
+            }
+
+            // Update input files after processing all
+            input.files = dataTransfer.files;
+        }
+    });
+
+    function removeFile(fileToRemove, input) {
+        const newDataTransfer = new DataTransfer();
+        Array.from(input.files).forEach(file => {
+            if (file !== fileToRemove) newDataTransfer.items.add(file);
+        });
+        input.files = newDataTransfer.files;
+    }
+});
 
 // Category Filter Placement
 const tpl = document.getElementById('category-filter-root');

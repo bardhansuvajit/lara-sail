@@ -136,7 +136,7 @@
                         <div class="space-y-2" id="variationTab">
                             @foreach ($variation['data'] as $attrIndex => $attribute)
                                 <div>
-                                    <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">{{ $attribute['title'] }}</h3>
+                                    {{-- <h3 class="{{FD['text']}} sm:text-sm font-semibold mb-2 dark:text-gray-500">{{ $attribute['title'] }}</h3> --}}
 
                                     <div class="w-full grid grid-cols-4 lg:grid-cols-6 gap-4">
                                         @foreach ($attribute['values'] as $valueIndex => $value)

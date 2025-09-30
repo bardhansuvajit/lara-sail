@@ -4,15 +4,16 @@
 
             {{-- Mobile hamburger menu --}}
             <div 
-                class="relative md:hidden" 
+                class="relative md:hidden {{FD['iconClass-1']}}" 
                 x-data=""
                 x-on:click.prevent="$dispatch('open-sidebar', 'mob-sidebar');"
             >
-                <button type="button" class="inline-flex items-center justify-center p-1 text-sm {{FD['rounded']}} font-medium leading-tight dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700/100">
-                    <div class="{{FD['iconClass']}} dark:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M120-680v-80h720v80H120Zm0 480v-80h720v80H120Zm0-240v-80h720v80H120Z"/></svg>
+                <button type="button" class="block items-center justify-center text-sm {{FD['rounded']}} font-medium leading-tight dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700/100">
+                    <div class="{{FD['iconClass-1']}} dark:text-white">
+                        {{-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentcolor"><path d="M120-680v-80h720v80H120Zm0 480v-80h720v80H120Zm0-240v-80h720v80H120Z"/></svg> --}}
+
+                        <svg viewBox="0 0 24.00 24.00" fill="currentcolor" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 6H20M4 12H20M4 18H20" stroke="currentcolor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                     </div>
-                    {{-- <svg class="{{FD['iconClass']}} dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"></path></svg> --}}
                 </button>
             </div>
 

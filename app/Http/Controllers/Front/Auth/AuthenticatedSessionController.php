@@ -32,6 +32,7 @@ class AuthenticatedSessionController extends Controller
     public function create(Request $request): View
     {
         // dd('hh');
+        // dd($request->all());
         // When phone_no is SENT in URL
         if (!empty($_GET['phone_no'])) {
             $phoneNo = $_GET['phone_no'];
@@ -57,6 +58,7 @@ class AuthenticatedSessionController extends Controller
                     'focus' => 'password',
                     'buttonText' => 'Continue',
                     'formType' => 'login',
+                    'redirect' => $request->redirect ?? ''
                 ]);
             }
             // IF USER NOT FOUND
@@ -65,6 +67,7 @@ class AuthenticatedSessionController extends Controller
                     'focus' => 'first_name',
                     'buttonText' => 'Create Account',
                     'formType' => 'register',
+                    'redirect' => $request->redirect ?? ''
                     // 'countryId' => $countryId
                 ]);
             }
@@ -74,7 +77,8 @@ class AuthenticatedSessionController extends Controller
             return view('front.auth.login', [
                 'focus' => 'phone_no',
                 'buttonText' => 'Continue',
-                'formType' => 'default'
+                'formType' => 'default',
+                'redirect' => $request->redirect ?? ''
             ]);
         }
     }
@@ -85,6 +89,8 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         // dd('here');
+        // dd($request->all());
+
         $request->authenticate();
         $request->session()->regenerate();
 
@@ -109,6 +115,11 @@ class AuthenticatedSessionController extends Controller
         if ($request->request_path == "checkout") {
             return redirect()->back()->with('success', 'Logged-in Successfully.');
         }
+
+        if (isset($request->redirect)) {
+            return redirect()->to($request->redirect)->with('success', 'Logged-in Successfully.');
+        }
+
         return redirect()->intended(route('front.account.index', absolute: false));
         // return redirect()->intended(route('dashboard', absolute: false));
     }
