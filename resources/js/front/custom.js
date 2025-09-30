@@ -1015,7 +1015,7 @@ document.addEventListener('click', async (e) => {
 });
 
 // Product Description Show More
-document.querySelectorAll('p.description-wrapper').forEach(p => {
+document.querySelectorAll('.description-wrapper').forEach(p => {
     p.classList.add('line-clamp-2', 'relative');
 
     const btn = document.createElement('button');
@@ -1054,6 +1054,11 @@ document.querySelectorAll('p.description-wrapper').forEach(p => {
             };
             p.addEventListener('transitionend', onEnd);
 
+            // move button to the very left when expanded
+            p.classList.add('mb-4');
+            btn.classList.remove('right-0', 'pl-8');
+            btn.classList.add('left-0', '-bottom-5');
+
             btn.textContent = 'Show less';
             btn.setAttribute('aria-expanded', 'true');
         };
@@ -1079,6 +1084,11 @@ document.querySelectorAll('p.description-wrapper').forEach(p => {
             };
             p.addEventListener('transitionend', onEnd);
 
+            // restore original right-aligned classes when collapsed
+            p.classList.remove('mb-4');
+            btn.classList.add('right-0', 'pl-8');
+            btn.classList.remove('left-0', '-bottom-5');
+
             btn.textContent = 'Show more';
             btn.setAttribute('aria-expanded', 'false');
         };
@@ -1089,6 +1099,7 @@ document.querySelectorAll('p.description-wrapper').forEach(p => {
         });
     }, 40);
 });
+
 
 // Price Range Slider
 const wrapper = document.getElementById('rangeWrapper');

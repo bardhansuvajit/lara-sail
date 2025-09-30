@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Validator;
 use App\Interfaces\ProductListingInterface;
 use App\Interfaces\ProductVariationInterface;
 use App\Interfaces\ProductReviewInterface;
@@ -33,36 +34,18 @@ class ProductReviewController extends Controller
 
         if ($resp['code'] == 200) {
             $product = $resp['data'];
-            // $pricingCountry = COUNTRY['country'];
-            // $variation = $this->productVariationRepository->groupedVariation($product->id, $pricingCountry);
             $reviews = $this->productReviewRepository->allActivePaginatedReviewsByProductId($product->id);
 
             return view('front.review.index', [
                 'product' => $product,
                 'activeImagesCount' => count($product->activeImages),
                 'images' => $product->activeImages,
-                // 'variation' => $variation,
                 'reviews' => ($reviews['code'] == 200) ? $reviews['data'] : [],
                 'allReviews' => $product->activeReviews,
             ]);
         } else {
             return redirect()->route('front.error.404');
         }
-
-        /*
-        $resp = $this->productListingRepository->getBySlug($slug);
-
-        if ($resp['code'] == 200) {
-            $variation = $this->productVariationRepository->groupedVariation($resp['data']->id);
-
-            return view('front.product.detail', [
-                'product' => $resp['data'],
-                'variation' => $variation
-            ]);
-        } else {
-            return redirect()->route('front.error.404');
-        }
-        */
     }
 
     public function create($slug): RedirectResponse|View
@@ -131,6 +114,12 @@ class ProductReviewController extends Controller
         $validator->validate();
 
         $resp = $this->productReviewRepository->store($request->all());
-        return redirect()->route('admin.product.review.index')->with($resp['status'], $resp['message']);
+
+        if ($resp['code'] == 200) {
+            return redirect()->back()->with($resp['status'], 'Thank you for your review !');
+        } else {
+            return redirect()->back()->with($resp['status'], $resp['message']);
+        }
+
     }
 }

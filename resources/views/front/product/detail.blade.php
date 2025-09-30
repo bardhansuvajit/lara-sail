@@ -247,13 +247,11 @@
                             </div>
                         @endif
 
-                        <div>
-                            <p class="{{ FD['text'] }} font-semibold {{ FD['rounded'] }} inline-block">
-                                <span id="prodStatDetail" class="{{ $status->title_tailwind_classes }} {{ $status->bg_tailwind_classes }} px-3 py-1">
-                                    {{ $status->title_frontend }}
-                                </span>
-                            </p>
-                        </div>
+                        <p class="{{ FD['text'] }} font-semibold {{ FD['rounded'] }} inline-block">
+                            <span id="prodStatDetail" class="{{ $status->title_tailwind_classes }} {{ $status->bg_tailwind_classes }} px-3 py-1">
+                                {{ $status->title_frontend }}
+                            </span>
+                        </p>
                     </div>
                 @endif
 
@@ -699,10 +697,11 @@
                                     />
 
                                     <!-- FAQ List -->
-                                    <div class="space-y-3" id="faq-list">
+                                    <div class="" id="faq-list">
                                         @foreach($faqs as $index => $faq)
-                                            <article class="p-3 md:border dark:border-slate-700 {{ FD['rounded'] }} mb-2 md:mb-4">
-                                                <p class="font-semibold {{ FD['text'] }} text-slate-800 dark:text-white">
+                                            <article class="md:p-4 md:border dark:border-slate-700 {{ FD['rounded'] }} mb-6 md:mb-4">
+                                                <p class="font-semibold {{ FD['text'] }} text-slate-700 dark:text-slate-300">
+                                                    <span class="font-bold text-slate-900 dark:text-white">Q.</span>
                                                     {{ $faq->question }}
                                                 </p>
 
@@ -724,6 +723,7 @@
                                                 <div id="faq-answer-{{ $index }}" class="faq-answer overflow-hidden transition-all duration-300">
                                                     <div class="">
                                                         <p class="mt-1 {{ FD['text'] }} text-slate-500 dark:text-slate-400/80 description-wrapper">
+                                                            <span class="font-bold text-slate-800 dark:text-white">A.</span>
                                                             {!! nl2br($faq->answer) !!}
                                                         </p>
 

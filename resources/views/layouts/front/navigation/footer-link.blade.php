@@ -1,8 +1,8 @@
-<div class="grid min-w-0 flex-1 grid-cols-2 gap-6 md:gap-8 xl:grid-cols-4">
+<div class="grid min-w-0 flex-1 grid-cols-2 gap-4 md:gap-8 xl:grid-cols-4 px-2">
     <!-- Customer Service -->
     <div>
-        <h6 class="mb-4 {{FD['text']}} font-semibold uppercase text-gray-900 dark:text-white">Customer Service</h6>
-        <ul class="space-y-3">
+        <h6 class="mb-2 md:mb-4 {{FD['text']}} font-semibold uppercase text-gray-900 dark:text-white">Customer Service</h6>
+        <ul class="md:space-y-3">
             <li>
                 <a href="{{ route('front.content.contact') }}" class="{{FD['text']}} text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Contact Us</a>
             </li>
@@ -20,8 +20,8 @@
 
     <!-- Legal -->
     <div>
-        <h6 class="mb-4 {{FD['text']}} font-semibold uppercase text-gray-900 dark:text-white">Legal</h6>
-        <ul class="space-y-3">
+        <h6 class="mb-2 md:mb-4 {{FD['text']}} font-semibold uppercase text-gray-900 dark:text-white">Legal</h6>
+        <ul class="md:space-y-3">
             <li>
                 <a href="{{ route('front.content.terms') }}" class="{{FD['text']}} text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Terms & Conditions</a>
             </li>
@@ -36,8 +36,8 @@
 
     <!-- Company -->
     <div>
-        <h6 class="mb-4 {{FD['text']}} font-semibold uppercase text-gray-900 dark:text-white">Company</h6>
-        <ul class="space-y-3">
+        <h6 class="mb-2 md:mb-4 {{FD['text']}} font-semibold uppercase text-gray-900 dark:text-white">Company</h6>
+        <ul class="md:space-y-3">
             <li>
                 <a href="{{ route('front.content.about') }}" class="{{FD['text']}} text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">About Us</a>
             </li>
@@ -52,8 +52,8 @@
 
     <!-- Shopping -->
     <div>
-        <h6 class="mb-4 {{FD['text']}} font-semibold uppercase text-gray-900 dark:text-white">Shopping</h6>
-        <ul class="space-y-3">
+        <h6 class="mb-2 md:mb-4 {{FD['text']}} font-semibold uppercase text-gray-900 dark:text-white">Shopping</h6>
+        <ul class="md:space-y-3">
             <li>
                 <a href="#" class="{{FD['text']}} text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Track Order</a>
             </li>

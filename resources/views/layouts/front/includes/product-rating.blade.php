@@ -5,7 +5,7 @@
 
     <div class="flex items-center gap-2 md:gap-3">
         @for ($i = 1; $i <= 5; $i++)
-            <input id="rating-{{ $i }}" name="rating" value="{{ $i }}" type="radio" class="sr-only" />
+            <input id="rating-{{ $i }}" name="rating" value="{{ $i }}" type="radio" class="sr-only" {{ old('rating') == $i ? 'checked' : '' }} />
             <label for="rating-{{ $i }}" data-value="{{ $i }}"
                 class="rating-label cursor-pointer rounded-md text-slate-300 dark:text-slate-600 transition-colors duration-200 hover:text-amber-400 dark:hover:text-amber-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-400"
                 tabindex="0" aria-label="{{ $i }} star{{ $i > 1 ? 's' : '' }}">

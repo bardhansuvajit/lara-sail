@@ -89,6 +89,22 @@ class ProductReviewRepository implements ProductReviewInterface
         // dd($array['image']);
 
         try {
+            // Check if Review already exist for this product_id & user_id
+            $reviewExistCheck = $this->conditions([
+                'product_id' => $array['product_id'],
+                'user_id' => $array['user_id'],
+            ]);
+
+            if ($reviewExistCheck['code'] == 200) {
+                return [
+                    'code' => 500,
+                    'status' => 'error',
+                    'message' => 'This user has already rated this item.',
+                ];
+            }
+
+            // dd($reviewExistCheck);
+
             $data = new ProductReview();
             $data->product_id = $array['product_id'];
             $data->user_id = $array['user_id'];
@@ -135,6 +151,36 @@ class ProductReviewRepository implements ProductReviewInterface
             $data = ProductReview::find($id);
 
             if (!empty($data)) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function conditions(Array $array)
+    {
+        try {
+            $data = ProductReview::where($array)->get();
+
+            if (count($data) > 0) {
                 return [
                     'code' => 200,
                     'status' => 'success',

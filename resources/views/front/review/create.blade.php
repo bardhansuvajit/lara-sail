@@ -12,14 +12,14 @@
                     <li>/</li>
                     <li><a href="{{ route('front.product.detail', $product->slug) }}" class="hover:underline text-gray-500 dark:text-gray-500" title="{{ $product->title }}">{{ Str::limit($product->title, 25) }}</a></li>
                     <li>/</li>
-                    <li><span class="text-gray-800 font-medium dark:text-gray-300">Customer reviews</span></li>
+                    <li><span class="text-gray-800 font-medium dark:text-gray-300">Create review</span></li>
                 </ol>
             </nav>
 
             {{-- Title & Subtitle --}}
             <div class="grid grid-cols-1 items-center mt-2">
                 <div class="lg:col-span-3">
-                    <h1 class="text-sm md:text-lg font-extrabold leading-tight">Customer Reviews</h1>
+                    <h1 class="text-sm md:text-lg font-extrabold leading-tight">Create review</h1>
                 </div>
             </div>
         </header>

@@ -1,13 +1,13 @@
 <footer class="bg-gray-200 antialiased dark:bg-gray-800/90 mb-12 sm:mb-0">
-	<div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
-		<div class="border-b border-gray-100 py-6 dark:border-gray-700 md:py-8 lg:py-16">
+	<div class="mx-auto max-w-screen-xl px-2 2xl:px-0">
+		<div class="border-b border-gray-100 dark:border-gray-700 pt-4 pb-6 md:py-8 lg:py-16">
 			<div class="items-start gap-6 md:gap-8 lg:flex 2xl:gap-24">
 
 				{{-- Footer links --}}
 				@include('layouts.front.navigation.footer-link')
 
 				<div class="mt-6 w-full md:mt-8 lg:mt-0 lg:max-w-lg">
-					<div class="space-y-5 {{FD['rounded']}} bg-gray-100 p-3 md:p-6 dark:bg-gray-700/50 shadow-lg overflow-hidden">
+					<div class="space-y-3 md:space-y-5 {{FD['rounded']}} bg-gray-100 p-3 md:p-6 dark:bg-gray-700/50 shadow-lg overflow-hidden">
 						@if (auth()->guard('web')->check())
 							<a href="{{ route('front.account.index') }}" title="" class="{{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"> Visit your Account </a>
 						@else
@@ -55,13 +55,13 @@
 		</div>
 	
 		<div class="py-6 md:py-8">
-			<div class="gap-4 space-y-5 xl:flex xl:items-center xl:justify-between xl:space-y-0">
+			<div class="gap-2 md:gap-4 space-y-2 md:space-y-5 flex flex-col md:flex-row items-center xl:justify-between xl:space-y-0">
 				<a href="#" title="" class="block">
 					<img class="block h-8 w-auto dark:hidden" src="{{ Storage::url('public/default/logo/logo-full.svg') }}" alt="">
 					<img class="hidden h-8 w-auto dark:block" src="{{ Storage::url('public/default/logo/logo-full-dark.svg') }}" alt="">
 				</a>
 
-				<ul class="flex flex-wrap items-center gap-4 {{FD['text']}} text-gray-900 dark:text-white xl:justify-center">
+				<ul class="flex flex-wrap items-center gap-2 md:gap-4 {{FD['text']}} text-gray-900 dark:text-white xl:justify-center">
 					<li>
 						<a href="{{ route('front.content.legal-notice') }}" class="font-medium hover:underline">Legal Notice</a>
 					</li>
