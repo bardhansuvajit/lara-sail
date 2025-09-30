@@ -113,7 +113,7 @@
 
                 {{-- Sub categories --}}
                 @if($children->count() > 0)
-                    <div class="bg-white dark:bg-gray-800 p-4 {{ FD['rounded'] }} shadow">
+                    <div class="bg-white dark:bg-gray-800 p-2 md:p-4 {{ FD['rounded'] }} shadow">
                         <h3 class="font-bold text-sm sm:text-base mb-4">Sub Categories</h3>
                         <div class="grid grid-cols-3 gap-2 sm:gap-4 lg:grid-cols-8">
                             @foreach ($children as $item)
