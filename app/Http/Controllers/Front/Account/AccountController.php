@@ -31,13 +31,13 @@ class AccountController extends Controller
 
     public function edit(Request $request): View
     {
-        $countries_filters = [
-            'status' => 1,
-        ];
-        $activeCountries = $this->countryRepository->list('', $countries_filters, 'all', 'name', 'asc');
+        // $countries_filters = [
+        //     'status' => 1,
+        // ];
+        // $activeCountries = $this->countryRepository->list('', $countries_filters, 'all', 'name', 'asc');
         return view('front.account.edit', [
             'user' => auth()->guard('web')->user(),
-            'activeCountries' => $activeCountries['data']
+            // 'activeCountries' => $activeCountries['data']
         ]);
     }
 

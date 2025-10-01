@@ -118,7 +118,7 @@
                     </a>
                 </li> --}}
                 <li>
-                    <a href="{{ route('front.content.privacy') }}" title=""
+                    <a href="{{ route('front.account.password.edit') }}" title=""
                         class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
                         <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -128,7 +128,7 @@
                                 d="M12 14v3m-3-6V7a3 3 0 1 1 6 0v4m-8 0h10c.6 0 1 .4 1 1v7c0 .6-.4 1-1 1H7a1 1 0 0 1-1-1v-7c0-.6.4-1 1-1Z">
                             </path>
                         </svg>
-                        Privacy
+                        Password
                     </a>
                 </li>
                 {{-- <li>

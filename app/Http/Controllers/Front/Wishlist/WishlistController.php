@@ -25,16 +25,16 @@ class WishlistController extends Controller
 
     public function index(): View
     {
-        $userId = auth()->guard('web')->user()->id;
-        $data = $this->wishlistRepository->exists([
-            'user_id' => $userId
-        ]);
+        // $userId = auth()->guard('web')->user()->id;
+        // $data = $this->wishlistRepository->exists([
+        //     'user_id' => $userId
+        // ]);
 
         // dd($data);
 
         return view('front.account.wishlist.index', [
             'user' => auth()->guard('web')->user(),
-            'data' => count($data) > 0 ? collect($data['data']) : collect()
+            // 'data' => count($data) > 0 ? collect($data['data']) : collect()
         ]);
     }
 

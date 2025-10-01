@@ -35,10 +35,27 @@ class AddressController extends Controller
             'user_id' => $userId
         ]);
 
+        // $statesData = $this->stateRepository->list('', ['country_code' => COUNTRY['country']], 'all', 'name', 'asc');
+        // $states = $statesData['data'];
+
+        return view('front.account.address.index', [
+            'user' => auth()->guard('web')->user(),
+            'addresses' => $addresses['data'],
+            // 'states' => $states
+        ]);
+    }
+
+    public function create(): View
+    {
+        $userId = auth()->guard('web')->user()->id;
+        $addresses = $this->addressRepository->exists([
+            'user_id' => $userId
+        ]);
+
         $statesData = $this->stateRepository->list('', ['country_code' => COUNTRY['country']], 'all', 'name', 'asc');
         $states = $statesData['data'];
 
-        return view('front.account.address.index', [
+        return view('front.account.address.create', [
             'user' => auth()->guard('web')->user(),
             'addresses' => $addresses['data'],
             'states' => $states

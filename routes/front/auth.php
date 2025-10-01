@@ -38,7 +38,8 @@ Route::name('front.')->group(function () {
 
         Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])->name('password.confirm');
         Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
-        Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+        // Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+        // Route::put('/account/password/update', [PasswordController::class, 'update'])->name('password.update');
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
         // account
@@ -47,6 +48,11 @@ Route::name('front.')->group(function () {
             Route::get('/edit', 'edit')->name('edit');
             Route::post('/update', 'update')->name('update');
             Route::post('/update/optional', 'updateOptional')->name('update.optional');
+
+            Route::prefix('password')->name('password.')->controller(PasswordController::class)->group(function() {
+                Route::get('/edit', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+            });
         });
 
         // order
@@ -63,6 +69,7 @@ Route::name('front.')->group(function () {
         // address
         Route::prefix('address')->name('address.')->controller(AddressController::class)->group(function() {
             Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
             Route::post('/store', 'store')->name('store');
             Route::delete('/delete/{id}', 'delete')->name('delete');
             Route::get('/edit/{id}', 'edit')->name('edit');

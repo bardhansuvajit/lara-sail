@@ -18,7 +18,7 @@
 
                     @include('front.account.includes.navbar')
 
-                    <div class="bg-white dark:bg-gray-800 p-2 md:p-4 mb-2 md:mb-4">
+                    <div class="bg-white dark:bg-gray-800 px-2 py-4 md:p-4 mb-2 md:mb-4">
                         {{-- <div class="block md:hidden">
                             @include('front.account.includes.account-overview')
                         </div> --}}

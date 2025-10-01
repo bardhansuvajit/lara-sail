@@ -37,7 +37,7 @@ class CountryController extends Controller
                     "icon" => $data->currency_symbol,
                     "phoneCode" => $data->phone_code,
                     "phoneNoDigits" => $data->phone_no_digits,
-                    "postalCodeDigits" => ($data->code == "IN") ? 10 : 5,
+                    "postalCodeDigits" => ($data->code == "IN") ? 6 : 5,
                     "flagSvg" => $data->flag
                 ])),
                 time() + (86400 * 365), // expire in 30 days
