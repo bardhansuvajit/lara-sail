@@ -1,4 +1,4 @@
-<div class="mx-auto mt-6 flex-1 space-y-6 lg:mt-0 lg:w-full mb-4">
+<div class="mx-auto mt-2 md:mt-6 flex-1 space-y-6 lg:mt-0 lg:w-full mb-0 md:mb-4">
     <div class="space-y-4 {{ FD['rounded'] }} bg-white px-2 py-3 lg:p-4 shadow-sm dark:bg-gray-800">
         <div class="block">
             

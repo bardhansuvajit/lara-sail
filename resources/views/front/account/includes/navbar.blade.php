@@ -1,6 +1,6 @@
 <nav class="bg-white dark:bg-gray-800 shadow-sm">
     <div class="max-w-7xl mx-auto px-0 md:px-2">
-        <div class="flex space-x-0 overflow-x-auto py-4 hide-scrollbar">
+        <div class="flex space-x-0 overflow-x-auto py-2 md:py-4 hide-scrollbar">
             @php
                 $classes = 'text-gray-500 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400';
                 $activeClasses = 'text-primary-700 dark:text-primary-500 font-bold hover:text-indigo-600 dark:hover:text-indigo-400';

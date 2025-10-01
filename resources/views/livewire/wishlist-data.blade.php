@@ -1,5 +1,4 @@
 <div>
-
     <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
         @forelse ($data as $wishlistData)
             @php

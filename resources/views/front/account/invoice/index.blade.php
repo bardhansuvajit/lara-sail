@@ -19,7 +19,7 @@
 
                     @include('front.account.includes.navbar')
 
-                    <div class="bg-white dark:bg-gray-800 p-4 mb-5">
+                    <div class="bg-white dark:bg-gray-800 p-2 sm:p-4 mb-2 md:mb-4">
                         <x-invoice
                             :order="$order"
                         />

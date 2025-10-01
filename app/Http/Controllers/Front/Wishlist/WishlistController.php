@@ -30,9 +30,11 @@ class WishlistController extends Controller
             'user_id' => $userId
         ]);
 
+        // dd($data);
+
         return view('front.account.wishlist.index', [
             'user' => auth()->guard('web')->user(),
-            'data' => $data['data']
+            'data' => count($data) > 0 ? collect($data['data']) : collect()
         ]);
     }
 

@@ -94,8 +94,9 @@ class ProfileRepository implements ProfileInterface
                     $data['data']->email = $array['email'];
                     $data['data']->primary_phone_no = $array['phone_no'];
                     if (!empty($array['phone_country_code'])) {
-                        $countryData = $this->countryRepository->getByShortName($array['phone_country_code']);
-                        if($countryData['code'] == 200) $data['data']->country_id = $countryData['data']->id;
+                        $data['data']->country_code = $array['phone_country_code'];
+                        // $countryData = $this->countryRepository->getByShortName($array['phone_country_code']);
+                        // if($countryData['code'] == 200) $data['data']->country_id = $countryData['data']->id;
                     }
                     $data['data']->alt_phone_no = $array['alt_phone_no'];
                     if (!empty($array['gender_id'])) {

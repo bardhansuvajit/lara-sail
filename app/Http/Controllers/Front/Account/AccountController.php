@@ -9,7 +9,7 @@ use Illuminate\View\View;
 use App\Interfaces\CountryInterface;
 use App\Interfaces\ProfileInterface;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
+// use Illuminate\Validation\Rule;
 
 class AccountController extends Controller
 {
@@ -22,12 +22,6 @@ class AccountController extends Controller
         $this->profileRepository = $profileRepository;
     }
 
-    /**
-     * Display the account index page.
-     *
-     * @param Request $request
-     * @return View
-     */
     public function index(Request $request): View
     {
         return view('front.account.index', [
@@ -47,16 +41,13 @@ class AccountController extends Controller
         ]);
     }
 
-    /**
-     * Update the user's profile information.
-     */
     public function update(Request $request): RedirectResponse
     {
         // dd($request->all());
 
         // dynamic phone number digits based on country
         $phoneNumberDigits = $altPhoneNumberDigits = 10;
-        $altPhoneFields = 'nullable';
+        // $altPhoneFields = 'nullable';
 
         // phone number country code fetch
         if (!empty($request->phone_country_code)) {
@@ -67,7 +58,6 @@ class AccountController extends Controller
         if($countryData['code'] == 200) $phoneNumberDigits = $countryData['data']->phone_no_digits;
 
         $request->validate([
-            // 'profile_picture' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
             'first_name' => 'required|string|min:2|max:50',
             'last_name' => 'required|string|min:2|max:50',
             'email' => 'required|email|min:2|max:80',
@@ -78,7 +68,6 @@ class AccountController extends Controller
         ], [
             'phone_country_code.*' => 'The selected Country is invalid.',
             'alt_phone_no.*' => 'The Alternate Phone number field must be 10 digits.'
-            // 'profile_picture.max' => 'The profile picture field must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
         ]);
 
         $resp = $this->profileRepository->update(
@@ -93,9 +82,6 @@ class AccountController extends Controller
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
-    /**
-     * Update the user's Optional profile information.
-     */
     public function updateOptional(Request $request): RedirectResponse
     {
         // dd($request->all());
