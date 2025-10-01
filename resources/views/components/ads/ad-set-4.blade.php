@@ -1,7 +1,7 @@
 @props(['data'])
 
 <section class="antialiased">
-    <div class="mx-auto grid max-w-screen-xl {{FD['rounded']}} bg-gray-50 p-4 dark:bg-gray-800 md:p-8 lg:grid-cols-12 lg:gap-8 xl:gap-16 border dark:border-gray-700">
+    <div class="mx-auto grid max-w-screen-xl {{ FD['rounded'] }} bg-gray-50 p-4 dark:bg-gray-800 md:p-8 lg:grid-cols-12 lg:gap-8 xl:gap-16 border dark:border-gray-700">
         <div class="lg:col-span-5 lg:mt-0 flex items-center justify-center">
             <img
                 src="{{ Storage::url($data->image_l) }}"
@@ -67,7 +67,7 @@
                 @if ($data->cta_primary_url)
                     <a
                         href="{{ $data->cta_primary_url }}"
-                        class="{{FD['rounded']}} inline-flex items-center justify-center bg-primary-700 px-5 py-3 text-base font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
+                        class="{{ FD['rounded'] }} inline-flex items-center justify-center bg-primary-700 px-5 py-3 text-base font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
                         role="button"
                         aria-label="{{ $data->cta_primary_text }} - {{ $data->title }}"
                     >
@@ -78,7 +78,7 @@
                 @if ($data->cta_secondary_url)
                     <a
                         href="{{ $data->cta_secondary_url }}"
-                        class="inline-flex items-center justify-center {{FD['rounded']}} px-4 py-3 text-sm font-medium text-primary-700 bg-white border border-gray-200 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-700 dark:text-primary-300"
+                        class="inline-flex items-center justify-center {{ FD['rounded'] }} px-4 py-3 text-sm font-medium text-primary-700 bg-white border border-gray-200 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-700 dark:text-primary-300"
                         role="button"
                         aria-label="{{ $data->cta_secondary_text }} about the {{ $data->title }}"
                     >

@@ -18,7 +18,7 @@
                 <div class="col-span-1">
                     <button 
                         type="submit" 
-                        class="w-full h-8 flex items-center justify-center {{FD['rounded']}} bg-gray-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                        class="w-full h-8 flex items-center justify-center {{ FD['rounded'] }} bg-gray-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
                         wire:loading.attr="disabled"
                     >
                         <span wire:loading.remove>Submit</span>

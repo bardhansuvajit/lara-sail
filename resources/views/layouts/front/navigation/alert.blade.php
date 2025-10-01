@@ -1,6 +1,6 @@
 {{-- alert 1 --}}
-<div class="px-2 md:mx-0 py-1 flex w-full items-center justify-between gap-8 border-b border-gray-200 bg-gray-100 dark:border-gray-700 dark:bg-primary-800 sm:items-center">
-    <p class="mx-auto {{FD['text']}} text-gray-500 dark:text-gray-400 overflow-hidden max-h-[34px]">
+<div class="px-2 md:mx-0 py-1 flex w-full items-center justify-between gap-4 md:gap-8 border-b border-gray-200 bg-gray-100 dark:border-gray-700 dark:bg-primary-800 sm:items-center">
+    <p class="mx-auto {{FD['text']}} text-gray-500 dark:text-gray-400 overflow-hidden line-clamp-2">
         <span class="font-medium text-gray-900 dark:text-white">Autumn Sale is Here!</span> 
         🌟 Whether you're prepping for cooler days or refreshing your home, now&apos;s the time 
         <a href="#" class="font-medium text-gray-900 underline hover:no-underline dark:text-white">to shop!</a>

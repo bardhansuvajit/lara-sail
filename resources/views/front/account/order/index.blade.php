@@ -87,7 +87,7 @@
                                 <hr class="border-t border-gray-300 dark:border-gray-600 my-6">
                             @endif
                         @empty
-                            <div class="{{FD['rounded']}} bg-white p-2 shadow-sm dark:bg-gray-800 md:p-4">
+                            <div class="{{ FD['rounded'] }} bg-white p-2 shadow-sm dark:bg-gray-800 md:p-4">
                                 <div class="w-full text-center">
                                     <img src="{{ Storage::url('public/default/cart/undraw_web-shopping_m3o2.svg') }}" alt="empty-cart" class="w-72 m-auto mb-6">
 

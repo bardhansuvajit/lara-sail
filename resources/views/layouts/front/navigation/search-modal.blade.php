@@ -1,8 +1,8 @@
 <x-front.modal name="search-modal" maxWidth="6xl" focusable>
     {{-- <section class="bg-white px-4 py-8 antialiased dark:bg-gray-900 md:py-16">
-        <div class="mx-auto grid max-w-screen-xl {{FD['rounded']}} bg-gray-50 p-0 sm:p-4 dark:bg-gray-800 md:p-8 lg:grid-cols-1 lg:gap-8 xl:gap-16"> --}}
+        <div class="mx-auto grid max-w-screen-xl {{ FD['rounded'] }} bg-gray-50 p-0 sm:p-4 dark:bg-gray-800 md:p-8 lg:grid-cols-1 lg:gap-8 xl:gap-16"> --}}
             <div class="relative p-0 w-full max-h-full">
-                <div class="relative bg-white {{FD['rounded']}} shadow dark:bg-gray-800 p-3 sm:p-5">
+                <div class="relative bg-white {{ FD['rounded'] }} shadow dark:bg-gray-800 p-3 sm:p-5">
 
                     {{-- <div class="mb-4 flex items-center justify-between">
                         <h3 class="VwrSTsh__so52zqMJvws font-semibold text-gray-900 dark:text-white">Advanced search</h3>
@@ -15,9 +15,9 @@
                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"></path></svg>
                             </div>
 
-                            <input type="search" name="q" value="{{ request()->input('q') }}" id="default-search" class="block w-full p-4 ps-10 {{FD['text']}} text-gray-900 border border-gray-300 {{FD['rounded']}} bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search in all categories..." required="">
+                            <input type="search" name="q" value="{{ request()->input('q') }}" id="default-search" class="block w-full p-4 ps-10 {{FD['text']}} text-gray-900 border border-gray-300 {{ FD['rounded'] }} bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search in all categories..." required="">
 
-                            <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-primary-700 hover:bg-primary-800 ring-4 focus:outline-none focus:ring-primary-300 font-medium {{FD['rounded']}} {{FD['text']}} px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Search</button>
+                            <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-primary-700 hover:bg-primary-800 ring-4 focus:outline-none focus:ring-primary-300 font-medium {{ FD['rounded'] }} {{FD['text']}} px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Search</button>
                         </div>
                     </form>
 
@@ -56,7 +56,7 @@
                     <div class="mb-4">
                         <!-- <h3 class="{{FD['text']}} font-semibold text-gray-900 dark:text-white mb-2">Featured products</h3> -->
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                            <a href="#" class="block {{FD['rounded']}} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
+                            <a href="#" class="block {{ FD['rounded'] }} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
                                 <div>
                                     <img src="https://dummyimage.com/400x400/000/fff" class="dark:hidden h-16" alt="">
                                     <img src="https://dummyimage.com/400x400/fff/000" class="hidden dark:block h-16" alt="">
@@ -106,7 +106,7 @@
                                     class="text-gray-900 dark:text-white {{FD['text']}} font-bold block">$1,799</span>
                             </a>
 
-                            <a href="#" class="block {{FD['rounded']}} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
+                            <a href="#" class="block {{ FD['rounded'] }} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
                                 <div>
                                     <img src="https://dummyimage.com/400x400/000/fff" class="dark:hidden h-16" alt="">
                                     <img src="https://dummyimage.com/400x400/000/fff" class="hidden dark:block h-16" alt="">
@@ -152,7 +152,7 @@
 
                                 <span class="text-gray-900 dark:text-white {{FD['text']}} font-bold block">$999</span>
                             </a>
-                            <a href="#" class="block {{FD['rounded']}} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
+                            <a href="#" class="block {{ FD['rounded'] }} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
                                 <div>
                                     <img src="https://dummyimage.com/400x400/000/fff" class="dark:hidden h-16" alt="">
                                     <img src="https://dummyimage.com/400x400/000/fff" class="hidden dark:block h-16" alt="">
@@ -204,7 +204,7 @@
                     <div class="mb-4">
                         <h3 class="{{FD['text']}} font-semibold text-gray-900 dark:text-white mb-2">Search result</h3>
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                            <a href="#" class="block {{FD['rounded']}} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
+                            <a href="#" class="block {{ FD['rounded'] }} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
                                 <div>
                                     <img src="https://dummyimage.com/400x400/000/fff" class="dark:hidden h-16" alt="">
                                     <img src="https://dummyimage.com/400x400/fff/000" class="hidden dark:block h-16" alt="">
@@ -252,7 +252,7 @@
                                     class="text-gray-900 dark:text-white {{FD['text']}} font-bold block">$1,799</span>
                             </a>
                             <a href="#"
-                                class="block {{FD['rounded']}} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
+                                class="block {{ FD['rounded'] }} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
                                 <div>
                                     <img src="https://dummyimage.com/400x400/000/fff"
                                         class="dark:hidden h-16" alt="">
@@ -303,7 +303,7 @@
                                     class="text-gray-900 dark:text-white {{FD['text']}} font-bold block">$999</span>
                             </a>
                             <a href="#"
-                                class="block {{FD['rounded']}} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
+                                class="block {{ FD['rounded'] }} p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 __CB1NVTb04MHxDxK6Hw space-y-2">
                                 <div>
                                     <img src="https://dummyimage.com/400x400/000/fff"
                                         class="dark:hidden h-16" alt="">
@@ -355,7 +355,7 @@
                         <h3 class="{{FD['text']}} font-semibold text-gray-900 dark:text-white mb-2">All categories</h3>
                         <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -367,7 +367,7 @@
                                     &amp; Office</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -379,7 +379,7 @@
                                     &amp; Toys</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -390,7 +390,7 @@
                                     class="{{FD['text']}} font-medium text-gray-900 dark:text-white">Books</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -401,7 +401,7 @@
                                     class="{{FD['text']}} font-medium text-gray-900 dark:text-white">Fashion/Clothes</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
@@ -413,7 +413,7 @@
                                     &amp; Outdoors</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -425,7 +425,7 @@
                                     &amp; Hobby</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -435,7 +435,7 @@
                                     class="{{FD['text']}} font-medium text-gray-900 dark:text-white">Electronics</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -447,7 +447,7 @@
                                     &amp; Grocery</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linejoin="round" stroke-width="2"
@@ -458,7 +458,7 @@
                                     class="{{FD['text']}} font-medium text-gray-900 dark:text-white">Music</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW"
                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
@@ -470,7 +470,7 @@
                                     class="{{FD['text']}} font-medium text-gray-900 dark:text-white">TV/Projectors</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW"
                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
@@ -483,7 +483,7 @@
                                     &amp; beauty</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW"
                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
@@ -496,7 +496,7 @@
                                     Air Quality</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW"
                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
@@ -512,7 +512,7 @@
                                     class="{{FD['text']}} font-medium text-gray-900 dark:text-white">Gaming/Consoles</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW"
                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
@@ -525,7 +525,7 @@
                                     &amp; Motorbike</span>
                             </a>
                             <a href="#"
-                                class="{{FD['rounded']}} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
+                                class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">
                                 <svg class="w-4 h-4 text-gray-900 dark:text-white me-2 zujhCQXfQfsYXApYjSOW"
                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">

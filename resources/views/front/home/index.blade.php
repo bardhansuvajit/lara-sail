@@ -130,7 +130,7 @@
                     {{-- 3 Show 8 when there are NO FLASH SALE --}}
                     {{-- @if(count($flashSaleProducts) < 3) --}}
                     @if(count($mostSoldFeatures) > 0)
-                        <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 {{FD['rounded']}} p-4">
+                        <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 {{ FD['rounded'] }} p-4">
                             <h3 class="text-xs font-medium mb-5 text-gray-400 dark:text-gray-500">TOP PICKS from us</h3>
                             <div class="space-y-3">
                                 @foreach($mostSoldFeatures as $product)

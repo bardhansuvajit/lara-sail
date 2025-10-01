@@ -4,7 +4,7 @@
         {{-- Minimum cart Value to place Order --}}
         @if (isset($cart['items']) && count($cart['items']) > 0)
             @if ($cartSetting['min_order_value'] > $cart['total'])
-                <div class="border border-gray-200 {{FD['text']}} {{FD['rounded']}} px-2 sm:px-4 py-1 bg-orange-700 dark:bg-orange-700 dark:border-white/10 text-neutral-100 dark:text-neutral-100 mt-2 sm:mt-4" role="alert" tabindex="-1" aria-labelledby="hs-link-on-right-label">
+                <div class="border border-gray-200 {{FD['text']}} {{ FD['rounded'] }} px-2 sm:px-4 py-1 bg-orange-700 dark:bg-orange-700 dark:border-white/10 text-neutral-100 dark:text-neutral-100 mt-2 sm:mt-4" role="alert" tabindex="-1" aria-labelledby="hs-link-on-right-label">
                     <div class="flex items-center">
                         <div class="shrink-0">
                             <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
@@ -56,7 +56,7 @@
                 @if (isset($cart['items']) && count($cart['items']) > 0)
                     @foreach ($cart['items'] as $item)
 
-                        <div class="p-2 md:p-3 {{FD['rounded']}} border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                        <div class="p-2 md:p-3 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                             <div class="space-y-2">
                                 {{-- IMAGE && TITLE && DESCRIPTION --}}
                                 <div class="flex gap-4 justify-start">
@@ -95,7 +95,7 @@
                                     <div class="flex space-x-4 items-center">
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center">
-                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{ FD['rounded'] }} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                                                     wire:click.prevent="updateQty({{$item['id']}}, 'desc', {{$item['quantity']}})"
                                                 >
                                                     <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" /></svg>
@@ -103,7 +103,7 @@
 
                                                 <input type="text" class="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="{{$item['quantity']}}" />
 
-                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{FD['rounded']}} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                                                <button type="button" class="inline-flex h-5 w-5 shrink-0 items-center justify-center {{ FD['rounded'] }} border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                                                     wire:click.prevent="updateQty({{$item['id']}}, 'asc', {{$item['quantity']}})"
                                                 >
                                                     <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" /></svg>
@@ -142,7 +142,7 @@
                                             </h5>
                                         </div>
 
-                                        <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
+                                        <div class="{{ FD['rounded'] }} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
                                             <a href="#">
                                                 <div class="h-20 w-full mb-2">
                                                     <img class="mx-auto h-full" src="https://dummyimage.com/400x400/000/fff" alt="" />
@@ -177,7 +177,7 @@
                                                     </p>
                                                 </div>
 
-                                                <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
+                                                <button class="{{ FD['rounded'] }} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
                                                     Add item
                                                 </button>
                                             </a>
@@ -241,7 +241,7 @@
 
                     @endforeach
                 @else
-                    <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4">
+                    <div class="{{ FD['rounded'] }} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4">
                         <div class="w-full text-center">
                             <img src="{{ Storage::url('public/default/cart/undraw_web-shopping_m3o2.svg') }}" alt="empty-cart" class="w-72 m-auto mb-6">
 
@@ -265,7 +265,7 @@
                     <div id="saved-products" class="mb-4 grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-4 lg:grid-cols-4">
 
                         @foreach ($savedItems as $saved_item)
-                            <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
+                            <div class="{{ FD['rounded'] }} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
                                 <a href="{{ $saved_item->product_url_with_variation ? $saved_item->product_url_with_variation : $saved_item->product_url }}">
                                     <div class="h-40 w-full">
                                         @if (count($saved_item->product->activeImages) > 0)
@@ -369,7 +369,7 @@
 
                     <div id="featured-products" class="mb-4 grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-4 lg:grid-cols-4">
 
-                        <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
+                        <div class="{{ FD['rounded'] }} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
                             <a href="#">
                                 <div class="h-40 w-full">
                                     <img class="mx-auto h-full" src="https://dummyimage.com/400x400/000/fff" alt="" />
@@ -409,7 +409,7 @@
                                 </div>
                             </a>
 
-                            <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 mt-3 text-gray-100">
+                            <button class="{{ FD['rounded'] }} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 mt-3 text-gray-100">
                                 Add item
                             </button>
                         </div>
@@ -428,11 +428,11 @@
                 @include('livewire.includes.shipping-methods')
             @endif
 
-            <div class="w-full space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
+            <div class="w-full space-y-0 sm:space-y-4 {{ FD['rounded'] }} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
                 <div class="text-center">
-                    <img src="https://dummyimage.com/400x400/000/fff" class="bg-cover {{FD['rounded']}} w-full h-24 mb-4" alt="promo banner">
+                    <img src="https://dummyimage.com/400x400/000/fff" class="bg-cover {{ FD['rounded'] }} w-full h-24 mb-4" alt="promo banner">
                         
-                    <span class="text-green-100 font-medium text-sm leading-5 py-0.5 px-2.5 bg-green-500 {{FD['rounded']}} items-center inline-flex mb-4 dark:bg-green-300 dark:text-green-800">
+                    <span class="text-green-100 font-medium text-sm leading-5 py-0.5 px-2.5 bg-green-500 {{ FD['rounded'] }} items-center inline-flex mb-4 dark:bg-green-300 dark:text-green-800">
                         <svg class="w-4 h-4 mr-1 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
                         Offer valid till today
                     </span>
@@ -441,7 +441,7 @@
 
                     <p class="{{FD['text']}} dark:text-gray-500 mb-4">Simply enter your email to unlock this deal and stay in the loop for future promotions.</p>
 
-                    <a href="{{ route('front.collection.index') }}" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    <a href="{{ route('front.collection.index') }}" class="flex w-full items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                         Go to Collection
                     </a>
                 </div>
@@ -449,9 +449,9 @@
 
             {{-- <div>
                 <div class="grid grid-cols-3 gap-2">
-                    <div class="w-full max-w-sm bg-white border border-gray-200 {{FD['rounded']}} shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                    <div class="w-full max-w-sm bg-white border border-gray-200 {{ FD['rounded'] }} shadow-sm dark:bg-gray-800 dark:border-gray-700">
                         <a href="#">
-                            <img class="p-2 {{FD['rounded']}}" src="https://dummyimage.com/400x400/000/fff" alt="product image" />
+                            <img class="p-2 {{ FD['rounded'] }}" src="https://dummyimage.com/400x400/000/fff" alt="product image" />
                         </a>
                         <div class="p-1">
                             <a href="#">
@@ -474,14 +474,14 @@
                                 </p>
                             </div>
 
-                            <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
+                            <button class="{{ FD['rounded'] }} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
                                 Add to Cart
                             </button>
                         </div>
                     </div>
-                    <div class="w-full max-w-sm bg-white border border-gray-200 {{FD['rounded']}} shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                    <div class="w-full max-w-sm bg-white border border-gray-200 {{ FD['rounded'] }} shadow-sm dark:bg-gray-800 dark:border-gray-700">
                         <a href="#">
-                            <img class="p-2 {{FD['rounded']}}" src="https://dummyimage.com/400x400/000/fff" alt="product image" />
+                            <img class="p-2 {{ FD['rounded'] }}" src="https://dummyimage.com/400x400/000/fff" alt="product image" />
                         </a>
                         <div class="p-1">
                             <a href="#">
@@ -504,14 +504,14 @@
                                 </p>
                             </div>
 
-                            <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
+                            <button class="{{ FD['rounded'] }} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
                                 Add to Cart
                             </button>
                         </div>
                     </div>
-                    <div class="w-full max-w-sm bg-white border border-gray-200 {{FD['rounded']}} shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                    <div class="w-full max-w-sm bg-white border border-gray-200 {{ FD['rounded'] }} shadow-sm dark:bg-gray-800 dark:border-gray-700">
                         <a href="#">
-                            <img class="p-2 {{FD['rounded']}}" src="https://dummyimage.com/400x400/000/fff" alt="product image" />
+                            <img class="p-2 {{ FD['rounded'] }}" src="https://dummyimage.com/400x400/000/fff" alt="product image" />
                         </a>
                         <div class="p-1">
                             <a href="#">
@@ -534,7 +534,7 @@
                                 </p>
                             </div>
 
-                            <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
+                            <button class="{{ FD['rounded'] }} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
                                 Add to Cart
                             </button>
                         </div>
@@ -544,7 +544,7 @@
 
             <div>
                 <div class="grid grid-cols-2 gap-2">
-                    <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
+                    <div class="{{ FD['rounded'] }} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
                         <a href="#">
                             <div class="h-20 w-full mb-2">
                                 <img class="mx-auto h-full" src="https://dummyimage.com/400x400/000/fff" alt="" />
@@ -579,13 +579,13 @@
                                 </p>
                             </div>
 
-                            <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
+                            <button class="{{ FD['rounded'] }} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
                                 Add to Cart
                             </button>
                         </a>
                     </div>
 
-                    <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
+                    <div class="{{ FD['rounded'] }} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
                         <a href="#">
                             <div class="h-20 w-full mb-2">
                                 <img class="mx-auto h-full" src="https://dummyimage.com/400x400/000/fff" alt="" />
@@ -620,7 +620,7 @@
                                 </p>
                             </div>
 
-                            <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
+                            <button class="{{ FD['rounded'] }} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 text-gray-100">
                                 Add to Cart
                             </button>
                         </a>
@@ -628,11 +628,11 @@
                 </div>
             </div>
 
-            <div class="w-full space-y-0 sm:space-y-4 {{FD['rounded']}} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
+            <div class="w-full space-y-0 sm:space-y-4 {{ FD['rounded'] }} border border-gray-200 bg-white px-2 py-3 lg:p-4 shadow-sm dark:border-0 lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
                 <div class="text-center">
-                    <img src="https://dummyimage.com/400x400/000/fff" class="bg-cover {{FD['rounded']}} w-full h-36 mb-4" alt="promo banner">
+                    <img src="https://dummyimage.com/400x400/000/fff" class="bg-cover {{ FD['rounded'] }} w-full h-36 mb-4" alt="promo banner">
                         
-                    <span class="text-green-100 font-medium text-sm leading-5 py-0.5 px-2.5 bg-green-500 {{FD['rounded']}} items-center inline-flex mb-4 dark:bg-green-300 dark:text-green-800">
+                    <span class="text-green-100 font-medium text-sm leading-5 py-0.5 px-2.5 bg-green-500 {{ FD['rounded'] }} items-center inline-flex mb-4 dark:bg-green-300 dark:text-green-800">
                         <svg class="w-4 h-4 mr-1 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
                         Offer valid till today
                     </span>
@@ -641,7 +641,7 @@
 
                     <p class="{{FD['text']}} dark:text-gray-500 mb-4">Simply enter your email to unlock this deal and stay in the loop for future promotions.</p>
 
-                    <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 add-to-cart" 
+                    <button class="flex w-full items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 add-to-cart" 
                         data-prod-id="4" 
                         data-purchase-type="cart"
                         data-variation-data=""

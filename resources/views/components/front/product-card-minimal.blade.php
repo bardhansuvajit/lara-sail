@@ -70,7 +70,7 @@
     @if($showAddToCart)
         <div class="mt-3 text-center">
             @if (count($product->variations) == 0)
-                <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 add-to-cart"
+                <button class="flex w-full items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 add-to-cart"
                     data-prod-id="{{$product->id}}" 
                     data-purchase-type="cart"
                     {{-- data-variation-data="{{ json_encode($variation['data']) }}" --}}
@@ -78,7 +78,7 @@
                     Add to cart
                 </button>
             @else
-                <a href="{{route('front.product.detail', $product->slug)}}" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">View details</a>
+                <a href="{{route('front.product.detail', $product->slug)}}" class="flex w-full items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">View details</a>
             @endif
         </div>
     @endif

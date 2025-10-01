@@ -41,7 +41,7 @@
                         <div class="mt-5">
                             @foreach ($addresses as $address)
                                 <div class="">
-                                    <div class="{{FD['rounded']}} shadow-sm dark:border-gray-700">
+                                    <div class="{{ FD['rounded'] }} shadow-sm dark:border-gray-700">
                                         <div class="flex justify-between">
                                             <div>
                                                 <h5 class="mb-2 {{FD['text-1']}} font-bold tracking-tight text-gray-700 dark:text-white">

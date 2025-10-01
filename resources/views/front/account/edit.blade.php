@@ -23,7 +23,7 @@
                         <div class="space-y-6">
 
                             {{-- basic information --}}
-                            <div class="{{FD['rounded']}} bg-white shadow-sm dark:bg-gray-800">
+                            <div class="{{ FD['rounded'] }} bg-white shadow-sm dark:bg-gray-800">
                                 <div>
                                     <p class="mb-3 text-sm text-gray-600 dark:text-gray-500">Basic information</p>
                                 </div>
@@ -90,7 +90,7 @@
                                     </div>
 
                                     <div>
-                                        <button type="submit" class="w-full sm:w-max flex items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                        <button type="submit" class="w-full sm:w-max flex items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                             Update
                                         </button>
                                     </div>
@@ -100,7 +100,7 @@
                             <hr class="border-t border-gray-300 dark:border-gray-600 my-6">
 
                             {{-- Optional information --}}
-                            <div class="{{FD['rounded']}} bg-white shadow-sm dark:bg-gray-800">
+                            <div class="{{ FD['rounded'] }} bg-white shadow-sm dark:bg-gray-800">
                                 <div>
                                     <p class="mb-3 text-sm text-gray-600 dark:text-gray-500">Optional information</p>
                                 </div>
@@ -165,7 +165,7 @@
                                     </div>
 
                                     <div>
-                                        <button type="submit" class="w-full sm:w-max flex items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                        <button type="submit" class="w-full sm:w-max flex items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                             Update
                                         </button>
                                     </div>
@@ -184,7 +184,7 @@
 
                             <div id="featured-products" class="mb-4 grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-4 lg:grid-cols-4">
 
-                                <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
+                                <div class="{{ FD['rounded'] }} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
                                     <a href="#">
                                         <div class="h-40 w-full">
                                             {{-- <img class="mx-auto h-full" src="https://dummyimage.com/600x400/000/fff" alt="" /> --}}
@@ -225,7 +225,7 @@
                                         </div>
                                     </a>
 
-                                    <button class="{{FD['rounded']}} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 mt-3 text-gray-100">
+                                    <button class="{{ FD['rounded'] }} w-full {{FD['text-0']}} bg-primary-700 dark:bg-primary-600 hover:bg-primary-800 dark:hover:bg-primary-700 p-1 mt-3 text-gray-100">
                                         Add item
                                     </button>
                                 </div>

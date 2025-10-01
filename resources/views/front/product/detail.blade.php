@@ -671,7 +671,7 @@
                                                     <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"></path></svg>
                                                 </div>
 
-                                                <input type="search" id="default-search" value="{{ request()->input('q') }}" class="block w-full px-1 py-2 {{FD['text']}} text-gray-900 border border-gray-100 {{FD['rounded']}} ps-8 bg-gray-100 focus:ring-primary-500 focus:border-primary-500  dark:bg-gray-700 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search FAQs..." autocomplete="off">
+                                                <input type="search" id="default-search" value="{{ request()->input('q') }}" class="block w-full px-1 py-2 {{FD['text']}} text-gray-900 border border-gray-100 {{ FD['rounded'] }} ps-8 bg-gray-100 focus:ring-primary-500 focus:border-primary-500  dark:bg-gray-700 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search FAQs..." autocomplete="off">
                                             </div>
 
                                             <!-- Sort Dropdown -->
@@ -953,7 +953,7 @@
                             @if ( !empty($product->FDPricing) )
                                 <div class="mt-4 orderPlaceButtons">
                                     <div class="flex space-x-2">
-                                        <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 px-4 py-2 text-sm font-bold text-gray-800 shadow-lg hover:from-amber-500 hover:via-amber-600 hover:to-amber-700 focus:outline-none focus:ring-4 focus:ring-amber-300/40 focus:ring-offset-2 transition-all duration-200 add-to-cart"
+                                        <button class="flex w-full items-center justify-center {{ FD['rounded'] }} bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 px-4 py-2 text-sm font-bold text-gray-800 shadow-lg hover:from-amber-500 hover:via-amber-600 hover:to-amber-700 focus:outline-none focus:ring-4 focus:ring-amber-300/40 focus:ring-offset-2 transition-all duration-200 add-to-cart"
                                             aria-label="Add to cart"
                                             data-prod-id="{{$product->id}}" 
                                             data-purchase-type="cart"
@@ -962,7 +962,7 @@
                                             <span class="buttonLabel">Add to Cart</span>
                                         </button>
 
-                                        <button class="flex w-full items-center justify-center {{FD['rounded']}} bg-gradient-to-r from-indigo-500 via-indigo-600 to-indigo-700 px-4 py-2 text-sm font-bold text-white shadow-md hover:scale-101 hover:from-indigo-600 hover:via-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300/40 focus:ring-offset-2 transition-all duration-200 add-to-cart"
+                                        <button class="flex w-full items-center justify-center {{ FD['rounded'] }} bg-gradient-to-r from-indigo-500 via-indigo-600 to-indigo-700 px-4 py-2 text-sm font-bold text-white shadow-md hover:scale-101 hover:from-indigo-600 hover:via-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300/40 focus:ring-offset-2 transition-all duration-200 add-to-cart"
                                             aria-label="Buy now"
                                             data-prod-id="{{$product->id}}" 
                                             data-purchase-type="buy"

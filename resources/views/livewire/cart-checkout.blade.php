@@ -1,7 +1,7 @@
 <div>
     <div id="order-items" class="mb-2">
-        <div class="{{FD['rounded']}} border border-gray-200 bg-white shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
-            <div class="mx-auto divide-y-2 overflow-hidden {{FD['rounded']}} antialiased dark:divide-gray-600 dark:drop-shadow-md shadow-sm">
+        <div class="{{ FD['rounded'] }} border border-gray-200 bg-white shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
+            <div class="mx-auto divide-y-2 overflow-hidden {{ FD['rounded'] }} antialiased dark:divide-gray-600 dark:drop-shadow-md shadow-sm">
                 <div class="p-4">
                     <dl class="flex items-center gap-2">
                         <dt class="font-medium {{FD['text-1']}} leading-tight dark:text-white">Your shopping cart</dt>

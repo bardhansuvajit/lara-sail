@@ -1,4 +1,4 @@
-<div class="bg-gradient-to-r from-amber-500 to-red-500 dark:from-red-900 dark:to-red-500 border border-red-100 dark:border-red-800 {{FD['rounded']}} px-4 pt-4 pb-4">
+<div class="bg-gradient-to-r from-amber-500 to-red-500 dark:from-red-900 dark:to-red-500 border border-red-100 dark:border-red-800 {{ FD['rounded'] }} px-4 pt-4 pb-4">
     <div class="flex items-center justify-between">
         <div>
             <h3 class="text-sm font-bold dark:text-white">Flash Sale</h3>

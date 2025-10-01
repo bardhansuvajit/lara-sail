@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('product_variation_id')->nullable()->constrained('product_variations')->cascadeOnDelete();
             $table->string('email', 80);
             $table->string('ip_address', 45)->nullable();
-            $table->string('user_agent')->nullable()->comment('User browser info');
+            $table->text('user_agent')->nullable()->comment('User browser info');
             $table->timestamp('subscribed_at')->useCurrent();
             $table->timestamp('unsubscribed_at')->nullable();
             $table->tinyInteger('subscription_count')->default(1);

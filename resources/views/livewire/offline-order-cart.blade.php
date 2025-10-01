@@ -10,7 +10,7 @@
             {{-- Minimum cart Value to place Order --}}
             @if (isset($cart['items']) && count($cart['items']) > 0)
                 @if ($cartSetting['min_order_value'] > $cart['total'])
-                    <div class="border border-gray-200 {{FD['text']}} {{FD['rounded']}} px-2 sm:px-4 py-1 bg-orange-700 dark:bg-orange-700 dark:border-white/10 text-neutral-100 dark:text-neutral-100 mt-2 sm:mt-4" role="alert" tabindex="-1" aria-labelledby="hs-link-on-right-label">
+                    <div class="border border-gray-200 {{FD['text']}} {{ FD['rounded'] }} px-2 sm:px-4 py-1 bg-orange-700 dark:bg-orange-700 dark:border-white/10 text-neutral-100 dark:text-neutral-100 mt-2 sm:mt-4" role="alert" tabindex="-1" aria-labelledby="hs-link-on-right-label">
                         <div class="flex items-center">
                             <div class="shrink-0">
                                 <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>

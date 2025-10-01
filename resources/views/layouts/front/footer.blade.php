@@ -7,7 +7,7 @@
 				@include('layouts.front.navigation.footer-link')
 
 				<div class="mt-6 w-full md:mt-8 lg:mt-0 lg:max-w-lg">
-					<div class="space-y-3 md:space-y-5 {{FD['rounded']}} bg-gray-100 p-3 md:p-6 dark:bg-gray-700/50 shadow-lg overflow-hidden">
+					<div class="space-y-3 md:space-y-5 {{ FD['rounded'] }} bg-gray-100 p-3 md:p-6 dark:bg-gray-700/50 shadow-lg overflow-hidden">
 						@if (auth()->guard('web')->check())
 							<a href="{{ route('front.account.index') }}" title="" class="{{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"> Visit your Account </a>
 						@else

@@ -19,7 +19,7 @@
         <!-- Order Summary -->
         <div class="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Shipping Address -->
-            <div class="bg-white dark:bg-gray-800 p-4 {{FD['rounded']}} shadow-sm">
+            <div class="bg-white dark:bg-gray-800 p-4 {{ FD['rounded'] }} shadow-sm">
             <h2 class="font-medium mb-2">Shipping Address</h2>
             <p class="{{FD['text']}} mb-1">John Doe</p>
             <p class="{{FD['text']}} mb-1">123 Main Street</p>
@@ -30,7 +30,7 @@
             </div>
 
             <!-- Payment Method -->
-            <div class="bg-white dark:bg-gray-800 p-4 {{FD['rounded']}} shadow-sm">
+            <div class="bg-white dark:bg-gray-800 p-4 {{ FD['rounded'] }} shadow-sm">
             <h2 class="font-medium mb-2">Payment Method</h2>
             <div class="flex items-center gap-2 mb-2">
                 <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
@@ -44,7 +44,7 @@
             </div>
 
             <!-- Order Summary -->
-            <div class="bg-white dark:bg-gray-800 p-4 {{FD['rounded']}} shadow-sm">
+            <div class="bg-white dark:bg-gray-800 p-4 {{ FD['rounded'] }} shadow-sm">
             <h2 class="font-medium mb-2">Order Summary</h2>
             <div class="flex justify-between {{FD['text']}} mb-1">
                 <span>Items (3):</span>
@@ -69,7 +69,7 @@
         <!-- Order Items -->
         <div class="mb-8">
             <h2 class="font-medium mb-4">Order Items</h2>
-            <div class="bg-white dark:bg-gray-800 {{FD['rounded']}} shadow-sm overflow-hidden">
+            <div class="bg-white dark:bg-gray-800 {{ FD['rounded'] }} shadow-sm overflow-hidden">
             <!-- Item 1 -->
             <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                 <div class="flex gap-4">
@@ -129,7 +129,7 @@
         <!-- Order Status -->
         <div class="mb-8">
             <h2 class="font-medium mb-4">Order Status</h2>
-            <div class="bg-white dark:bg-gray-800 p-4 {{FD['rounded']}} shadow-sm">
+            <div class="bg-white dark:bg-gray-800 p-4 {{ FD['rounded'] }} shadow-sm">
             <div class="flex items-center gap-4 mb-4">
                 <div class="relative">
                 <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
@@ -179,10 +179,10 @@
 
         <!-- Actions -->
         <div class="flex flex-col sm:flex-row gap-3 justify-end">
-            <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 {{FD['rounded']}} {{FD['text']}} font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 {{ FD['rounded'] }} {{FD['text']}} font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
             Print Invoice
             </button>
-            <button class="px-4 py-2 bg-blue-600 text-white {{FD['rounded']}} {{FD['text']}} font-medium hover:bg-blue-700 transition-colors">
+            <button class="px-4 py-2 bg-blue-600 text-white {{ FD['rounded'] }} {{FD['text']}} font-medium hover:bg-blue-700 transition-colors">
             Track Package
             </button>
         </div>

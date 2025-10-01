@@ -6,7 +6,7 @@
                 $product = $wishlistData->product;
             @endphp
 
-            <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
+            <div class="{{ FD['rounded'] }} border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700 dark:bg-gray-800 relative overflow-hidden">
                 <a href="{{ route('front.product.detail', $product->slug) }}">
                     <div class="h-40 w-full">
                         @if (count($product->activeImages) > 0)
@@ -75,7 +75,7 @@
 
             </div>
         @empty
-            <div class="col-span-4 {{FD['rounded']}} bg-white p-2 shadow-sm dark:bg-gray-800 md:p-4">
+            <div class="col-span-4 {{ FD['rounded'] }} bg-white p-2 shadow-sm dark:bg-gray-800 md:p-4">
                 <div class="w-full text-center">
                     <img src="{{ Storage::url('public/default/cart/undraw_web-shopping_m3o2.svg') }}" alt="empty-cart" class="w-72 m-auto mb-6">
 

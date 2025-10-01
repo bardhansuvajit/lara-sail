@@ -1,6 +1,6 @@
 @props(['data'])
 
-<div class="bg-gradient-to-r from-indigo-50 to-white dark:from-primary-900 dark:to-primary-500 {{FD['rounded']}} p-4">
+<div class="bg-gradient-to-r from-indigo-50 to-white dark:from-primary-900 dark:to-primary-500 {{ FD['rounded'] }} p-4">
     <div class="flex flex-col md:flex-row gap-4">
         <div class="flex-1 flex flex-col justify-center gap-3">
             <h1 class="{{ FD['text-2'] }} md:{{ FD['text-2'] }} lg:{{ FD['text-2'] }} font-extrabold leading-tight">{!! $data->title !!}</h1>
@@ -18,7 +18,7 @@
         </div>
 
         <div class="md:w-80 h-60 flex-shrink-0">
-            <img src="{{ Storage::url($data->image_l) }}" alt="hero" class="{{FD['rounded']}} shadow-lg w-full h-auto object-cover">
+            <img src="{{ Storage::url($data->image_l) }}" alt="hero" class="{{ FD['rounded'] }} shadow-lg w-full h-auto object-cover">
         </div>
     </div>
 
@@ -30,7 +30,7 @@
 
         <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
             @foreach ($meta['highlights'] as $highlight)
-                <div class="bg-white dark:bg-gray-800 p-3 {{FD['rounded']}} flex items-center gap-3">
+                <div class="bg-white dark:bg-gray-800 p-3 {{ FD['rounded'] }} flex items-center gap-3">
                     <div class="rounded w-6 h-6 object-cover text-gray-400 dark:text-gray-600">
                         {!! $highlight['svg'] !!}
                     </div>

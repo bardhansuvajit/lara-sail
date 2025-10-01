@@ -1,5 +1,5 @@
 <div>
-    <div class="{{FD['rounded']}} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4">
+    <div class="{{ FD['rounded'] }} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4">
         {{-- heading --}}
         <div class="space-y-4 flex items-center justify-between gap-2 sm:gap-6 sm:mb-2">
             <div class="w-full min-w-0 flex-1 md:order-2">
@@ -27,7 +27,7 @@
                         @foreach ($paymentMethods as $methodIndex => $method)
 
                             <div x-data="{ methodIndex: {{ $methodIndex }} }">
-                                <label class="flex items-start gap-3 p-3 border-2 border-gray-300 dark:border-gray-700/50 {{FD['rounded']}} cursor-pointer has-[:checked]:bg-gray-100 has-[:checked]:dark:bg-gray-600 has-[:checked]:border-gray-900 has-[:checked]:dark:border-gray-100">
+                                <label class="flex items-start gap-3 p-3 border-2 border-gray-300 dark:border-gray-700/50 {{ FD['rounded'] }} cursor-pointer has-[:checked]:bg-gray-100 has-[:checked]:dark:bg-gray-600 has-[:checked]:border-gray-900 has-[:checked]:dark:border-gray-100">
                                     <input 
                                         type="radio" 
                                         id="paymentMethod{{ $methodIndex }}" 
@@ -72,7 +72,7 @@
 
                     <div>
                         <form action="{{ route('front.order.store') }}" method="post" id="place-order-form">@csrf
-                            <button type="submit" class="flex w-full md:w-40 items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                            <button type="submit" class="flex w-full md:w-40 items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                 Place Order
                             </button>
                         </form>

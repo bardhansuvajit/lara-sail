@@ -1,5 +1,5 @@
 <div class="mx-auto mt-6 flex-1 space-y-6 lg:mt-0 lg:w-full mb-4">
-    <div class="space-y-4 {{FD['rounded']}} bg-white px-2 py-3 lg:p-4 shadow-sm dark:bg-gray-800">
+    <div class="space-y-4 {{ FD['rounded'] }} bg-white px-2 py-3 lg:p-4 shadow-sm dark:bg-gray-800">
         <div class="block">
             
             <div class="flex justify-center sm:justify-start mb-5">
@@ -60,7 +60,7 @@
 
         @if (!request()->is('account/edit*'))
             <div class="flex space-x-2 lg:space-x-0">
-                <a href="{{route('front.account.edit')}}" class="flex w-full items-center justify-center {{FD['rounded']}} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                <a href="{{route('front.account.edit')}}" class="flex w-full items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                     Edit Profile
                 </a>
             </div>
