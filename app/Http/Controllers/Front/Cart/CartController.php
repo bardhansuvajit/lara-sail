@@ -141,6 +141,17 @@ class CartController extends Controller
                 ]);
             }
 
+            // Status
+            $allowProductOrder = $product->statusDetail->allow_order;
+            if ($allowProductOrder == 0) {
+                return response()->json([
+                    'code' => 500,
+                    'status' => 'error',
+                    'message' => 'This product is '.$product->statusDetail->title_frontend
+                ]);
+            }
+            // dd('product>>', $product->statusDetail->allow_order);
+
             // dd($pricingData);
 
             $baseSellingPrice = $pricingData->selling_price;

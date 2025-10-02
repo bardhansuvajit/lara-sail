@@ -35,7 +35,7 @@
 
 		{{-- short description --}}
 		@if(!empty($product->short_description))
-			<p class="mt-1 text-[10px] text-gray-500 dark:text-gray-400 line-clamp-2 leading-tight">{{ $product->short_description }}</p>
+			<p class="mt-1 text-[10px] text-gray-500 dark:text-gray-400 line-clamp-1 leading-tight">{{ $product->short_description }}</p>
 		@endif
 
 		{{-- price row --}}
@@ -95,12 +95,6 @@
 	@if($showAddToCart)
 		<div class="mt-3">
 			@if (empty($product->variations) || count($product->variations) == 0)
-				{{-- <button
-					type="button"
-					class="w-full {{ FD['rounded'] }} bg-indigo-600 hover:bg-indigo-700 text-white text-sm py-2 font-medium focus:outline-none focus:ring-3 focus:ring-indigo-500/30 transition add-to-cart"
-					data-prod-id="{{ $product->id }}"
-					data-purchase-type="cart"
-				>Add to cart</button> --}}
 				<button
 					type="button"
 					class="w-full relative inline-flex justify-center items-center gap-3 {{ FD['rounded'] }} 

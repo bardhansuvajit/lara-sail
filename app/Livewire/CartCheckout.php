@@ -70,6 +70,9 @@ class CartCheckout extends Component
         $this->cart = collect($cart['data'] ?? []);
         $this->savedItems = collect($cart['data']->savedItems ?? []);
         // $this->savedItems = count($cart['data']) > 0 ? collect($cart['data']->savedItems) : collect([]);
+        $cartTotals = (int) $cart['data']->total_items;
+
+        $this->dispatch('updateCartCounts', count: $cartTotals);
     }
 
     public function getCartDataWOPaymentMethodUpdate()

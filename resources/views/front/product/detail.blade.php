@@ -1068,10 +1068,10 @@
                                                 <span class="currency-icon">{{ $currencySymbol }}</span><span class="mrpBox">{{ formatIndianMoney($p->mrp) }}</span>
                                             </span>
                                         </div>
-                                        <div class="savingsEl text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
+                                        {{-- <div class="savingsEl text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
                                             You save <span class="currency-icon">{{ $currencySymbol }}</span><span class="savingsBox">{{ formatIndianMoney($p->mrp - $p->selling_price) }}</span> 
                                             (<span class="discountBox">{{ $p->discount }}</span>% off)
-                                        </div>
+                                        </div> --}}
                                     @endif
                                 </div>
                             @endif
@@ -1780,9 +1780,9 @@
 
             priceBoxEls.forEach( (el, index) => {
                 if (index === 2) {
-                    el.innerHTML = boxContent;
+                    el.innerHTML = index+boxContent;
                 } else {
-                    el.innerHTML = boxContent+discountContent;
+                    el.innerHTML = index+boxContent+discountContent;
                 }
                 el.style.display = 'block';
             });

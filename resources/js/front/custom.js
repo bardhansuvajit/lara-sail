@@ -271,7 +271,10 @@ const isMobileDevice = () => window.innerWidth <= 768;
 const handleNavbarScroll = () => {
     const currentScrollPosition = window.scrollY;
     const scrollThreshold = 50;
-    const navbarHeight = isMobileDevice() ? 43 : 66;
+
+    const navbarHeight = isMobileDevice()
+        ? (pageTitle() === 'checkout' ? 49 : 43)
+        : 66;
 
     if (currentScrollPosition > lastScrollPosition && currentScrollPosition > scrollThreshold) {
         navbar.style.top = `-${navbarHeight}px`;
@@ -548,8 +551,8 @@ const handleCartAction = async (productId, quantity, selectedVariations) => {
 };
 
 const updateCartCount = (count) => {
-    const counters = document.querySelectorAll('.cart-count');
-    counters.forEach(el => {
+    const cartCounters = document.querySelectorAll('.cart-count');
+    cartCounters.forEach(el => {
         el.innerHTML = count > 0 
             ? `${count} <span class='hidden md:inline-block'>${count == 1 ? 'item' : 'items'}</span>` 
             : '';
@@ -1377,15 +1380,22 @@ document.addEventListener('livewire:init', () => {
     Livewire.on('show-notification', (data) => {
         showNotification(data[0], data[1]);
     });
-    
+
     Livewire.on('showFullPageLoader', () => {
         window.dispatchEvent(new CustomEvent('open-modal', { detail: 'full-page-loader' }));
     });
-    
+
     Livewire.on('hideFullPageLoader', () => {
         setTimeout(() => {
             window.dispatchEvent(new CustomEvent('close-modal', { detail: 'full-page-loader' }));
         }, 200);
+    });
+
+    Livewire.on('updateCartCounts', (data) => {
+        updateCartCount(data.count);
+        // setTimeout(() => {
+        //     window.dispatchEvent(new CustomEvent('close-modal', { detail: 'full-page-loader' }));
+        // }, 200);
     });
 });
 
