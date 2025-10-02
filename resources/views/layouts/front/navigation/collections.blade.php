@@ -2,7 +2,7 @@
     <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
         <ul class="flex items-center gap-8">
             <li>
-                <x-front.dropdown width="w-max" align="left" width="sm:w-max">
+                <x-front.dropdown align="left" width="md:max-w-screen-xl">
                     <x-slot name="trigger">
                         <button type="button" class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
                             All categories

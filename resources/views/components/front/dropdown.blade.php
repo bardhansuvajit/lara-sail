@@ -15,6 +15,7 @@ $alignmentClasses = match ($align) {
 };
 
 $width = match ($width) {
+    '32' => 'sm:w-32',
     '48' => 'sm:w-48',
     '60' => 'sm:w-60',
     '96' => 'sm:w-96',
@@ -38,7 +39,6 @@ $positionClasses = str_starts_with($align, 'top') ? 'bottom-full mb-2' : 'top-fu
             x-transition:leave="transition ease-in duration-75"
             x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95"
-            {{-- class="absolute z-10 mt-2 {{ $positionClasses }} {{ $width }} {{ FD['rounded'] }} shadow-lg {{ $alignmentClasses }}" --}}
             class="absolute z-50 mt-2 {{ $positionClasses }} w-screen {{ $width }} {{ FD['rounded'] }} shadow-lg {{ $alignmentClasses }}"
             style="display: none;"
             @click="open = false">

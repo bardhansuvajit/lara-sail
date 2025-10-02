@@ -39,7 +39,7 @@ Route::name('front.')->group(function () {
         Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])->name('password.confirm');
         Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
         // Route::put('password', [PasswordController::class, 'update'])->name('password.update');
-        // Route::put('/account/password/update', [PasswordController::class, 'update'])->name('password.update');
+        Route::put('/account/password/update', [PasswordController::class, 'update'])->name('password.update');
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
         // account
@@ -51,7 +51,7 @@ Route::name('front.')->group(function () {
 
             Route::prefix('password')->name('password.')->controller(PasswordController::class)->group(function() {
                 Route::get('/edit', 'edit')->name('edit');
-                Route::post('/update', 'update')->name('update');
+                // Route::post('/update', 'update')->name('update');
             });
         });
 
@@ -74,6 +74,7 @@ Route::name('front.')->group(function () {
             Route::delete('/delete/{id}', 'delete')->name('delete');
             Route::get('/edit/{id}', 'edit')->name('edit');
             Route::post('/update', 'update')->name('update');
+            Route::get('/default/{id}', 'default')->name('default');
         });
     });
 });

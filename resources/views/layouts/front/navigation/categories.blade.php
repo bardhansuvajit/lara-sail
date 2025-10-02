@@ -1,6 +1,6 @@
 <div class="p-4">
     <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
-        <div class="grid grid-cols-1 gap-8 lg:gap-12 sm:grid-cols-4 lg:grid-cols-4">
+        <div class="grid grid-cols-1 gap-8 lg:gap-12 sm:grid-cols-4 lg:grid-cols-6">
             @foreach ($activeCategories as $category)
                 <div>
                     <a href="{{ route('front.category.detail', $category['slug']) }}" class="text-gray-700 dark:text-gray-200 dark:hover:text-white">

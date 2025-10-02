@@ -1,5 +1,6 @@
 <div>
-    <form action="{{ route('front.address.update') }}" method="post" class="pt-4">@csrf
+    {{-- <form action="{{ route('front.address.update') }}" method="post" class="pt-4">@csrf --}}
+    <form action="{{ route('front.address.update') }}" method="post" class="">@csrf
         {{-- <div class="grid gap-4 mb-4 grid-cols-1 sm:grid-cols-3">
             <h5 class="{{FD['text']}} text-gray-600 dark:text-gray-500">Edit {{ $type == "shipping" ? "Delivery" : "Billing"}} Address</h5>
         </div> --}}
@@ -124,7 +125,7 @@
                 value="1" 
                 label="Set this as Default address" 
                 checked
-            >
+            />
         </div>
 
         <input type="hidden" name="id" value="{{ $address->id }}">

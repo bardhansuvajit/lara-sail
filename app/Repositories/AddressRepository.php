@@ -173,7 +173,11 @@ class AddressRepository implements AddressInterface
     public function exists(Array $conditions)
     {
         try {
-            $data = UserAddress::with('countryDetail', 'stateDetail')->where($conditions)->get();
+            $data = UserAddress::with('countryDetail', 'stateDetail')
+                ->where($conditions)
+                ->orderBy('is_default', 'desc')
+                ->orderBy('id', 'desc')
+                ->get();
 
             if (count($data) > 0) {
                 return [
@@ -332,6 +336,17 @@ class AddressRepository implements AddressInterface
 
                 $userAddress->delete();
 
+                // Change other addresse default to 1
+                $resp = $this->exists([
+                    'user_id' => $userId,
+                ]);
+
+                if ($resp['code'] == 200) {
+                    $address = $resp['data'][0];
+                    $address->is_default = 1;
+                    $address->save();
+                }
+
                 return [
                     'code' => 200,
                     'status' => 'success',
@@ -345,6 +360,58 @@ class AddressRepository implements AddressInterface
                 'code' => 500,
                 'status' => 'error',
                 'message' => 'An error occurred while deleting data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function updateDefaultAddress(Int $id, Int $userId)
+    {
+        try {
+            $data = $this->exists([
+                'id' => $id,
+                'user_id' => $userId,
+            ]);
+
+            // dd($data);
+
+            if ($data['code'] == 200) {
+                $userAddress = $data['data'][0];
+
+                // dd($userAddress);
+
+                $userAddress->is_default = 1;
+                $userAddress->save();
+
+                // Change other addresses default to 0
+                $resp = $this->exists([
+                    'user_id' => $userId,
+                ]);
+
+                // dd($resp);
+
+                if ($resp['code'] == 200) {
+                    foreach ($resp['data'] as $key => $address) {
+                        if ($address->id != $userAddress->id) {
+                            $address->is_default = 0;
+                            $address->save();
+                        }
+                    }
+                }
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Default address data updated'
+                ];
+            } else {
+                return $data;
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating data.',
                 'error' => $e->getMessage(),
             ];
         }

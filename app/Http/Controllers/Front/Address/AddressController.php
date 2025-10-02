@@ -123,7 +123,18 @@ class AddressController extends Controller
         } else {
             return redirect()->back()->with($resp['status'], $resp['message']);
         }
-        
+    }
+
+    public function default(Request $request, $id)
+    {
+        $userId = auth()->guard('web')->user()->id;
+        $resp = $this->addressRepository->updateDefaultAddress($id, $userId);
+
+        if ($resp['code'] == 200) {
+            return redirect()->back()->with($resp['status'], 'Default Address updated');
+        } else {
+            return redirect()->back()->with($resp['status'], $resp['message']);
+        }
     }
 
     public function edit(Int $id): View|RedirectResponse
