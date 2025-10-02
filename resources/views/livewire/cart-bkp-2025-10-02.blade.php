@@ -47,16 +47,16 @@
 
     </div>
 
-    <div class="mt-4 lg:flex lg:items-start gap-2 md:gap-4">
+    <div class="mt-4 sm:mt-6 md:gap-6 lg:flex lg:items-start xl:gap-8">
         {{-- left part - cart products --}}
         <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
             {{-- cart products --}}
-            <div id="cart-products" class="space-y-2 md:space-y-4 mb-2 md:mb-4">
+            <div id="cart-products" class="space-y-6 mb-4">
 
                 @if (isset($cart['items']) && count($cart['items']) > 0)
                     @foreach ($cart['items'] as $item)
 
-                        <div class="p-2 md:p-4 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                        <div class="p-2 md:p-3 {{ FD['rounded'] }} border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                             <div class="space-y-2">
                                 {{-- IMAGE && TITLE && DESCRIPTION --}}
                                 <div class="flex gap-4 justify-start">
@@ -184,7 +184,6 @@
                                         </div>
                                     </div>
                                 </div> --}}
-                                
                                 {{-- DIVIDER --}}
                                 <div>
                                     <div class="border-t dark:border-gray-700"></div>
@@ -257,7 +256,7 @@
 
             {{-- Saved for later products --}}
             @if (isset($savedItems) && count($savedItems) > 0)
-            <div id="saved-product-container" class="bg-gray-50 mb-2 md:mb-4 py-4 antialiased dark:bg-gray-800 mt-2 md:mt-4 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div id="saved-product-container" class="bg-gray-50 mb-4 py-4 antialiased dark:bg-gray-800 mt-6 shadow-sm border border-gray-200 dark:border-gray-700">
                 <div class="mx-auto max-w-screen-xl px-2 sm:px-4">
                     <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0">
                         <p class="{{FD['text-1']}} font-semibold text-gray-600 dark:text-gray-500">SAVED FOR LATER</h2>
@@ -421,7 +420,7 @@
         </div>
 
         {{-- right part - order summary --}}
-        <div id="order-summary-container" class="mx-auto mt-2 md:mt-6 mb-2 md:mb-4 max-w-4xl flex-1 space-y-2 md:space-y-4 lg:mt-0 lg:w-full sticky top-36">
+        <div id="order-summary-container" class="mx-auto mt-6 mb-4 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full sticky top-36">
 
             @if (isset($cart['items']) && count($cart['items']) > 0)
                 @include('livewire.includes.order-summary')

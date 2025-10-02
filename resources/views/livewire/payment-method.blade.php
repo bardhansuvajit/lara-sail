@@ -22,8 +22,8 @@
 
         @if ( $shippingAddrExistCount > 0 )
             <div class="w-full mt-4">
-                <div class="flex flex-col space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="flex flex-col space-y-2 md:space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
                         @foreach ($paymentMethods as $methodIndex => $method)
 
                             <div x-data="{ methodIndex: {{ $methodIndex }} }">

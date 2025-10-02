@@ -1,4 +1,4 @@
-<x-admin.sidebar name="coupons" maxWidth="sm" direction="right" header="Coupons" focusable>
+<x-front.sidebar name="coupons" maxWidth="sm" direction="right" header="Coupons" focusable>
     <div class="p-4">
         <div class="space-y-4">
             <!-- component -->
@@ -87,4 +87,4 @@
             </button>
         </div> --}}
     </div>
-</x-admin.sidebar>
+</x-front.sidebar>

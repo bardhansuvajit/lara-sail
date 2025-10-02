@@ -29,7 +29,7 @@
         @livewireStyles
     </head>
     <body class="dark:bg-gray-800 dark:text-slate-300">
-        <div class="antialiased bg-gray-100 dark:bg-gray-900 pb-2 md:pb-4">
+        <div class="antialiased bg-gray-100 dark:bg-gray-900">
 
             <!-- navigation -->
             {{-- @include('layouts.front.navigation') --}}
@@ -55,22 +55,36 @@
         <!-- footer -->
         {{-- @include('layouts.front.footer') --}}
 
-        {{-- <footer class="bg-white shadow-sm m-0 dark:bg-gray-800 mb-16"> --}}
         <footer class="bg-white shadow-sm m-0 dark:bg-gray-800">
             <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-                <span class="{{FD['text']}} text-gray-500 sm:text-center dark:text-gray-400">&copy; {{date('Y')}} <a href="https://website.com/" class="hover:underline">Website&trade;</a>. All Rights Reserved.</span>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('front.home.index') }}" title="" class="inline" target="_blank">
+                        <img class="block h-8 w-auto dark:hidden" src="{{ Storage::url('public/default/logo/logo-full.svg') }}" alt="">
+                        <img class="hidden h-8 w-auto dark:block" src="{{ Storage::url('public/default/logo/logo-full-dark.svg') }}" alt="">
+                    </a>
+
+                    <div>
+                        <span class="{{FD['text']}} text-gray-500 sm:text-center dark:text-gray-400">
+                            &copy; {{date('Y')}} 
+                            {{-- <a href="https://website.com/" class="hover:underline">Website&trade;</a>.  --}}
+                            All Rights Reserved.
+                        </span>
+                    </div>
+                </div>
+                
+
                 <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
                     <li>
-                        <a href="#" class="{{FD['text-0']}} hover:underline me-4 md:me-6">About</a>
+                        <a href="{{ route('front.content.about') }}" target="_blank" class="{{FD['text-0']}} hover:underline me-4 md:me-6">About Us</a>
                     </li>
                     <li>
-                        <a href="#" class="{{FD['text-0']}} hover:underline me-4 md:me-6">Privacy Policy</a>
+                        <a href="{{ route('front.content.privacy') }}" target="_blank" class="{{FD['text-0']}} hover:underline me-4 md:me-6">Privacy Policy</a>
                     </li>
                     <li>
-                        <a href="#" class="{{FD['text-0']}} hover:underline me-4 md:me-6">Licensing</a>
+                        <a href="{{ route('front.content.terms') }}" target="_blank" class="{{FD['text-0']}} hover:underline me-4 md:me-6">Terms & Conditions</a>
                     </li>
                     <li>
-                        <a href="#" class="{{FD['text-0']}} hover:underline">Contact</a>
+                        <a href="{{ route('front.content.contact') }}" target="_blank" class="{{FD['text-0']}} hover:underline">Contact Us</a>
                     </li>
                 </ul>
             </div>

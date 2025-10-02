@@ -83,7 +83,7 @@
                 </div>
 
                 <div>
-                    <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p>
+                    <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="{{ route('front.content.terms') }}" target="_blank" class="font-bold italic">Terms &amp; Conditions</a></p>
                 </div>
             </div>
             @endif
@@ -124,7 +124,7 @@
                 </div>
 
                 <div>
-                    <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p>
+                    <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="{{ route('front.content.terms') }}" target="_blank" class="font-bold italic">Terms &amp; Conditions</a></p>
                 </div>
             </div>
             @endif
@@ -187,7 +187,7 @@
                 </div>
 
                 <div>
-                    <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="" class="font-bold italic">Terms &amp; Conditions</a></p>
+                    <p class="mb-2 {{FD['text']}} text-gray-600 dark:text-gray-400">By continuing you agree to our <a href="{{ route('front.content.terms') }}" target="_blank" class="font-bold italic">Terms &amp; Conditions</a></p>
                 </div>
             </div>
             @endif

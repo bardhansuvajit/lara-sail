@@ -57,7 +57,7 @@ class RegisteredUserController extends Controller
             'phone_country_code' => ['required', 'string', 'min:1', 'max:5'],
             'phone_no' => ['required', 'integer', 'digits:'.$phoneNumberDigits, 'unique:'.User::class.',primary_phone_no'],
             'email' => ['nullable', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'string', 'min:2', 'max:50', Rules\Password::defaults()],
+            'password' => ['required', 'string', Rules\Password::defaults()],
         ]);
 
         // Add User

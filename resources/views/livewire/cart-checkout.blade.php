@@ -1,12 +1,14 @@
 <div>
-    <div id="order-items" class="mb-2">
-        <div class="{{ FD['rounded'] }} border border-gray-200 bg-white shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800">
+    <div id="order-items" class="mb-2 md:mb-4">
+        {{-- <div class="{{ FD['rounded'] }} border border-gray-200 bg-white shadow-sm dark:border-0 dark:drop-shadow-md lg:dark:border lg:dark:border-gray-700 dark:bg-gray-800"> --}}
+        <div class="{{ FD['rounded'] }} border border-gray-200 dark:border-gray-700 bg-white shadow-sm dark:drop-shadow-md dark:bg-gray-800">
             <div class="mx-auto divide-y-2 overflow-hidden {{ FD['rounded'] }} antialiased dark:divide-gray-600 dark:drop-shadow-md shadow-sm">
-                <div class="p-4">
+                <div class="px-2 py-4 md:p-4">
                     <dl class="flex items-center gap-2">
                         <dt class="font-medium {{FD['text-1']}} leading-tight dark:text-white">Your shopping cart</dt>
                         <dd class="leading-tight {{FD['text-1']}} text-gray-500 dark:text-gray-400">
-                            <span class="cart-count">{{count($cart['items'])}} <span class="hidden md:inline-block">items</span></span>
+                            {{-- <span class="cart-count">{{count($cart['items'])}} <span class="hidden md:inline-block">items</span></span> --}}
+                            <span class="cart-count">{{count($cart['items'])}} items</span>
                         </dd>
                     </dl>
                 </div>
@@ -14,12 +16,12 @@
 
             <div id="cart-products" class="">
                 @foreach ($cart['items'] as $item)
-                    <div class="grid grid-cols-3 items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
+                    <div class="grid grid-cols-3 items-center p-2 md:px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                         <div class="col-span-2">
                             <div class="flex items-center gap-3">
                                 <a href="{{ $item['product_url_with_variation'] ? $item['product_url_with_variation'] : $item['product_url'] }}" class="flex aspect-[1/1] h-9 flex-shrink-0 items-center" target="_blank">
                                     @if (!empty($item['image_s']))
-                                        <img class="h-auto max-h-full w-full" src="{{$item['image_s']}}" alt="{{$item['product_title']}}" />
+                                        <img class="h-full w-full object-cover" src="{{$item['image_s']}}" alt="{{$item['product_title']}}" />
                                     @else
                                         {!! FD['brokenImageFront'] !!}
                                     @endif

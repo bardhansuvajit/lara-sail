@@ -56,7 +56,7 @@
         </div>
 
         <div class="mt-6 flex gap-2 justify-end">
-            <x-admin.button
+            <x-front.button
                 element="button"
                 type="button"
                 tag="secondary"
@@ -65,9 +65,9 @@
                 x-on:click="$dispatch('close')"
             >
                 {{ __('Cancel') }}
-            </x-admin.button>
+            </x-front.button>
 
-            <x-admin.button
+            <x-front.button
                 element="button"
                 type="button"
                 tag="success"
@@ -75,7 +75,7 @@
                 x-on:click="$wire.saveItemForLater(id)"
             >
                 {{ __('Yes, Save for later') }}
-            </x-admin.button>
+            </x-front.button>
         </div>
     </div>
 </x-front.modal>

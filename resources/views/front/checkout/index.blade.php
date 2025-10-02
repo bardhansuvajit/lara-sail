@@ -3,7 +3,7 @@
     title="{{ __('Checkout') }}">
 
     <section class="bg-gray-100 dark:bg-gray-900 antialiased">
-        <div class="pt-4 sm:pt-6 px-2 sm:px-2 md:px-3 lg:px-4 xl:px-4 2xl:px-0">
+        <div class="pt-4 md:pt-4 px-2 sm:px-2 md:px-3 lg:px-4 xl:px-4 2xl:px-0">
             <h2 class="text-base font-semibold text-gray-900 dark:text-white sm:text-lg">Checkout</h2>
 
             <!-- ALERT -->
@@ -19,16 +19,15 @@
                 </div>
             @endif --}}
 
-            <div class="mt-4 sm:mt-6 md:gap-6 lg:flex lg:items-start xl:gap-8">
+            <div class="mt-4 md:gap-4 lg:flex lg:items-start">
                 {{-- left part --}}
-                <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl mb-8">
-                    <div class="space-y-2">
+                <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl mb-2 md:mb-8">
+                    <div class="space-y-2 md:space-y-4">
 
                         <!-- ACCOUNT -->
                         @include('front.checkout.includes.account')
 
                         @if (auth()->guard('web')->check())
-                        
                             <!-- ADDRESS -->
                             @include('front.checkout.includes.address')
 
@@ -42,7 +41,7 @@
                 </div>
 
                 {{-- right part - cart items & order summary --}}
-                <div class="mx-auto mt-6 mb-8 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
+                <div class="mx-auto mt-2 md:mt-6 mb-12 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
 
                     <!-- CART -->
                     @livewire('cart-checkout')

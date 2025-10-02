@@ -7,7 +7,7 @@
 				@include('layouts.front.navigation.footer-link')
 
 				<div class="mt-6 w-full md:mt-8 lg:mt-0 lg:max-w-lg">
-					<div class="space-y-3 md:space-y-5 {{ FD['rounded'] }} bg-gray-100 p-3 md:p-6 dark:bg-gray-700/50 shadow-lg overflow-hidden">
+					<div class="space-y-3 md:space-y-5 {{ FD['rounded'] }} bg-gray-100 p-2 md:p-4 dark:bg-gray-700/50 shadow-lg overflow-hidden">
 						@if (auth()->guard('web')->check())
 							<a href="{{ route('front.account.index') }}" title="" class="{{FD['text']}} font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"> Visit your Account </a>
 						@else
@@ -22,7 +22,7 @@
 						<hr class="border-gray-200 dark:border-gray-600" />
 
 						<div>
-							<p class="mb-3 {{FD['text']}} font-medium text-gray-900 dark:text-white">Trade on the go with <a href="#" title="" class="underline hover:no-underline">Website App</a></p>
+							<p class="mb-3 {{FD['text']}} font-medium text-gray-900 dark:text-white">Trade on the go with Website App</p>
 
 							{{-- Mobile App Download Link --}}
 							@include('layouts.front.navigation.app-download-buttons')
@@ -56,7 +56,7 @@
 	
 		<div class="py-6 md:py-8">
 			<div class="gap-2 md:gap-4 space-y-2 md:space-y-5 flex flex-col md:flex-row items-center xl:justify-between xl:space-y-0">
-				<a href="#" title="" class="block">
+				<a href="{{ route('front.home.index') }}" title="" class="block">
 					<img class="block h-8 w-auto dark:hidden" src="{{ Storage::url('public/default/logo/logo-full.svg') }}" alt="">
 					<img class="hidden h-8 w-auto dark:block" src="{{ Storage::url('public/default/logo/logo-full-dark.svg') }}" alt="">
 				</a>
@@ -76,7 +76,7 @@
 					</li>
 				</ul>
 
-				<p class="{{FD['text']}} text-gray-500 dark:text-gray-400">&copy; 2024 <a href="#" class="hover:underline">Website</a>, Inc. All rights reserved.</p>
+				<p class="{{FD['text']}} text-gray-500 dark:text-gray-400">&copy; 2024 <a href="{{ route('front.home.index') }}" class="hover:underline">Website</a>, Inc. All rights reserved.</p>
 			</div>
 		</div>
 	</div>
