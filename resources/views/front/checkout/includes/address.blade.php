@@ -23,7 +23,7 @@
         <div class="w-full mt-4">
             @foreach ($shippingAddresses as $address)
                 <x-front.radio-input-button id="addressId{{$address->id}}" name="shipping_address_id" value="{{$address->id}}" :checked="$address->is_default == 1" class="shipping-address" labelClass="mb-2" form="place-order-form">
-                    <div class="{{ FD['rounded'] }} shadow-sm dark:border-gray-700">
+                    <div class="{{ FD['rounded'] }} dark:border-gray-700">
                         <div class="flex justify-between">
                             <div>
                                 <h5 class="mb-1 {{FD['text-1']}} font-bold tracking-tight text-gray-700 dark:text-white">{{$address->first_name}} {{$address->last_name}}</h5>
@@ -44,8 +44,8 @@
 
                             @if (count($shippingAddresses) > 1)
                             <div class="flex items-center">
-                                <div class="flex flex-col space-y-2 items-center">
-                                    <a href="{{ route('front.address.edit', $address->id) }}" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-400 dark:hover:text-gray-500">Edit</a>
+                                <div class="flex flex-col space-y-2 items-end md:items-center">
+                                    <a href="{{ route('front.address.edit', $address->id) }}" class="{{FD['text']}} inline-flex gap-2 items-center font-medium text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-400 dark:hover:text-gray-500">Edit</a>
 
                                     <p class="flex w-24 items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-3 py-1 {{FD['text']}} font-medium text-white dark:bg-primary-600">Deliver Here</p>
                                 </div>

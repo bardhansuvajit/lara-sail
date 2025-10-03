@@ -41,7 +41,7 @@
                 </div>
 
                 {{-- right part - cart items & order summary --}}
-                <div class="mx-auto mt-2 md:mt-6 mb-12 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
+                <div class="mx-auto mt-2 md:mt-6 mb-2 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
 
                     <!-- CART -->
                     @livewire('cart-checkout')

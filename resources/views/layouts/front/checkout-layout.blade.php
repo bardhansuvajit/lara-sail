@@ -55,7 +55,7 @@
         <!-- footer -->
         {{-- @include('layouts.front.footer') --}}
 
-        <footer class="bg-white shadow-sm m-0 dark:bg-gray-800">
+        <footer class="bg-white shadow-sm dark:bg-gray-800 pb-32 md:pb-0">
             <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
                 <div class="flex items-center gap-2">
                     <a href="{{ route('front.home.index') }}" title="" class="inline" target="_blank">

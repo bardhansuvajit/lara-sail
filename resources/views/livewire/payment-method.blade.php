@@ -27,7 +27,7 @@
                         @foreach ($paymentMethods as $methodIndex => $method)
 
                             <div x-data="{ methodIndex: {{ $methodIndex }} }">
-                                <label class="flex items-start gap-3 p-3 border-2 border-gray-300 dark:border-gray-700/50 {{ FD['rounded'] }} cursor-pointer has-[:checked]:bg-gray-100 has-[:checked]:dark:bg-gray-600 has-[:checked]:border-gray-900 has-[:checked]:dark:border-gray-100">
+                                <label class="flex items-start gap-3 p-2 md:p-4 border-2 border-gray-300 dark:border-gray-700/50 {{ FD['rounded'] }} cursor-pointer has-[:checked]:bg-gray-100 has-[:checked]:dark:bg-gray-600 has-[:checked]:border-gray-900 has-[:checked]:dark:border-gray-100">
                                     <input 
                                         type="radio" 
                                         id="paymentMethod{{ $methodIndex }}" 
