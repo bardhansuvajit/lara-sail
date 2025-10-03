@@ -102,9 +102,8 @@ class CartController extends Controller
         try {
             $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
 
-            // Insert/ Get data from Cart
+            // Insert if doesnt exist/ Get data from Cart
             if (auth()->guard('web')->check()) {
-                // dd('her', auth()->guard('web')->user()->id);
                 $cart = $this->cartRepository->store([
                     'device_id' => $deviceId,
                     'user_id' => auth()->guard('web')->user()->id
@@ -112,7 +111,6 @@ class CartController extends Controller
             } else {
                 $cart = $this->cartRepository->store([
                     'device_id' => $deviceId,
-                    // 'user_id' => null
                 ]);
             }
 
@@ -331,7 +329,7 @@ class CartController extends Controller
             }
 
             // Check if item already exists in cart
-            $existingItem = $cart->items()
+            $existingItem = $cart->allItems()
                 ->where('product_id', $product->id)
                 ->when($productVariationId, function($query, $productVariationId) {
                     $query->where('product_variation_id', $productVariationId);
@@ -344,6 +342,7 @@ class CartController extends Controller
                 // Update quantity if item exists
                 $this->cartItemRepository->update([
                     'id' => $existingItem->id,
+                    'is_saved_for_later' => 0,
 
                     'selling_price' => $variationSellingPrice,
                     'mrp' => $productVariationId ? ($variationMrp) : $baseMrp,

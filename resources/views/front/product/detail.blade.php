@@ -1780,9 +1780,9 @@
 
             priceBoxEls.forEach( (el, index) => {
                 if (index === 2) {
-                    el.innerHTML = index+boxContent;
+                    el.innerHTML = boxContent;
                 } else {
-                    el.innerHTML = index+boxContent+discountContent;
+                    el.innerHTML = boxContent+discountContent;
                 }
                 el.style.display = 'block';
             });

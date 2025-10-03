@@ -88,9 +88,7 @@ class Cart extends Component
         $this->savedItems = collect($cart['data']->savedItems ?? []);
         $this->shippingMethods = collect($shippingMethods ?? []);
         $this->selectedShippingMethod = $cart['data']->shipping_method_id ?? null;
-        $cartTotals = (int) $cart['data']->total_items;
-        // dd($cart['data']);
-        // $this->savedItems = count($cart['data']) > 0 ? collect($cart['data']->savedItems) : collect([]);
+        $cartTotals = (int) ($cart['data']->total_items ?? 0);
 
         $this->dispatch('updateCartCounts', count: $cartTotals);
         $this->dispatch('hideFullPageLoader');

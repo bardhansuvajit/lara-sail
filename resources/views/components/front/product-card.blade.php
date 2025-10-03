@@ -1,6 +1,7 @@
 @props([
 	'product',
-	'showAddToCart' => false
+	'showAddToCart' => false,
+	'saveForLaterContent' => false,
 ])
 
 <article
@@ -100,7 +101,7 @@
 					class="w-full relative inline-flex justify-center items-center gap-3 {{ FD['rounded'] }} 
 						px-2 py-1 md:px-4 md:py-2 
 						text-sm font-bold 
-						bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500 *:
+						bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500
 						text-gray-900 shadow-lg shadow-amber-300/30 dark:shadow-amber-900/40 
 						transform transition-all duration-180 
 						focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/40 focus-visible:ring-offset-1 *:
@@ -131,5 +132,9 @@
 				<a href="{{ route('front.product.detail', $product->slug) }}" class="w-full {{ FD['rounded'] }} bg-indigo-600 hover:bg-indigo-700 text-white text-sm py-2 font-medium text-center block">View details</a>
 			@endif
 		</div>
+	@endif
+
+	@if ($saveForLaterContent)
+		{!! $saveForLaterContent !!}
 	@endif
 </article>

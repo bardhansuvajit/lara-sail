@@ -9,7 +9,7 @@
                 <div class="mb-4 grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-6" id="featured-products">
                     {{-- Product Card Component --}}
                     @foreach ($featuredProducts as $featuredItem)
-                        <x-front.product-card :product="$featuredItem->product" show-add-to-cart="true" />
+                        <x-front.product-card :product="$featuredItem" show-add-to-cart="true" />
                     @endforeach
                 </div>
             </div>

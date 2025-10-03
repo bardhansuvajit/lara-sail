@@ -18,6 +18,11 @@ class Cart extends Model
         'status'
     ];
 
+    public function allItems()
+    {
+        return $this->hasMany('App\Models\CartItem', 'cart_id', 'id');
+    }
+
     public function items()
     {
         return $this->hasMany('App\Models\CartItem', 'cart_id', 'id')->where('is_saved_for_later', 0)->orderBy('id', 'desc');

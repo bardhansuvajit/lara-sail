@@ -212,6 +212,10 @@ class CartItemRepository implements CartItemInterface
                 if (!empty($array['availability_message']))          $data['data']->availability_message = $array['availability_message'];
                 $data['data']->is_available = $array['is_available'] ?? 1;
 
+                if (isset($array['is_saved_for_later'])) {
+                    $data['data']->is_saved_for_later = $array['is_saved_for_later'];
+                }
+
                 if (isset($array['allow_order']) && $array['allow_order'] == 0) {
                     $data['data']->is_saved_for_later = 1;
                 }

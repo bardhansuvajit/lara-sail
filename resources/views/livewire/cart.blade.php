@@ -257,6 +257,52 @@
 
             {{-- Saved for later products --}}
             @if (isset($savedItems) && count($savedItems) > 0)
+                <section class="bg-gray-100 mb-4 py-4 antialiased dark:bg-gray-900">
+                    <div class="mx-auto max-w-screen-xl px-2 sm:px-0">
+                        <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0">
+                            <p class="{{FD['text-1']}} font-semibold text-gray-600 dark:text-gray-500">SAVED FOR LATER</h2>
+                        </div>
+
+                        <div class="mb-4 grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4" id="featured-products">
+                            {{-- Product Card Component --}}
+                            @foreach ($savedItems as $savedItem)
+                                <x-front.product-card :product="$savedItem->product">
+                                    @slot('saveForLaterContent')
+                                        <div class="flex justify-between gap-2 mt-3">
+                                            @if ($savedItem->is_available == 1)
+                                                <button class="flex-1 basis-[70%] {{ FD['rounded'] }}
+                                                    px-2 py-1 md:px-4 md:py-2 
+                                                    text-xs font-bold
+                                                    bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700
+                                                    text-white
+                                                    "
+                                                    wire:click="moveItemToCart({{ $savedItem->id }})">
+                                                    Move to cart
+                                                </button>
+                                            @else
+                                                <p class="{{FD['text-0']}} text-red-500 dark:text-red-600 mt-1">{{$savedItem->availability_message}}</p>
+                                            @endif
+
+                                            <button class="basis-[30%] {{ FD['rounded'] }}
+                                                px-2 py-1 md:px-4 md:py-2 
+                                                text-xs font-bold
+                                                bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800
+
+                                                text-white
+                                                "
+                                                wire:click="deleteItem({{ $savedItem->id }})">
+                                                Remove
+                                            </button>
+                                        </div>
+                                    @endslot
+                                </x-front.product-card>
+                            @endforeach
+                        </div>
+                    </div>
+                </section>
+            @endif
+
+            {{-- @if (isset($savedItems) && count($savedItems) > 0)
             <div id="saved-product-container" class="bg-gray-50 mb-2 md:mb-4 py-4 antialiased dark:bg-gray-800 mt-2 md:mt-4 shadow-sm border border-gray-200 dark:border-gray-700">
                 <div class="mx-auto max-w-screen-xl px-2 sm:px-4">
                     <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0">
@@ -315,26 +361,6 @@
                                             </p>
                                         @endif
                                     </div>
-
-                                    {{-- @if (count($saved_item->product->pricings) > 0)
-                                        @php
-                                            $singlePricing = $saved_item->product->pricings[0];
-                                        @endphp
-
-                                        <div class="mt-2 flex items-center gap-2">
-                                            <p class="{{FD['text']}} font-medium leading-tight text-gray-900 dark:text-white mb-4 sm:mb-0">
-                                                <span class="currency-icon">{{$singlePricing->currency_symbol}}</span> {{ formatIndianMoney($singlePricing->selling_price) }}
-                                            </p>
-                                            @if ($singlePricing->mrp != 0)
-                                                <p class="{{FD['text']}} font-light line-through decoration-1 dark:decoration-gray-400 leading-tight text-gray-400 dark:text-gray-400 mb-4 sm:mb-0">
-                                                    <span class="currency-icon">{{$singlePricing->currency_symbol}}</span>{{ formatIndianMoney($singlePricing->mrp) }}
-                                                </p>
-                                                <p class="{{FD['text-0']}} font-black leading-tight {{FD['activeClass']}} mb-4 sm:mb-0">
-                                                    {{$singlePricing->discount}}% off
-                                                </p>
-                                            @endif
-                                        </div>
-                                    @endif --}}
                                 </a>
 
                                 <div class="flex justify-between gap-2 mt-3">
@@ -359,7 +385,7 @@
                     </div>
                 </div>
             </div>
-            @endif
+            @endif --}}
 
             {{-- featured products --}}
             {{-- <div id="featured-product-container" class="bg-gray-50 mb-4 py-4 antialiased dark:bg-gray-800 mt-6 shadow-sm border border-gray-200 dark:border-gray-700">
