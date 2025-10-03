@@ -45,8 +45,9 @@ class AddressController extends Controller
         ]);
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
+        // dd($request->all());
         $userId = auth()->guard('web')->user()->id;
         $addresses = $this->addressRepository->exists([
             'user_id' => $userId
@@ -58,7 +59,9 @@ class AddressController extends Controller
         return view('front.account.address.create', [
             'user' => auth()->guard('web')->user(),
             'addresses' => $addresses['data'],
-            'states' => $states
+            'states' => $states,
+            'type' => $request->type ?? 'shipping',
+            'redirect' => $request->redirect ?? '',
         ]);
     }
 
@@ -110,7 +113,12 @@ class AddressController extends Controller
             // 'user_id' => auth()->guard('web')->user()->id
         ]);
 
-        return redirect()->back()->with($resp['status'], $resp['message']);
+        if (isset($request->redirect)) {
+            return redirect()->to($request->redirect)->with($resp['status'], $resp['message']);
+        } else {
+            return redirect()->back()->with($resp['status'], $resp['message']);
+        }
+
     }
 
     public function delete(Request $request, $id)
@@ -137,8 +145,10 @@ class AddressController extends Controller
         }
     }
 
-    public function edit(Int $id): View|RedirectResponse
+    public function edit(Int $id, Request $request): View|RedirectResponse
     {
+        // dd($request->all());
+
         $previousUrl = url()->previous();
 
         $userId = auth()->guard('web')->user()->id;
@@ -156,6 +166,7 @@ class AddressController extends Controller
                 'address' => $address['data'][0],
                 'states' => $states,
                 'previousUrl' => $previousUrl,
+                'redirect' => $request->redirect ?? '',
             ]);
         } else {
             // dd($address);
@@ -173,7 +184,7 @@ class AddressController extends Controller
 
         $request->validate([
             'id' => 'required|integer|min:1',
-            'previous_url' => 'required',
+            // 'previous_url' => 'required',
             'address_type' => 'required|string|in:shipping,billing',
             'is_default' => 'nullable|integer|in:1',
 
@@ -219,7 +230,13 @@ class AddressController extends Controller
                 'user_id' => $userId
             ]);
 
-            return redirect()->to($request->previous_url)->with($resp['status'], $resp['message']);
+            if (isset($request->redirect)) {
+                return redirect()->to($request->redirect)->with($resp['status'], $resp['message']);
+            } else {
+                return redirect()->back()->with($resp['status'], $resp['message']);
+            }
+
+            // return redirect()->to($request->previous_url)->with($resp['status'], $resp['message']);
         } else {
             return redirect()->back()->with($resp['status'], $resp['message']);
         }  

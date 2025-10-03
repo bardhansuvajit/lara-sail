@@ -1440,3 +1440,27 @@ document.querySelectorAll('.toggle-currency').forEach(el => {
         }
     })
 });
+
+
+// Checkout page - add Shipping/ Billing address
+const addressaddBtns = document.getElementById('address-add-btns');
+const addressLists = document.getElementById('address-list');
+const addChkAddressEl = document.querySelectorAll('.add-chk-address');
+const shippingAddAddEl = document.getElementById('shipping-address-ad-el');
+const billingAddAddEl = document.getElementById('billing-address-ad-el');
+const shippingAddCloseEl = document.getElementById('shipping-address-close-btn');
+const billingAddCloseEl = document.getElementById('billing-address-close-btn');
+
+addChkAddressEl.forEach(el => {
+    el.addEventListener('click', () => {
+        const type = el.dataset.type;
+
+        if (addressLists) addressLists.style.display = 'none';
+        if (addressaddBtns) addressaddBtns.style.display = 'none';
+        if (type == 'shipping') {
+            if (shippingAddAddEl) shippingAddAddEl.style.display = 'block';
+        } else {
+            if (billingAddAddEl) billingAddAddEl.style.display = 'block';
+        }
+    })
+});

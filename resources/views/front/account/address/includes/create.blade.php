@@ -5,6 +5,8 @@
             <h5 class="{{FD['text']}} text-gray-600 dark:text-gray-500">Add {{ $type == "shipping" ? "Delivery" : "Billing"}} Address</h5>
         </div> --}}
 
+        {{-- <p class="{{ FD['text-1'] }} font-normal text-slate-400 dark:text-slate-500 mb-2 md:mb-4">Add {{ $type == "shipping" ? "Delivery" : "Billing"}}  Address</p> --}}
+
         <div class="grid gap-4 mb-4 grid-cols-1 sm:grid-cols-3">
             <div>
                 <x-front.input-label for="{{$type}}_first_name" :value="__('First Name *')" />
@@ -132,6 +134,7 @@
         <input type="hidden" name="address_type" value="{{ $type }}">
         <input type="hidden" name="country_code" value="{{COUNTRY['country']}}">
         <input type="hidden" name="user_id" value="{{$user->id}}">
+        <input type="hidden" name="redirect" value="{{ $redirect ?? url()->current() }}">
 
         <button type="submit" class="w-full sm:w-max flex items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
             {{ __('Deliver here') }}

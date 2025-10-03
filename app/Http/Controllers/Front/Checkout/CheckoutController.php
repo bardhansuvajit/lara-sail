@@ -95,7 +95,9 @@ class CheckoutController extends Controller
                 'user' => auth()->guard('web')->user(),
                 'states' => $states,
                 'shippingAddresses' => $shippingAddresses,
+                'shippingAddressesCount' => count($shippingAddresses),
                 'billingAddresses' => $billingAddresses,
+                'billingAddressesCount' => count($billingAddresses),
                 // 'paymentMethods' => $payment_methods,
             ]);
         }

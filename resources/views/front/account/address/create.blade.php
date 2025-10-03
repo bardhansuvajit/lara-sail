@@ -3,5 +3,5 @@
 ])
 
 @section('content')
-    @include('front.account.address.includes.create', ['type' => 'shipping'])
+    @include('front.account.address.includes.create', ['type' => $type])
 @endsection

@@ -11,7 +11,7 @@
                 <p class="{{FD['text-1']}} md:text-base leading-tight font-medium text-gray-900 hover:underline dark:text-gray-300">{{ __('Address') }}</p>
             </h2>
 
-            @if ( count($shippingAddresses) > 0 )
+            @if ( $shippingAddressesCount > 0 )
                 <p class="{{FD['text']}} text-gray-500 dark:text-gray-400">{{ __('Delivering to') }}</p>
             @else
                 <p class="{{FD['text-0']}} text-gray-500 dark:text-gray-400">{!! __('Enter the address where you&apos;d like your items delivered') !!}</p>
@@ -19,135 +19,155 @@
         </div>
     </div>
 
-    @if ( count($shippingAddresses) > 0 )
+    @if ( $shippingAddressesCount > 0 )
         <div class="w-full mt-4">
-            @foreach ($shippingAddresses as $address)
-                <x-front.radio-input-button id="addressId{{$address->id}}" name="shipping_address_id" value="{{$address->id}}" :checked="$address->is_default == 1" class="shipping-address" labelClass="mb-2" form="place-order-form">
-                    <div class="{{ FD['rounded'] }} dark:border-gray-700">
-                        <div class="flex justify-between">
-                            <div>
-                                <h5 class="mb-1 {{FD['text-1']}} font-bold tracking-tight text-gray-700 dark:text-white">{{$address->first_name}} {{$address->last_name}}</h5>
-
-                                <p class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-300">
-                                    {{$address->address_line_1}} 
-                                    {{$address->address_line_2}} @if (!empty($address->landmark)), {{$address->landmark}} @endif
-                                </p>
-
-                                <p class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-300">
-                                    {{$address->city}}, 
-                                    {{strtoupper($address->stateDetail->name)}}, 
-                                    {{$address->postal_code}}
-                                </p>
-
-                                <p class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-300">{{strtoupper($address->countryDetail->name)}}</p>
-                            </div>
-
-                            @if (count($shippingAddresses) > 1)
-                            <div class="flex items-center">
-                                <div class="flex flex-col space-y-2 items-end md:items-center">
-                                    <a href="{{ route('front.address.edit', $address->id) }}" class="{{FD['text']}} inline-flex gap-2 items-center font-medium text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-400 dark:hover:text-gray-500">Edit</a>
-
-                                    <p class="flex w-24 items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-3 py-1 {{FD['text']}} font-medium text-white dark:bg-primary-600">Deliver Here</p>
-                                </div>
-                            </div>
-                            @endif
-                        </div>
-                    </div>
-                </x-front.radio-input-button>
-            @endforeach
-
-            {{-- BILLING ADDRESS --}}
-            @if ( count($billingAddresses) > 0 )
-                <p class="{{FD['text']}} text-gray-500 dark:text-gray-400 mt-4 mb-3">{{ __('Billing Address') }}</p>
-
-                @foreach ($billingAddresses as $billing_address)
-                    <x-front.radio-input-button id="addressId{{$billing_address->id}}" name="billing_address_id" value="{{$billing_address->id}}" :checked="$billing_address->is_default == 1" class="billing-address" labelClass="mb-2" form="place-order-form">
-                        <div class="{{ FD['rounded'] }} shadow-sm dark:border-gray-700">
+            <div id="address-list">
+                <!-- Shipping Address -->
+                @foreach ($shippingAddresses as $address)
+                    <x-front.radio-input-button id="addressId{{$address->id}}" name="shipping_address_id" value="{{$address->id}}" :checked="$address->is_default == 1" class="shipping-address" labelClass="mb-2" form="place-order-form">
+                        <div class="{{ FD['rounded'] }} dark:border-gray-700">
                             <div class="flex justify-between">
                                 <div>
-                                    <h5 class="mb-1 {{FD['text-1']}} font-bold tracking-tight text-gray-900 dark:text-white">{{$billing_address->first_name}} {{$billing_address->last_name}}</h5>
+                                    <h5 class="mb-1 {{FD['text-1']}} font-bold tracking-tight text-gray-700 dark:text-white">{{$address->first_name}} {{$address->last_name}}</h5>
 
-                                    <p class="{{FD['text']}} font-normal text-gray-700 dark:text-gray-300">
-                                        {{$billing_address->address_line_1}} 
-                                        {{$billing_address->address_line_2}} @if (!empty($billing_address->landmark)), {{$billing_address->landmark}} @endif
+                                    <p class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-300">
+                                        {{$address->address_line_1}} 
+                                        {{$address->address_line_2}} @if (!empty($address->landmark)), {{$address->landmark}} @endif
                                     </p>
 
-                                    <p class="{{FD['text']}} font-normal text-gray-700 dark:text-gray-300">
-                                        {{$billing_address->city}}, 
-                                        {{strtoupper($billing_address->stateDetail->name)}}, 
-                                        {{$billing_address->postal_code}}
+                                    <p class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-300">
+                                        {{$address->city}}, 
+                                        {{strtoupper($address->stateDetail->name)}}, 
+                                        {{$address->postal_code}}
                                     </p>
 
-                                    <p class="{{FD['text']}} font-normal text-gray-700 dark:text-gray-300">{{strtoupper($billing_address->countryDetail->name)}}</p>
+                                    <p class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-300">{{strtoupper($address->countryDetail->name)}}</p>
                                 </div>
 
+                                @if ($shippingAddressesCount > 1)
                                 <div class="flex items-center">
-                                    <div class="flex flex-col items-center">
-                                        {{-- <p class="flex w-24 items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-3 py-1 {{FD['text']}} font-medium text-white dark:bg-primary-600">Select</p> --}}
-
-                                        <div class="flex flex-col space-y-2 items-center">
-                                            <a href="{{ route('front.address.edit', $billing_address->id) }}" class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-600 dark:hover:text-gray-700">Edit</a>
-
-                                            <button 
-                                                type="button" 
-                                                class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-red-500 hover:text-red-700 hover:underline dark:text-red-600 dark:hover:text-red-700"
-                                                x-data=""
-                                                x-on:click="
-                                                    $dispatch('open-modal', 'confirm-address-delete'); 
-                                                    $dispatch('data-name', @js($billing_address->first_name.' '.$billing_address->last_name));
-                                                    $dispatch('data-addressline1', @js($billing_address->address_line_1));
-                                                    $dispatch('data-addressline2', @js($billing_address->address_line_2));
-                                                    $dispatch('data-landmark', @js($billing_address->landmark ?? ''));
-                                                    $dispatch('data-city', @js($billing_address->city));
-                                                    $dispatch('data-state', @js(strtoupper($billing_address->stateDetail?->name)));
-                                                    $dispatch('data-postalcode', @js($billing_address->postal_code));
-                                                    $dispatch('data-country', @js(strtoupper($billing_address->countryDetail?->name)));
-                                                    $dispatch('data-deleteroute', @js(route('front.address.delete', $billing_address->id)));
-                                                "
+                                    <div class="flex flex-col space-y-2 items-end md:items-center">
+                                        <a 
+                                            href="{{ route('front.address.edit', [
+                                                'id' => $address->id,
+                                                'redirect' => url()->current()
+                                            ]) }}" 
+                                            class="{{FD['text']}} inline-flex gap-2 items-center font-medium text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-400 dark:hover:text-gray-500"
                                             >
-                                                Remove
-                                            </button>
-                                        </div>
+                                            Edit
+                                        </a>
 
-                                        {{-- <form action="{{ route('front.address.delete', $billing_address->id) }}" method="post">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="flex w-24 items-center justify-center {{ FD['rounded'] }} text-orange-700 px-3 py-1 {{FD['text']}} font-medium text-white dark:text-orange-600">Remove</button>
-                                        </form> --}}
+                                        <p class="flex w-24 items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-3 py-1 {{FD['text']}} font-medium text-white dark:bg-primary-600">Deliver Here</p>
                                     </div>
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </x-front.radio-input-button>
                 @endforeach
-            @endif
 
-            @php
-                $submittedType = session('submitted_form_type');
-            @endphp
+                <!-- Billing Address -->
+                @if ( $billingAddressesCount > 0 )
+                    <p class="{{FD['text']}} text-gray-500 dark:text-gray-400 mt-4 mb-3">{{ __('Billing Address') }}</p>
 
-            <div x-data="{
-                    expanded: @json($errors->any()),
-                    type: '{{ $submittedType ?? 'Delivery' }}'
-                }">
+                    @foreach ($billingAddresses as $billing_address)
+                        <x-front.radio-input-button id="addressId{{$billing_address->id}}" name="billing_address_id" value="{{$billing_address->id}}" :checked="$billing_address->is_default == 1" class="billing-address" labelClass="mb-2" form="place-order-form">
+                            <div class="{{ FD['rounded'] }} shadow-sm dark:border-gray-700">
+                                <div class="flex justify-between">
+                                    <div>
+                                        <h5 class="mb-1 {{FD['text-1']}} font-bold tracking-tight text-gray-900 dark:text-white">{{$billing_address->first_name}} {{$billing_address->last_name}}</h5>
 
-                <div class="flex justify-between">
-                    <a href="#" class="mt-3 inline-block {{ FD['text'] }} text-primary-500 dark:text-primary-300"
-                    @click.prevent="expanded = true; type = 'Delivery'">Change Delivery address</a>
+                                        <p class="{{FD['text']}} font-normal text-gray-700 dark:text-gray-300">
+                                            {{$billing_address->address_line_1}} 
+                                            {{$billing_address->address_line_2}} @if (!empty($billing_address->landmark)), {{$billing_address->landmark}} @endif
+                                        </p>
 
-                    @if ( count($billingAddresses) == 0 )
-                        <a href="#" class="mt-3 inline-block {{ FD['text'] }} text-primary-500 dark:text-primary-300"
-                        @click.prevent="expanded = true; type = 'Billing'">Add Billing address</a>
-                    @endif
+                                        <p class="{{FD['text']}} font-normal text-gray-700 dark:text-gray-300">
+                                            {{$billing_address->city}}, 
+                                            {{strtoupper($billing_address->stateDetail->name)}}, 
+                                            {{$billing_address->postal_code}}
+                                        </p>
+
+                                        <p class="{{FD['text']}} font-normal text-gray-700 dark:text-gray-300">{{strtoupper($billing_address->countryDetail->name)}}</p>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <div class="flex flex-col items-center">
+                                            {{-- <p class="flex w-24 items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-3 py-1 {{FD['text']}} font-medium text-white dark:bg-primary-600">Select</p> --}}
+
+                                            <div class="flex flex-col space-y-2 items-center">
+                                                <a href="{{ route('front.address.edit', [
+                                                        'id' => $billing_address->id,
+                                                        'redirect' => url()->current()
+                                                    ]) }}" 
+                                                    class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-600 dark:hover:text-gray-700"
+                                                    >
+                                                    Edit
+                                                </a>
+
+                                                <button 
+                                                    type="button" 
+                                                    class="{{FD['text']}} inline-flex gap-2 items-center text-sm font-medium text-red-500 hover:text-red-700 hover:underline dark:text-red-600 dark:hover:text-red-700"
+                                                    x-data=""
+                                                    x-on:click="
+                                                        $dispatch('open-modal', 'confirm-address-delete'); 
+                                                        $dispatch('data-name', @js($billing_address->first_name.' '.$billing_address->last_name));
+                                                        $dispatch('data-addressline1', @js($billing_address->address_line_1));
+                                                        $dispatch('data-addressline2', @js($billing_address->address_line_2));
+                                                        $dispatch('data-landmark', @js($billing_address->landmark ?? ''));
+                                                        $dispatch('data-city', @js($billing_address->city));
+                                                        $dispatch('data-state', @js(strtoupper($billing_address->stateDetail?->name)));
+                                                        $dispatch('data-postalcode', @js($billing_address->postal_code));
+                                                        $dispatch('data-country', @js(strtoupper($billing_address->countryDetail?->name)));
+                                                        $dispatch('data-deleteroute', @js(route('front.address.delete', $billing_address->id)));
+                                                    "
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+
+                                            {{-- <form action="{{ route('front.address.delete', $billing_address->id) }}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="flex w-24 items-center justify-center {{ FD['rounded'] }} text-orange-700 px-3 py-1 {{FD['text']}} font-medium text-white dark:text-orange-600">Remove</button>
+                                            </form> --}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </x-front.radio-input-button>
+                    @endforeach
+                @endif
+            </div>
+
+            <div id="shipping-address-ad-el" class="hidden p-4 border border-dashed border-gray-200 dark:border-gray-700">
+                <div class="border-b border-dashed border-gray-200 dark:border-gray-700 mb-2 md:mb-4 pb-4">
+                    <div class="w-full flex items-center justify-between">
+                        <h5 class="{{ FD['text'] }}">Add Shipping Address</h5>
+
+                        <button class="flex gap-1 {{ FD['rounded'] }} p-1 text-xs bg-gray-100 hover:bg-gray-200/90 active:ring-2 ring-gray-100" id="shipping-address-close-btn">
+                            Close
+                            <div class="{{ FD['iconClass'] }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z"/></svg>
+                            </div>
+                        </button>
+                    </div>
                 </div>
 
-                <div x-show="expanded" x-collapse>
-                    <div class="pt-3" x-show="type === 'Delivery'">
-                        @include('front.account.address.includes.create', ['type' => 'shipping'])
-                    </div>
-                    <div class="pt-3" x-show="type === 'Billing'">
-                        @include('front.account.address.includes.create', ['type' => 'billing'])
-                    </div>
+                @include('front.account.address.includes.create', ['type' => 'shipping'])
+            </div>
+
+            <div id="billing-address-ad-el" class="hidden">
+                @include('front.account.address.includes.create', ['type' => 'billing'])
+            </div>
+
+            <div id="address-add-btns">
+                <div class="flex justify-between">
+                    <a href="javascript: void(0)" class="mt-3 inline-block {{ FD['text'] }} text-primary-500 dark:text-primary-300 add-chk-address" id="changeDeliveryAddress" data-type="shipping">Change Delivery address</a>
+
+                    @if ( $billingAddressesCount == 0 )
+                        <a href="javascript: void(0)" class="mt-3 inline-block {{ FD['text'] }} text-primary-500 dark:text-primary-300 add-chk-address" id="addBillingAddress" data-type="billing">Add Billing address</a>
+                    @endif
                 </div>
             </div>
 

@@ -33,7 +33,7 @@
 
                             <!-- PAYMENT -->
                             @livewire('payment-method', [
-                                'shippingAddrExistCount' => count($shippingAddresses)
+                                'shippingAddrExistCount' => $shippingAddressesCount
                             ])
                         @endif
 
