@@ -20,7 +20,7 @@
             @endif --}}
 
             <div class="mt-4 md:gap-4 lg:flex lg:items-start">
-                {{-- left part --}}
+                <!-- left part -->
                 <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl mb-2 md:mb-8">
                     <div class="space-y-2 md:space-y-4">
 
@@ -29,7 +29,8 @@
 
                         @if (auth()->guard('web')->check())
                             <!-- ADDRESS -->
-                            @include('front.checkout.includes.address')
+                            @livewire('checkout-address')
+                            {{-- @include('front.checkout.includes.address') --}}
 
                             <!-- PAYMENT -->
                             @livewire('payment-method', [
@@ -40,7 +41,7 @@
                     </div>
                 </div>
 
-                {{-- right part - cart items & order summary --}}
+                <!-- right part - cart items & order summary -->
                 <div class="mx-auto mt-2 md:mt-6 mb-2 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
 
                     <!-- CART -->

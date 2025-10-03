@@ -140,12 +140,12 @@
                 @endif
             </div>
 
-            <div id="shipping-address-ad-el" class="hidden p-4 border border-dashed border-gray-200 dark:border-gray-700">
-                <div class="border-b border-dashed border-gray-200 dark:border-gray-700 mb-2 md:mb-4 pb-4">
+            <div id="shipping-address-ad-el" class="@if (!$errors->any()) hidden @endif p-4 border border-dashed border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-600/30 shadow">
+                <div class="border-b border-dashed border-gray-300 dark:border-gray-600 mb-2 md:mb-4 pb-4">
                     <div class="w-full flex items-center justify-between">
-                        <h5 class="{{ FD['text'] }}">Add Shipping Address</h5>
+                        <h5 class="{{ FD['text'] }}">Add Delivery Address</h5>
 
-                        <button class="flex gap-1 {{ FD['rounded'] }} p-1 text-xs bg-gray-100 hover:bg-gray-200/90 active:ring-2 ring-gray-100" id="shipping-address-close-btn">
+                        <button class="flex gap-1 {{ FD['rounded'] }} p-1 text-xs active:ring-2 bg-gray-300 hover:bg-gray-400/90 ring-gray-100 dark:bg-gray-600/70 dark:hover:bg-gray-600/80 dark:ring-gray-700" id="shipping-address-close-btn">
                             Close
                             <div class="{{ FD['iconClass'] }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z"/></svg>
@@ -157,7 +157,20 @@
                 @include('front.account.address.includes.create', ['type' => 'shipping'])
             </div>
 
-            <div id="billing-address-ad-el" class="hidden">
+            <div id="billing-address-ad-el" class="hidden p-4 border border-dashed border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-600/30 shadow">
+                <div class="border-b border-dashed border-gray-300 dark:border-gray-600 mb-2 md:mb-4 pb-4">
+                    <div class="w-full flex items-center justify-between">
+                        <h5 class="{{ FD['text'] }}">Add Billing Address</h5>
+
+                        <button class="flex gap-1 {{ FD['rounded'] }} p-1 text-xs active:ring-2 bg-gray-300 hover:bg-gray-400/90 ring-gray-100 dark:bg-gray-600/70 dark:hover:bg-gray-600/80 dark:ring-gray-700" id="billing-address-close-btn">
+                            Close
+                            <div class="{{ FD['iconClass'] }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z"/></svg>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
                 @include('front.account.address.includes.create', ['type' => 'billing'])
             </div>
 

@@ -78,27 +78,21 @@ class CheckoutController extends Controller
             return redirect()->route('front.cart.index', ['minimum-cart-value-alert' => 'true']);
         }
 
-
-
         // When User is LOGGED IN
         if (auth()->guard('web')->check()) {
             $shippingAddresses = auth()->guard('web')->user()->shippingAddresses;
-            $billingAddresses = auth()->guard('web')->user()->billingAddresses;
+            // $billingAddresses = auth()->guard('web')->user()->billingAddresses;
 
-            $statesData = $this->stateRepository->list('', ['country_code' => COUNTRY['country']], 'all', 'name', 'asc');
-            $states = $statesData['data'];
-
-            // Find Payment Methods
-            // $payment_methods = $this->paymentMethodRepository->list('', ['status' => 1, 'country_code' => $country], 'all', 'position', 'asc')['data'];
+            // $statesData = $this->stateRepository->list('', ['country_code' => COUNTRY['country']], 'all', 'name', 'asc');
+            // $states = $statesData['data'];
 
             return view('front.checkout.index', [
                 'user' => auth()->guard('web')->user(),
-                'states' => $states,
-                'shippingAddresses' => $shippingAddresses,
+                // 'states' => $states,
+                // 'shippingAddresses' => $shippingAddresses,
                 'shippingAddressesCount' => count($shippingAddresses),
-                'billingAddresses' => $billingAddresses,
-                'billingAddressesCount' => count($billingAddresses),
-                // 'paymentMethods' => $payment_methods,
+                // 'billingAddresses' => $billingAddresses,
+                // 'billingAddressesCount' => count($billingAddresses),
             ]);
         }
         // When User is NOT LOGGED IN

@@ -1457,10 +1457,29 @@ addChkAddressEl.forEach(el => {
 
         if (addressLists) addressLists.style.display = 'none';
         if (addressaddBtns) addressaddBtns.style.display = 'none';
+
         if (type == 'shipping') {
             if (shippingAddAddEl) shippingAddAddEl.style.display = 'block';
+            setTimeout(() => {
+                document.querySelector('input[name=address_line_1]').focus();
+            }, 100);
         } else {
             if (billingAddAddEl) billingAddAddEl.style.display = 'block';
+            setTimeout(() => {
+                document.querySelector('#billing-address-ad-el input[name=address_line_1]').focus();
+            }, 100);
         }
     })
+});
+
+shippingAddCloseEl.addEventListener('click', () => {
+    if (addressLists) addressLists.style.display = 'block';
+    if (addressaddBtns) addressaddBtns.style.display = 'block';
+    if (shippingAddAddEl) shippingAddAddEl.style.display = 'none';
+});
+
+billingAddCloseEl.addEventListener('click', () => {
+    if (addressLists) addressLists.style.display = 'block';
+    if (addressaddBtns) addressaddBtns.style.display = 'block';
+    if (billingAddAddEl) billingAddAddEl.style.display = 'none';
 });
