@@ -7,27 +7,42 @@ use Illuminate\Support\Collection;
 use App\Interfaces\StateInterface;
 use App\Interfaces\AddressInterface;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Front\Address\StoreAddressRequest;
 
 class CheckoutAddress extends Component
 {
     public $user;
-    public Collection $states;
-    public Collection $shippingAddresses;
-    public Collection $billingAddresses;
+
+    /** Collections - can be arrays too if repository returns arrays */
+    public Collection|array $states = [];
+    public Collection|array $shippingAddresses = [];
+    public Collection|array $billingAddresses = [];
+
     public int $shippingAddressesCount = 0;
     public int $billingAddressesCount = 0;
-    // public string $type = 'shipping';
 
-    // Form properties
-    public string $type = 'shipping';
+    // Which address type the form is currently adding/editing
     public string $address_type = 'shipping';
-    public $first_name, $last_name, $phone_no, $email;
-    public $address_line_1, $address_line_2, $postal_code, $city, $state;
-    public $user_id, $country_code;
-    public $landmark, $alt_phone_no, $additional_notes;
+
+    // Form properties (shared for both shipping & billing)
+    public $first_name;
+    public $last_name;
+    public $phone_no;
+    public $email;
+    public $address_line_1;
+    public $address_line_2;
+    public $postal_code;
+    public $city;
+    public $state;
+    public $user_id;
+    public $country_code;
+    public $landmark;
+    public $alt_phone_no;
+    public $additional_notes;
     public $is_default = 1;
+
+    // Alpine/Livewire controlled visibility of the address-create form
+    public bool $showAddressForm = false;
 
     private StateInterface $stateRepository;
     private AddressInterface $addressRepository;
@@ -48,8 +63,7 @@ class CheckoutAddress extends Component
         $this->last_name    = $this->user->last_name ?? '';
         $this->phone_no     = $this->user->primary_phone_no ?? '';
         $this->email        = $this->user->email ?? '';
-        // $this->address_type = $this->type ?? 'shipping';
-        $this->country_code = COUNTRY['country'] ?? 'IN';
+        $this->country_code = defined('COUNTRY') && is_array(COUNTRY) ? (COUNTRY['country'] ?? 'IN') : 'IN';
 
         if ($this->user) {
             $this->getAddresses();
@@ -58,15 +72,36 @@ class CheckoutAddress extends Component
         $this->getStates();
     }
 
+    /**
+     * Open address add form for a given type (shipping|billing)
+     * This method is called from the blade via wire:click.
+     */
+    public function openAddressForm(string $type = 'shipping')
+    {
+        $this->address_type = in_array($type, ['shipping', 'billing']) ? $type : 'shipping';
+        $this->showAddressForm = true;
+
+        // Prefill (again) so fields are consistent with auth user
+        $this->first_name = $this->user->first_name ?? '';
+        $this->last_name = $this->user->last_name ?? '';
+        $this->phone_no = $this->user->primary_phone_no ?? '';
+        $this->email = $this->user->email ?? '';
+    }
+
+    public function closeAddressForm()
+    {
+        $this->showAddressForm = false;
+    }
+
     public function saveAddress()
     {
-        // $this->validate();
+        // Use StoreAddressRequest rules for validation
         $data = $this->validate((new StoreAddressRequest())->rules());
 
-        $resp = $this->addressRepository->store([
-            'user_id' => $this->user->id,
+        // Ensure address_type and user_id are present
+        $payload = [
+            'user_id' => $this->user->id ?? $this->user_id,
             'address_type' => $this->address_type,
-            // 'is_default' => $this->is_default ? 1 : ((count($this->user->addresses) > 0) ? 0 : 1),
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'address_line_1' => $this->address_line_1,
@@ -74,31 +109,29 @@ class CheckoutAddress extends Component
             'city' => $this->city,
             'state' => $this->state,
             'postal_code' => $this->postal_code,
-            'country_code' => COUNTRY['country'],
+            'country_code' => $this->country_code ?: (defined('COUNTRY') ? COUNTRY['country'] : 'IN'),
             'phone_no' => $this->phone_no,
             'email' => $this->email,
             'landmark' => $this->landmark,
-            'additional_notes' => null,
+            'additional_notes' => $this->additional_notes ?? null,
             'alt_phone_no' => $this->alt_phone_no,
-            'is_default' => $this->is_default,
-        ]);
+            'is_default' => $this->is_default ? 1 : 0,
+        ];
 
-        if ($resp['code'] == 200) {
+        $resp = $this->addressRepository->store($payload);
+
+        if (isset($resp['code']) && $resp['code'] == 200) {
             $this->getAddresses();
-            // $this->resetExcept(['user','states','shippingAddresses','billingAddresses','shippingAddressesCount','billingAddressesCount','type']);
             $this->resetFormFields();
+            $this->closeAddressForm();
 
+            // update payment methods or other listeners
             $this->dispatch('updatePaymentMethodsAction');
 
-            $this->dispatch('show-notification', 
-                $resp['message'], ['type' => 'success']
-            );
+            $this->dispatch('show-notification', $resp['message'], ['type' => 'success']);
             return;
-            // session()->flash('success', 'Address added successfully.');
         } else {
-            $this->dispatch('show-notification', 
-                $resp['message'], ['type' => 'warning']
-            );
+            $this->dispatch('show-notification', $resp['message'] ?? 'Unable to save address', ['type' => 'warning']);
             return;
         }
     }
@@ -107,30 +140,34 @@ class CheckoutAddress extends Component
     {
         $this->reset([
             'first_name', 'last_name', 'phone_no', 'email',
-            'address_line_1', 'address_line_2', 'postal_code', 
-            'city', 'state', 'landmark', 'alt_phone_no', 'is_default'
+            'address_line_1', 'address_line_2', 'postal_code',
+            'city', 'state', 'landmark', 'alt_phone_no', 'is_default', 'additional_notes'
         ]);
-        
+
         // Reset to user defaults
         $this->first_name = $this->user->first_name ?? '';
         $this->last_name = $this->user->last_name ?? '';
         $this->phone_no = $this->user->primary_phone_no ?? '';
         $this->email = $this->user->email ?? '';
         $this->is_default = 1;
+
+        // default back to shipping
+        $this->address_type = 'shipping';
     }
 
     public function getAddresses()
     {
+        // Assuming user relations are loaded & available
         $this->shippingAddresses = $this->user->shippingAddresses ?? [];
         $this->billingAddresses = $this->user->billingAddresses ?? [];
 
-        $this->shippingAddressesCount = count($this->shippingAddresses);
-        $this->billingAddressesCount = count($this->billingAddresses);
+        $this->shippingAddressesCount = is_countable($this->shippingAddresses) ? count($this->shippingAddresses) : 0;
+        $this->billingAddressesCount = is_countable($this->billingAddresses) ? count($this->billingAddresses) : 0;
     }
 
     public function getStates()
     {
-        $statesData = $this->stateRepository->list('', ['country_code' => COUNTRY['country']], 'all', 'name', 'asc');
+        $statesData = $this->stateRepository->list('', ['country_code' => (defined('COUNTRY') ? COUNTRY['country'] : 'IN')], 'all', 'name', 'asc');
         $this->states = $statesData['data'] ?? [];
     }
 

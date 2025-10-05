@@ -1441,7 +1441,7 @@ document.querySelectorAll('.toggle-currency').forEach(el => {
     })
 });
 
-
+/*
 // Checkout page - add Shipping/ Billing address
 const addChkAddressEl = document.querySelectorAll('.add-chk-address');
 const addressaddBtns = document.getElementById('address-add-btns');
@@ -1492,3 +1492,4 @@ if (billingAddCloseEl) {
         if (billingAddAddEl) billingAddAddEl.style.display = 'none';
     });
 }
+*/
