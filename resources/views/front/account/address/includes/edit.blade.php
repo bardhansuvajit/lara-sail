@@ -138,7 +138,7 @@
         {{-- <input type="hidden" name="previous_url" value="{{$previousUrl}}"> --}}
 
         <div class="flex flex-wrap space-x-2">
-            <a href="{{$previousUrl}}" class="w-full sm:w-max flex items-center justify-center {{ FD['rounded'] }} bg-gray-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+            <a href="{{ $redirect }}" class="w-full sm:w-max flex items-center justify-center {{ FD['rounded'] }} bg-gray-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                 {{ __('Go Back') }}
             </a>
 

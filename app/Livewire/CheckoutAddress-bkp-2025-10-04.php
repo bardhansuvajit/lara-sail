@@ -18,16 +18,14 @@ class CheckoutAddress extends Component
     public Collection $billingAddresses;
     public int $shippingAddressesCount = 0;
     public int $billingAddressesCount = 0;
-    // public string $type = 'shipping';
+    public string $type = 'shipping';
 
     // Form properties
-    public string $type = 'shipping';
-    public string $address_type = 'shipping';
     public $first_name, $last_name, $phone_no, $email;
     public $address_line_1, $address_line_2, $postal_code, $city, $state;
-    public $user_id, $country_code;
+    public $user_id, $address_type, $country_code;
     public $landmark, $alt_phone_no, $additional_notes;
-    public $is_default = 1;
+    public $is_default = 0;
 
     private StateInterface $stateRepository;
     private AddressInterface $addressRepository;
@@ -48,7 +46,7 @@ class CheckoutAddress extends Component
         $this->last_name    = $this->user->last_name ?? '';
         $this->phone_no     = $this->user->primary_phone_no ?? '';
         $this->email        = $this->user->email ?? '';
-        // $this->address_type = $this->type ?? 'shipping';
+        $this->address_type = $this->type ?? 'shipping';
         $this->country_code = COUNTRY['country'] ?? 'IN';
 
         if ($this->user) {
@@ -65,7 +63,7 @@ class CheckoutAddress extends Component
 
         $resp = $this->addressRepository->store([
             'user_id' => $this->user->id,
-            'address_type' => $this->address_type,
+            'address_type' => $this->type,
             // 'is_default' => $this->is_default ? 1 : ((count($this->user->addresses) > 0) ? 0 : 1),
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
@@ -87,8 +85,6 @@ class CheckoutAddress extends Component
             $this->getAddresses();
             // $this->resetExcept(['user','states','shippingAddresses','billingAddresses','shippingAddressesCount','billingAddressesCount','type']);
             $this->resetFormFields();
-
-            $this->dispatch('updatePaymentMethodsAction');
 
             $this->dispatch('show-notification', 
                 $resp['message'], ['type' => 'success']
@@ -116,7 +112,7 @@ class CheckoutAddress extends Component
         $this->last_name = $this->user->last_name ?? '';
         $this->phone_no = $this->user->primary_phone_no ?? '';
         $this->email = $this->user->email ?? '';
-        $this->is_default = 1;
+        $this->is_default = 0;
     }
 
     public function getAddresses()

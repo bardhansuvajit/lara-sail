@@ -11,6 +11,8 @@ use App\Interfaces\AddressInterface;
 use App\Interfaces\StateInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\Http\Requests\Front\Address\StoreAddressRequest;
+use App\Http\Requests\Front\Address\UpdateAddressRequest;
 
 class AddressController extends Controller
 {
@@ -65,32 +67,13 @@ class AddressController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    // public function store(Request $request): RedirectResponse
+    public function store(StoreAddressRequest $request): RedirectResponse
     {
         // dd($request->all());
 
         $type = $request->input('type');
         session(['submitted_form_type' => $type]);
-
-        $request->validate([
-            'user_id' => 'required|integer|min:1|exists:users,id',
-            'address_type' => 'required|string|in:shipping,billing',
-            'is_default' => 'nullable|integer|in:1',
-
-            'first_name' => 'required|string|min:2|max:50',
-            'last_name' => 'required|string|min:2|max:50',
-            'address_line_1' => 'required|string|min:2|max:200',
-            'address_line_2' => 'nullable|string|min:1|max:200',
-            'city' => 'required|string|min:1|max:50',
-            'state' => 'required|string|min:1|max:50',
-            'postal_code' => 'required|string|digits:'.COUNTRY['postalCodeDigits'],
-            'country_code' => 'required|string|max:2|exists:countries,code',
-            'phone_no' => 'required|integer|digits:'.COUNTRY['phoneNoDigits'],
-            'email' => 'nullable|email|min:2|max:80',
-            'landmark' => 'nullable|string|min:1|max:200',
-            'additional_notes' => 'nullable|string|min:1|max:50',
-            'alt_phone_no' => 'nullable|integer|digits:'.COUNTRY['phoneNoDigits'],
-        ]);
 
         $resp = $this->addressRepository->store([
             'user_id' => $request->user_id,
@@ -175,33 +158,13 @@ class AddressController extends Controller
         }        
     }
 
-    public function update(Request $request): RedirectResponse
+    // public function update(Request $request): RedirectResponse
+    public function update(UpdateAddressRequest $request): RedirectResponse
     {
         // dd($request->all());
 
         $type = $request->input('type');
         session(['submitted_form_type' => $type]);
-
-        $request->validate([
-            'id' => 'required|integer|min:1',
-            // 'previous_url' => 'required',
-            'address_type' => 'required|string|in:shipping,billing',
-            'is_default' => 'nullable|integer|in:1',
-
-            'first_name' => 'required|string|min:2|max:50',
-            'last_name' => 'required|string|min:2|max:50',
-            'address_line_1' => 'required|string|min:2|max:200',
-            'address_line_2' => 'nullable|string|min:1|max:200',
-            'city' => 'required|string|min:1|max:50',
-            'state' => 'required|string|min:1|max:50',
-            'postal_code' => 'required|string|digits:'.COUNTRY['postalCodeDigits'],
-            'country_code' => 'required|string|max:2|exists:countries,code',
-            'phone_no' => 'required|integer|digits:'.COUNTRY['phoneNoDigits'],
-            'email' => 'nullable|email|min:2|max:80',
-            'landmark' => 'nullable|string|min:1|max:200',
-            'additional_notes' => 'nullable|string|min:1|max:50',
-            'alt_phone_no' => 'nullable|integer|digits:'.COUNTRY['phoneNoDigits'],
-        ]);
 
         $userId = auth()->guard('web')->user()->id;
         $address = $this->addressRepository->exists([

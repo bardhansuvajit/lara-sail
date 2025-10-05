@@ -1443,9 +1443,9 @@ document.querySelectorAll('.toggle-currency').forEach(el => {
 
 
 // Checkout page - add Shipping/ Billing address
+const addChkAddressEl = document.querySelectorAll('.add-chk-address');
 const addressaddBtns = document.getElementById('address-add-btns');
 const addressLists = document.getElementById('address-list');
-const addChkAddressEl = document.querySelectorAll('.add-chk-address');
 const shippingAddAddEl = document.getElementById('shipping-address-ad-el');
 const billingAddAddEl = document.getElementById('billing-address-ad-el');
 const shippingAddCloseEl = document.getElementById('shipping-address-close-btn');
@@ -1455,31 +1455,40 @@ addChkAddressEl.forEach(el => {
     el.addEventListener('click', () => {
         const type = el.dataset.type;
 
+        // console.log(type);
+
         if (addressLists) addressLists.style.display = 'none';
         if (addressaddBtns) addressaddBtns.style.display = 'none';
 
         if (type == 'shipping') {
             if (shippingAddAddEl) shippingAddAddEl.style.display = 'block';
             setTimeout(() => {
-                document.querySelector('input[name=address_line_1]').focus();
+                document.querySelector('.address_line_1').focus();
             }, 100);
         } else {
             if (billingAddAddEl) billingAddAddEl.style.display = 'block';
             setTimeout(() => {
-                document.querySelector('#billing-address-ad-el input[name=address_line_1]').focus();
+                document.querySelector('#billing-address-ad-el .address_line_1').focus();
             }, 100);
         }
     })
 });
 
-shippingAddCloseEl.addEventListener('click', () => {
-    if (addressLists) addressLists.style.display = 'block';
-    if (addressaddBtns) addressaddBtns.style.display = 'block';
-    if (shippingAddAddEl) shippingAddAddEl.style.display = 'none';
-});
+if (shippingAddCloseEl) {
+    shippingAddCloseEl.addEventListener('click', () => {
+        const elements = [addressLists, addressaddBtns, shippingAddAddEl];
+        elements.forEach(el => {
+            if (el) {
+                el.style.display = el === shippingAddAddEl ? 'none' : 'block';
+            }
+        });
+    });
+}
 
-billingAddCloseEl.addEventListener('click', () => {
-    if (addressLists) addressLists.style.display = 'block';
-    if (addressaddBtns) addressaddBtns.style.display = 'block';
-    if (billingAddAddEl) billingAddAddEl.style.display = 'none';
-});
+if (billingAddCloseEl) {
+    billingAddCloseEl.addEventListener('click', () => {
+        if (addressLists) addressLists.style.display = 'block';
+        if (addressaddBtns) addressaddBtns.style.display = 'block';
+        if (billingAddAddEl) billingAddAddEl.style.display = 'none';
+    });
+}

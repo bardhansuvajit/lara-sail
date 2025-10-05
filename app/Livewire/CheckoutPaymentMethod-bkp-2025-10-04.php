@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use App\Interfaces\PaymentMethodInterface;
 use App\Interfaces\CartInterface;
 
-class PaymentMethod extends Component
+class CheckoutPaymentMethod extends Component
 {
     public Int $shippingAddrExistCount;
     public ?string $selectedMethod = null;
@@ -57,6 +57,6 @@ class PaymentMethod extends Component
 
     public function render()
     {
-        return view('livewire.payment-method');
+        return view('livewire.checkout-payment-method');
     }
 }

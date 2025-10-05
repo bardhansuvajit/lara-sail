@@ -33,9 +33,10 @@
                             {{-- @include('front.checkout.includes.address') --}}
 
                             <!-- PAYMENT -->
-                            @livewire('payment-method', [
+                            @livewire('checkout-payment-method')
+                            {{-- @livewire('checkout-payment-method', [
                                 'shippingAddrExistCount' => $shippingAddressesCount
-                            ])
+                            ]) --}}
                         @endif
 
                     </div>

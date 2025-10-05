@@ -11,7 +11,7 @@
                     <p class="{{FD['text-1']}} md:text-base leading-tight font-medium text-gray-900 dark:text-gray-300">{{ __('Payment') }}</p>
                 </h2>
 
-                @if ( $shippingAddrExistCount == 0 )
+                @if ( $shippingAddressesCount == 0 )
                     <p class="{{FD['text']}} text-gray-500 dark:text-gray-400">{!! __('Before we can process your payment, please provide your delivery address. It helps us calculate shipping and deliver your order correctly.') !!}</p>
                 @else
                     <p class="{{FD['text']}} text-gray-500 dark:text-gray-400">{{ __('Complete Your Purchase') }}</p>
@@ -20,7 +20,7 @@
             </div>
         </div>
 
-        @if ( $shippingAddrExistCount > 0 )
+        @if ( $shippingAddressesCount > 0 )
             <div class="w-full mt-4">
                 <div class="flex flex-col space-y-2 md:space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
