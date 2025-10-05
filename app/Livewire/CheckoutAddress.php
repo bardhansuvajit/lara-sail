@@ -44,6 +44,10 @@ class CheckoutAddress extends Component
     // Alpine/Livewire controlled visibility of the address-create form
     public bool $showAddressForm = false;
 
+    // Edit mode properties
+    public ?int $editingAddressId = null;
+    public bool $isEditing = false;
+
     private StateInterface $stateRepository;
     private AddressInterface $addressRepository;
 
@@ -80,23 +84,66 @@ class CheckoutAddress extends Component
     {
         $this->address_type = in_array($type, ['shipping', 'billing']) ? $type : 'shipping';
         $this->showAddressForm = true;
+        $this->isEditing = false;
+        $this->editingAddressId = null;
 
         // Prefill (again) so fields are consistent with auth user
         $this->first_name = $this->user->first_name ?? '';
         $this->last_name = $this->user->last_name ?? '';
         $this->phone_no = $this->user->primary_phone_no ?? '';
         $this->email = $this->user->email ?? '';
+        $this->is_default = 1;
+
+        // Reset other fields
+        $this->reset([
+            'address_line_1', 'address_line_2', 'postal_code',
+            'city', 'state', 'landmark', 'alt_phone_no', 'additional_notes'
+        ]);
+    }
+
+    /**
+     * Open address edit form
+     */
+    public function editAddress($addressId, $addressType = 'shipping')
+    {
+        $addresses = $addressType === 'shipping' ? $this->shippingAddresses : $this->billingAddresses;
+        $address = collect($addresses)->firstWhere('id', $addressId);
+        
+        if ($address) {
+            $this->editingAddressId = $address->id;
+            $this->address_type = $address->address_type;
+            $this->isEditing = true;
+            $this->showAddressForm = true;
+
+            // Fill form with address data
+            $this->first_name = $address->first_name;
+            $this->last_name = $address->last_name;
+            $this->phone_no = $address->phone_no;
+            $this->email = $address->email;
+            $this->address_line_1 = $address->address_line_1;
+            $this->address_line_2 = $address->address_line_2;
+            $this->postal_code = $address->postal_code;
+            $this->city = $address->city;
+            $this->state = $address->state;
+            $this->landmark = $address->landmark;
+            $this->alt_phone_no = $address->alt_phone_no;
+            $this->additional_notes = $address->additional_notes;
+            $this->is_default = $address->is_default;
+            $this->country_code = $address->country_code;
+        }
     }
 
     public function closeAddressForm()
     {
         $this->showAddressForm = false;
+        $this->isEditing = false;
+        $this->editingAddressId = null;
+        $this->resetFormFields();
     }
 
     public function saveAddress()
     {
         // Use StoreAddressRequest rules for validation
-        // $data = $this->validate((new StoreAddressRequest())->rules());
         $request = new StoreAddressRequest();
         $this->validate($request->rules(), [], $request->attributes());
 
@@ -120,7 +167,16 @@ class CheckoutAddress extends Component
             'is_default' => $this->is_default ? 1 : 0,
         ];
 
-        $resp = $this->addressRepository->store($payload);
+        if ($this->isEditing && $this->editingAddressId) {
+            // Update existing address
+            $payload['id'] = $this->editingAddressId;
+            $resp = $this->addressRepository->update($payload);
+            $successMessage = 'Address updated successfully';
+        } else {
+            // Create new address
+            $resp = $this->addressRepository->store($payload);
+            $successMessage = 'Address saved successfully';
+        }
 
         if (isset($resp['code']) && $resp['code'] == 200) {
             $this->getAddresses();
@@ -130,7 +186,7 @@ class CheckoutAddress extends Component
             // update payment methods or other listeners
             $this->dispatch('updatePaymentMethodsAction');
 
-            $this->dispatch('show-notification', $resp['message'], ['type' => 'success']);
+            $this->dispatch('show-notification', $resp['message'] ?? $successMessage, ['type' => 'success']);
             return;
         } else {
             $this->dispatch('show-notification', $resp['message'] ?? 'Unable to save address', ['type' => 'warning']);

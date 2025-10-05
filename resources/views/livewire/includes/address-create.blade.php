@@ -74,8 +74,9 @@
                 wire:model.defer="state" 
             >
                 @slot('options')
+                    <option value="">Select State</option>
                     @foreach ($states as $st)
-                        <x-front.input-select-option value="{{$st->code}}" :selected="old('state') == $st->code"> {{$st->name}} </x-front.input-select-option>
+                        <option value="{{$st->code}}" {{ old('state', $state ?? '') == $st->code ? 'selected' : '' }}>{{$st->name}}</option>
                     @endforeach
                 @endslot
             </x-front.input-select>
@@ -131,10 +132,14 @@
             wire:loading.attr="disabled" 
             >
             <span wire:loading.remove wire:target="saveAddress">
-                @if ($address_type == 'shipping')
-                    {{ __('Deliver here') }}
+                @if($isEditing)
+                    {{ __('Update Address') }}
                 @else
-                    {{ __('Add Billing Address') }}
+                    @if ($address_type == 'shipping')
+                        {{ __('Deliver here') }}
+                    @else
+                        {{ __('Add Billing Address') }}
+                    @endif
                 @endif
             </span>
 

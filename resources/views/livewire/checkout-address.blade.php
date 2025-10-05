@@ -100,25 +100,24 @@
                                                 <div class="{{ FD['rounded'] }} bg-white dark:bg-gray-700">
                                                     <ul class="text-sm {{ FD['text'] }} dark:text-white">
                                                         <li>
-                                                            <a 
-                                                                href="{{ route('front.address.edit', [
-                                                                    'id' => $address->id,
-                                                                    'redirect' => url()->current()
-                                                                ]) }}"
-                                                                class="flex items-center gap-2 px-3 py-2 
+                                                            <button 
+                                                                type="button" 
+                                                                class="w-full flex items-center gap-2 px-3 py-2 
                                                                 hover:bg-slate-50 hover:text-slate-700 
-                                                                dark:hover:text-slate-300 dark:hover:bg-gray-600">
+                                                                dark:hover:text-slate-300 dark:hover:bg-gray-600"
+                                                                wire:click="editAddress({{ $address->id }}, 'shipping')"
+                                                            >
                                                                 <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
                                                                 Edit
-                                                            </a>
+                                                            </button>
                                                         </li>
 
-                                                        <li class="group">
+                                                        <li>
                                                             <button 
                                                                 type="button" 
                                                                 class="w-full flex items-center gap-2 px-3 py-2 text-red-600 
-                                                                group-hover:bg-red-50 group-hover:text-red-700 
-                                                                dark:group-hover:text-red-300 dark:group-hover:bg-gray-600"
+                                                                hover:bg-red-50 hover:text-red-700 
+                                                                dark:hover:text-red-300 dark:hover:bg-gray-600"
                                                                 wire:click="setAddressForDeletion({{ $address->id }}, 'shipping')"
                                                             >
                                                                 <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m757-317-57-57 80-106-180-240H354l-80-80h326q19 0 36 8.5t28 23.5l216 288-123 163Zm-597 77h448L160-688v448ZM820-28 661-187q-10 13-24 20t-31 7H160q-33 0-56.5-23.5T80-240v-480q0-11 2.5-20.5T90-758l-62-62 56-56L876-84l-56 56ZM567-547Zm-183 83Z"/></svg>
@@ -196,17 +195,16 @@
                                                 <div class="{{ FD['rounded'] }} bg-white dark:bg-gray-700">
                                                     <ul class="text-sm {{ FD['text'] }} dark:text-white">
                                                         <li>
-                                                            <a 
-                                                                href="{{ route('front.address.edit', [
-                                                                    'id' => $billing_address->id,
-                                                                    'redirect' => url()->current()
-                                                                ]) }}"
-                                                                class="flex items-center gap-2 px-3 py-2 
+                                                            <button 
+                                                                type="button" 
+                                                                class="w-full flex items-center gap-2 px-3 py-2 
                                                                 hover:bg-slate-50 hover:text-slate-700 
-                                                                dark:hover:text-slate-300 dark:hover:bg-gray-600">
+                                                                dark:hover:text-slate-300 dark:hover:bg-gray-600"
+                                                                wire:click="editAddress({{ $billing_address->id }}, 'billing')"
+                                                            >
                                                                 <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
                                                                 Edit
-                                                            </a>
+                                                            </button>
                                                         </li>
 
                                                         <li>
@@ -233,10 +231,17 @@
                 @endif
             </div>
 
+            {{-- Update the shipping address form section --}}
             <div id="shipping-address-ad-el" x-show="showForm && addressType === 'shipping'" x-cloak class="mt-4 p-4 border border-dashed border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-600/30 shadow">
                 <div class="border-b border-dashed border-gray-300 dark:border-gray-600 mb-2 md:mb-4 pb-4">
                     <div class="w-full flex items-center justify-between">
-                        <h5 class="{{ FD['text'] }}">Add Delivery Address</h5>
+                        <h5 class="{{ FD['text'] }}">
+                            @if($isEditing)
+                                Edit Delivery Address
+                            @else
+                                Add Delivery Address
+                            @endif
+                        </h5>
 
                         <button type="button" @click="close(); $wire.closeAddressForm()" class="flex gap-1 {{ FD['rounded'] }} p-1 text-xs active:ring-2 bg-gray-300 hover:bg-gray-400/90 ring-gray-100 dark:bg-gray-600/70 dark:hover:bg-gray-600/80 dark:ring-gray-700" id="shipping-address-close-btn">
                             Close
@@ -250,10 +255,17 @@
                 @include('livewire.includes.address-create')
             </div>
 
+            {{-- Update the billing address form section --}}
             <div id="billing-address-ad-el" x-show="showForm && addressType === 'billing'" x-cloak class="mt-4 p-4 border border-dashed border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-600/30 shadow">
                 <div class="border-b border-dashed border-gray-300 dark:border-gray-600 mb-2 md:mb-4 pb-4">
                     <div class="w-full flex items-center justify-between">
-                        <h5 class="{{ FD['text'] }}">Add Billing Address</h5>
+                        <h5 class="{{ FD['text'] }}">
+                            @if($isEditing)
+                                Edit Billing Address
+                            @else
+                                Add Billing Address
+                            @endif
+                        </h5>
 
                         <button type="button" @click="close(); $wire.closeAddressForm()" class="flex gap-1 {{ FD['rounded'] }} p-1 text-xs active:ring-2 bg-gray-300 hover:bg-gray-400/90 ring-gray-100 dark:bg-gray-600/70 dark:hover:bg-gray-600/80 dark:ring-gray-700" id="billing-address-close-btn">
                             Close
