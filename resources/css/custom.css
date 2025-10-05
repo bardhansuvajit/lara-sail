@@ -1,0 +1,18 @@
+@keyframes deliverAnimation {
+    0%, 100% { 
+        transform: translateY(0) translateX(0) rotate(0deg); 
+    }
+    25% { 
+        transform: translateY(-1px) translateX(-1px) rotate(-1deg); 
+    }
+    50% { 
+        transform: translateY(-1px) translateX(0) rotate(0deg); 
+    }
+    75% { 
+        transform: translateY(-1px) translateX(1px) rotate(1deg); 
+    }
+}
+
+.animate-delivery-combined {
+    animation: deliverAnimation 1s ease-in-out infinite;
+}

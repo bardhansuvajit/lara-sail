@@ -26,7 +26,8 @@
                         <p class="{{FD['text']}} text-gray-500 dark:text-gray-400">
                             Not {{$user->first_name}}? 
                             <form method="POST" action="{{ route('front.logout') }}" class="inline-flex">@csrf
-                                <button type="submit" class="{{FD['text']}} italic text-primary-500 dark:text-primary-300 inline">
+                                {{-- <button type="submit" class="{{FD['text']}} italic text-primary-500 dark:text-primary-300 inline"> --}}
+                                <button type="submit" class="italic inline-block {{ FD['text'] }} text-primary-500 hover:text-primary-600 dark:text-primary-300 dark:hover:text-primary-200 hover:underline">
                                     Sign Out
                                 </button>
                             </form>

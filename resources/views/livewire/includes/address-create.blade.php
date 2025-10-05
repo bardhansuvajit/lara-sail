@@ -131,7 +131,11 @@
             wire:loading.attr="disabled" 
             >
             <span wire:loading.remove wire:target="saveAddress">
-                {{ __('Deliver here') }}
+                @if ($address_type == 'shipping')
+                    {{ __('Deliver here') }}
+                @else
+                    {{ __('Add Billing Address') }}
+                @endif
             </span>
 
             <span wire:loading.flex wire:target="saveAddress" class="items-center">

@@ -18,7 +18,7 @@
         @checked($checked)
     />
 
-    <label for="{{ $id }}" class="block h-full p-2 sm:p-4 border-2 border-gray-200 dark:border-gray-700 cursor-pointer 
+    <label for="{{ $id }}" class="block h-full p-2 border-2 border-gray-200 dark:border-gray-700 cursor-pointer 
         bg-white peer-checked:bg-gray-100 peer-checked:text-gray-800 peer-checked:border-gray-900
         dark:bg-gray-700 dark:peer-checked:bg-gray-600 dark:peer-checked:text-gray-300 dark:peer-checked:border-gray-100
         transition-colors duration-200 ease-in-out

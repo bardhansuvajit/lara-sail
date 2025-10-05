@@ -1,4 +1,5 @@
 import './bootstrap';
+import '../css/custom.css';
 
 // import Alpine from 'alpinejs';
 import collapse from '@alpinejs/collapse'
