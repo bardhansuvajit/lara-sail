@@ -113,30 +113,18 @@
                                                             </a>
                                                         </li>
 
-                                                        {{-- <li class="group">
+                                                        <li class="group">
                                                             <button 
                                                                 type="button" 
                                                                 class="w-full flex items-center gap-2 px-3 py-2 text-red-600 
                                                                 group-hover:bg-red-50 group-hover:text-red-700 
                                                                 dark:group-hover:text-red-300 dark:group-hover:bg-gray-600"
-                                                                x-data
-                                                                x-on:click="
-                                                                    $dispatch('open-modal', 'confirm-address-delete'); 
-                                                                    $dispatch('data-name', @js($address->first_name.' '.$address->last_name));
-                                                                    $dispatch('data-addressline1', @js($address->address_line_1));
-                                                                    $dispatch('data-addressline2', @js($address->address_line_2));
-                                                                    $dispatch('data-landmark', @js($address->landmark ?? ''));
-                                                                    $dispatch('data-city', @js($address->city));
-                                                                    $dispatch('data-state', @js(strtoupper($address->stateDetail?->name)));
-                                                                    $dispatch('data-postalcode', @js($address->postal_code));
-                                                                    $dispatch('data-country', @js(strtoupper($address->countryDetail?->name)));
-                                                                    $dispatch('data-deleteroute', @js(route('front.address.delete', $address->id)));
-                                                                "
+                                                                wire:click="setAddressForDeletion({{ $address->id }}, 'shipping')"
                                                             >
                                                                 <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m757-317-57-57 80-106-180-240H354l-80-80h326q19 0 36 8.5t28 23.5l216 288-123 163Zm-597 77h448L160-688v448ZM820-28 661-187q-10 13-24 20t-31 7H160q-33 0-56.5-23.5T80-240v-480q0-11 2.5-20.5T90-758l-62-62 56-56L876-84l-56 56ZM567-547Zm-183 83Z"/></svg>
                                                                 Remove
                                                             </button>
-                                                        </li> --}}
+                                                        </li>
                                                     </ul>
                                                 </div>
                                             </x-slot>
@@ -227,19 +215,7 @@
                                                                 class="w-full flex items-center gap-2 px-3 py-2 text-red-600 dark:text-red-500 
                                                                 hover:bg-red-50 hover:text-red-700 
                                                                 dark:hover:text-red-400 dark:hover:bg-gray-600"
-                                                                x-data
-                                                                x-on:click="
-                                                                    $dispatch('open-modal', 'confirm-address-delete'); 
-                                                                    $dispatch('data-name', @js($billing_address->first_name.' '.$billing_address->last_name));
-                                                                    $dispatch('data-addressline1', @js($billing_address->address_line_1));
-                                                                    $dispatch('data-addressline2', @js($billing_address->address_line_2));
-                                                                    $dispatch('data-landmark', @js($billing_address->landmark ?? ''));
-                                                                    $dispatch('data-city', @js($billing_address->city));
-                                                                    $dispatch('data-state', @js(strtoupper($billing_address->stateDetail?->name)));
-                                                                    $dispatch('data-postalcode', @js($billing_address->postal_code));
-                                                                    $dispatch('data-country', @js(strtoupper($billing_address->countryDetail?->name)));
-                                                                    $dispatch('data-deleteroute', @js(route('front.address.delete', $billing_address->id)));
-                                                                "
+                                                                wire:click="setAddressForDeletion({{ $billing_address->id }}, 'billing')"
                                                             >
                                                                 <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m757-317-57-57 80-106-180-240H354l-80-80h326q19 0 36 8.5t28 23.5l216 288-123 163Zm-597 77h448L160-688v448ZM820-28 661-187q-10 13-24 20t-31 7H160q-33 0-56.5-23.5T80-240v-480q0-11 2.5-20.5T90-758l-62-62 56-56L876-84l-56 56ZM567-547Zm-183 83Z"/></svg>
                                                                 Remove
@@ -307,5 +283,92 @@
         @endif
     </div>
 
-    @include('layouts.front.includes.confirm-address-delete')
+    <!-- Delete address modal -->
+    <x-front.modal name="confirm-checkout-address-delete" maxWidth="sm" vertical="middle" focusable>
+        <div 
+            class="p-4 md:p-6" 
+            x-data="{ 
+                id: '', 
+                name: '', 
+                addressline1: '', 
+                addressline2: '', 
+                landmark: '', 
+                city: '', 
+                state: '', 
+                postalcode: '', 
+                country: '' 
+            }" 
+            x-on:set-address-deletion-data.window="
+                id = $event.detail.id;
+                name = $event.detail.name;
+                addressline1 = $event.detail.addressline1;
+                addressline2 = $event.detail.addressline2;
+                landmark = $event.detail.landmark;
+                city = $event.detail.city;
+                state = $event.detail.state;
+                postalcode = $event.detail.postalcode;
+                country = $event.detail.country;
+            "
+        >
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ __('Are you sure?') }}
+            </h2>
+
+            <p class="{{FD['text']}} text-gray-400 dark:text-gray-400">{{ __('You want to Remove this address?') }}</p>
+
+            <div class="delete-product-data my-4">
+                <div class="items-center dark:border-gray-600">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 text-slate-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-80q-106 0-173-33.5T240-200q0-24 14.5-44.5T295-280l63 59q-9 4-19.5 9T322-200q13 16 60 28t98 12q51 0 98.5-12t60.5-28q-7-8-18-13t-21-9l62-60q28 16 43 36.5t15 45.5q0 53-67 86.5T480-80Zm1-220q99-73 149-146.5T680-594q0-102-65-154t-135-52q-70 0-135 52t-65 154q0 67 49 139.5T481-300Zm-1 100Q339-304 269.5-402T200-594q0-71 25.5-124.5T291-808q40-36 90-54t99-18q49 0 99 18t90 54q40 36 65.5 89.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520Zm0-80Z"/></svg>
+                        </div>
+                        <div class="w-full">
+                            <p class="inline-block text-xs {{FD['text-0']}} text-gray-900 hover:underline dark:text-white" x-text="name"></p>
+
+                            <p class="{{FD['text']}} text-gray-400">
+                                <span x-text="addressline1"></span>
+                                <span x-text="addressline2"></span>
+                                <template x-if="landmark">
+                                    ,<span x-text="landmark"></span>
+                                </template>
+                            </p>
+
+                            <p class="{{FD['text']}} text-gray-400">
+                                <span x-text="city"></span>
+                                <span x-text="state"></span>
+                                <span x-text="postalcode"></span>
+                            </p>
+
+                            <p class="{{FD['text']}} text-gray-400" x-text="country"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex gap-2 justify-end">
+                <x-front.button
+                    element="button"
+                    type="button"
+                    tag="secondary"
+                    title="Cancel"
+                    class="border"
+                    x-on:click="$dispatch('close-modal', 'confirm-checkout-address-delete')"
+                >
+                    {{ __('Cancel') }}
+                </x-front.button>
+
+                <x-front.button
+                    element="button"
+                    type="button"
+                    tag="danger"
+                    title="Delete"
+                    x-bind:disabled="!id"
+                    wire:click="deleteAddress(id)"
+                    x-on:click="$dispatch('close-modal', 'confirm-checkout-address-delete')"
+                >
+                    {{ __('Yes, Remove') }}
+                </x-front.button>
+            </div>
+        </div>
+    </x-front.modal>
 </div>

@@ -96,7 +96,9 @@ class CheckoutAddress extends Component
     public function saveAddress()
     {
         // Use StoreAddressRequest rules for validation
-        $data = $this->validate((new StoreAddressRequest())->rules());
+        // $data = $this->validate((new StoreAddressRequest())->rules());
+        $request = new StoreAddressRequest();
+        $this->validate($request->rules(), [], $request->attributes());
 
         // Ensure address_type and user_id are present
         $payload = [
@@ -169,6 +171,56 @@ class CheckoutAddress extends Component
     {
         $statesData = $this->stateRepository->list('', ['country_code' => (defined('COUNTRY') ? COUNTRY['country'] : 'IN')], 'all', 'name', 'asc');
         $this->states = $statesData['data'] ?? [];
+    }
+
+    /**
+     * Delete address
+     */
+    public function deleteAddress($addressId)
+    {
+        try {
+            $resp = $this->addressRepository->delete($addressId);
+
+            if (isset($resp['code']) && $resp['code'] == 200) {
+                $this->getAddresses();
+
+                // Dispatch events if needed
+                $this->dispatch('updatePaymentMethodsAction');
+                $this->dispatch('show-notification', 'Address removed', ['type' => 'success']);
+
+                // Close modal
+                $this->dispatch('close-modal', 'confirm-checkout-address-delete');
+            } else {
+                $this->dispatch('show-notification', $resp['message'] ?? 'Unable to delete address', ['type' => 'error']);
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('show-notification', 'Error deleting address', ['type' => 'error']);
+        }
+    }
+
+    /**
+     * Set address data for deletion confirmation modal
+     */
+    public function setAddressForDeletion($addressId, $addressType = 'shipping')
+    {
+        $addresses = $addressType === 'shipping' ? $this->shippingAddresses : $this->billingAddresses;
+        $address = collect($addresses)->firstWhere('id', $addressId);
+        
+        if ($address) {
+            $this->dispatch('set-address-deletion-data', 
+                id: $address->id,
+                name: $address->first_name . ' ' . $address->last_name,
+                addressline1: $address->address_line_1,
+                addressline2: $address->address_line_2,
+                landmark: $address->landmark ?? '',
+                city: $address->city,
+                state: strtoupper($address->stateDetail->name ?? ''),
+                postalcode: $address->postal_code,
+                country: strtoupper($address->countryDetail->name ?? '')
+            );
+            
+            $this->dispatch('open-modal', 'confirm-checkout-address-delete');
+        }
     }
 
     public function render()
