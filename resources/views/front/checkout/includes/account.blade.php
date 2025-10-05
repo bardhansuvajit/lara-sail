@@ -1,7 +1,7 @@
 <div class="{{ FD['rounded'] }} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4">
 
     {{-- heading --}}
-    <div class="space-y-4 flex items-center justify-between gap-2 sm:gap-6 sm:mb-2">
+    <div class="space-y-4 flex items-center justify-between gap-2 sm:gap-6">
         <div class="w-full min-w-0 flex-1 md:order-2">
             <h2 class="flex space-x-2 items-center mb-1">
                 <div class="{{FD['iconClass']}}">

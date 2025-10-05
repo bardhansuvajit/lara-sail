@@ -19,15 +19,12 @@
                             <p class="text-lg md:text-sm font-medium text-slate-700 dark:text-white">
                                 {{-- When shipping cost is 0 --}}
                                 @if ($shipMethod->cost == 0)
-                                    @if ($cartSetting['min_order_value'] < $cart['total'])
-                                        {{-- @if ($cart['shipping_cost'] == 0) --}}
+                                    FREE
+                                    {{-- @if ($cartSetting['min_order_value'] < $cart['total'])
                                             FREE
-                                        {{-- @else
-                                            <span class="currency-symbol">{{COUNTRY['icon']}}</span>{{formatIndianMoney($cartSetting['shipping_charge'])}}
-                                        @endif --}}
                                     @else
                                         FREE
-                                    @endif
+                                    @endif --}}
                                 {{-- When shipping costs MORE THAN 0 --}}
                                 @else
                                     @if ($cartSetting['min_order_value'] < $cart['total'])
