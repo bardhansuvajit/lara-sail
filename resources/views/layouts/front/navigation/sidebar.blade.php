@@ -1,5 +1,6 @@
 {{-- mobile device only --}}
-<x-front.sidebar name="mob-sidebar" mobileWidth="sm" maxWidth="2xl" direction="left" focusable>
+{{-- <x-front.sidebar name="mob-sidebar" mobileWidth="sm" maxWidth="2xl" direction="left" focusable> --}}
+<x-front.sidebar name="mob-sidebar" width="sm" mobileWidth="xs" direction="left" focusable>
 	@slot('header')
 		<header class="flex items-center justify-between p-2">
 			<div class="flex-shrink-0 md:order-1">

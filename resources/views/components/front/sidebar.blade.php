@@ -1,38 +1,30 @@
 @props([
     'name',
     'show' => false,
-    'minWidth' => 'sm',
-    'maxWidth' => '2xl',
-    'mobileWidth' => 'full',
+    'width' => 'sm', // sm, md, lg, xl, 2xl
+    'mobileWidth' => 'full', // full, screen (full screen), or specific max-width
     'direction' => 'right',
     'header' => false
 ])
 
 @php
-// Use custom min-width values since Tailwind doesn't have min-w-sm, min-w-md, etc.
-$minWidthValue = [
-    'sm' => '20rem',    // 320px
-    'md' => '24rem',    // 384px  
-    'lg' => '28rem',    // 448px
-    'xl' => '32rem',    // 512px
-    '2xl' => '42rem',   // 672px
-][$minWidth];
-
-$maxWidth = [
-    'sm' => 'sm:max-w-sm',
-    'md' => 'sm:max-w-md',
-    'lg' => 'sm:max-w-lg',
-    'xl' => 'sm:max-w-xl',
-    '2xl' => 'sm:max-w-2xl',
-][$maxWidth];
+$desktopWidth = [
+    'sm' => 'sm:w-80',      // 320px
+    'md' => 'sm:w-96',      // 384px  
+    'lg' => 'sm:w-[448px]', // 448px
+    'xl' => 'sm:w-[512px]', // 512px
+    '2xl' => 'sm:w-[672px]',// 672px
+][$width];
 
 $mobileWidth = [
+    'full' => 'w-full',
+    'screen' => 'w-screen',
+    'xs' => 'w-full max-w-[20rem]',
     'sm' => 'w-full max-w-sm',
     'md' => 'w-full max-w-md',
     'lg' => 'w-full max-w-lg',
     'xl' => 'w-full max-w-xl',
     '2xl' => 'w-full max-w-2xl',
-    'full' => 'w-full',
 ][$mobileWidth];
 
 $direction = $direction === 'left' ? 'left-0' : 'right-0';
@@ -87,8 +79,7 @@ $direction = $direction === 'left' ? 'left-0' : 'right-0';
 
     <div
         x-show="show"
-        class="fixed top-0 z-20 {{ $direction }} h-full overflow-auto mb-6 bg-white dark:bg-gray-700 shadow-xl transform transition-all {{ $mobileWidth }} {{ $maxWidth }}"
-        style="min-width: {{ $minWidthValue }};"
+        class="fixed top-0 z-20 {{ $direction }} h-full overflow-auto mb-6 bg-white dark:bg-gray-700 shadow-xl transform transition-all {{ $mobileWidth }} {{ $desktopWidth }}"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="{{ $direction === 'left-0' ? '-translate-x-full' : 'translate-x-full' }}"
         x-transition:enter-end="translate-x-0"
@@ -100,13 +91,13 @@ $direction = $direction === 'left' ? 'left-0' : 'right-0';
             <header class="flex items-center justify-between p-2 md:p-4 border-b dark:border-gray-800/50">
                 <h2 class="text-lg font-semibold">{{ $header }}</h2>
 
-                <button title="Close" class="h-6 w-6 flex items-center justify-center font-medium {{ FD['rounded'] }} text-sm p-1 text-secondary-500 border-gray-200 hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-gray-100 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-600 dark:focus:ring-offset-gray-800" x-on:click="show = false" >
+                <button title="Close" class="h-6 w-6 flex items-center justify-center font-medium {{ FD['rounded'] }} text-sm p-1 text-secondary-500 border-gray-200 hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-gray-100 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-600 dark:focus:ring-offset-gray-800" x-on:click="show = false" >
                     <svg class="{{FD['iconClass']}} text-gray-700 dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>
                 </button>
             </header>
         @else
-            <div class="absolute top-4 right-4 shadow-lg">
-                <button title="Close" class="h-6 w-6 flex items-center justify-center font-medium {{ FD['rounded'] }} text-sm p-1 text-secondary-500 border-gray-200 hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-gray-100 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-600 dark:focus:ring-offset-gray-800" x-on:click="show = false" >
+            <div class="absolute top-4 right-4 shadow-lg z-50">
+                <button title="Close" class="h-6 w-6 flex items-center justify-center font-medium {{ FD['rounded'] }} text-sm p-1 text-secondary-500 border-gray-200 hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-gray-100 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-600 dark:focus:ring-offset-gray-800" x-on:click="show = false" >
                     <svg class="{{FD['iconClass']}} text-gray-700 dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>
                 </button>
             </div>

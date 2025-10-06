@@ -68,7 +68,8 @@
                         </div>
 
                         {{-- mobile device only --}}
-                        <x-front.sidebar name="mob-filter-sidebar" maxWidth="sm" direction="right" focusable>
+                        {{-- <x-front.sidebar name="mob-filter-sidebar" maxWidth="sm" direction="right" focusable> --}}
+                        <x-front.sidebar name="mob-filter-sidebar" width="md" mobileWidth="screen" direction="right" focusable>
                             {{-- <div class="w-60 "> --}}
                                 <div id="mobile-filter-target"></div>
                             {{-- </div> --}}
