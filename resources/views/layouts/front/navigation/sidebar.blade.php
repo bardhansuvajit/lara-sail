@@ -1,5 +1,5 @@
 {{-- mobile device only --}}
-<x-front.sidebar name="mob-sidebar" maxWidth="2xl" direction="left" focusable>
+<x-front.sidebar name="mob-sidebar" mobileWidth="sm" maxWidth="2xl" direction="left" focusable>
 	@slot('header')
 		<header class="flex items-center justify-between p-2">
 			<div class="flex-shrink-0 md:order-1">
@@ -8,18 +8,10 @@
 					<img class="hidden w-auto h-6 sm:h-5 dark:block" src="{{ Storage::url('public/default/logo/logo-full-dark.svg') }}" alt="">
 				</a>
 			</div>
-
-			{{-- <button title="Close" class="h-6 w-6 flex items-center justify-center font-medium {{ FD['rounded'] }} text-sm p-1
-					text-secondary-500 border-gray-200
-					hover:bg-gray-200 
-					focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-gray-100 
-					dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-600 dark:focus:ring-offset-gray-800" x-on:click="show = false" >
-				<svg class="{{FD['iconClass']}} text-gray-700 dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>
-			</button> --}}
 		</header>	
 	@endslot
 
-	<div class="p-2 w-60 ">
+	<div class="p-2 w-full">
 		<ul class="items-center space-y-2 px-2">
 			@foreach ($activeCollections as $collection)
 				<li class="">

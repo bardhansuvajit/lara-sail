@@ -1,21 +1,19 @@
 @props([
     'name',
     'show' => false,
-    'minWidth' => 'sm',
+    'minWidth' => 'lg',
     'maxWidth' => '2xl',
-    'mobileWidth' => 'full',
     'direction' => 'right',
     'header' => false
 ])
 
 @php
-// Use custom min-width values since Tailwind doesn't have min-w-sm, min-w-md, etc.
-$minWidthValue = [
-    'sm' => '20rem',    // 320px
-    'md' => '24rem',    // 384px  
-    'lg' => '28rem',    // 448px
-    'xl' => '32rem',    // 512px
-    '2xl' => '42rem',   // 672px
+$minWidth = [
+    'sm' => 'sm:min-w-sm',
+    'md' => 'sm:min-w-md',
+    'lg' => 'sm:min-w-lg',
+    'xl' => 'sm:min-w-xl',
+    '2xl' => 'sm:min-w-2xl',
 ][$minWidth];
 
 $maxWidth = [
@@ -26,15 +24,6 @@ $maxWidth = [
     '2xl' => 'sm:max-w-2xl',
 ][$maxWidth];
 
-$mobileWidth = [
-    'sm' => 'w-full max-w-sm',
-    'md' => 'w-full max-w-md',
-    'lg' => 'w-full max-w-lg',
-    'xl' => 'w-full max-w-xl',
-    '2xl' => 'w-full max-w-2xl',
-    'full' => 'w-full',
-][$mobileWidth];
-
 $direction = $direction === 'left' ? 'left-0' : 'right-0';
 @endphp
 
@@ -42,8 +31,10 @@ $direction = $direction === 'left' ? 'left-0' : 'right-0';
     x-data="{
         show: @js($show),
         focusables() {
+            // All focusable element types...
             let selector = 'a, button, input:not([type=\'hidden\']), textarea, select, details, [tabindex]:not([tabindex=\'-1\'])'
             return [...$el.querySelectorAll(selector)]
+                // All non-disabled elements...
                 .filter(el => ! el.hasAttribute('disabled'))
         },
         firstFocusable() { return this.focusables()[0] },
@@ -87,8 +78,7 @@ $direction = $direction === 'left' ? 'left-0' : 'right-0';
 
     <div
         x-show="show"
-        class="fixed top-0 z-20 {{ $direction }} h-full overflow-auto mb-6 bg-white dark:bg-gray-700 shadow-xl transform transition-all {{ $mobileWidth }} {{ $maxWidth }}"
-        style="min-width: {{ $minWidthValue }};"
+        class="fixed top-0 z-20 {{ $direction }} h-full overflow-auto mb-6 bg-white dark:bg-gray-700 shadow-xl transform transition-all {{ $minWidth }} {{ $maxWidth }}"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="{{ $direction === 'left-0' ? '-translate-x-full' : 'translate-x-full' }}"
         x-transition:enter-end="translate-x-0"
@@ -104,6 +94,23 @@ $direction = $direction === 'left' ? 'left-0' : 'right-0';
                     <svg class="{{FD['iconClass']}} text-gray-700 dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>
                 </button>
             </header>
+        {{-- @else
+            <header class="flex items-center justify-between p-2 border-b dark:border-gray-800">
+                <div class="flex-shrink-0 md:order-1">
+                    <a href="{{ url('/') }}" title="" class="">
+                        <img class="w-auto sm:flex h-6 sm:h-5 dark:hidden" src="{{ Storage::url('public/default/logo/logo-full.svg') }}" alt="">
+                        <img class="hidden w-auto h-6 sm:h-5 dark:block" src="{{ Storage::url('public/default/logo/logo-full-dark.svg') }}" alt="">
+                    </a>
+                </div>
+
+                <button title="Close" class="h-6 w-6 flex items-center justify-center font-medium {{ FD['rounded'] }} text-sm p-1
+                       text-secondary-500 border-gray-200
+                       hover:bg-gray-200 
+                       focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-gray-100 
+                       dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-600 dark:focus:ring-offset-gray-800" x-on:click="show = false" >
+                    <svg class="{{FD['iconClass']}} text-gray-700 dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>
+                </button>
+            </header> --}}
         @else
             <div class="absolute top-4 right-4 shadow-lg">
                 <button title="Close" class="h-6 w-6 flex items-center justify-center font-medium {{ FD['rounded'] }} text-sm p-1 text-secondary-500 border-gray-200 hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-gray-100 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-600 dark:focus:ring-offset-gray-800" x-on:click="show = false" >

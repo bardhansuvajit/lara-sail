@@ -1059,7 +1059,7 @@ document.querySelectorAll('.description-wrapper').forEach(p => {
 
             // move button to the very left when expanded
             p.classList.add('mb-4');
-            btn.classList.remove('right-0', 'pl-8');
+            btn.classList.remove('right-0', 'pl-8', 'bottom-0');
             btn.classList.add('left-0', '-bottom-5');
 
             btn.textContent = 'Show less';
@@ -1089,7 +1089,7 @@ document.querySelectorAll('.description-wrapper').forEach(p => {
 
             // restore original right-aligned classes when collapsed
             p.classList.remove('mb-4');
-            btn.classList.add('right-0', 'pl-8');
+            btn.classList.add('right-0', 'pl-8', 'bottom-0');
             btn.classList.remove('left-0', '-bottom-5');
 
             btn.textContent = 'Show more';

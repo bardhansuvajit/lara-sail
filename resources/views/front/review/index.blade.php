@@ -110,6 +110,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4">
                         <div class="md:col-span-1 bg-primary-50 dark:bg-gray-900/50 p-4 {{ FD['rounded'] }} h-fit">
                             <x-front.product-review-highlight 
+                                :product_slug="$product->slug"
                                 :average_rating="$product->average_rating"
                                 :review_count="$product->review_count"
                                 :all_reviews="$allReviews"

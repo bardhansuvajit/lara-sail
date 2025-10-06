@@ -75,7 +75,6 @@
         @include('livewire.includes.order-summary')
     </div>
 
-
     {{-- MODALS --}}
     <!-- COUPONS -->
     @include('layouts.front.includes.coupons-sidebar')

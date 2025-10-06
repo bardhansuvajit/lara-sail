@@ -68,11 +68,10 @@
                         </div>
 
                         {{-- mobile device only --}}
-                        <x-front.sidebar name="mob-filter-sidebar" maxWidth="2xl" direction="right" focusable>
-                            <div class="w-60 ">
-                                {{-- Filters --}}
+                        <x-front.sidebar name="mob-filter-sidebar" maxWidth="sm" direction="right" focusable>
+                            {{-- <div class="w-60 "> --}}
                                 <div id="mobile-filter-target"></div>
-                            </div>
+                            {{-- </div> --}}
                         </x-front.sidebar>
                     </div>
                 @endif
