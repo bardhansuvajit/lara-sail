@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
 
-            $table->decimal('discount_amount', 10, 2);
+            $table->decimal('coupon_discount_amount', 10, 2);
 
             // Metadata
             $table->json('coupon_snapshot')->nullable(); // Store coupon details at time of use

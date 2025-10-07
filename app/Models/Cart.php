@@ -11,7 +11,7 @@ class Cart extends Model
 
     protected $fillable = [
         'device_id','user_id','country','currency_code','total_items','mrp','sub_total','total',
-        'coupon_code_id','coupon_code','discount_amount','discount_type','shipping_method_id',
+        'coupon_code_id','coupon_code','coupon_discount_amount','coupon_meta','shipping_method_id',
         'shipping_cost','tax_amount','tax_type','tax_details',
         'payment_method_id','payment_method_title','payment_method_charge','payment_method_discount','last_activity_at',
         'abandoned_at','is_abandoned','reminder_count',
@@ -69,6 +69,6 @@ class Cart extends Model
         return $this->sub_total 
             + $this->shipping_cost 
             + $this->tax_amount 
-            - $this->discount_amount;
+            - $this->coupon_discount_amount;
     }
 }

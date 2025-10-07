@@ -357,8 +357,8 @@
                                             $dispatch('data-sub_total', '{{ formatIndianMoney($item->sub_total) }}');
                                             $dispatch('data-total', '{{ formatIndianMoney($item->total) }}');
                                             $dispatch('data-coupon_code', '{{ $item->coupon_code }}');
-                                            $dispatch('data-discount_amount', '{{ $item->discount_amount }}');
-                                            $dispatch('data-discount_type', '{{ $item->discount_type }}');
+                                            $dispatch('data-coupon_discount_amount', '{{ $item->coupon_discount_amount }}');
+                                            $dispatch('data-coupon_meta', '{{ $item->coupon_meta }}');
                                             $dispatch('data-shipping_method', '{{ $item->shipping_method_name }}');
                                             $dispatch('data-shipping_cost', '{{ $item->shipping_cost }}');
                                             $dispatch('data-shipping_address', `{!! nl2br(e($item->shipping_address)) !!}`);
@@ -441,7 +441,7 @@
             x-data="{
                 flag: '', country: '', order_number: '', status: '',
                 email: '', phone_no: '', total_items: '', currency_symbol: '', mrp: '', sub_total: '', total: '',
-                coupon_code: '', discount_amount: '', discount_type: '',
+                coupon_code: '', coupon_discount_amount: '', coupon_meta: '',
                 shipping_method: '', shipping_cost: '', shipping_address: '',
                 billing_address: '', same_as_shipping: '',
                 tax_amount: '', tax_type: '', tax_details: '',
@@ -462,8 +462,8 @@
             @data-sub_total.window="sub_total = $event.detail"
             @data-total.window="total = $event.detail"
             @data-coupon_code.window="coupon_code = $event.detail"
-            @data-discount_amount.window="discount_amount = $event.detail"
-            @data-discount_type.window="discount_type = $event.detail"
+            @data-coupon_discount_amount.window="coupon_discount_amount = $event.detail"
+            @data-coupon_meta.window="coupon_meta = $event.detail"
             @data-shipping_method.window="shipping_method = $event.detail"
             @data-shipping_cost.window="shipping_cost = $event.detail"
             @data-shipping_address.window="shipping_address = $event.detail"
@@ -498,8 +498,8 @@
                 'Subtotal': sub_total,
                 'Total': total,
                 'Coupon Code': coupon_code,
-                'Discount': discount_amount,
-                'Discount Type': discount_type,
+                'Discount': coupon_discount_amount,
+                'Coupon Meta': coupon_meta,
                 'Shipping Method': shipping_method,
                 'Shipping Cost': shipping_cost,
                 'Shipping Address': shipping_address,

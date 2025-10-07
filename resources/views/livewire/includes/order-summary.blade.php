@@ -48,18 +48,58 @@
             @endif
             {{-- Payment method Charge/ Discount --}}
 
-            <dl class="flex items-center justify-between gap-4">
-                <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Coupon Discount</dt>
-                <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white">
-                    <a href="javascript: void(0)" 
-                        class="{{FD['activeClass']}} hover:text-green-600 dark:hover:text-green-700" 
-                        x-data="" 
-                        x-on:click.prevent="$dispatch('open-sidebar', 'coupons');"
-                    >
-                        Apply Coupon
-                    </a>
-                </dd>
-            </dl>
+            @if (!is_null($cart['coupon_code_id']) && $cart['coupon_code_id'] > 0)
+                <dl class="flex items-center justify-between gap-4">
+                    <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Coupon Discount</dt>
+                    <dd class="{{FD['text']}} font-medium text-green-600" id="payment-method-summary-highlight">
+                        -<span id="payment-method-summary-icon"></span><span class="currency-symbol">{{COUNTRY['icon']}}</span><span id="payment-method-summary-amount">{{formatIndianMoney($cart['coupon_discount_amount'])}}</span>
+                    </dd>
+                </dl>
+                <div class="flex items-center justify-end gap-4">
+                    <div class="flex items-center gap-3">
+                        {{-- Coupon pill --}}
+                        <div class="inline-flex items-center gap-1 rounded-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 ps-2 pe-1 py-1 shadow-sm">
+                            <div class="flex items-center gap-2">
+                                <div class="{{ FD['iconClass'] }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M160-280v80h640v-80H160Zm0-440h88q-5-9-6.5-19t-1.5-21q0-50 35-85t85-35q30 0 55.5 15.5T460-826l20 26 20-26q18-24 44-39t56-15q50 0 85 35t35 85q0 11-1.5 21t-6.5 19h88q33 0 56.5 23.5T880-640v440q0 33-23.5 56.5T800-120H160q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720Zm0 320h640v-240H596l84 114-64 46-136-184-136 184-64-46 82-114H160v240Zm200-320q17 0 28.5-11.5T400-760q0-17-11.5-28.5T360-800q-17 0-28.5 11.5T320-760q0 17 11.5 28.5T360-720Zm240 0q17 0 28.5-11.5T640-760q0-17-11.5-28.5T600-800q-17 0-28.5 11.5T560-760q0 17 11.5 28.5T600-720Z"/></svg>
+                                </div>
+
+                                <span class="{{ FD['text-0'] }} font-medium text-gray-900 dark:text-white tracking-wide select-all">
+                                    {{ strtoupper($cart['coupon_code']) }}
+                                </span>
+                            </div>
+
+                            {{-- small vertical separator --}}
+                            {{-- <span class="hidden sm:inline-block w-px h-5 bg-gray-200 dark:bg-gray-700 mx-2"></span> --}}
+
+                            <button
+                                type="button"
+                                wire:click="removeCouponCode()"
+                                class="ml-1 inline-flex items-center justify-center rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-500 hover:bg-red-50 dark:hover:bg-red-700 transition"
+                                title="Remove coupon"
+                                aria-label="Remove coupon {{ $cart['coupon_code'] }}"
+                                >
+                                <svg class="w-4 h-4 text-red-600 dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <dl class="flex items-center justify-between gap-4">
+                    <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Coupon Discount</dt>
+                    <dd class="{{FD['text']}} font-medium text-gray-900 dark:text-white">
+                        <a href="javascript: void(0)" 
+                            class="{{FD['activeClass']}} hover:text-green-600 dark:hover:text-green-700" 
+                            x-data="" 
+                            x-on:click.prevent="$dispatch('open-sidebar', 'coupons');"
+                        >
+                            Apply Coupon
+                        </a>
+                    </dd>
+                </dl>
+            @endif
         </div>
 
         <div class="border-t border-gray-200 dark:border-gray-700 mt-4 pb-3 sm:pb-0"></div>

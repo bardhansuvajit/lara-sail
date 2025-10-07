@@ -125,8 +125,8 @@ class OrderController extends Controller
 
                 'coupon_code_id' => $cart->coupon_code_id,
                 'coupon_code' => $cart->coupon_code,
-                'discount_amount' => $cart->discount_amount,
-                'discount_type' => $cart->discount_type,
+                'coupon_discount_amount' => $cart->coupon_discount_amount,
+                'coupon_meta' => $cart->coupon_meta,
 
                 'shipping_method_id' => $cart->shipping_method_id,
                 'shipping_method_name' => $cart->shippingMethod->method,

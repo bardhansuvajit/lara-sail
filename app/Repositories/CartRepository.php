@@ -278,6 +278,9 @@ class CartRepository implements CartInterface
             // Calculate payment method adjustments
             $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $shippingCost);
 
+            // Check coupon expiry & Calculate coupon discount
+            $finalAmount = $this->checkCouponApplyDiscount($cart);
+
             // Update cart totals
             $cart->update([
                 'total_items' => $itemsQuantity,
@@ -410,6 +413,9 @@ class CartRepository implements CartInterface
             // Calculate payment method adjustments
             $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $shippingCost);
 
+            // Check coupon expiry & Calculate coupon discount
+            $finalAmount = $this->checkCouponApplyDiscount($cart);
+
             // $shippingMethodData = $shippingMethodData['data'];
             // $selectedShippingMethodCost = (float) $shippingMethodData->cost;
             // $existingCartShippingCost = (float) $shippingCost;
@@ -502,39 +508,6 @@ class CartRepository implements CartInterface
         }
 
         return (float) $finalShippingCost;
-
-        // return 0.0;
-
-
-        /*
-        $cartSettingResp = $this->cartSettingRepository->list('', [], 'all', 'id', 'asc');
-        $cartSettings = $cartSettingResp['data'] ?? [];
-
-        foreach ($cartSettings as $cartSetting) {
-            if (
-                $cartSetting->country === $cart->country 
-                && $itemsTotal < $cartSetting->free_shipping_threshold
-            ) {
-
-                // current shipping method id
-                $cartShippingMethodId = $cart->shipping_method_id;
-                $shippingMethodData = $this->shippingMethodRepository->getById($cartShippingMethodId);
-
-                if ($shippingMethodData['code'] == 200 || $shippingMethodData['data']->status == 1) {
-                    $shippingMethodData = $shippingMethodData['data'];
-                    $shippingMethodCost = (float) $shippingMethodData->cost;
-
-                    $cartShippingCost = (float) $cartSetting->shipping_charge;
-
-                    $finalShippingCost = $shippingMethodCost + $cartShippingCost;
-                }
-
-                return (float) $finalShippingCost;
-            }
-        }
-
-        return 0.0;
-        */
     }
 
     protected function calculatePaymentMethodAdjustments(float $itemsTotal, float $shippingCost): array
@@ -824,7 +797,7 @@ class CartRepository implements CartInterface
 
             $total = $cart->total;
 
-            $discountAmount = $discountData['discount_amount'] ?? 0;
+            $discountAmount = $discountData['coupon_discount_amount'] ?? 0;
 
             // Ensure discount doesn't exceed subtotal
             // $discountAmount = min($discountAmount, $subTotal);
@@ -836,8 +809,8 @@ class CartRepository implements CartInterface
             $updateData = [
                 'coupon_code_id' => $discountData['coupon_code_id'] ?? null,
                 'coupon_code' => $discountData['coupon_code'] ?? null,
-                'discount_amount' => $discountAmount,
-                'applied_coupon_meta' => $discountData['applied_coupon_meta'] ?? null,
+                'coupon_discount_amount' => $discountAmount,
+                'coupon_meta' => $discountData['coupon_meta'] ?? null,
                 // 'sub_total' => $subTotal,
                 'total' => max(0, $newTotal), // Ensure total doesn't go below zero
                 'updated_at' => now(),
@@ -883,5 +856,54 @@ class CartRepository implements CartInterface
         }
 
         return null;
+    }
+
+    public function removeCouponById(int $cartId)
+    {
+        try {
+            $data = $this->getById($cartId);
+
+            if ($data['code'] == 200) {
+                // if (isset($array['type'])) {
+                //     if ($array['type'] == "asc") {
+                //         $data['data']->quantity += 1;
+                //     } else {
+                //         $data['data']->quantity -= 1;
+                //     }
+                // }
+
+                // if (isset($array['user_id']))       $data['data']->user_id = $array['user_id'];
+                // $data['data']->save();
+                $cart = $data['data'];
+                $cart->total += $cart->coupon_discount_amount;
+                $cart->coupon_code_id = null;
+                $cart->coupon_code = null;
+                $cart->coupon_discount_amount = 0;
+                $cart->coupon_meta = null;
+                $cart->save();
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Changes have been saved',
+                    'data' => $data,
+                ];
+            } else {
+                return $data;
+            }
+
+        } catch (\Exception $e) {
+            \Log::error('Cart Coupon Remove Error: ' . $e->getMessage(), [
+                'cart_id' => $cartId,
+                'exception' => $e
+            ]);
+
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while removing coupon discount from cart.',
+                'error' => $e->getMessage(),
+            ];
+        }
     }
 }

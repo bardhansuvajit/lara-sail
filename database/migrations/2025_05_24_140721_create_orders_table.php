@@ -38,8 +38,8 @@ return new class extends Migration
             // Discount information
             $table->unsignedBigInteger('coupon_code_id')->nullable();
             $table->string('coupon_code')->nullable();
-            $table->decimal('discount_amount', 12, 2)->default(0);
-            $table->string('discount_type', 30)->nullable();
+            $table->decimal('coupon_discount_amount', 12, 2)->default(0);
+            $table->json('coupon_meta')->nullable();
 
             // Shipping information
             $table->unsignedBigInteger('shipping_method_id')->nullable();

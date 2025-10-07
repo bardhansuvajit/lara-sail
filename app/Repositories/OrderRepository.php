@@ -133,8 +133,8 @@ class OrderRepository implements OrderInterface
 
             $data->coupon_code_id = $array['coupon_code_id'];
             $data->coupon_code = $array['coupon_code'];
-            $data->discount_amount = $array['discount_amount'];
-            $data->discount_type = $array['discount_type'];
+            $data->coupon_discount_amount = $array['coupon_discount_amount'];
+            $data->coupon_meta = $array['coupon_meta'];
 
             $data->shipping_method_id = $array['shipping_method_id'];
             $data->shipping_method_name = $array['shipping_method_name'];

@@ -23,7 +23,7 @@ class Order extends Model
         'total_items', 'mrp', 'sub_total', 'total',
 
         // Discount information
-        'coupon_code_id', 'coupon_code', 'discount_amount', 'discount_type',
+        'coupon_code_id', 'coupon_code', 'coupon_discount_amount', 'coupon_meta',
 
         // Shipping information
         'shipping_method_id', 'shipping_method_name', 'shipping_cost', 'shipping_address',
@@ -53,7 +53,7 @@ class Order extends Model
         'mrp' => 'decimal:2',
         'sub_total' => 'decimal:2',
         'total' => 'decimal:2',
-        'discount_amount' => 'decimal:2',
+        'coupon_discount_amount' => 'decimal:2',
         'shipping_cost' => 'decimal:2',
         'same_as_shipping' => 'boolean',
         'tax_amount' => 'decimal:2',

@@ -9,6 +9,7 @@ use App\Interfaces\CartItemInterface;
 use App\Interfaces\CartSettingInterface;
 use App\Interfaces\ShippingMethodInterface;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 
 class Cart extends Component
 {
@@ -37,6 +38,7 @@ class Cart extends Component
         $this->getCartData();
     }
 
+    #[On('updateCartDataAttr')]
     public function getCartData()
     {
         $this->dispatch('showFullPageLoader');
@@ -71,19 +73,11 @@ class Cart extends Component
         if (!empty($cart['data'])) {
             $cartUpdateResp = $cartRepository->updateCartTotals($cart['data']);
         }
-        // dd($cartUpdateResp);
-        // dd($cart['data']);
-
-        // $shippingMethodRepository = app(ShippingMethodInterface::class);
-        // dd($shippingMethodRepository->exists([
-        //     'country_code' => $country
-        // ]));
 
         // Get Shipping Methods
         $shippingMethodRepository = app(ShippingMethodInterface::class);
         $shippingMethods = $shippingMethodRepository->list('', ['country_code' => $country], 'all', 'position', 'asc')['data'];
 
-        // $this->cart = collect($cart['data']->items);
         $this->cart = collect($cart['data'] ?? []);
         $this->savedItems = collect($cart['data']->savedItems ?? []);
         $this->shippingMethods = collect($shippingMethods ?? []);
@@ -269,6 +263,57 @@ class Cart extends Component
         );
         $this->getCartData();
         // $this->emit('updateCartInfo');
+        $this->dispatch('hideFullPageLoader');
+    }
+
+    public function removeCouponCode()
+    {
+        $this->dispatch('showFullPageLoader');
+
+        try {
+            $cartRepository = app(CartInterface::class);
+
+            // fetch current cart (same logic as getCartData)
+            if (auth()->guard('web')->check()) {
+                $cartResp = $cartRepository->exists([
+                    'user_id' => auth()->guard('web')->user()->id
+                ]);
+            } else {
+                $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
+                $cartResp = $cartRepository->exists([
+                    'device_id' => $deviceId,
+                ]);
+            }
+
+            $cart = $cartResp['data'] ?? null;
+
+            if (empty($cart)) {
+                $this->dispatch('show-notification', 'Cart not found', ['type' => 'error']);
+                $this->dispatch('hideFullPageLoader');
+                return;
+            }
+
+            $resp = $cartRepository->removeCouponById($cart->id);
+
+            // Normalize success handling: many repo methods return ['code' => 200] or the updated cart
+            if (is_array($resp) && isset($resp['code'])) {
+                if ($resp['code'] == 200) {
+                    $this->dispatch('show-notification', 'Coupon removed', ['type' => 'success']);
+                } else {
+                    $this->dispatch('show-notification', $resp['message'] ?? 'Failed to remove coupon', ['type' => 'error']);
+                }
+            } else {
+                // Assume success if no explicit error structure returned
+                $this->dispatch('show-notification', 'Coupon removed', ['type' => 'success']);
+            }
+
+            // refresh cart data & totals
+            $this->getCartData();
+        } catch (\Throwable $th) {
+            // log if you want: logger()->error($th);
+            $this->dispatch('show-notification', 'Unable to remove coupon', ['type' => 'error']);
+        }
+
         $this->dispatch('hideFullPageLoader');
     }
 

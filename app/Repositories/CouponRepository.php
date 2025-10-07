@@ -255,7 +255,7 @@ class CouponRepository implements CouponInterface
                 'message' => 'Coupon applied successfully!',
                 'data' => [
                     'coupon' => $coupon,
-                    'discount_amount' => $discountAmount,
+                    'coupon_discount_amount' => $discountAmount,
                     'new_total' => $cartTotal - $discountAmount,
                 ],
             ];
@@ -332,8 +332,8 @@ class CouponRepository implements CouponInterface
             $cartData = [
                 'coupon_code_id' => $coupon->id,
                 'coupon_code' => $coupon->code,
-                'discount_amount' => $discountAmount,
-                'applied_coupon_meta' => json_encode([
+                'coupon_discount_amount' => $discountAmount,
+                'coupon_meta' => json_encode([
                     'coupon_id' => $coupon->id,
                     'code' => $coupon->code,
                     'name' => $coupon->name,
@@ -378,7 +378,7 @@ class CouponRepository implements CouponInterface
                 'coupon_id' => $couponId,
                 'user_id' => $userId,
                 'device_id' => $deviceId,
-                'discount_amount' => $discountAmount,
+                'coupon_discount_amount' => $discountAmount,
                 'used_at' => now(),
             ]);
         } catch (\Exception $e) {

@@ -106,6 +106,7 @@ class CouponList extends Component
 
     public function applyCoupon(string $code = null): void
     {
+        $this->dispatch('showFullPageLoader');
         $couponCode = $code ?: $this->voucherInput;
 
         if (empty($couponCode)) {
@@ -155,12 +156,17 @@ class CouponList extends Component
                 );
             }
 
+            $this->dispatch('updateCartDataAttr');
+            $this->dispatch('hideFullPageLoader');
+
         } catch (\Exception $e) {
             $this->dispatch('show-notification', 
                 'Failed to apply coupon. Please try again.', 
                 ['type' => 'error']
             );
             logger()->error('Coupon application failed: ' . $e->getMessage());
+
+            $this->dispatch('hideFullPageLoader');
         }
     }
 
