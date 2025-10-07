@@ -352,8 +352,6 @@ class CouponRepository implements CouponInterface
                 $result = $this->cartRepository->updateCartDiscount(null, $deviceId, $cartData);
             }
 
-            dd($result);
-
             return $result['code'] === 200 && $result['status'] === 'success';
 
         } catch (\Exception $e) {

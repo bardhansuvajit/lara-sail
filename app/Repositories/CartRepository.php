@@ -832,8 +832,6 @@ class CartRepository implements CartInterface
             // Calculate new total
             $newTotal = $total - $discountAmount;
 
-            dd($newTotal);
-
             // Update cart
             $updateData = [
                 'coupon_code_id' => $discountData['coupon_code_id'] ?? null,
