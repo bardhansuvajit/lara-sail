@@ -4,9 +4,11 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Illuminate\Support\Collection;
-use App\Interfaces\CouponInterface;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+use App\Interfaces\CouponInterface;
+use App\Interfaces\CartInterface;
 
 class CouponList extends Component
 {
@@ -16,14 +18,13 @@ class CouponList extends Component
     public string $errorMessage = '';
     public string $copiedCode = '';
     public bool $showCopiedFeedback = false;
-    
-    private string $country;
-    private CouponInterface $couponRepository;
+    public string $voucherInput = '';
 
-    public function mount(CouponInterface $couponRepository): void
+    private string $country;
+
+    public function mount(): void
     {
         $this->country = COUNTRY['country'] ?? 'IN';
-        $this->couponRepository = $couponRepository;
         $this->loadCoupons();
     }
 
@@ -32,8 +33,9 @@ class CouponList extends Component
         try {
             $this->isLoading = true;
             $this->hasError = false;
-            
-            $coupons = $this->couponRepository->listCountryBasedFrontendCoupons($this->country);
+
+            $couponRepository = app(CouponInterface::class);
+            $coupons = $couponRepository->listCountryBasedFrontendCoupons($this->country);
             $this->coupons = $coupons['data'] ?? collect();
         } catch (\Exception $e) {
             $this->hasError = true;
@@ -54,7 +56,7 @@ class CouponList extends Component
     public function activeCoupons(): Collection
     {
         $now = Carbon::now();
-        
+
         return $this->coupons
             ->where('status', 1)
             ->where('show_in_frontend', true)
@@ -78,8 +80,8 @@ class CouponList extends Component
     public function copyCouponCode(string $code): void
     {
         $this->copiedCode = $code;
-        $this->showCopiedFeedback = true;
-        
+        $this->voucherInput = $code;
+
         $this->js("
             navigator.clipboard.writeText('{$code}').then(() => {
                 // Success - state already updated
@@ -94,14 +96,72 @@ class CouponList extends Component
                 document.body.removeChild(textArea);
             });
         ");
-        
-        // Reset after 2 seconds using JavaScript
+
         $this->js("
             setTimeout(() => {
                 \$wire.set('copiedCode', '');
-                \$wire.set('showCopiedFeedback', false);
             }, 2000);
         ");
+    }
+
+    public function applyCoupon(string $code = null): void
+    {
+        $couponCode = $code ?: $this->voucherInput;
+
+        if (empty($couponCode)) {
+            $this->dispatch('show-notification', 
+                'Please enter a coupon code', ['type' => 'warning']
+            );
+            return;
+        }
+
+        try {
+            $couponRepository = app(CouponInterface::class);
+            $cartRepository = app(CartInterface::class);
+
+            // Get user/device info
+            // $userId = null;
+            // $deviceId = null;
+
+            // if (auth()->guard('web')->check()) {
+            //     $userId = auth()->guard('web')->user()->id;
+            //     $cart = $cartRepository->exists([
+            //         'user_id' => $userId
+            //     ]);
+            // } else {
+            //     $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
+            //     $cart = $cartRepository->exists([
+            //         'device_id' => $deviceId
+            //     ]);
+            // }
+
+            // dd($cart['data']->items);
+            $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
+            $userId = auth()->guard('web')->check() ? auth()->guard('web')->user()->id : null;
+
+            $couponApplyResp = $couponRepository->checkAndApplyToCart($couponCode, $userId, $deviceId);
+
+            // dd($couponApplyResp);
+
+            if ($couponApplyResp['code'] == 200) {
+                $this->dispatch('show-notification', 
+                    'Coupon applied successfully!', ['type' => 'success']
+                );
+                $this->voucherInput = '';
+            } else {
+                $this->dispatch('show-notification', 
+                    $couponApplyResp['message'] ?? 'Failed to apply coupon !', 
+                    ['type' => 'warning']
+                );
+            }
+
+        } catch (\Exception $e) {
+            $this->dispatch('show-notification', 
+                'Failed to apply coupon. Please try again.', 
+                ['type' => 'error']
+            );
+            logger()->error('Coupon application failed: ' . $e->getMessage());
+        }
     }
 
     public function render()

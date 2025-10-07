@@ -801,4 +801,89 @@ class CartRepository implements CartInterface
             ];
         }
     }
+
+    public function updateCartDiscount(?int $userId, ?string $deviceId, array $discountData)
+    {
+        try {
+            // Find the cart
+            $cart = $this->findCart($userId, $deviceId);
+
+            if (!$cart) {
+                return [
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'Cart not found',
+                ];
+            }
+
+            // Recalculate cart totals with discount
+            // $cartItems = $cart->items ?? collect();
+            // $subTotal = $cartItems->sum(function ($item) {
+            //     return ($item->price ?? 0) * ($item->quantity ?? 0);
+            // });
+
+            $total = $cart->total;
+
+            $discountAmount = $discountData['discount_amount'] ?? 0;
+
+            // Ensure discount doesn't exceed subtotal
+            // $discountAmount = min($discountAmount, $subTotal);
+
+            // Calculate new total
+            $newTotal = $total - $discountAmount;
+
+            dd($newTotal);
+
+            // Update cart
+            $updateData = [
+                'coupon_code_id' => $discountData['coupon_code_id'] ?? null,
+                'coupon_code' => $discountData['coupon_code'] ?? null,
+                'discount_amount' => $discountAmount,
+                'applied_coupon_meta' => $discountData['applied_coupon_meta'] ?? null,
+                // 'sub_total' => $subTotal,
+                'total' => max(0, $newTotal), // Ensure total doesn't go below zero
+                'updated_at' => now(),
+            ];
+
+            $cart->update($updateData);
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Cart discount updated successfully',
+                'data' => $cart->fresh(),
+            ];
+
+        } catch (\Exception $e) {
+            \Log::error('Cart Discount Update Error: ' . $e->getMessage(), [
+                'user_id' => $userId,
+                'device_id' => $deviceId,
+                'discount_data' => $discountData,
+                'exception' => $e
+            ]);
+
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating cart discount.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Find cart by user ID or device ID
+     */
+    private function findCart(?int $userId, ?string $deviceId)
+    {
+        $query = Cart::where('status', 1);
+
+        if ($userId) {
+            return $query->where('user_id', $userId)->first();
+        } elseif ($deviceId) {
+            return $query->where('device_id', $deviceId)->first();
+        }
+
+        return null;
+    }
 }

@@ -49,6 +49,7 @@ use App\Interfaces\ProductBadgeCombinationInterface;
 use App\Interfaces\ProductHighlightInterface;
 use App\Interfaces\ProductFaqInterface;
 use App\Interfaces\CouponInterface;
+use App\Interfaces\CouponUsageInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -95,6 +96,7 @@ use App\Repositories\ProductBadgeCombinationRepository;
 use App\Repositories\ProductHighlightRepository;
 use App\Repositories\ProductFaqRepository;
 use App\Repositories\CouponRepository;
+use App\Repositories\CouponUsageRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -149,6 +151,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ProductHighlightInterface::class, ProductHighlightRepository::class);
         $this->app->bind(ProductFaqInterface::class, ProductFaqRepository::class);
         $this->app->bind(CouponInterface::class, CouponRepository::class);
+        $this->app->bind(CouponUsageInterface::class, CouponUsageRepository::class);
     }
 
     /**

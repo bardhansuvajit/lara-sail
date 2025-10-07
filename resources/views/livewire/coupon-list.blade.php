@@ -39,7 +39,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-4">
+                    <div class="grid grid-cols-1 gap-4 mb-4">
                         @foreach($this->activeCoupons as $coupon)
                             @php
                                 $isFuture = Carbon\Carbon::parse($coupon->starts_at)->isPast() === false ? false : true; // keep simple
@@ -164,7 +164,6 @@
                                                 class="flex items-center gap-2 p-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 {{ FD['rounded'] }} {{ FD['text'] }} font-semibold transition-all duration-200 min-w-[100px] justify-center"
                                                 aria-pressed="{{ $copiedCode === $coupon->code ? 'true' : 'false' }}"
                                                 title="{{ $copiedCode === $coupon->code ? 'Copied!' : 'Copy coupon code' }}"
-                                                {{-- :class="{{ $copiedCode === $coupon->code }} ? 'bg-green-600 text-green-900 focus:bg-green-300 border-green-200' : ''" --}}
                                                 >
                                                 @if($copiedCode === $coupon->code)
                                                     <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -176,7 +175,7 @@
                                             </button>
 
                                             <button
-                                                onclick="applyCoupon('{{ $coupon->code }}')"
+                                                wire:click="applyCoupon('{{ $coupon->code }}')"
                                                 class="flex items-center gap-2 p-2 bg-green-600 hover:bg-green-700 text-white {{ FD['rounded'] }} {{ FD['text'] }} font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
                                                 title="Apply coupon to cart"
                                                 >
@@ -246,13 +245,30 @@
 
                     </div>
 
-                    <div class="space-y-4 {{ FD['rounded'] }} border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-4 mb-2 md:mb-4">
-                        <div class="space-y-4">
+                    <div class="sticky bottom-0 -m-4">
+                        <div class="space-y-4 {{ FD['rounded'] }} border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-4">
                             <div>
-                                <label for="voucher" class="mb-2 block {{FD['text']}} font-medium text-gray-900 dark:text-white"> Do you have a Promo code or voucher? </label>
-                                <input type="text" id="voucher" class="block w-full {{ FD['rounded'] }} border border-gray-300 bg-gray-50 p-2.5 {{FD['text']}} text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Enter here..." required />
+                                <label for="voucher" class="mb-2 block {{FD['text']}} font-medium text-gray-900 dark:text-white"> 
+                                    Do you have a Promo code or voucher? 
+                                </label>
+                                <div class="flex gap-3">
+                                    <input 
+                                        type="text" 
+                                        id="voucher" 
+                                        wire:model="voucherInput"
+                                        class="flex-1 block {{ FD['rounded'] }} border border-gray-300 bg-gray-50 p-2.5 {{FD['text']}} text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" 
+                                        placeholder="Enter here..." 
+                                        wire:keydown.enter="applyCoupon"
+                                    />
+                                    <button 
+                                        type="button" 
+                                        wire:click="applyCoupon"
+                                        class="flex-shrink-0 {{ FD['rounded'] }} bg-primary-700 px-6 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 whitespace-nowrap"
+                                    >
+                                        Apply Code
+                                    </button>
+                                </div>
                             </div>
-                            <button type="submit" class="flex w-full items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Apply Code</button>
                         </div>
                     </div>
                 </div>
@@ -267,3 +283,60 @@
         @endif
     </div>
 </div>
+
+<script>
+    /*
+    function showAlert(message, type = 'info') {
+        // Remove existing alert
+        const existingAlert = document.getElementById('coupon-alert');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+
+        const alert = document.createElement('div');
+        alert.id = 'coupon-alert';
+        alert.className = `fixed top-4 right-4 z-50 p-4 ${@json(FD['rounded'])} shadow-lg transform transition-all duration-300 translate-x-0 opacity-100`;
+        
+        // Set styles based on type
+        const styles = {
+            success: 'bg-green-500 text-white border-l-4 border-green-700',
+            error: 'bg-red-500 text-white border-l-4 border-red-700',
+            warning: 'bg-yellow-500 text-white border-l-4 border-yellow-700',
+            info: 'bg-blue-500 text-white border-l-4 border-blue-700'
+        };
+        
+        alert.className += ` ${styles[type] || styles.info}`;
+        alert.innerHTML = `
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>${message}</span>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(alert);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (alert.parentElement) {
+                alert.style.transform = 'translateX(100%)';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 300);
+            }
+        }, 5000);
+    }
+
+    // Make sure the Livewire component is available
+    document.addEventListener('livewire:init', () => {
+        // This ensures the component is ready
+    });
+    */
+</script>

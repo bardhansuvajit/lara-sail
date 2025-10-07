@@ -3,11 +3,10 @@
 namespace App\Interfaces;
 use Illuminate\Http\UploadedFile;
 
-interface CouponInterface
+interface CouponUsageInterface
 {
     public function list(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder);
-    public function listCountryBasedFrontendCoupons(string $country);
-    public function checkAndApplyToCart(string $couponCode, ?int $userId, string $deviceId);
+    public function getUserCouponUsageCount(int $couponId, int $userId);
     public function store(Array $array);
     public function getById(Int $id);
     public function getByIds(Array $ids);

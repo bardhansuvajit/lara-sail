@@ -23,6 +23,7 @@ return new class extends Migration
             $table->json('coupon_snapshot')->nullable(); // Store coupon details at time of use
             $table->string('ip_address', 45)->nullable();
 
+            $table->softDeletes();
             $table->timestamps();
 
             $table->unique(['coupon_id', 'order_id']); // Prevent duplicate uses per order

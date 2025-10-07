@@ -33,7 +33,7 @@ return new class extends Migration
             $table->unsignedBigInteger('coupon_code_id')->nullable();
             $table->string('coupon_code')->nullable();
             $table->decimal('discount_amount', 12, 2)->default(0);
-            $table->string('discount_type', 30)->nullable()->comment('amount/ percent');
+            $table->json('applied_coupon_meta')->nullable();
 
             // Shipping
             $table->unsignedBigInteger('shipping_method_id')->default(1);

@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\CouponInterface;
-use App\Models\Coupon;
+use App\Interfaces\CouponUsageInterface;
+use App\Models\CouponUsage;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -13,47 +13,43 @@ use App\Interfaces\CountryInterface;
 use App\Interfaces\ProductImageInterface;
 use App\Interfaces\ProductPricingInterface;
 use App\Interfaces\ProductBadgeCombinationInterface;
-use App\Interfaces\CouponUsageInterface;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 use App\Exports\ProductListingsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class CouponRepository implements CouponInterface
+class CouponUsageRepository implements CouponUsageInterface
 {
     private CartInterface $cartRepository;
     private TrashInterface $trashRepository;
-    private CouponUsageInterface $couponUsageRepository;
-    // private CountryInterface $countryRepository;
-    // private ProductImageInterface $productImageRepository;
-    // private ProductPricingInterface $productPricingRepository;
-    // private ProductBadgeCombinationInterface $productBadgeCombinationRepository;
+    private CountryInterface $countryRepository;
+    private ProductImageInterface $productImageRepository;
+    private ProductPricingInterface $productPricingRepository;
+    private ProductBadgeCombinationInterface $productBadgeCombinationRepository;
 
     public function __construct(
         CartInterface $cartRepository,
         TrashInterface $trashRepository, 
-        CouponUsageInterface $couponUsageRepository
-        // CountryInterface $countryRepository,
-        // ProductImageInterface $productImageRepository, 
-        // ProductPricingInterface $productPricingRepository, 
-        // ProductBadgeCombinationInterface $productBadgeCombinationRepository
+        CountryInterface $countryRepository,
+        ProductImageInterface $productImageRepository, 
+        ProductPricingInterface $productPricingRepository, 
+        ProductBadgeCombinationInterface $productBadgeCombinationRepository
     )
     {
         $this->cartRepository = $cartRepository;
         $this->trashRepository = $trashRepository;
-        $this->couponUsageRepository = $couponUsageRepository;
-        // $this->countryRepository = $countryRepository;
-        // $this->productImageRepository = $productImageRepository;
-        // $this->productPricingRepository = $productPricingRepository;
-        // $this->productBadgeCombinationRepository = $productBadgeCombinationRepository;
+        $this->countryRepository = $countryRepository;
+        $this->productImageRepository = $productImageRepository;
+        $this->productPricingRepository = $productPricingRepository;
+        $this->productBadgeCombinationRepository = $productBadgeCombinationRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
-            $query = Coupon::query();
+            $query = CouponUsage::query();
 
             // keyword
             if (!empty($keyword)) {
@@ -107,284 +103,28 @@ class CouponRepository implements CouponInterface
         }
     }
 
-    public function listCountryBasedFrontendCoupons(string $country)
+    public function getUserCouponUsageCount(int $couponId, int $userId)
     {
-        $data = Coupon::where([
-                ['country_code', $country],
-                ['show_in_frontend', 1]
-            ])
-            ->orderBy('position')
-            ->get();
+        $data = CouponUsage::where('coupon_id', $couponId)
+            ->when($userId, function ($query) use ($userId) {
+                return $query->where('user_id', $userId);
+            })
+            ->count();
 
-        return [
-            'code' => 200,
-            'status' => 'success',
-            'message' => 'Data found',
-            'data' => $data,
-        ];
-    }
-
-    public function checkAndApplyToCart(string $couponCode, ?int $userId, string $deviceId)
-    {
-        try {
-            // Check if coupon is empty/ not
-            if (trim($couponCode) == '') {
-                return [
-                    'code' => 400,
-                    'status' => 'error',
-                    'message' => 'Please enter a coupon code',
-                ];
-            }
-
-            // Check if cart exists & there are items in cart
-            if (!is_null($userId)) {
-                $cart = $this->cartRepository->exists(['user_id' => $userId]);
-            } else {
-                $cart = $this->cartRepository->exists(['device_id' => $deviceId]);
-            }
-
-            // Check if cart exists and has items
-            if ($cart['code'] != 200 || empty($cart['data']->items)) {
-                return [
-                    'success' => false,
-                    'code' => 400,
-                    'status' => 'error',
-                    'message' => 'Your cart is empty! Please add some items to cart first.',
-                ];
-            }
-
-            // Check if this/ other coupons are already applied
-            if (!empty($cartData->coupon_code)) {
-                if ($cartData->coupon_code === strtolower(trim($couponCode))) {
-                    return [
-                        'success' => false,
-                        'code' => 400,
-                        'status' => 'error',
-                        'message' => 'This coupon is already applied to your cart',
-                    ];
-                } else {
-                    return [
-                        'success' => false,
-                        'code' => 400,
-                        'status' => 'error',
-                        'message' => 'Another coupon is already applied to your cart ! Please remove it first.',
-                    ];
-                }
-            }
-
-            $coupon = Coupon::where('code', strtolower(trim($couponCode)))
-                ->where('status', 1)
-                ->where('show_in_frontend', true)
-                ->where('starts_at', '<=', now())
-                ->where('expires_at', '>=', now())
-                ->first();
-
-            if (!$coupon) {
-                return [
-                    'success' => false,
-                    'code' => 404,
-                    'status' => 'error',
-                    'message' => 'Invalid or expired coupon code',
-                ];
-            }
-
-            // Check usage limits
-            if ($coupon->usage_limit && $coupon->used_count >= $coupon->usage_limit) {
-                return [
-                    'success' => false,
-                    'code' => 400,
-                    'status' => 'error',
-                    'message' => 'This coupon has reached its usage limit',
-                ];
-            }
-
-            // Check per user usage limit
-            if ($coupon->usage_per_user) {
-                if (!is_null($userId)) {
-                    $couponUsageData = $this->couponUsageRepository->getUserCouponUsageCount($coupon->id, $userId);
-                    if ($couponUsageData['count'] >= $coupon->usage_per_user) {
-                        return [
-                            'success' => false,
-                            'code' => 400,
-                            'status' => 'error',
-                            'message' => 'You have already used this coupon the maximum number of times',
-                        ];
-                    }
-                }
-            }
-
-            // Check minimum cart value
-            $cartData = $cart['data'];
-            // dd($cartData);
-            $cartTotal = $cartData->total ?? 0;
-            if ($coupon->min_cart_value && $cartTotal < $coupon->min_cart_value) {
-                $symbol = $cartData->countryDetail->currency_symbol;
-                return [
-                    'success' => false,
-                    'code' => 400,
-                    'status' => 'error',
-                    'message' => "Minimum cart value required: {$symbol}" . formatIndianMoney($coupon->min_cart_value),
-                ];
-            }
-
-            // Calculate discount
-            $discountAmount = $this->calculateDiscount($coupon, $cartTotal);
-
-            // Apply coupon to cart (update cart with discount)
-            $applied = $this->applyCouponToCart($coupon, $discountAmount, $userId, $deviceId);
-
-            if (!$applied) {
-                return [
-                    'success' => false,
-                    'code' => 500,
-                    'status' => 'error',
-                    'message' => 'Failed to apply coupon to cart',
-                ];
-            }
-
-            // Increment coupon usage
-            $this->incrementCouponUsage($coupon->id);
-
-            // Record coupon redemption
-            $this->recordCouponRedemption($coupon->id, $userId, $deviceId, $discountAmount);
-
+        if ($data > 0) {
             return [
-                'success' => true,
                 'code' => 200,
                 'status' => 'success',
-                'message' => 'Coupon applied successfully!',
-                'data' => [
-                    'coupon' => $coupon,
-                    'discount_amount' => $discountAmount,
-                    'new_total' => $cartTotal - $discountAmount,
-                ],
+                'message' => 'Data found',
+                'count' => $data,
             ];
-        } catch (\Exception $e) {
+        } else {
             return [
-                'code' => 500,
-                'status' => 'error',
-                'message' => 'Something Happened. Try Again !',
-                'error' => $e->getMessage(),
+                'code' => 404,
+                'status' => 'failure',
+                'message' => 'No data found',
+                'count' => $data,
             ];
-        }
-    }
-
-    /**
-     * Calculate discount amount based on coupon type
-     */
-    private function calculateDiscount($coupon, $cartTotal): float
-    {
-        return match($coupon->discount_type) {
-            'percentage' => $this->calculatePercentageDiscount($coupon, $cartTotal),
-            'fixed' => $this->calculateFixedDiscount($coupon, $cartTotal),
-            'free_shipping' => 0, // Handle shipping separately
-            default => 0,
-        };
-    }
-
-    /**
-     * Calculate percentage discount
-     */
-    private function calculatePercentageDiscount($coupon, $cartTotal): float
-    {
-        $discount = $cartTotal * ($coupon->value / 100);
-        
-        // Apply max discount limit if set
-        if ($coupon->max_discount_amount && $discount > $coupon->max_discount_amount) {
-            $discount = $coupon->max_discount_amount;
-        }
-        
-        return max(0, round($discount, 2));
-    }
-
-    /**
-     * Calculate fixed discount
-     */
-    private function calculateFixedDiscount($coupon, $cartTotal): float
-    {
-        // Don't discount more than cart value
-        return min($coupon->value, $cartTotal);
-    }
-
-    /**
-     * Get user coupon usage count
-     */
-    // private function getUserCouponUsageCount(int $couponId, ?int $userId, ?string $deviceId): int
-    // {
-    //     // You'll need to implement this based on your coupon_usages table
-    //     // This is a placeholder implementation
-    //     return \App\Models\CouponUsage::where('coupon_id', $couponId)
-    //         ->when($userId, function ($query) use ($userId) {
-    //             return $query->where('user_id', $userId);
-    //         })
-    //         ->when(!$userId && $deviceId, function ($query) use ($deviceId) {
-    //             return $query->where('device_id', $deviceId);
-    //         })
-    //         ->count();
-    // }
-
-    /**
-     * Apply coupon to cart
-     */
-    private function applyCouponToCart($coupon, float $discountAmount, ?int $userId, ?string $deviceId): bool
-    {
-        try {
-            $cartData = [
-                'coupon_code_id' => $coupon->id,
-                'coupon_code' => $coupon->code,
-                'discount_amount' => $discountAmount,
-                'applied_coupon_meta' => json_encode([
-                    'coupon_id' => $coupon->id,
-                    'code' => $coupon->code,
-                    'name' => $coupon->name,
-                    'description' => $coupon->description,
-                    'discount_type' => $coupon->discount_type,
-                    'value' => $coupon->value,
-                    'max_discount_amount' => $coupon->max_discount_amount,
-                    'min_cart_value' => $coupon->min_cart_value,
-                    'applied_at' => now()->toISOString(),
-                ]),
-            ];
-            
-            if ($userId) {
-                $result = $this->cartRepository->updateCartDiscount($userId, null, $cartData);
-            } else {
-                $result = $this->cartRepository->updateCartDiscount(null, $deviceId, $cartData);
-            }
-
-            dd($result);
-
-            return $result['code'] === 200 && $result['status'] === 'success';
-
-        } catch (\Exception $e) {
-            logger()->error('Failed to apply coupon to cart: ' . $e->getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Increment coupon usage count
-     */
-    private function incrementCouponUsage(int $couponId): void
-    {
-        Coupon::where('id', $couponId)->increment('used_count');
-    }
-
-    /**
-     * Record coupon redemption
-     */
-    private function recordCouponRedemption(int $couponId, ?int $userId, ?string $deviceId, float $discountAmount): void
-    {
-        try {
-            \App\Models\CouponUsage::create([
-                'coupon_id' => $couponId,
-                'user_id' => $userId,
-                'device_id' => $deviceId,
-                'discount_amount' => $discountAmount,
-                'used_at' => now(),
-            ]);
-        } catch (\Exception $e) {
-            logger()->error('Failed to record coupon redemption: ' . $e->getMessage());
         }
     }
 

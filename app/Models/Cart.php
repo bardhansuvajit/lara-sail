@@ -18,6 +18,11 @@ class Cart extends Model
         'status'
     ];
 
+    public function countryDetail()
+    {
+        return $this->belongsTo('App\Models\Country', 'country', 'code');
+    }
+
     public function allItems()
     {
         return $this->hasMany('App\Models\CartItem', 'cart_id', 'id');
