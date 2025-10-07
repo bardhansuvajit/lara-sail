@@ -14,7 +14,7 @@ class CouponList extends Component
     public bool $isLoading = true;
     public bool $hasError = false;
     public string $errorMessage = '';
-    public string $copiedCode = ''; // Track the currently copied coupon
+    public string $copiedCode = '';
     public bool $showCopiedFeedback = false;
     
     private string $country;

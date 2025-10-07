@@ -48,6 +48,7 @@ return new class extends Migration
         });
 
         $data = [
+            // IN Coupons
             [
                 'country_code' => 'IN',
                 'code' => 'welcome20',
@@ -60,13 +61,43 @@ return new class extends Migration
                 'usage_limit' => 99,
                 'usage_per_user' => 1,
                 'starts_at' => now(),
-                'expires_at' => now()->addMonths(6)
+                'expires_at' => now()->addMonths(6),
             ],
+            [
+                'country_code' => 'IN',
+                'code' => 'freeshipin',
+                'name' => 'Free Shipping Offer',
+                'description' => 'Get free shipping on all orders above ₹499',
+                'discount_type' => 'free_shipping',
+                'value' => null,
+                'max_discount_amount' => null,
+                'min_cart_value' => 499.00,
+                'usage_limit' => 200,
+                'usage_per_user' => 2,
+                'starts_at' => now(),
+                'expires_at' => now()->addMonths(12),
+            ],
+            [
+                'country_code' => 'IN',
+                'code' => 'festive50',
+                'name' => 'Festive Season Offer',
+                'description' => 'Flat ₹500 off on orders above ₹2500',
+                'discount_type' => 'fixed',
+                'value' => 500.00,
+                'max_discount_amount' => 500.00,
+                'min_cart_value' => 2500.00,
+                'usage_limit' => 500,
+                'usage_per_user' => 1,
+                'starts_at' => now(),
+                'expires_at' => now()->addMonths(6),
+            ],
+
+            // US Coupons
             [
                 'country_code' => 'US',
                 'code' => 'welcome999',
                 'name' => 'Welcome Discount',
-                'description' => '9.99$ off only for new customers',
+                'description' => '$9.99 off only for new customers',
                 'discount_type' => 'fixed',
                 'value' => 9.99,
                 'max_discount_amount' => 9.99,
@@ -74,7 +105,35 @@ return new class extends Migration
                 'usage_limit' => 99,
                 'usage_per_user' => 1,
                 'starts_at' => now(),
-                'expires_at' => now()->addMonths(6)
+                'expires_at' => now()->addMonths(6),
+            ],
+            [
+                'country_code' => 'US',
+                'code' => 'freeshipus',
+                'name' => 'Free Shipping Deal',
+                'description' => 'Free shipping for orders above $50',
+                'discount_type' => 'free_shipping',
+                'value' => null,
+                'max_discount_amount' => null,
+                'min_cart_value' => 50.00,
+                'usage_limit' => 300,
+                'usage_per_user' => 3,
+                'starts_at' => now(),
+                'expires_at' => now()->addMonths(6),
+            ],
+            [
+                'country_code' => 'US',
+                'code' => 'spring15',
+                'name' => 'Spring Sale',
+                'description' => '15% off on all products during Spring Sale',
+                'discount_type' => 'percentage',
+                'value' => 15.00,
+                'max_discount_amount' => 50.00,
+                'min_cart_value' => 80.00,
+                'usage_limit' => 200,
+                'usage_per_user' => 2,
+                'starts_at' => now(),
+                'expires_at' => now()->addMonths(6),
             ],
         ];
 
