@@ -1,3 +1,4 @@
+/* PAGE START resources/views/components/front/radio-input-button-checkout-address.blade.php */
 @keyframes deliverAnimation {
     0%, 100% { 
         transform: translateY(0) translateX(0) rotate(0deg); 
@@ -16,3 +17,59 @@
 .animate-delivery-combined {
     animation: deliverAnimation 1s ease-in-out infinite;
 }
+/* PAGE ENDS resources/views/components/front/radio-input-button-checkout-address.blade.php */
+
+
+
+/* PAGE START resources/views/livewire/coupon-list.blade.php */
+/* The notch circles on the left & right (visible on md+) */
+.coupon-ticket { position: relative; }
+.coupon-ticket .left-stub { position: relative; min-width: 180px; }
+.coupon-ticket::before,
+.coupon-ticket::after {
+content: "";
+position: absolute;
+width: 36px;
+height: 36px;
+border-radius: 50%;
+left: -18px;
+top: calc(50% - 18px);
+pointer-events: none;
+background: white; /* light-mode page bg */
+}
+
+/* dark-mode page bg override (for both system & class-based dark) */
+@media (prefers-color-scheme: dark) {
+.coupon-ticket::before,
+.coupon-ticket::after { background: #f3f4f6; } /* Tailwind slate-900 / page dark bg */
+}
+
+/* If you use Tailwind's class-based dark mode (dark on <html>), ensure both states covered */
+.dark .coupon-ticket::before,
+.dark .coupon-ticket::after { background: #374151; }
+/* right notch */
+.coupon-ticket::after {
+    left: auto;
+    right: -18px;
+    transform: scale(1);
+}
+
+/* Perforation line (vertical) */
+.perforation::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 8%;
+    bottom: 8%;
+    width: 1px;
+    background-image: repeating-linear-gradient(to bottom, rgba(156,163,175,0.9) 0 6px, transparent 6px 12px);
+    opacity: 0.7;
+}
+
+/* Mobile stacked: hide notches/perforation on small screens */
+@media (max-width: 767px) {
+    .coupon-ticket::before, .coupon-ticket::after, .perforation { display: none; }
+    .left-stub { min-width: auto; }
+}
+/* PAGE END resources/views/livewire/coupon-list.blade.php */

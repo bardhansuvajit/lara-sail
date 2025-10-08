@@ -120,22 +120,6 @@ class CouponList extends Component
             $couponRepository = app(CouponInterface::class);
             $cartRepository = app(CartInterface::class);
 
-            // Get user/device info
-            // $userId = null;
-            // $deviceId = null;
-
-            // if (auth()->guard('web')->check()) {
-            //     $userId = auth()->guard('web')->user()->id;
-            //     $cart = $cartRepository->exists([
-            //         'user_id' => $userId
-            //     ]);
-            // } else {
-            //     $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
-            //     $cart = $cartRepository->exists([
-            //         'device_id' => $deviceId
-            //     ]);
-            // }
-
             // dd($cart['data']->items);
             $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
             $userId = auth()->guard('web')->check() ? auth()->guard('web')->user()->id : null;

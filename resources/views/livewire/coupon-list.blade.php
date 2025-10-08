@@ -42,7 +42,8 @@
                     <div class="grid grid-cols-1 gap-4 mb-4">
                         @foreach($this->activeCoupons as $coupon)
                             @php
-                                $isFuture = Carbon\Carbon::parse($coupon->starts_at)->isPast() === false ? false : true; // keep simple
+                                // $isFuture = Carbon\Carbon::parse($coupon->starts_at)->isPast() === false ? false : true; // keep simple
+                                $isFuture = Carbon\Carbon::parse($coupon->starts_at)->isFuture();
                                 $expires = Carbon\Carbon::parse($coupon->expires_at);
                                 $now = Carbon\Carbon::now();
                                 $daysLeft = $expires->diffInDays($now, false);
@@ -59,7 +60,7 @@
                             @endphp
 
                             <div wire:key="coupon-{{ $coupon->id }}" class="coupon-ticket bg-white dark:bg-gray-800 {{ FD['rounded'] }} overflow-hidden flex flex-col md:flex-row transition-transform duration-200">
-                                {{-- LEFT STUB: discount hero --}}
+                                <!-- LEFT STUB: discount hero -->
                                 <div class="left-stub w-48 flex-shrink-0 p-4 md:p-6 flex items-center justify-center md:justify-start">
                                     <div class="text-center md:text-left">
                                         <div class="inline-flex items-center gap-2">
@@ -87,9 +88,9 @@
                                     </div>
                                 </div>
 
-                                <div class="border border-dashed border-gray-200 dark:border-gray-600"></div>
+                                <div class="border-l border-dashed border-gray-200 dark:border-gray-600 w-px"></div>
 
-                                {{-- RIGHT DETAILS --}}
+                                <!-- RIGHT DETAILS -->
                                 <div class="p-4 md:p-5 flex-1 flex flex-col justify-between">
                                     <div>
                                         <div class="flex items-start justify-between gap-3">
@@ -109,49 +110,13 @@
                                                     </span>
                                                 @endif
 
-                                                {{-- <span class="text-xs text-gray-500 dark:text-gray-400">Code</span> --}}
                                                 <div class="mt-1 font-mono bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 px-3 py-1 {{ FD['rounded'] }} text-sm select-all">
                                                     {{ strtoupper($coupon->code) }}
                                                 </div>
                                             </div>
                                         </div>
-
-                                        {{-- meta row --}}
-                                        {{-- <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
-                                            <div class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3"/></svg>
-                                                <div class="text-gray-700 dark:text-gray-300">
-                                                    Expires <span class="font-medium">{{ $expires->format('d M, Y') }}</span>
-                                                    @if($expires->isFuture())
-                                                        <span class="text-xs text-orange-600 dark:text-orange-400 ml-2">({{ $expires->diffForHumans() }})</span>
-                                                    @endif
-                                                </div>
-                                            </div>
-
-                                            <div class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7h13l3 4v6a1 1 0 0 1-1 1h-1"/></svg>
-                                                <div class="text-gray-700 dark:text-gray-300">
-                                                    Min cart <span class="font-medium">{{ is_null($coupon->min_cart_value) ? '—' : ($symbol . number_format($coupon->min_cart_value, 2)) }}</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/></svg>
-                                                <div class="text-gray-700 dark:text-gray-300">
-                                                    Usage per user <span class="font-medium">{{ $coupon->usage_per_user ?? '1' }}</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2L2 7l10 5 10-5-10-5z"/></svg>
-                                                <div class="text-gray-700 dark:text-gray-300">
-                                                    Country <span class="font-medium">{{ $coupon->country_code }}</span>
-                                                </div>
-                                            </div>
-                                        </div> --}}
                                     </div>
 
-                                    {{-- footer: small terms + action --}}
                                     <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 flex flex-col items-center justify-between gap-3">
                                         <div class="{{ FD['text-0'] }} text-gray-500 dark:text-gray-400">
                                             <span class="hidden sm:inline">*T&Cs apply. Valid once per user unless specified.</span>
@@ -189,60 +154,6 @@
                                 </div>
                             </div>
                         @endforeach
-
-                        <style>
-                            /* The notch circles on the left & right (visible on md+) */
-                            .coupon-ticket { position: relative; }
-                            .coupon-ticket .left-stub { position: relative; min-width: 180px; }
-                            .coupon-ticket::before,
-                            .coupon-ticket::after {
-                            content: "";
-                            position: absolute;
-                            width: 36px;
-                            height: 36px;
-                            border-radius: 50%;
-                            left: -18px;
-                            top: calc(50% - 18px);
-                            pointer-events: none;
-                            background: white; /* light-mode page bg */
-                            }
-
-                            /* dark-mode page bg override (for both system & class-based dark) */
-                            @media (prefers-color-scheme: dark) {
-                            .coupon-ticket::before,
-                            .coupon-ticket::after { background: #f3f4f6; } /* Tailwind slate-900 / page dark bg */
-                            }
-
-                            /* If you use Tailwind's class-based dark mode (dark on <html>), ensure both states covered */
-                            .dark .coupon-ticket::before,
-                            .dark .coupon-ticket::after { background: #374151; }
-                            /* right notch */
-                            .coupon-ticket::after {
-                                left: auto;
-                                right: -18px;
-                                transform: scale(1);
-                            }
-
-                            /* Perforation line (vertical) */
-                            .perforation::before {
-                                content: "";
-                                position: absolute;
-                                left: 50%;
-                                transform: translateX(-50%);
-                                top: 8%;
-                                bottom: 8%;
-                                width: 1px;
-                                background-image: repeating-linear-gradient(to bottom, rgba(156,163,175,0.9) 0 6px, transparent 6px 12px);
-                                opacity: 0.7;
-                            }
-
-                            /* Mobile stacked: hide notches/perforation on small screens */
-                            @media (max-width: 767px) {
-                                .coupon-ticket::before, .coupon-ticket::after, .perforation { display: none; }
-                                .left-stub { min-width: auto; }
-                            }
-                        </style>
-
                     </div>
 
                     <div class="sticky bottom-0 -m-4">
@@ -283,60 +194,3 @@
         @endif
     </div>
 </div>
-
-<script>
-    /*
-    function showAlert(message, type = 'info') {
-        // Remove existing alert
-        const existingAlert = document.getElementById('coupon-alert');
-        if (existingAlert) {
-            existingAlert.remove();
-        }
-
-        const alert = document.createElement('div');
-        alert.id = 'coupon-alert';
-        alert.className = `fixed top-4 right-4 z-50 p-4 ${@json(FD['rounded'])} shadow-lg transform transition-all duration-300 translate-x-0 opacity-100`;
-        
-        // Set styles based on type
-        const styles = {
-            success: 'bg-green-500 text-white border-l-4 border-green-700',
-            error: 'bg-red-500 text-white border-l-4 border-red-700',
-            warning: 'bg-yellow-500 text-white border-l-4 border-yellow-700',
-            info: 'bg-blue-500 text-white border-l-4 border-blue-700'
-        };
-        
-        alert.className += ` ${styles[type] || styles.info}`;
-        alert.innerHTML = `
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span>${message}</span>
-                </div>
-                <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-        `;
-        
-        document.body.appendChild(alert);
-        
-        // Auto remove after 5 seconds
-        setTimeout(() => {
-            if (alert.parentElement) {
-                alert.style.transform = 'translateX(100%)';
-                alert.style.opacity = '0';
-                setTimeout(() => alert.remove(), 300);
-            }
-        }, 5000);
-    }
-
-    // Make sure the Livewire component is available
-    document.addEventListener('livewire:init', () => {
-        // This ensures the component is ready
-    });
-    */
-</script>

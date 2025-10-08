@@ -105,6 +105,8 @@
         <div class="border-t border-gray-200 dark:border-gray-700 mt-4 pb-3 sm:pb-0"></div>
     </div>
 
+    {{-- {{ dd($cart) }} --}}
+
     <dl class="flex items-center justify-between gap-4 border-0 dark:border-gray-700 pb-2 sm:pb-0">
         <dt class="{{FD['text']}} font-bold text-gray-900 dark:text-white">Total</dt>
         <dd class="{{FD['text']}} font-bold text-gray-900 dark:text-white">

@@ -198,6 +198,8 @@ class CouponRepository implements CouponInterface
                 ];
             }
 
+            // dd($coupon);
+
             // Check per user usage limit
             if ($coupon->usage_per_user) {
                 if (!is_null($userId)) {
@@ -215,7 +217,7 @@ class CouponRepository implements CouponInterface
 
             // Check minimum cart value
             $cartData = $cart['data'];
-            // dd($cartData);
+            // dd($cartData, $coupon);
             $cartTotal = $cartData->total ?? 0;
             if ($coupon->min_cart_value && $cartTotal < $coupon->min_cart_value) {
                 $symbol = $cartData->countryDetail->currency_symbol;
@@ -226,6 +228,8 @@ class CouponRepository implements CouponInterface
                     'message' => "Minimum cart value required: {$symbol}" . formatIndianMoney($coupon->min_cart_value),
                 ];
             }
+
+            dd('here2222');
 
             // Calculate discount
             $discountAmount = $this->calculateDiscount($coupon, $cartTotal);
@@ -269,9 +273,6 @@ class CouponRepository implements CouponInterface
         }
     }
 
-    /**
-     * Calculate discount amount based on coupon type
-     */
     private function calculateDiscount($coupon, $cartTotal): float
     {
         return match($coupon->discount_type) {
@@ -282,9 +283,6 @@ class CouponRepository implements CouponInterface
         };
     }
 
-    /**
-     * Calculate percentage discount
-     */
     private function calculatePercentageDiscount($coupon, $cartTotal): float
     {
         $discount = $cartTotal * ($coupon->value / 100);
@@ -297,35 +295,12 @@ class CouponRepository implements CouponInterface
         return max(0, round($discount, 2));
     }
 
-    /**
-     * Calculate fixed discount
-     */
     private function calculateFixedDiscount($coupon, $cartTotal): float
     {
         // Don't discount more than cart value
         return min($coupon->value, $cartTotal);
     }
 
-    /**
-     * Get user coupon usage count
-     */
-    // private function getUserCouponUsageCount(int $couponId, ?int $userId, ?string $deviceId): int
-    // {
-    //     // You'll need to implement this based on your coupon_usages table
-    //     // This is a placeholder implementation
-    //     return \App\Models\CouponUsage::where('coupon_id', $couponId)
-    //         ->when($userId, function ($query) use ($userId) {
-    //             return $query->where('user_id', $userId);
-    //         })
-    //         ->when(!$userId && $deviceId, function ($query) use ($deviceId) {
-    //             return $query->where('device_id', $deviceId);
-    //         })
-    //         ->count();
-    // }
-
-    /**
-     * Apply coupon to cart
-     */
     private function applyCouponToCart($coupon, float $discountAmount, ?int $userId, ?string $deviceId): bool
     {
         try {
@@ -360,17 +335,11 @@ class CouponRepository implements CouponInterface
         }
     }
 
-    /**
-     * Increment coupon usage count
-     */
     private function incrementCouponUsage(int $couponId): void
     {
         Coupon::where('id', $couponId)->increment('used_count');
     }
 
-    /**
-     * Record coupon redemption
-     */
     private function recordCouponRedemption(int $couponId, ?int $userId, ?string $deviceId, float $discountAmount): void
     {
         try {
@@ -386,6 +355,7 @@ class CouponRepository implements CouponInterface
         }
     }
 
+    /*
     public function store(Array $array)
     {
         // dd($array);
@@ -709,69 +679,6 @@ class CouponRepository implements CouponInterface
                     $productBadgeResp = $this->productBadgeCombinationRepository->syncProductBadges($productId, $array['badges']);
                     // dd($productBadgeResp);
 
-                    /*
-                    // 1. check product badges
-                    $productId = $array['id'];
-                    $badgeDataArr = [
-                        'product_id' => $productId
-                    ];
-                    $productBadges = $this->productBadgeCombinationRepository->conditions($badgeDataArr);
-
-                    // 2. if no data found
-                    if ($productBadges['code'] != 200) {
-                        foreach($array['badges'] as $badgeKey => $badgeId) {
-                            // 3. set data store array
-                            $badgeCombinationData = [
-                                'product_id' => $array['id'],
-                                'product_badge_id' => $badgeId,
-                            ];
-
-                            // 4. insert data
-                            $badgeCombinationResp = $this->productBadgeCombinationRepository->store($badgeCombinationData);
-                            // dd($badgeCombinationResp);
-                        }
-                    }
-                    // 5. if data found
-                    else {
-                        // 6. get existing badge ids
-                        $existingProductBadgesIds = $productBadges['data']->pluck('product_badge_id')->toArray();
-                        // dd($existingProductBadgesIds, $array['badges']);
-                        // 7. loop through sent badges
-                        foreach($array['badges'] as $badgeKey => $badgeId) {
-                            // 8. check if existing badge ids matches with sent badges, if not found, add them
-                            if (!in_array($badgeId, $existingProductBadgesIds)) {
-                                // 3. set data store array
-                                $badgeCombinationData = [
-                                    'product_id' => $array['id'],
-                                    'product_badge_id' => $badgeId,
-                                ];
-
-                                // 4. insert data
-                                $badgeCombinationResp = $this->productBadgeCombinationRepository->store($badgeCombinationData);
-                            }
-                        }
-                    }
-                    */
-
-                    // dd($productBadges);
-
-                    /*
-                    foreach($array['badges'] as $badgeKey => $badgeId) {
-                        // condition array
-                        $badgeCombinationData = [
-                            'product_id' => $array['id'],
-                            'product_badge_id' => $badgeId,
-                        ];
-
-                        // 1. check if this condition already exists in DB
-                        $badgeComboResp = $this->productBadgeCombinationRepository->conditions($badgeCombinationData);
-                        // dd($badgeComboResp);
-                        if ($badgeComboResp['code'] != 200) {
-                            $badgeCombinationResp = $this->productBadgeCombinationRepository->store($badgeCombinationData);
-                            // dd($badgeCombinationResp);
-                        }
-                    }
-                    */
                 }
 
                 DB::commit();
@@ -1097,4 +1004,5 @@ class CouponRepository implements CouponInterface
             ];
         }
     }
+    */
 }

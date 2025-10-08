@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Interfaces\CartSettingInterface;
 use App\Interfaces\PaymentMethodInterface;
 use App\Interfaces\ShippingMethodInterface;
+use App\Interfaces\CouponInterface;
 
 use App\Exports\CartsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -22,18 +23,21 @@ class CartRepository implements CartInterface
     private CartSettingInterface $cartSettingRepository;
     private PaymentMethodInterface $paymentMethodRepository;
     private ShippingMethodInterface $shippingMethodRepository;
+    // private CouponInterface $couponRepository;
 
     public function __construct(
         TrashInterface $trashRepository, 
         CartSettingInterface $cartSettingRepository, 
         PaymentMethodInterface $paymentMethodRepository,
-        ShippingMethodInterface $shippingMethodRepository
+        ShippingMethodInterface $shippingMethodRepository,
+        // CouponInterface $couponRepository
     )
     {
         $this->trashRepository = $trashRepository;
         $this->cartSettingRepository = $cartSettingRepository;
         $this->paymentMethodRepository = $paymentMethodRepository;
         $this->shippingMethodRepository = $shippingMethodRepository;
+        // $this->couponRepository = $couponRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
@@ -278,8 +282,11 @@ class CartRepository implements CartInterface
             // Calculate payment method adjustments
             $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $shippingCost);
 
+            // dd($paymentDetails);
+
             // Check coupon expiry & Calculate coupon discount
-            $finalAmount = $this->checkCouponApplyDiscount($cart);
+            // $couponApplyResp = $this->couponRepository->checkAndApplyToCart($couponCode, $userId, $deviceId);
+            // $finalAmount = $this->checkCouponApplyDiscount($cart);
 
             // Update cart totals
             $cart->update([
@@ -414,7 +421,7 @@ class CartRepository implements CartInterface
             $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $shippingCost);
 
             // Check coupon expiry & Calculate coupon discount
-            $finalAmount = $this->checkCouponApplyDiscount($cart);
+            // $finalAmount = $this->checkCouponApplyDiscount($cart);
 
             // $shippingMethodData = $shippingMethodData['data'];
             // $selectedShippingMethodCost = (float) $shippingMethodData->cost;
