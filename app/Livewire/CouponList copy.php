@@ -20,23 +20,12 @@ class CouponList extends Component
     public bool $showCopiedFeedback = false;
     public string $voucherInput = '';
 
-    // Flag to trigger one-time apply from query param
-    public bool $applyQueryCoupon = false;
-
     private string $country;
 
     public function mount(): void
     {
         $this->country = COUNTRY['country'] ?? 'IN';
         $this->loadCoupons();
-
-        // Auto-apply coupon if URL has ?coupon=CODE
-        $couponCode = request('coupon');
-        if (!empty($couponCode)) {
-            $this->voucherInput = $couponCode;
-            // mark to apply after render (and after loading finishes)
-            $this->applyQueryCoupon = true;
-        }
     }
 
     public function loadCoupons(): void
@@ -131,6 +120,7 @@ class CouponList extends Component
             $couponRepository = app(CouponInterface::class);
             $cartRepository = app(CartInterface::class);
 
+            // dd($cart['data']->items);
             $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
             $userId = auth()->guard('web')->check() ? auth()->guard('web')->user()->id : null;
 
@@ -140,6 +130,8 @@ class CouponList extends Component
                 $cart = $cartRepository->exists(['device_id' => $deviceId]);
             }
 
+            // dd($cart);
+
             // Check if cart exists and has items
             if ($cart['code'] != 200 || empty($cart['data']->items)) {
                 $this->dispatch('show-notification', 
@@ -147,12 +139,17 @@ class CouponList extends Component
                     ['type' => 'warning']
                 );
                 $this->dispatch('hideFullPageLoader');
-
-                // IMPORTANT: stop further execution if cart is missing/empty
-                return;
+                // return [
+                //     'success' => false,
+                //     'code' => 400,
+                //     'status' => 'error',
+                //     'message' => 'Your cart is empty! Please add some items to cart first.',
+                // ];
             }
 
             $couponApplyResp = $couponRepository->checkAndApplyToCart($couponCode, $cart['data']);
+
+            // dd($couponApplyResp);
 
             if ($couponApplyResp['code'] == 200) {
                 $this->dispatch('show-notification', 
@@ -177,38 +174,7 @@ class CouponList extends Component
             );
             logger()->error('Coupon application failed: ' . $e->getMessage());
 
-            $this->dispatch('hideFullPageLoader');
-        }
-    }
-
-    public function rendered(): void
-    {
-        // Only auto-apply once, and only after loadCoupons finished
-        if ($this->applyQueryCoupon && !$this->isLoading) {
-            // use json_encode for safe JS string embedding
-            $codeJson = json_encode($this->voucherInput);
-
-            // call applyCoupon on the client side and remove coupon param so refresh won't reapply
-            $this->js("
-                (function(){
-                    const code = {$codeJson};
-                    setTimeout(() => {
-                        try {
-                            \$wire.applyCoupon(code);
-                        } catch (e) {
-                            console.error('Auto apply coupon failed', e);
-                        }
-                        try {
-                            const u = new URL(location.href);
-                            u.searchParams.delete('coupon');
-                            history.replaceState(null, '', u.toString());
-                        } catch (er) {}
-                    }, 100);
-                })();
-            ");
-
-            // prevent re-triggering
-            $this->applyQueryCoupon = false;
+            // $this->dispatch('hideFullPageLoader');
         }
     }
 
