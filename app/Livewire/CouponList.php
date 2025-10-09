@@ -124,7 +124,30 @@ class CouponList extends Component
             $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
             $userId = auth()->guard('web')->check() ? auth()->guard('web')->user()->id : null;
 
-            $couponApplyResp = $couponRepository->checkAndApplyToCart($couponCode, $userId, $deviceId);
+            if (!is_null($userId)) {
+                $cart = $cartRepository->exists(['user_id' => $userId]);
+            } else {
+                $cart = $cartRepository->exists(['device_id' => $deviceId]);
+            }
+
+            // dd($cart);
+
+            // Check if cart exists and has items
+            if ($cart['code'] != 200 || empty($cart['data']->items)) {
+                $this->dispatch('show-notification', 
+                    'Your cart is empty! Please add some items to cart first.', 
+                    ['type' => 'warning']
+                );
+                $this->dispatch('hideFullPageLoader');
+                // return [
+                //     'success' => false,
+                //     'code' => 400,
+                //     'status' => 'error',
+                //     'message' => 'Your cart is empty! Please add some items to cart first.',
+                // ];
+            }
+
+            $couponApplyResp = $couponRepository->checkAndApplyToCart($couponCode, $cart['data']);
 
             // dd($couponApplyResp);
 
@@ -133,15 +156,16 @@ class CouponList extends Component
                     'Coupon applied successfully!', ['type' => 'success']
                 );
                 $this->voucherInput = '';
+
+                $this->dispatch('updateCartDataAttr');
             } else {
                 $this->dispatch('show-notification', 
                     $couponApplyResp['message'] ?? 'Failed to apply coupon !', 
                     ['type' => 'warning']
                 );
+                $this->dispatch('hideFullPageLoader');
             }
 
-            $this->dispatch('updateCartDataAttr');
-            $this->dispatch('hideFullPageLoader');
 
         } catch (\Exception $e) {
             $this->dispatch('show-notification', 
@@ -150,7 +174,7 @@ class CouponList extends Component
             );
             logger()->error('Coupon application failed: ' . $e->getMessage());
 
-            $this->dispatch('hideFullPageLoader');
+            // $this->dispatch('hideFullPageLoader');
         }
     }
 

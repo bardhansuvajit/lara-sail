@@ -37,7 +37,7 @@ class CartRepository implements CartInterface
         $this->cartSettingRepository = $cartSettingRepository;
         $this->paymentMethodRepository = $paymentMethodRepository;
         $this->shippingMethodRepository = $shippingMethodRepository;
-        // $this->couponRepository = $couponRepository;
+        // // $this->couponRepository = $couponRepository;
     }
 
     public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
@@ -261,7 +261,7 @@ class CartRepository implements CartInterface
             // Calculate item totals
             $itemsTotal = $cart->items()->sum('total');
             $itemsQuantity = $cart->items()->sum('quantity');
-            $currentShippingCost = $cart->shipping_cost;
+            $cartCouponDiscount = $cart->coupon_discount_amount;
 
             // $totalMrp = 0;
             // foreach ($cart->items as $itemKey => $itemValue) {
@@ -279,13 +279,24 @@ class CartRepository implements CartInterface
             // Calculate shipping cost
             $shippingCost = $this->calculateCartSettingShippingCost($cart, $itemsTotal);
 
+            // Calculate discount
+            if (!is_null($cart->coupon_code_id) && !is_null($cart->coupon_code) && ($cart->coupon_discount_amount > 0)) {
+                // dd('inside');
+                // dd($cart);
+                $couponRepository = app(CouponInterface::class);
+                // $couponApplyResp = $couponRepository->checkAndApplyToCart($cart->coupon_code, $cart);
+
+                // dd($couponApplyResp);
+            }
+
             // Calculate payment method adjustments
-            $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $shippingCost);
+            $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $cartCouponDiscount, $shippingCost);
 
             // dd($paymentDetails);
 
             // Check coupon expiry & Calculate coupon discount
-            // $couponApplyResp = $this->couponRepository->checkAndApplyToCart($couponCode, $userId, $deviceId);
+            // dd($cart);
+
             // $finalAmount = $this->checkCouponApplyDiscount($cart);
 
             // Update cart totals
@@ -404,6 +415,7 @@ class CartRepository implements CartInterface
 
             // Get Shipping data
             $shippingMethodData = $this->shippingMethodRepository->getById($id);
+            $cartCouponDiscount = $cart->coupon_discount_amount;
 
             if (!$shippingMethodData['code'] == 200 || $shippingMethodData['data']->status != 1) {
                 return [
@@ -418,7 +430,7 @@ class CartRepository implements CartInterface
             $shippingCost = $this->calculateCartSettingShippingCost($cart, $itemsTotal);
 
             // Calculate payment method adjustments
-            $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $shippingCost);
+            $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $cartCouponDiscount, $shippingCost);
 
             // Check coupon expiry & Calculate coupon discount
             // $finalAmount = $this->checkCouponApplyDiscount($cart);
@@ -517,7 +529,7 @@ class CartRepository implements CartInterface
         return (float) $finalShippingCost;
     }
 
-    protected function calculatePaymentMethodAdjustments(float $itemsTotal, float $shippingCost): array
+    protected function calculatePaymentMethodAdjustments(float $itemsTotal, float $cartCouponDiscount, float $shippingCost): array
     {
         $paymentMethodData = $this->paymentMethodRepository->list('', [
             'status' => 1, 
@@ -529,8 +541,8 @@ class CartRepository implements CartInterface
                 'id' => null,
                 'title' => null,
                 'charge' => 0,
-                'discount' => 0,
-                'grandTotal' => $itemsTotal + $shippingCost
+                'discount' => $cartCouponDiscount,
+                'grandTotal' => ($itemsTotal + $shippingCost) - $cartCouponDiscount
             ];
         }
 
@@ -564,7 +576,7 @@ class CartRepository implements CartInterface
             'title' => $title,
             'charge' => $isCharge ? $adjustment : 0,
             'discount' => $isCharge ? 0 : $adjustment,
-            'grandTotal' => $itemsTotal + ($isCharge ? $adjustment : -$adjustment) + $shippingCost
+            'grandTotal' => ($itemsTotal + ($isCharge ? $adjustment : -$adjustment) + $shippingCost) - $cartCouponDiscount
         ];
     }
 
@@ -782,6 +794,54 @@ class CartRepository implements CartInterface
         }
     }
 
+    public function updateCartDiscount(array $cartData)
+    {
+        try {
+            $data = $this->getById($cartData['id']);
+
+            if ($data['code'] == 200) {
+                $cart = $data['data'];
+
+                // Calculate new cart total After Coupon Discount
+                $discountAmount = $cartData['coupon_discount_amount'];
+
+                if ($cart->total < $discountAmount) {
+                    return [
+                        'code' => 400,
+                        'status' => 'error',
+                        'message' => 'Cannot apply discount ! Add more products to cart.',
+                    ];
+                }
+
+                $newTotal = $cart->total - $discountAmount;
+
+                $cart->total = $newTotal;
+                $cart->coupon_code_id = $cartData['coupon_code_id'];
+                $cart->coupon_code = $cartData['coupon_code'];
+                $cart->coupon_discount_amount = $discountAmount;
+                $cart->coupon_meta = $cartData['coupon_meta'];
+                $cart->save();
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Cart is updated with Coupon discount',
+                    'data' => $data,
+                ];
+            } else {
+                return $data;
+            }
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /*
     public function updateCartDiscount(?int $userId, ?string $deviceId, array $discountData)
     {
         try {
@@ -848,6 +908,7 @@ class CartRepository implements CartInterface
             ];
         }
     }
+    */
 
     /**
      * Find cart by user ID or device ID

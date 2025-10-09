@@ -7,15 +7,7 @@ interface CouponInterface
 {
     public function list(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder);
     public function listCountryBasedFrontendCoupons(string $country);
-    public function checkAndApplyToCart(string $couponCode, ?int $userId, string $deviceId);
-    // public function store(Array $array);
-    // public function getById(Int $id);
-    // public function getByIds(Array $ids);
-    // public function getBySlug(String $slug);
-    // public function getBySlugFDCustomArr(String $slug);
-    // public function update(Array $array);
-    // public function delete(Int $id);
-    // public function bulkAction(Array $array);
-    // public function import(UploadedFile $file);
-    // public function export(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder, String $type);
+    public function checkAndApplyToCart(string $couponCode, $cart);
+    // public function checkAndApplyToCart($cart);
+    // public function checkAndApplyToCart(string $couponCode, ?int $userId, string $deviceId);
 }
