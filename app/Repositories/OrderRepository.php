@@ -319,12 +319,13 @@ class OrderRepository implements OrderInterface
             $itemsTotal = $cart->items()->sum('total');
             $itemsQuantity = $cart->items()->sum('quantity');
             $totalMrp = $cart->items->sum(fn($item) => $item->mrp * $item->quantity);
+            $cartCouponDiscount = $cart->coupon_discount_amount ?? 0;
 
             // Calculate shipping cost
             $shippingCost = $this->calculateShippingCost($cart, $itemsTotal);
 
             // Calculate payment method adjustments
-            $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $shippingCost);
+            $paymentDetails = $this->calculatePaymentMethodAdjustments($itemsTotal, $cartCouponDiscount, $shippingCost);
 
             // Update cart totals
             $cart->update([
@@ -472,7 +473,7 @@ class OrderRepository implements OrderInterface
         return 0.0;
     }
 
-    protected function calculatePaymentMethodAdjustments(float $itemsTotal, float $shippingCost): array
+    protected function calculatePaymentMethodAdjustments(float $itemsTotal, float $cartCouponDiscount,  float $shippingCost): array
     {
         $paymentMethodData = $this->paymentMethodRepository->list('', [
             'status' => 1, 
@@ -484,8 +485,8 @@ class OrderRepository implements OrderInterface
                 'id' => null,
                 'title' => null,
                 'charge' => 0,
-                'discount' => 0,
-                'grandTotal' => $itemsTotal + $shippingCost
+                'discount' => $cartCouponDiscount,
+                'grandTotal' => ($itemsTotal + $shippingCost) - $cartCouponDiscount
             ];
         }
 
@@ -519,7 +520,7 @@ class OrderRepository implements OrderInterface
             'title' => $title,
             'charge' => $isCharge ? $adjustment : 0,
             'discount' => $isCharge ? 0 : $adjustment,
-            'grandTotal' => $itemsTotal + ($isCharge ? $adjustment : -$adjustment) + $shippingCost
+            'grandTotal' => ($itemsTotal + ($isCharge ? $adjustment : -$adjustment) + $shippingCost) - $cartCouponDiscount
         ];
     }
 

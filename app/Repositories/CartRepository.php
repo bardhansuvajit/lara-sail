@@ -261,7 +261,7 @@ class CartRepository implements CartInterface
             // Calculate item totals
             $itemsTotal = $cart->items()->sum('total');
             $itemsQuantity = $cart->items()->sum('quantity');
-            $cartCouponDiscount = $cart->coupon_discount_amount;
+            $cartCouponDiscount = $cart->coupon_discount_amount ?? 0;
 
             // $totalMrp = 0;
             // foreach ($cart->items as $itemKey => $itemValue) {
@@ -279,12 +279,17 @@ class CartRepository implements CartInterface
             // Calculate shipping cost
             $shippingCost = $this->calculateCartSettingShippingCost($cart, $itemsTotal);
 
-            // Calculate discount
+            // Check coupon & Calculate discount
+            // If coupon is applicable, keep it, else remove the coupon
             if (!is_null($cart->coupon_code_id) && !is_null($cart->coupon_code) && ($cart->coupon_discount_amount > 0)) {
                 // dd('inside');
                 // dd($cart);
                 $couponRepository = app(CouponInterface::class);
-                // $couponApplyResp = $couponRepository->checkAndApplyToCart($cart->coupon_code, $cart);
+                $couponApplyResp = $couponRepository->couponDiscountApplicableToCart($cart);
+
+                if ($couponApplyResp['code'] != 200) {
+                    return $couponApplyResp;
+                }
 
                 // dd($couponApplyResp);
             }
@@ -415,7 +420,7 @@ class CartRepository implements CartInterface
 
             // Get Shipping data
             $shippingMethodData = $this->shippingMethodRepository->getById($id);
-            $cartCouponDiscount = $cart->coupon_discount_amount;
+            $cartCouponDiscount = $cart->coupon_discount_amount ?? 0;
 
             if (!$shippingMethodData['code'] == 200 || $shippingMethodData['data']->status != 1) {
                 return [
@@ -932,16 +937,6 @@ class CartRepository implements CartInterface
             $data = $this->getById($cartId);
 
             if ($data['code'] == 200) {
-                // if (isset($array['type'])) {
-                //     if ($array['type'] == "asc") {
-                //         $data['data']->quantity += 1;
-                //     } else {
-                //         $data['data']->quantity -= 1;
-                //     }
-                // }
-
-                // if (isset($array['user_id']))       $data['data']->user_id = $array['user_id'];
-                // $data['data']->save();
                 $cart = $data['data'];
                 $cart->total += $cart->coupon_discount_amount;
                 $cart->coupon_code_id = null;

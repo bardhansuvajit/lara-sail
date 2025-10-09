@@ -260,6 +260,114 @@ class CouponRepository implements CouponInterface
         }
     }
 
+    public function couponDiscountApplicableToCart($cartData)
+    {
+        try {
+            $cartId = $cartData->id;
+            $userId = $cartData->user_id;
+            $couponCode = $cartData->coupon_code;
+
+            $coupon = Coupon::where('code', strtolower(trim($couponCode)))
+                ->where('status', 1)
+                ->where('show_in_frontend', true)
+                ->where('starts_at', '<=', now())
+                ->where('expires_at', '>=', now())
+                ->first();
+
+            if (!$coupon) {
+                // Invalid or expired coupon code
+                $couponRemoveResp = $this->cartRepository->removeCouponById($cartId);
+            }
+
+            // Check usage limits
+            if ($coupon->usage_limit && $coupon->used_count >= $coupon->usage_limit) {
+                // Coupon has reached its usage limit
+                $couponRemoveResp = $this->cartRepository->removeCouponById($cartId);
+            }
+
+            // Check per user usage limit
+            if ($coupon->usage_per_user) {
+                if (!is_null($userId)) {
+                    $couponUsageData = $this->couponUsageRepository->getUserCouponUsageCount($coupon->id, $userId);
+                    if ($couponUsageData['count'] >= $coupon->usage_per_user) {
+                        // User already used this coupon the maximum number of times
+                        $couponRemoveResp = $this->cartRepository->removeCouponById($cartId);
+                    }
+                }
+            }
+
+            // Check minimum cart value
+            // dd($cartData, $coupon);
+            $cartTotal = $cartData->total ?? 0;
+            if ($coupon->min_cart_value && $cartTotal < $coupon->min_cart_value) {
+                $symbol = $cartData->countryDetail->currency_symbol;
+                // Minimum cart value doesnt match
+                $couponRemoveResp = $this->cartRepository->removeCouponById($cartId);
+                // 'message' => "Minimum cart value required: {$symbol}" . formatIndianMoney($coupon->min_cart_value),
+            }
+
+            // Calculate discount
+            $discountAmount = $this->calculateDiscount($coupon, $cartTotal);
+
+            if ($discountAmount != $cartData->coupon_discount_amount) {
+                // Calculated discount & Cart discount doesnt match
+                $couponRemoveResp = $this->cartRepository->removeCouponById($cartId);
+            }
+
+            return [
+                'success' => true,
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Applied coupon is OK!',
+            ];
+
+            /*
+            // dd($discountAmount);
+
+            // Apply coupon to cart (update cart with discount)
+            $applied = $this->applyCouponToCart($cartData->id, $coupon, $discountAmount);
+
+            // dd($applied);
+
+            if (!$applied) {
+                // Failed to apply coupon to cart
+                $couponRemoveResp = $this->cartRepository->removeCouponById($cartId);
+                // return [
+                //     'success' => false,
+                //     'code' => 500,
+                //     'status' => 'error',
+                //     'message' => 'Failed to apply coupon to cart',
+                // ];
+            }
+
+            // Increment coupon usage
+            $this->incrementCouponUsage($coupon->id);
+
+            // Record coupon redemption - Do this on order place
+            // $this->recordCouponRedemption($coupon->id, $userId, $deviceId, $discountAmount);
+
+            return [
+                'success' => true,
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Coupon applied successfully!',
+                'data' => [
+                    'coupon' => $coupon,
+                    'coupon_discount_amount' => $discountAmount,
+                    'new_total' => $cartTotal - $discountAmount,
+                ],
+            ];
+            */
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'Something Happened. Try Again !',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
     private function calculateDiscount($coupon, $cartTotal): float
     {
         // dd($coupon->discount_type);
