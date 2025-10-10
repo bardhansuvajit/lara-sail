@@ -139,7 +139,7 @@
                                                 @endif
                                             </button>
 
-                                            <button
+                                            {{-- <button
                                                 wire:click="applyCoupon('{{ $coupon->code }}')"
                                                 class="flex items-center gap-2 p-2 bg-green-600 hover:bg-green-700 text-white {{ FD['rounded'] }} {{ FD['text'] }} font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
                                                 title="Apply coupon to cart"
@@ -148,7 +148,30 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                                 </svg>
                                                 <span>Apply Code</span>
-                                            </button>
+                                            </button> --}}
+
+                                            @if($appliedCouponCode && strcasecmp($appliedCouponCode, $coupon->code) === 0)
+                                                <button
+                                                    class="flex items-center gap-2 p-2 bg-gray-300 text-gray-700 {{ FD['rounded'] }} {{ FD['text'] }}"
+                                                    disabled
+                                                    aria-disabled="true"
+                                                    title="Coupon already applied"
+                                                >
+                                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/></svg>
+                                                    <span>Applied</span>
+                                                </button>
+                                            @else
+                                                <button
+                                                    wire:click="applyCoupon('{{ $coupon->code }}')"
+                                                    class="flex items-center gap-2 p-2 bg-green-600 hover:bg-green-700 text-white {{ FD['rounded'] }} {{ FD['text'] }}"
+                                                    title="Apply coupon to cart"
+                                                >
+                                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/></svg>
+                                                    <span>Apply Code</span>
+                                                </button>
+                                            @endif
+
+
                                         </div>
                                     </div>
                                 </div>

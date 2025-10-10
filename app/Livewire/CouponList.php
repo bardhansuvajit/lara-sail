@@ -19,16 +19,18 @@ class CouponList extends Component
     public string $copiedCode = '';
     public bool $showCopiedFeedback = false;
     public string $voucherInput = '';
+    private string $country;
+    public ?string $appliedCouponCode = null;
 
     // Flag to trigger one-time apply from query param
     public bool $applyQueryCoupon = false;
-
-    private string $country;
+    protected $listeners = ['updateCartDataAttr' => 'refreshAppliedCoupon'];
 
     public function mount(): void
     {
         $this->country = COUNTRY['country'] ?? 'IN';
         $this->loadCoupons();
+        $this->refreshAppliedCoupon();
 
         // Auto-apply coupon if URL has ?coupon=CODE
         $couponCode = request('coupon');
@@ -160,7 +162,12 @@ class CouponList extends Component
                 );
                 $this->voucherInput = '';
 
+                $this->refreshAppliedCoupon();
+                // for Cart page
                 $this->dispatch('updateCartDataAttr');
+                // for Checkout page
+                $this->dispatch('updateCartDataAttrInCheckout');
+                // $this->dispatch('hideFullPageLoader');
             } else {
                 $this->dispatch('show-notification', 
                     $couponApplyResp['message'] ?? 'Failed to apply coupon !', 
@@ -210,6 +217,22 @@ class CouponList extends Component
             // prevent re-triggering
             $this->applyQueryCoupon = false;
         }
+    }
+
+    public function refreshAppliedCoupon(): void
+    {
+        $cartRepo = app(\App\Interfaces\CartInterface::class);
+        $deviceId = $_COOKIE['device_id'] ?? \Illuminate\Support\Str::uuid();
+        $userId = auth()->guard('web')->check() ? auth()->guard('web')->user()->id : null;
+
+        $cartResp = !is_null($userId)
+            ? $cartRepo->exists(['user_id' => $userId])
+            : $cartRepo->exists(['device_id' => $deviceId]);
+
+        $cart = $cartResp['data'] ?? null;
+
+        // adapt the key to your repo's shape:
+        $this->appliedCouponCode = $cart->coupon_code ?? null;
     }
 
     public function render()

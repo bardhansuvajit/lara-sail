@@ -7,34 +7,42 @@ use Illuminate\Support\Collection;
 use App\Interfaces\CartInterface;
 use App\Interfaces\CartItemInterface;
 use App\Interfaces\CartSettingInterface;
+use App\Interfaces\ShippingMethodInterface;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 
-class CartCheckout extends Component
+class Cart extends Component
 {
     public String $page;
+    // public Int $cartTotals;
     public Collection $cart;
     public Collection $savedItems;
+    public Collection $shippingMethods;
     public Collection $cartSetting;
+    public ?Int $selectedShippingMethod;
     private CartInterface $cartRepository;
     private CartItemInterface $cartItemRepository;
     private CartSettingInterface $cartSettingRepository;
-    protected $listeners = ['updateCartData' => 'getCartDataWOPaymentMethodUpdate'];
+    private ShippingMethodInterface $shippingMethodRepository;
+    protected $listeners = ['updateCartInfo' => 'getCartData'];
 
     public function mount(
         CartInterface $cartRepository, 
         CartItemInterface $cartItemRepository, 
-        CartSettingInterface $cartSettingRepository
+        CartSettingInterface $cartSettingRepository,
+        ShippingMethodInterface $shippingMethodRepository
     )
     {
-        $this->page = 'checkout';
+        $this->page = 'cart';
         $this->itemData = [];
         $this->getCartData();
     }
 
-    #[On('updateCartDataAttrInCheckout')]
+    #[On('updateCartDataAttr')]
     public function getCartData()
     {
+        $this->dispatch('showFullPageLoader');
+
         $country = COUNTRY['country'];
 
         // Get Cart Setting
@@ -44,7 +52,7 @@ class CartCheckout extends Component
         ])['data'];
         $this->cartSetting = collect($cartSettingData);
 
-        // dd($cartSetting);
+        // dd($cartSettings);
 
         // Get Cart Data
         $cartRepository = app(CartInterface::class);
@@ -65,58 +73,25 @@ class CartCheckout extends Component
         if (!empty($cart['data'])) {
             $cartUpdateResp = $cartRepository->updateCartTotals($cart['data']);
         }
-        // dd($cartUpdateResp);
-        // dd($cart['data']);
 
-        // $this->cart = collect($cart['data']->items);
+        // Get Shipping Methods
+        $shippingMethodRepository = app(ShippingMethodInterface::class);
+        $shippingMethods = $shippingMethodRepository->list('', ['country_code' => $country], 'all', 'position', 'asc')['data'];
+
         $this->cart = collect($cart['data'] ?? []);
         $this->savedItems = collect($cart['data']->savedItems ?? []);
-        // $this->savedItems = count($cart['data']) > 0 ? collect($cart['data']->savedItems) : collect([]);
-        $cartTotals = (int) $cart['data']->total_items;
+        $this->shippingMethods = collect($shippingMethods ?? []);
+        $this->selectedShippingMethod = $cart['data']->shipping_method_id ?? null;
+        $cartTotals = (int) ($cart['data']->total_items ?? 0);
 
         $this->dispatch('updateCartCounts', count: $cartTotals);
         $this->dispatch('hideFullPageLoader');
     }
 
-    public function getCartDataWOPaymentMethodUpdate()
-    {
-        $country = COUNTRY['country'];
-
-        // Get Cart Setting
-        $cartSettingRepository = app(CartSettingInterface::class);
-        $cartSettingData = $cartSettingRepository->exists([
-            'country' => $country
-        ])['data'];
-        $this->cartSetting = collect($cartSettingData);
-
-        // dd($cartSetting);
-
-        // Get Cart Data
-        $cartRepository = app(CartInterface::class);
-
-        if (auth()->guard('web')->check()) {
-            $cart = $cartRepository->exists([
-                'user_id' => auth()->guard('web')->user()->id
-            ]);
-        } else {
-            $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
-
-            $cart = $cartRepository->exists([
-                'device_id' => $deviceId,
-            ]);
-        }
-
-        // Update cart totals, if cart data exists
-        // if (!empty($cart['data'])) {
-        //     $cartUpdateResp = $cartRepository->updateCartTotals($cart['data']);
-        // }
-
-        $this->cart = collect($cart['data'] ?? []);
-        $this->savedItems = collect($cart['data']->savedItems ?? []);
-    }
-
     public function updateQty($id, $type, $currentQty)
     {
+        $this->dispatch('showFullPageLoader');
+
         // dd($id, $type);
         $currentQty = (int)$currentQty;
 
@@ -125,6 +100,7 @@ class CartCheckout extends Component
             $this->dispatch('show-notification', 
                 'Minimum cart quantity is 1', ['type' => 'warning']
             );
+            $this->dispatch('hideFullPageLoader');
             return;
         }
 
@@ -132,6 +108,7 @@ class CartCheckout extends Component
             $cartRepository = app(CartInterface::class);
             $cartItemRepository = app(CartItemInterface::class);
 
+            // 1️⃣ Update quantity
             $resp = $cartItemRepository->qtyUpdate([
                 'id' => $id,
                 'type' => $type
@@ -143,20 +120,28 @@ class CartCheckout extends Component
             // Update cart totals
             $cartResponse = $cartRepository->updateCartTotals($cart);
 
+            $this->getCartData();
+
             $this->dispatch('show-notification', 
                 'Cart updated successfully', ['type' => 'success']
             );
 
-            $this->getCartData();
+            // $this->dispatch('hideFullPageLoader');
         } catch (\Throwable $th) {
             $this->dispatch('show-notification', 
                 'Cart action error', ['type' => 'error']
             );
+
+            $this->dispatch('hideFullPageLoader');
         }
+
+        // $this->dispatch('hideFullPageLoader');
     }
 
     public function deleteItem($id)
     {
+        $this->dispatch('showFullPageLoader');
+
         try {
             $cartRepository = app(CartInterface::class);
             $cartItemRepository = app(CartItemInterface::class);
@@ -183,10 +168,14 @@ class CartCheckout extends Component
                 'Cart action error', ['type' => 'error']
             );
         }
+
+        $this->dispatch('hideFullPageLoader');
     }
 
     public function saveItemForLater($id)
     {
+        $this->dispatch('showFullPageLoader');
+
         try {
             $cartRepository = app(CartInterface::class);
             $cartItemRepository = app(CartItemInterface::class);
@@ -213,10 +202,14 @@ class CartCheckout extends Component
                 'Cart action error', ['type' => 'error']
             );
         }
+
+        $this->dispatch('hideFullPageLoader');
     }
 
     public function moveItemToCart($id)
     {
+        $this->dispatch('showFullPageLoader');
+
         try {
             $cartRepository = app(CartInterface::class);
             $cartItemRepository = app(CartItemInterface::class);
@@ -243,6 +236,35 @@ class CartCheckout extends Component
                 'Cart action error', ['type' => 'error']
             );
         }
+
+        $this->dispatch('hideFullPageLoader');
+    }
+
+    public function updatedselectedShippingMethod($id)
+    {
+        $this->dispatch('showFullPageLoader');
+
+        // Get Cart Data
+        $cartRepository = app(CartInterface::class);
+        if (auth()->guard('web')->check()) {
+            $cart = $cartRepository->exists([
+                'user_id' => auth()->guard('web')->user()->id
+            ])['data'];
+        } else {
+            $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
+
+            $cart = $cartRepository->exists([
+                'device_id' => $deviceId,
+            ])['data'];
+        }
+
+        $updtResp = $cartRepository->updateShippingMethod($id, $cart->id);
+        $this->dispatch('show-notification', 
+            'Shipping method updated', ['type' => 'success']
+        );
+        $this->getCartData();
+        // $this->emit('updateCartInfo');
+        $this->dispatch('hideFullPageLoader');
     }
 
     public function removeCouponCode()
@@ -298,6 +320,6 @@ class CartCheckout extends Component
 
     public function render()
     {
-        return view('livewire.cart-checkout');
+        return view('livewire.cart');
     }
 }

@@ -108,22 +108,23 @@ class Cart extends Component
             $cartRepository = app(CartInterface::class);
             $cartItemRepository = app(CartItemInterface::class);
 
+            // 1️⃣ Update quantity
             $resp = $cartItemRepository->qtyUpdate([
                 'id' => $id,
                 'type' => $type
             ]);
 
             // dd($resp);
-
             $cart = $resp['cart'];
-            // Update cart totals
+
+            // 2️⃣ Update totals
             $cartResponse = $cartRepository->updateCartTotals($cart);
+
+            $this->getCartData();
 
             $this->dispatch('show-notification', 
                 'Cart updated successfully', ['type' => 'success']
             );
-
-            $this->getCartData();
 
             // $this->dispatch('hideFullPageLoader');
         } catch (\Throwable $th) {
