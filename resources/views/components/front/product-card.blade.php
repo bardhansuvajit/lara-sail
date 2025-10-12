@@ -13,7 +13,7 @@
 	<a href="{{ route('front.product.detail', $product->slug) }}"
 		class="block relative z-0"
 	>
-		{{-- image area (transforms create stacking context here) --}}
+		{{-- image area --}}
 		<div class="w-full h-44 md:h-48 bg-gray-100 dark:bg-gray-900/20 {{ FD['rounded'] }} overflow-hidden flex items-center justify-center">
 			@if (count($product->activeImages) > 0)
 				<img

@@ -75,7 +75,7 @@ class ProductFeatureRepository implements ProductFeatureInterface
     }
 
     public function listAllFeatured() {
-        $types = ['featured', 'flash', 'trending'];
+        $types = ['featured', 'flash', 'trending', 'search'];
         $results = [];
 
         $products = ProductFeature::with(['product.activeImages', 'product.pricings'])

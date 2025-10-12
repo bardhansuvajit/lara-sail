@@ -106,7 +106,7 @@
                         </td>
                         <td scope="row" class="px-2 py-1 text-gray-500">
                             <div class="flex justify-end">
-                                @foreach (['featured' => 'Featured', 'flash' => 'Flash', 'trending' => 'Trending', 'off' => 'Off'] as $value => $label)
+                                @foreach (['featured' => 'Featured', 'flash' => 'Flash', 'trending' => 'Trending', 'search' => 'Search', 'off' => 'Off'] as $value => $label)
                                     <label class="cursor-pointer border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition {{ $loop->first ? 'rounded-l-md' : '' }} {{ $loop->last ? 'rounded-r-md -ml-px' : '-ml-px' }}">
                                         <input 
                                             type="radio" 

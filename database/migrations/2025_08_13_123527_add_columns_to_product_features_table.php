@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('product_features', function (Blueprint $table) {
-            $table->enum('type', ['featured', 'flash', 'trending'])->default('featured')->after('status');
+            $table->enum('type', ['featured', 'flash', 'trending', 'search'])->default('featured')->after('status');
         });
     }
 

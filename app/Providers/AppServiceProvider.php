@@ -12,7 +12,7 @@ use App\Models\Country;
 use App\Models\ProductCategory;
 use App\Models\ProductCollection;
 use App\Models\SocialMedia;
-use App\Models\Cart;
+use App\Models\ProductFeature;
 
 use App\Services\OrderNumberService;
 
@@ -101,27 +101,22 @@ class AppServiceProvider extends ServiceProvider
         }
 
 
-        // DB - Cart data
-        // $cartData = collect();
-        // if (Schema::hasTable('carts')) {
-        //     if (auth()->guard('web')->check()) {
-        //         $cartData = Cart::where('user_id', auth()->guard('web')->user()->id)
-        //             ->with('items')
-        //             ->first();
-        //     } else {
-        //         // dd($_COOKIE['device_id']);
-        //         if (!empty($_COOKIE['device_id'])) {
-        //             $cartData = Cart::where('device_id', $_COOKIE['device_id'])
-        //                 ->with('items')
-        //                 ->first();
-
-        //             // dd($cartData);
-        //         }
-        //     }
+        // CACHE - Sponsored products in search bar
+        // Remember for 7 days
+        // $searchBarSponsoredProducts = collect();
+        // if (Schema::hasTable('product_features')) {
+        //     $searchBarSponsoredProducts = Cache::remember('search_sponsored_products', now()->addDays(7), function () {
+        //         return ProductFeature::where('type', 'search')
+        //             ->where('status', 1)
+        //             ->orderBy('position')
+        //             ->get();
+        //     });
         // }
 
+        // dd($searchBarSponsoredProducts);
 
-        // FOrget Cache for Testing - REMOVE CODE LATER
+
+        // Forget Cache for Testing - REMOVE CODE LATER
         if (Schema::hasTable('cache')) {
             $keys = [
                 'active_countries',
@@ -142,6 +137,6 @@ class AppServiceProvider extends ServiceProvider
         View::share('activeCategories', $categories);
         View::share('activeCollections', $collections);
         View::share('socialMedia', $socialMedia);
-        // View::share('cartData', $cartData);
+        // View::share('searchBarSponsoredProducts', $searchBarSponsoredProducts);
     }
 }

@@ -12,6 +12,7 @@ class FeatureProductSetup extends Component
     public collection $featuredProducts;
     public collection $flashSaleProducts;
     public collection $trendingProducts;
+    public collection $searchProducts;
     protected $listeners = ['somethingUpdated' => 'reloadData'];
     private ProductFeatureInterface $productFeatureRepository;
 
@@ -36,6 +37,11 @@ class FeatureProductSetup extends Component
         // Trending Products
         $resp = $productFeatureRepository->list('', ['type' => 'trending'], 'all', 'position', 'asc')['data'];
         $this->trendingProducts = collect($resp);
+
+        // Search Products
+        $resp = $productFeatureRepository->list('', ['type' => 'search'], 'all', 'position', 'asc')['data'];
+        $this->searchProducts = collect($resp);
+        $thissearchProductssearchProducts = collect($resp);
     }
 
     public function deleteFeature($id)
