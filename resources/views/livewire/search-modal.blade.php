@@ -1,7 +1,7 @@
 <div>
     <div class="relative bg-white {{ FD['rounded'] }} shadow dark:bg-gray-800 p-3 pb-20 md:p-5 md:pb-16">
-        <!-- Search Form - Keep original action but add Livewire functionality -->
-        <form class="w-full mx-auto mb-2" action="{{ route('front.search.index') }}" method="GET">
+        <!-- Search Form -->
+        <form class="w-full mx-auto mb-2 @if ($showSuggestions && !empty($query)) md:mb-2 @else md:mb-4 @endif" action="{{ route('front.search.index') }}" method="GET">
             <div class="relative">
                 <div class="absolute inset-y-0 start-0 hidden md:flex items-center ps-3 pointer-events-none">
                     <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -9,18 +9,22 @@
                     </svg>
                 </div>
 
-                <!-- Livewire bound input for real-time search -->
+                <!-- Livewire bound input with keyboard navigation -->
                 <input 
                     type="search" 
                     name="q" 
                     value="{{ request()->input('q') }}"
                     wire:model.live="query"
+                    wire:keydown.arrow-up.prevent="moveSelection('up')"
+                    wire:keydown.arrow-down.prevent="moveSelection('down')"
+                    wire:keydown.enter="selectCurrentSuggestion"
                     class="block w-full pe-10 md:p-3 md:ps-10 md:pe-28 {{ FD['text-2'] }} text-gray-900 border border-gray-300 {{ FD['rounded'] }} bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
                     placeholder="Search in all categories..." 
                     required=""
                     aria-label="Search products" 
                     aria-describedby="search-help" 
-                    autofocus>
+                    autofocus
+                    >
 
                 <div class="h-8 absolute z-10 right-[2.6rem] bottom-[0.30rem] block md:hidden border-l border-gray-300"></div>
 
@@ -47,45 +51,58 @@
         <!-- Dynamic Search Suggestions -->
         @if($showSuggestions && !empty($query))
             <div class="mb-4">
+                @php
+                    $currentIndex = 0;
+                @endphp
+                
                 <!-- Products -->
                 @if(count($suggestions['products']) > 0)
                     <div class="mb-4">
                         <ul class="space-y-0">
                             @foreach($suggestions['products'] as $product)
-                                <li class="flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 p-2 {{ FD['rounded'] }} cursor-pointer transition-colors duration-150" 
-                                    wire:click="selectSuggestion('product', {{ $product->id }}, '{{ $product->slug }}')">
+                                <li class="flex items-center p-2 {{ FD['rounded'] }} cursor-pointer transition-colors duration-150 
+                                    {{ $selectedIndex === $currentIndex ? 'bg-primary-100 dark:bg-primary-900 border border-primary-300 dark:border-primary-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}" 
+                                    wire:click="selectSuggestion('product', {{ $product->id }}, '{{ $product->slug }}')"
+                                    wire:key="product-{{ $product->id }}">
                                     <svg class="w-3 h-3 text-gray-500 dark:text-gray-400 me-2 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
                                     </svg>
-                                    <span class="{{FD['text']}} text-gray-600 dark:text-gray-400 truncate">
+                                    <span class="{{FD['text']}} {{ $selectedIndex === $currentIndex ? 'text-primary-800 dark:text-primary-200 font-medium' : 'text-gray-600 dark:text-gray-400' }} truncate">
                                         {{ $product->title }}
                                     </span>
                                 </li>
+                                @php $currentIndex++; @endphp
                             @endforeach
 
                             @foreach($suggestions['categories'] as $category)
-                                <li class="flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 p-2 {{ FD['rounded'] }} cursor-pointer transition-colors duration-150"
-                                    wire:click="selectSuggestion('category', {{ $category->id }}, '{{ $category->slug }}')">
+                                <li class="flex items-center p-2 {{ FD['rounded'] }} cursor-pointer transition-colors duration-150
+                                    {{ $selectedIndex === $currentIndex ? 'bg-primary-100 dark:bg-primary-900 border border-primary-300 dark:border-primary-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}"
+                                    wire:click="selectSuggestion('category', {{ $category->id }}, '{{ $category->slug }}')"
+                                    wire:key="category-{{ $category->id }}">
                                     <svg class="w-3 h-3 text-gray-500 dark:text-gray-400 me-2 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
                                     </svg>
-                                    <span class="{{FD['text']}} text-gray-600 dark:text-gray-400 truncate">
+                                    <span class="{{FD['text']}} {{ $selectedIndex === $currentIndex ? 'text-primary-800 dark:text-primary-200 font-medium' : 'text-gray-600 dark:text-gray-400' }} truncate">
                                         {{ $category->title ?? $category->name }}
                                         <span class="italic text-gray-400 dark:text-gray-600">in Categories</span>
                                     </span>
                                 </li>
+                                @php $currentIndex++; @endphp
                             @endforeach
 
                             @foreach($suggestions['collections'] as $collection)
-                                <li class="flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 p-2 {{ FD['rounded'] }} cursor-pointer transition-colors duration-150"
-                                    wire:click="selectSuggestion('collection', {{ $collection->id }}, '{{ $collection->slug }}')">
+                                <li class="flex items-center p-2 {{ FD['rounded'] }} cursor-pointer transition-colors duration-150
+                                    {{ $selectedIndex === $currentIndex ? 'bg-primary-100 dark:bg-primary-900 border border-primary-300 dark:border-primary-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}"
+                                    wire:click="selectSuggestion('collection', {{ $collection->id }}, '{{ $collection->slug }}')"
+                                    wire:key="collection-{{ $collection->id }}">
                                     <svg class="w-3 h-3 text-gray-500 dark:text-gray-400 me-2 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
                                     </svg>
-                                    <span class="{{FD['text']}} text-gray-600 dark:text-gray-400 truncate">
+                                    <span class="{{FD['text']}} {{ $selectedIndex === $currentIndex ? 'text-primary-800 dark:text-primary-200 font-medium' : 'text-gray-600 dark:text-gray-400' }} truncate">
                                         {{ $collection->title }}
                                     </span>
                                 </li>
+                                @php $currentIndex++; @endphp
                             @endforeach
                         </ul>
                     </div>
@@ -97,10 +114,19 @@
                         No results found for "{{ $query }}"
                     </p>
                 @endif
+
+                <!-- Keyboard help text -->
+                {{-- @if(!empty(array_filter($suggestions)))
+                    <div class="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                        <p class="{{FD['text-0']}} text-gray-400 dark:text-gray-500 text-center">
+                            ↑↓ to navigate • Enter to select
+                        </p>
+                    </div>
+                @endif --}}
             </div>
         @endif
 
-        <!-- Sponsored products (keep your existing code) -->
+        <!-- Sponsored products -->
         <div class="mb-4">
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 @foreach ($sponsoredProducts as $singleItem)

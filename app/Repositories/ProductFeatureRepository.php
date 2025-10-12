@@ -107,6 +107,39 @@ class ProductFeatureRepository implements ProductFeatureInterface
         // return ['data' => $results];
     }
 
+    public function listFeaturedOnly(string $type) {
+        // $types = ['featured', 'flash', 'trending', 'search'];
+        // $results = [];
+
+        $products = ProductFeature::with(['product.activeImages', 'product.pricings'])
+            ->where('type', $type)
+            ->orderBy('position', 'asc')
+            ->get();
+            // ->groupBy('type');
+
+        // foreach ($types as $type) {
+        //     $results[$type] = $products->get($type, collect())->pluck('product');
+        // }
+
+        if (count($products) > 0) {
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Data found',
+                'data' => $products,
+            ];
+        } else {
+            return [
+                'code' => 404,
+                'status' => 'failure',
+                'message' => 'No data found',
+                'data' => [],
+            ];
+        }
+
+        // return ['data' => $results];
+    }
+
     public function getById(Int $id)
     {
         try {

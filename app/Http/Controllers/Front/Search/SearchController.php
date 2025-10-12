@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Interfaces\ProductFeatureInterface;
 use App\Interfaces\ProductListingInterface;
+use Illuminate\Support\Facades\Cache;
 
 class SearchController extends Controller
 {
@@ -26,11 +27,15 @@ class SearchController extends Controller
             return redirect()->back();
         }
 
-        $featuredProducts = $this->productFeatureRepository->list('', [], 'all', 'position', 'asc');
+        // Featured + Flash Sale + Trending Products
+        $productFeatures = Cache::remember('homepage_products', now()->addHours(6), function() {
+            return $this->productFeatureRepository->listFeaturedOnly('featured');
+        });
+
         $searchProducts = $this->productListingRepository->list($query, [], 'all', 'sold_count', 'asc');
 
         return view('front.search.index', [
-            'featuredProducts' => $featuredProducts['data'],
+            'featuredProducts' => $productFeatures['data'] ?? [],
             'searchProducts' => $searchProducts['data'],
         ]);
     }
