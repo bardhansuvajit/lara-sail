@@ -302,7 +302,6 @@
                                         x-data=""
                                         x-on:click.prevent="
                                             $dispatch('open-sidebar', 'quick-data-view');
-                                            $dispatch('data-image', '{{ $item->image_m }}');
                                             $dispatch('data-title', '{{ htmlspecialchars($item->title, ENT_QUOTES) }}');
                                             $dispatch('data-slug', '{{ $item->slug }}');
                                         " >

@@ -476,7 +476,7 @@ class CouponRepository implements CouponInterface
             $data->show_in_frontend = $array['show_in_frontend'] ?? 0;
 
             // get max position for given attribute_id and type
-            $lastPosition = Coupon::max('position')->where('country_code', $array['country_code']);
+            $lastPosition = Coupon::where('country_code', $array['country_code'])->max('position');
             $data->position = $lastPosition ? $lastPosition + 1 : 1;
 
             $data->status = 0;
