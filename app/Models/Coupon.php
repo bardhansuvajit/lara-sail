@@ -17,4 +17,9 @@ class Coupon extends Model
         'show_in_frontend',
         'position','status',
     ];
+
+    public function state()
+    {
+        return $this->belongsTo('App\Models\Country', 'country_code', 'code');
+    }
 }

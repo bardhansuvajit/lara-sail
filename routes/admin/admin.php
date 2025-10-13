@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\Product\Review\ProductReviewController;
 use App\Http\Controllers\Admin\Product\Variation\ProductVariationAttributeController;
 use App\Http\Controllers\Admin\Product\Variation\ProductVariationAttributeValueController;
 use App\Http\Controllers\Admin\Product\Variation\ProductVariationController;
+use App\Http\Controllers\Admin\Product\Coupon\ProductCouponController;
 
 use App\Http\Controllers\Admin\CsvTemplate\CsvTemplateController;
 use App\Http\Controllers\Admin\Trash\TrashController;
@@ -228,6 +229,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
                     Route::get('/export/{type}', 'export')->name('export');
                     Route::post('/position', 'position')->name('position');
                 });
+            });
+
+            // coupon
+            Route::prefix('coupon')->name('coupon.')->controller(ProductCouponController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+                Route::post('/bulk', 'bulk')->name('bulk');
+                Route::post('/import', 'import')->name('import');
+                Route::get('/export/{type}', 'export')->name('export');
+                Route::post('/position', 'position')->name('position');
             });
         });
 
