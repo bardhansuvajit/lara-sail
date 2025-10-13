@@ -18,11 +18,11 @@ class SearchModal extends Component
     public $categories = [];
     public $showSuggestions = false;
     public $selectedIndex = -1;
-    
+
     public $sponsoredProducts;
 
     // protected $queryString = ['q' => ['except' => '']];
-    protected $queryString = ['query' => ['except' => '']];
+    // protected $queryString = ['query' => ['except' => '']];
 
     public function mount()
     {
@@ -39,7 +39,7 @@ class SearchModal extends Component
 
     public function updatedQuery($value)
     {
-        if (strlen($value) >= 2) {
+        if (strlen($value) >= 1) {
             $this->showSuggestions = true;
             $this->getSearchSuggestions($value);
         } else {
@@ -53,16 +53,22 @@ class SearchModal extends Component
     {
         // Search across multiple models
         $productResults = Product::where('title', 'like', "%{$searchTerm}%")
-            ->with('activeImages')
+            ->orWhere('search_tags', 'like', "%{$searchTerm}%")
+            ->with('activeImages', 'statusDetail')
+            ->whereHas('statusDetail', function ($q) {
+                $q->where('show_in_frontend', 1);
+            })
             ->limit(5)
             ->get();
 
         $categoryResults = ProductCategory::where('title', 'like', "%{$searchTerm}%")
+            ->orWhere('tags', 'like', "%{$searchTerm}%")
             ->where('status', 1)
             ->limit(3)
             ->get();
 
         $collectionResults = ProductCollection::where('title', 'like', "%{$searchTerm}%")
+            ->orWhere('tags', 'like', "%{$searchTerm}%")
             ->where('status', 1)
             ->limit(3)
             ->get();

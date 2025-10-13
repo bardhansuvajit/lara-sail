@@ -15,6 +15,7 @@
                     name="q" 
                     value="{{ request()->input('q') }}"
                     wire:model.live="query"
+                    {{-- wire:model.debounce.300ms="query" --}}
                     wire:keydown.arrow-up.prevent="moveSelection('up')"
                     wire:keydown.arrow-down.prevent="moveSelection('down')"
                     wire:keydown.enter="selectCurrentSuggestion"
@@ -54,9 +55,9 @@
                 @php
                     $currentIndex = 0;
                 @endphp
-                
+
                 <!-- Products -->
-                @if(count($suggestions['products']) > 0)
+                @if(count($suggestions['products']) > 0 || count($suggestions['categories']) > 0 || count($suggestions['collections']) > 0)
                     <div class="mb-4">
                         <ul class="space-y-0">
                             @foreach($suggestions['products'] as $product)
@@ -84,12 +85,12 @@
                                     </svg>
                                     <span class="{{FD['text']}} {{ $selectedIndex === $currentIndex ? 'text-primary-800 dark:text-primary-200 font-medium' : 'text-gray-600 dark:text-gray-400' }} truncate">
                                         {{ $category->title ?? $category->name }}
-                                        <span class="italic text-gray-400 dark:text-gray-600">in Categories</span>
+                                        <span class="italic text-gray-400 dark:text-gray-500">in Categories</span>
                                     </span>
                                 </li>
                                 @php $currentIndex++; @endphp
                             @endforeach
-
+                            
                             @foreach($suggestions['collections'] as $collection)
                                 <li class="flex items-center p-2 {{ FD['rounded'] }} cursor-pointer transition-colors duration-150
                                     {{ $selectedIndex === $currentIndex ? 'bg-primary-100 dark:bg-primary-900 border border-primary-300 dark:border-primary-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}"
@@ -98,7 +99,7 @@
                                     <svg class="w-3 h-3 text-gray-500 dark:text-gray-400 me-2 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
                                     </svg>
-                                    <span class="{{FD['text']}} {{ $selectedIndex === $currentIndex ? 'text-primary-800 dark:text-primary-200 font-medium' : 'text-gray-600 dark:text-gray-400' }} truncate">
+                                    <span class="{{FD['text']}} {{ $selectedIndex === $currentIndex ? 'text-primary-800 dark:text-primary-200 font-medium' : 'text-gray-500 dark:text-gray-400' }} truncate">
                                         {{ $collection->title }}
                                     </span>
                                 </li>
@@ -106,6 +107,10 @@
                             @endforeach
                         </ul>
                     </div>
+                @else
+                    <p class="{{FD['text']}} text-gray-500 dark:text-gray-400 italic">
+                        No results found for "{{ $query }}"
+                    </p>
                 @endif
 
                 <!-- No Results Message -->
