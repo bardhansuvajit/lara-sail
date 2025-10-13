@@ -93,10 +93,22 @@ class ProductCouponController
 
         $request->validate([
             'id' => 'required|integer',
-            'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
-            'title' => 'required|min:2|max:255',
-            'short_description' => 'nullable|min:2|max:1000',
-            'long_description' => 'nullable|min:2',
+            'country_code' => 'required|min:2|max:2|exists:countries,code',
+            'code' => 'required|string|min:4|max:30',
+            'name' => 'required|string|min:2|max:255',
+            'description' => 'nullable|string|min:2|max:1000',
+            'discount_type' => 'required|string|in:percentage,fixed,free_shipping',
+            
+            'value' => ['required','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            'max_discount_amount' => ['required','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            'min_cart_value' => ['required','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            
+            'usage_limit' => ['required','numeric','min:1','max:1000000'],
+            'usage_per_user' => ['required','numeric','min:1','max:1000000'],
+
+            'starts_at' => 'required|date',
+            'expires_at' => 'required|date',
+            'show_in_frontend' => 'nullable|numeric|in:0,1',
         ]);
 
         $resp = $this->couponRepository->update($request->all());

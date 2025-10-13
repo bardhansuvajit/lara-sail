@@ -1,7 +1,15 @@
 <div>
-    <div class="relative bg-white {{ FD['rounded'] }} shadow dark:bg-gray-800 p-3 pb-20 md:p-5 md:pb-16">
+    <div class="relative bg-white {{ FD['rounded'] }} shadow dark:bg-gray-800 p-3 pb-20 md:p-5 md:pb-16 h-screen md:h-auto">
+        @php
+            if ($showSuggestions && !empty($query)) {
+                $bottomCLasses = "md:mb-2";
+            } else {
+                $bottomCLasses = "md:mb-4";
+            }
+        @endphp
+
         <!-- Search Form -->
-        <form class="w-full mx-auto mb-2 @if ($showSuggestions && !empty($query)) md:mb-2 @else md:mb-4 @endif" action="{{ route('front.search.index') }}" method="GET">
+        <form class="w-full mx-auto mb-2 {{ $bottomCLasses }}" action="{{ route('front.search.index') }}" method="GET">
             <div class="relative">
                 <div class="absolute inset-y-0 start-0 hidden md:flex items-center ps-3 pointer-events-none">
                     <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -36,6 +44,7 @@
                     {{ FD['rounded'] }} {{ FD['text-1'] }} 
                     transform -translate-x-1/2 
                     text-gray-700 md:text-white font-medium 
+                    dark:text-white
                     md:bg-primary-700 md:hover:bg-primary-800 
                     dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 
                     focus:ring-4 focus:outline-none focus:ring-primary-300">
@@ -131,69 +140,73 @@
             </div>
         @endif
 
+        {{-- {{ dd($sponsoredProducts) }} --}}
+
         <!-- Sponsored products -->
-        <div class="mb-4">
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                @foreach ($sponsoredProducts as $singleItem)
-                    @php
-                        $product = $singleItem->product;
-                    @endphp
-                    <a href="{{ route('front.product.detail', $product->slug) }}" class="block {{ FD['rounded'] }} p-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
-                        <div class="h-20">
-                            @if (count($product->activeImages) > 0)
-                                <img
-                                    src="{{ Storage::url($product->activeImages[0]->image_m) }}"
-                                    alt="{{ $product->slug }}"
-                                    loading="lazy"
-                                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                />
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
-                                    {!! FD['brokenImageFront'] !!}
+        @if ($sponsoredProducts->isNotEmpty())
+            <div class="mb-2 md:mb-4">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-4">
+                    @foreach ($sponsoredProducts as $singleItem)
+                        @php
+                            $product = $singleItem->product;
+                        @endphp
+                        <a href="{{ route('front.product.detail', $product->slug) }}" class="block {{ FD['rounded'] }} p-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
+                            <div class="h-20">
+                                @if (count($product->activeImages) > 0)
+                                    <img
+                                        src="{{ Storage::url($product->activeImages[0]->image_m) }}"
+                                        alt="{{ $product->slug }}"
+                                        loading="lazy"
+                                        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                    />
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
+                                        {!! FD['brokenImageFront'] !!}
+                                    </div>
+                                @endif
+                            </div>
+
+                            <h4 class="{{FD['text-0']}} font-medium dark:text-white text-gray-900">{{ $product->title }}</h4>
+
+                            <p class="{{FD['text-0']}} text-slate-400">Sponsored</p>
+
+                            @if ($product->average_rating > 0)
+                                {!! frontRatingHtml($product->average_rating) !!}
+                            @endif
+
+                            @if ( !empty($product->FDPricing) )
+                                @php
+                                    $p = $product->FDPricing;
+                                    $currencySymbol = $p->country->currency_symbol;
+                                @endphp
+                                <div class="mt-1 flex items-center justify-between gap-1">
+                                    <div>
+                                        <div class="{{ FD['text-1'] }} font-extrabold text-gray-900 dark:text-white leading-none">
+                                            <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->selling_price) }}
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            @if($p->mrp && $p->mrp > 0)
+                                                <span class="{{ FD['text'] }} text-gray-400 dark:text-gray-400 line-through">
+                                                    <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->mrp) }}
+                                                </span>
+                                                <span class="{{ FD['text'] }} font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/20 px-2 py-0.5 {{ FD['rounded'] }}">
+                                                    {{ $p->discount }}% off
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
                             @endif
-                        </div>
-
-                        <h4 class="{{FD['text-0']}} font-medium dark:text-white text-gray-900">{{ $product->title }}</h4>
-
-                        <p class="{{FD['text-0']}} text-slate-400">Sponsored</p>
-
-                        @if ($product->average_rating > 0)
-                            {!! frontRatingHtml($product->average_rating) !!}
-                        @endif
-
-                        @if ( !empty($product->FDPricing) )
-                            @php
-                                $p = $product->FDPricing;
-                                $currencySymbol = $p->country->currency_symbol;
-                            @endphp
-                            <div class="mt-1 flex items-center justify-between gap-1">
-                                <div>
-                                    <div class="{{ FD['text-1'] }} font-extrabold text-gray-900 dark:text-white leading-none">
-                                        <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->selling_price) }}
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        @if($p->mrp && $p->mrp > 0)
-                                            <span class="{{ FD['text'] }} text-gray-400 dark:text-gray-400 line-through">
-                                                <span class="currency-icon">{{ $currencySymbol }}</span>{{ formatIndianMoney($p->mrp) }}
-                                            </span>
-                                            <span class="{{ FD['text'] }} font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/20 px-2 py-0.5 {{ FD['rounded'] }}">
-                                                {{ $p->discount }}% off
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    </a>
-                @endforeach
+                        </a>
+                    @endforeach
+                </div>
             </div>
-        </div>
+        @endif
 
         <!-- All categories -->
         <div>
             <h3 class="{{FD['text']}} font-semibold text-gray-900 dark:text-white mb-2">All categories</h3>
-            <div class="grid sm:grid-cols-2 md:grid-cols-5 gap-2">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
                 @foreach ($activeCategories as $category)
                     <a href="{{ route('front.category.detail', $category['slug']) }}"
                         class="{{ FD['rounded'] }} py-2 px-4 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 DpMPWwlSESiYA8EE1xKM dark:hover:bg-gray-600 flex items-center">

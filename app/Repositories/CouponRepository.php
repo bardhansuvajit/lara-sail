@@ -566,28 +566,35 @@ class CouponRepository implements CouponInterface
             $data = $this->getById($array['id']);
 
             if ($data['code'] == 200) {
-                if (!empty($array['title'])) {
-                    $data['data']->title = $array['title'];
-                    $data['data']->slug = \Str::slug($array['title']);
-                }
+                // if (!empty($array['title'])) {
+                //     $data['data']->title = $array['title'];
+                //     $data['data']->slug = \Str::slug($array['title']);
+                // }
 
-                $data['data']->level = $array['level'];
-                $data['data']->parent_id = $array['parent_id'] ?? null;
+                // $data['data']->level = $array['level'];
+                // $data['data']->parent_id = $array['parent_id'] ?? null;
 
-                $data['data']->short_description = $array['short_description'] ?? null;
-                $data['data']->long_description = $array['long_description'] ?? null;
+                // $data['data']->short_description = $array['short_description'] ?? null;
+                // $data['data']->long_description = $array['long_description'] ?? null;
 
-                if (!empty($array['image'])) {
-                    $uploadResp = fileUpload($array['image'], 'p-cat');
+                // $data['data']->save();
 
-                    $data['data']->image_s = $uploadResp['smallThumbName'];
-                    $data['data']->image_m = $uploadResp['mediumThumbName'];
-                    $data['data']->image_l = $uploadResp['largeThumbName'];
-                }
+                $data = $data['data'];
 
-                // dd($array, $data['data']->getDirty());
-
-                $data['data']->save();
+                $data->country_code = $array['country_code'];
+                $data->code = $array['code'];
+                $data->name = $array['name'];
+                $data->description = $array['description'];
+                $data->discount_type = $array['discount_type'];
+                $data->value = $array['value'];
+                $data->max_discount_amount = $array['max_discount_amount'];
+                $data->min_cart_value = $array['min_cart_value'];
+                $data->usage_limit = $array['usage_limit'];
+                $data->usage_per_user = $array['usage_per_user'];
+                $data->starts_at = $array['starts_at'];
+                $data->expires_at = $array['expires_at'];
+                $data->show_in_frontend = $array['show_in_frontend'];
+                $data->save();
 
                 return [
                     'code' => 200,
@@ -602,7 +609,8 @@ class CouponRepository implements CouponInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => 'An error occurred while updating data.',
+                // 'message' => 'An error occurred while updating data.',
+                'message' => $e->getMessage(),
                 'error' => $e->getMessage(),
             ];
         }

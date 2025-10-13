@@ -123,6 +123,7 @@ class AppServiceProvider extends ServiceProvider
                 'homepage_products',
                 'most_sold_products',
                 'homepage_ads',
+                'search_sponsored_products',
             ];
 
             foreach ($keys as $key) {

@@ -31,8 +31,8 @@ return new class extends Migration
             $table->integer('usage_limit')->nullable();
             $table->integer('usage_per_user')->nullable();
             $table->integer('used_count')->default(0);
-            $table->dateTime('starts_at');
-            $table->dateTime('expires_at');
+            $table->date('starts_at');
+            $table->date('expires_at');
 
             $table->boolean('show_in_frontend')->default(true);
 

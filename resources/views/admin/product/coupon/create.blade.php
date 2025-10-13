@@ -20,11 +20,11 @@
 
                 <div>
                     <x-admin.input-label for="country_code" :value="__('Country *')" />
-                    <x-admin.input-select id="country_code" name="country_code" title="Select Parent" class="w-full">
+                    <x-admin.input-select id="country_code" name="country_code" title="Select Country" class="w-full">
                         @slot('options')
                             @foreach ($activeCountries as $country)
                                 <x-admin.input-select-option value="{{$country->code}}" 
-                                    :selected="old('country', request()->input('country', COUNTRY['country'])) == $country->code"
+                                    :selected="old('country_code', request()->input('country', COUNTRY['country'])) == $country->code"
                                 > {{$country->name}} </x-admin.input-select-option>
                             @endforeach
                         @endslot
@@ -52,7 +52,7 @@
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div>
                     <x-admin.input-label for="discount_type" :value="__('Discount Type *')" />
-                    <x-admin.input-select id="discount_type" name="discount_type" title="Select Parent" class="w-full">
+                    <x-admin.input-select id="discount_type" name="discount_type" title="Select Discount Type" class="w-full">
                         @slot('options')
                             <x-admin.input-select-option value="percentage" selected> Percentage </x-admin.input-select-option>
                             <x-admin.input-select-option value="fixed"> Fixed </x-admin.input-select-option>
@@ -100,13 +100,13 @@
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div>
                     <x-admin.input-label for="starts_at" :value="__('Starts at *')" />
-                    <x-admin.text-input id="starts_at" class="block w-full" type="date" name="starts_at" :value="old('starts_at')" placeholder="Enter start date" />
+                    <x-admin.text-input id="starts_at" class="block w-full" type="date" name="starts_at" :value="old('starts_at', date('Y-m-d'))" placeholder="Enter start date" />
                     <x-admin.input-error :messages="$errors->get('starts_at')" class="mt-2" />
                 </div>
 
                 <div>
                     <x-admin.input-label for="expires_at" :value="__('Ends at *')" />
-                    <x-admin.text-input id="expires_at" class="block w-full" type="date" name="expires_at" :value="old('expires_at', 1)" placeholder="Enter end date" />
+                    <x-admin.text-input id="expires_at" class="block w-full" type="date" name="expires_at" :value="old('expires_at')" placeholder="Enter end date" />
                     <x-admin.input-error :messages="$errors->get('expires_at')" class="mt-2" />
                 </div>
 

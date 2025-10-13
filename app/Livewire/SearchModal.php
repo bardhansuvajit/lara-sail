@@ -28,7 +28,7 @@ class SearchModal extends Component
     {
         // Initialize query from request
         $this->query = request()->input('q', '');
-        
+
         $this->sponsoredProducts = Cache::remember('search_sponsored_products', now()->addDays(7), function () {
             return ProductFeature::where('type', 'search')
                 ->where('status', 1)

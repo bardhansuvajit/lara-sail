@@ -302,8 +302,22 @@
                                         x-data=""
                                         x-on:click.prevent="
                                             $dispatch('open-sidebar', 'quick-data-view');
-                                            $dispatch('data-title', '{{ htmlspecialchars($item->title, ENT_QUOTES) }}');
-                                            $dispatch('data-slug', '{{ $item->slug }}');
+                                            $dispatch('data-state_flag', '{{ $item->state->flag }}');
+                                            $dispatch('data-state_name', '{{ $item->state->name }}');
+                                            $dispatch('data-state_code', '{{ $item->country_code }}');
+                                            $dispatch('data-code', '{{ $item->code }}');
+                                            $dispatch('data-name', '{{ htmlspecialchars($item->name, ENT_QUOTES) }}');
+                                            $dispatch('data-description', '{{ htmlspecialchars($item->description, ENT_QUOTES) }}');
+                                            $dispatch('data-discount_type', '{{ $item->discount_type }}');
+                                            $dispatch('data-value', '{{ $item->value }}');
+                                            $dispatch('data-max_discount_amount', '{{ $item->max_discount_amount }}');
+                                            $dispatch('data-min_cart_value', '{{ $item->min_cart_value }}');
+                                            $dispatch('data-usage_limit', '{{ $item->usage_limit }}');
+                                            $dispatch('data-usage_per_user', '{{ $item->usage_per_user }}');
+                                            $dispatch('data-used_count', '{{ $item->used_count }}');
+                                            $dispatch('data-starts_at', '{{ $item->starts_at }}');
+                                            $dispatch('data-expires_at', '{{ $item->expires_at }}');
+                                            $dispatch('data-show_in_frontend', '{{ $item->show_in_frontend }}');
                                         " >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>
@@ -363,29 +377,82 @@
     <x-admin.sidebar name="quick-data-view" maxWidth="sm" direction="right" header="Quick View" focusable>
         <div 
             class="p-4"
-            x-data="{image: '', title: '', slug: ''}"
+            x-data="{
+                image: '',state_flag: '',state_name: '',state_code: '',code: '',
+                name: '',description: '',discount_type: '',
+                value: '',max_discount_amount: '',min_cart_value: '',
+                usage_limit: '',usage_per_user: '',used_count: '',
+                starts_at: '',expires_at: '',
+                show_in_frontend: '',
+                boolText(v) { return (v === '1' || v === 1 || v === true || v === 'true') ? 'Yes' : (v === '0' || v === 0 || v === false || v === 'false' ? 'No' : v); },
+                has(v) { return v !== null && v !== undefined && String(v).trim() !== ''; },
+                storageUrl(path) { return path ? ('{{ Storage::url('') }}' + path) : ''; }
+            }"
             x-on:data-image.window="image = $event.detail"
-            x-on:data-title.window="title = $event.detail"
-            x-on:data-slug.window="slug = $event.detail"
+            x-on:data-state_flag.window="state_flag = $event.detail"
+            x-on:data-state_name.window="state_name = $event.detail"
+            x-on:data-state_code.window="state_code = $event.detail"
+            x-on:data-code.window="code = $event.detail"
+            x-on:data-name.window="name = $event.detail"
+            x-on:data-description.window="description = $event.detail"
+            x-on:data-discount_type.window="discount_type = $event.detail"
+            x-on:data-value.window="value = $event.detail"
+            x-on:data-max_discount_amount.window="max_discount_amount = $event.detail"
+            x-on:data-min_cart_value.window="min_cart_value = $event.detail"
+            x-on:data-usage_limit.window="usage_limit = $event.detail"
+            x-on:data-usage_per_user.window="usage_per_user = $event.detail"
+            x-on:data-used_count.window="used_count = $event.detail"
+            x-on:data-starts_at.window="starts_at = $event.detail"
+            x-on:data-expires_at.window="expires_at = $event.detail"
+            x-on:data-show_in_frontend.window="show_in_frontend = $event.detail"
         >
-            <h5 class="text-xs font-bold mb-1">Image</h5>
-            <div>
-                <template x-if="image && image.trim() !== ''">
-                    <div class="h-50 mb-3">
-                        <img :src="'{{ Storage::url('') }}' + image" alt="Image" class="h-full w-auto border-4" />
-                    </div>
-                </template>
-                <template x-if="!image || image.trim() === ''">
-                    <p class="text-sm mb-3 text-orange-500 font-bold">NA</p>
-                </template>
+            <h5 class="text-xs font-bold mb-1">State</h5>
+            <div class="mb-3">
+                <div x-data="{ state_flag: $store.item.state_flag }">
+                    <template x-if="state_flag">
+                        <div class="w-8 h-8 mb-3" x-html="state_flag"></div>
+                    </template>
+                    <template x-if="!state_flag">
+                        <p class="text-sm mb-3 text-orange-500 font-bold">NA</p>
+                    </template>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold" x-text="has(state_name) ? state_name : 'NA'"></p>
+                    <p class="text-xs text-muted" x-text="has(state_code) ? ('Code: ' + state_code) : ''"></p>
+                </div>
             </div>
 
-            <h5 class="text-xs font-bold mb-1">Title</h5>
-            <p class="text-sm mb-3" x-html="title"></p>
+            <h5 class="text-xs font-bold mb-1">Coupon Code</h5>
+            <p class="text-sm mb-3 px-2 py-1 inline-block text-white bg-slate-800" x-text="has(code) ? code : 'NA'"></p>
 
-            <h5 class="text-xs font-bold mb-1">Slug</h5>
-            <p class="text-sm mb-3" x-html="slug"></p>
+            <h5 class="text-xs font-bold mb-1">Name</h5>
+            <p class="text-sm mb-3" x-text="has(name) ? name : 'NA'"></p>
 
+            <h5 class="text-xs font-bold mb-1">Description</h5>
+            <div class="text-sm mb-3" x-html="has(description) ? description : '<span class=&quot;text-orange-500 font-bold&quot;>NA</span>'"></div>
+
+            <h5 class="text-xs font-bold mb-1">Discount</h5>
+            <p class="text-sm mb-1" x-text="has(discount_type) ? (discount_type + (has(value) ? (' — ' + value) : '')) : 'NA'"></p>
+            <p class="text-sm mb-3 text-muted" x-text="has(max_discount_amount) ? ('Max: ' + max_discount_amount) : ''"></p>
+
+            {{-- MIN CART --}}
+            <h5 class="text-xs font-bold mb-1">Min Cart Value</h5>
+            <p class="text-sm mb-3" x-text="has(min_cart_value) ? min_cart_value : 'NA'"></p>
+
+            {{-- USAGE --}}
+            <h5 class="text-xs font-bold mb-1">Usage</h5>
+            <p class="text-sm mb-1" x-text="has(usage_limit) ? ('Limit: ' + usage_limit) : 'Limit: NA'"></p>
+            <p class="text-sm mb-3" x-text="has(usage_per_user) ? ('Per user: ' + usage_per_user) : 'Per user: NA'"></p>
+            <p class="text-sm mb-3 text-muted" x-text="has(used_count) ? ('Used: ' + used_count) : ''"></p>
+
+            {{-- DATES --}}
+            <h5 class="text-xs font-bold mb-1">Validity</h5>
+            <p class="text-sm mb-1" x-text="has(starts_at) ? ('Starts: ' + starts_at) : 'Starts: NA'"></p>
+            <p class="text-sm mb-3" x-text="has(expires_at) ? ('Expires: ' + expires_at) : 'Expires: NA'"></p>
+
+            {{-- SHOW IN FRONTEND --}}
+            <h5 class="text-xs font-bold mb-1">Show in frontend</h5>
+            <p class="text-sm mb-3" x-text="boolText(show_in_frontend)"></p>
         </div>
     </x-admin.sidebar>
 
