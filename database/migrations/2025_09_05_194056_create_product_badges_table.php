@@ -24,7 +24,8 @@ return new class extends Migration
 
             $table->integer('position')->default(1);
             $table->tinyInteger('status')->default(1)->comment('1: active, 0: inactive');
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
         $now = date('Y-m-d H:i:s');

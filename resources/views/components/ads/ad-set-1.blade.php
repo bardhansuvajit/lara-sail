@@ -22,6 +22,8 @@
         </div>
     </div>
 
+    {{-- {{ dd($data->meta) }} --}}
+
     {{-- mini promo strip --}}
     @if ($data->meta)
         @php
@@ -36,7 +38,7 @@
                     </div>
                     <div>
                         <p class="{{ FD['text'] }} font-medium">{{ $highlight['title'] }}</p>
-                        <p class="{{ FD['text-0'] }} text-gray-500">{{ $highlight['description'] }}</p>
+                        <p class="{{ FD['text-0'] }} text-gray-500">{{ $highlight['description'] ?? '' }}</p>
                     </div>
                 </div>
             @endforeach

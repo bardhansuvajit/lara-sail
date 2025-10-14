@@ -6,6 +6,7 @@ use Illuminate\Http\UploadedFile;
 interface AdSectionInterface
 {
     public function list(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder);
+    public function listByGroup();
     public function store(Array $array);
     public function getById(Int $id);
     public function update(Array $array);

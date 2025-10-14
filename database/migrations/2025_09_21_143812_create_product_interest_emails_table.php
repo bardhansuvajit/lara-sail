@@ -25,8 +25,9 @@ return new class extends Migration
             $table->string('source')->nullable()->comment('Where the subscription came from');
             $table->json('meta')->nullable()->comment('Additional metadata');
 
-            $table->timestamps();
             $table->softDeletes();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 
             $table->index('email');
             $table->index('subscribed_at');

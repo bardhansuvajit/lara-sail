@@ -18,7 +18,8 @@ return new class extends Migration
             $table->text('meta_description')->nullable();
             $table->json('sections')->nullable();
             $table->boolean('status')->default(true);
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
         $now = now();

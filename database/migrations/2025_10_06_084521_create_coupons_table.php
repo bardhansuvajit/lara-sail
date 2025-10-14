@@ -39,7 +39,8 @@ return new class extends Migration
             $table->integer('position')->default(1);
             $table->tinyInteger('status')->default(1);
             $table->softDeletes();
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 
             // Better indexes for performance
             $table->index(['country_code', 'status', 'show_in_frontend']);

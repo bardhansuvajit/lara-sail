@@ -24,7 +24,8 @@ return new class extends Migration
             $table->string('ip_address', 45)->nullable();
 
             $table->softDeletes();
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 
             $table->unique(['coupon_id', 'order_id']); // Prevent duplicate uses per order
             $table->index(['user_id', 'coupon_id']);

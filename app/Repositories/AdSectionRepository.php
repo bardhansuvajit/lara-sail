@@ -61,12 +61,103 @@ class AdSectionRepository implements AdSectionInterface
                     'data' => $data,
                 ];
             }
-    
+
             return [
                 'code' => 404,
                 'status' => 'failure',
                 'message' => 'No data found',
                 'data' => [],
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function listByGroup()
+    {
+        try {
+            $ads = AdSection::select('id', 'pages', 'name', 'slug', 'type', 'status', 'position')
+                ->orderBy('position')
+                ->get();
+
+            if ($ads->isEmpty()) {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+
+            $grouped = [];
+
+            foreach ($ads as $ad) {
+                // Normalize pages into an array (handles string CSV, array, Collection, null etc.)
+                $raw = $ad->pages;
+
+                // If model accessor returns array already, use it.
+                if (is_array($raw)) {
+                    $pages = $raw;
+                } elseif ($raw instanceof \Illuminate\Support\Collection) {
+                    $pages = $raw->all();
+                } elseif (is_object($raw)) {
+                    // fallback for unexpected object values: cast to string then parse
+                    $pages = [ (string) $raw ];
+                } else {
+                    // treat as string (including null -> '')
+                    $raw = (string) $raw;
+                    // remove extra whitespace around commas, then explode
+                    // allow both "homepage, category" and "homepage,category"
+                    if ($raw === '') {
+                        $pages = [];
+                    } else {
+                        $parts = array_map('trim', explode(',', $raw));
+                        $pages = $parts;
+                    }
+                }
+
+                // normalize each page: trim, lowercase, ignore empties, keep unique, preserve order
+                $normalized = [];
+                foreach ($pages as $p) {
+                    if (!is_scalar($p)) {
+                        continue;
+                    }
+                    $s = trim((string) $p);
+                    if ($s === '') {
+                        continue;
+                    }
+                    $s = mb_strtolower($s);
+                    if (!in_array($s, $normalized, true)) {
+                        $normalized[] = $s;
+                    }
+                }
+
+                // attach ad to each page group
+                foreach ($normalized as $page) {
+                    if (!isset($grouped[$page])) {
+                        $grouped[$page] = [];
+                    }
+                    $grouped[$page][] = [
+                        'id' => $ad->id,
+                        'name' => $ad->name,
+                        'slug' => $ad->slug,
+                        'type' => $ad->type,
+                        'status' => $ad->status,
+                        'position' => $ad->position,
+                    ];
+                }
+            }
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Data found',
+                'data' => $grouped,
             ];
         } catch (\Exception $e) {
             return [

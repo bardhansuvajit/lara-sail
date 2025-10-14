@@ -42,7 +42,8 @@ return new class extends Migration
 
             $table->tinyInteger('status')->default(1)->comment('1: active, 0: inactive');
             $table->softDeletes();
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
         $data = [
