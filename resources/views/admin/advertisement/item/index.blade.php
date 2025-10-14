@@ -1,21 +1,25 @@
 <x-admin-app-layout
     screen="md:w-full"
-    title="{{ __('Coupon') }}"
+    title="{{ __('Ad Item') }}"
     :breadcrumb="[
-        ['label' => 'Coupon']
+        ['label' => 'Ad Item']
     ]"
 >
 
-    {{-- @if(Session::has('success'))
-    <h1>hereee</h1>
-    @endif --}}
-
     <section class="sm:rounded-lg overflow-hidden px-1 py-2">
+
+        <div class="my-3 flex items-center text-red-600 dark:text-orange-600 bg-orange-100 dark:bg-orange-100 p-2">
+            <div class="w-4 h-4 me-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z"/></svg>
+            </div>
+            <p class="text-sm font-bold text-red-600 dark:text-orange-600">{!! __('Ad section must be handled with an expertise of a developer') !!}</p>
+        </div>
+
         {{-- add data --}}
         <div class="flex space-x-2 justify-end">
             <x-admin.button
                 element="a"
-                :href="route('admin.product.coupon.create')">
+                :href="route('admin.website.ad.item.create')">
                 @slot('icon')
                     <svg fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" /></svg>
                 @endslot
@@ -31,8 +35,8 @@
                 id="importButton" 
                 x-on:click.prevent="
                     $dispatch('open-modal', 'import');
-                    $dispatch('set-model', 'Coupon');
-                    $dispatch('set-route', '{{ route('admin.product.coupon.import') }}');
+                    $dispatch('set-model', 'ProductCollection');
+                    $dispatch('set-route', '{{ route('admin.website.ad.item.import') }}');
                 ">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
@@ -49,7 +53,7 @@
                 id="exportButton" 
                 x-on:click.prevent="
                     $dispatch('open-modal', 'export');
-                    $dispatch('set-route', '{{ route('admin.product.coupon.export', 'csv') }}');
+                    $dispatch('set-route', '{{ route('admin.website.ad.item.export', 'csv') }}');
                 ">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
@@ -157,7 +161,7 @@
                                         $dispatch('open-modal', 'confirm-bulk-action');
                                         $dispatch('data-desc', 'Are you sure you want to Delete selected data?');
                                         $dispatch('data-button-text', 'Yes, Delete');
-                                        $dispatch('set-route', '{{ route('admin.product.coupon.bulk') }}');
+                                        $dispatch('set-route', '{{ route('admin.website.ad.item.bulk') }}');
                                         document.getElementById('bulkActionInput').value = 'delete';
                                     ">
                                     @slot('icon')
@@ -221,14 +225,12 @@
                         </th>
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Country</th>
-                        <th scope="col" class="px-2 py-1">Code</th>
+                        <th scope="col" class="px-2 py-1">Image</th>
                         <th scope="col" class="px-2 py-1">Details</th>
-                        <th scope="col" class="px-2 py-1">Discount</th>
-                        <th scope="col" class="px-2 py-1">Usage</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
-                <tbody id="sortable-container" data-route="{{ route('admin.product.coupon.position') }}">
+                <tbody id="sortable-container" data-route="{{ route('admin.website.ad.item.position') }}">
                     @forelse ($data as $item)
                         <tr class="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700" data-id="{{$item->id}}">
                             <td class="p-2 w-2">
@@ -258,38 +260,21 @@
                                     </div>
                                 </div>
                             </td>
-                            <td scope="row" class="px-2 py-1 text-gray-700 dark:text-gray-300 font-medium">
-                                <p class="text-xs">{{ $item->code }}</p>
-                            </td>
-                            <td scope="row" class="px-2 py-1 text-gray-900">
-                                <p class="text-xs">
-                                    <span class="text-gray-600 dark:text-gray-400">{{ $item->name }}</span>
-                                </p>
-                                <p class="text-xs">
-                                    <span class="text-gray-600 dark:text-gray-400">{{ $item->description }}</span>
-                                </p>
-                            </td>
-                            <td scope="row" class="px-2 py-1 text-gray-700 dark:text-gray-300 font-medium">
-                                @if ($item->discount_type == "percentage")
-                                    <p class="text-xs">{{ formatIndianMoney($item->value) }}% Off upto {{ $item->country->currency_symbol }}{{ formatIndianMoney($item->max_discount_amount) }}</p>
-                                    <p class="text-xs">Minimum Cart value {{ $item->country->currency_symbol }}{{ formatIndianMoney($item->min_cart_value) }}</p>
-                                @elseif ($item->discount_type == "fixed")
-                                    <p class="text-xs">Fixed {{ $item->country->currency_symbol }}{{ formatIndianMoney($item->value) }} Off</p>
-                                    <p class="text-xs">Minimum Cart value {{ $item->country->currency_symbol }}{{ formatIndianMoney($item->min_cart_value) }}</p>
-                                @else
-                                    <p class="text-xs">Free Shipping on Minimum Cart value {{ $item->country->currency_symbol }}{{ formatIndianMoney($item->min_cart_value) }}</p>
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                @if(!empty($item->image_s))
+                                    <div class="h-10 overflow-hidden flex items-center">
+                                        <img src="{{ Storage::url($item->image_s) }}" alt="" class="h-8">
+                                    </div>
                                 @endif
                             </td>
-                            <td scope="row" class="px-2 py-1 text-gray-700 dark:text-gray-300 font-medium">
-                                <p class="text-xs">
-                                    <span class="text-gray-600 dark:text-gray-400">{{ $item->used_count }}</span>
-                                    /{{ $item->usage_limit }}
-                                </p>
+                            <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
+                                <p class="text-xs font-bold">{{ $item->title }}</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">{{ $item->subtitle }}</p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">
                                     @livewire('toggle-status', [
-                                        'model' => 'Coupon',
+                                        'model' => 'AdItem',
                                         'modelId' => $item->id,
                                     ])
 
@@ -302,22 +287,9 @@
                                         x-data=""
                                         x-on:click.prevent="
                                             $dispatch('open-sidebar', 'quick-data-view');
-                                            $dispatch('data-state_flag', '{{ $item->country->flag }}');
-                                            $dispatch('data-state_name', '{{ $item->country->name }}');
-                                            $dispatch('data-state_code', '{{ $item->country_code }}');
-                                            $dispatch('data-code', '{{ $item->code }}');
-                                            $dispatch('data-name', '{{ htmlspecialchars($item->name, ENT_QUOTES) }}');
-                                            $dispatch('data-description', '{{ htmlspecialchars($item->description, ENT_QUOTES) }}');
-                                            $dispatch('data-discount_type', '{{ $item->discount_type }}');
-                                            $dispatch('data-value', '{{ $item->value }}');
-                                            $dispatch('data-max_discount_amount', '{{ $item->max_discount_amount }}');
-                                            $dispatch('data-min_cart_value', '{{ $item->min_cart_value }}');
-                                            $dispatch('data-usage_limit', '{{ $item->usage_limit }}');
-                                            $dispatch('data-usage_per_user', '{{ $item->usage_per_user }}');
-                                            $dispatch('data-used_count', '{{ $item->used_count }}');
-                                            $dispatch('data-starts_at', '{{ $item->starts_at }}');
-                                            $dispatch('data-expires_at', '{{ $item->expires_at }}');
-                                            $dispatch('data-show_in_frontend', '{{ $item->show_in_frontend }}');
+                                            $dispatch('data-image', '{{ $item->image_m }}');
+                                            $dispatch('data-title', '{{ $item->title }}');
+                                            $dispatch('data-slug', '{{ $item->slug }}');
                                         " >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>
@@ -327,7 +299,7 @@
                                     <x-admin.button-icon
                                         element="a"
                                         tag="secondary"
-                                        :href="route('admin.product.coupon.edit', $item->id)"
+                                        :href="route('admin.website.ad.item.edit', $item->id)"
                                         title="Edit"
                                         class="border" >
                                         @slot('icon')
@@ -341,9 +313,9 @@
                                         href="javascript: void(0)"
                                         x-data=""
                                         x-on:click.prevent="
-                                            $dispatch('open-modal', 'confirm-data-deletion');
-                                            $dispatch('data-title', '{{ htmlspecialchars($item->title, ENT_QUOTES) }}');
-                                            $dispatch('set-delete-route', '{{ route('admin.product.coupon.delete', $item->id) }}')
+                                            $dispatch('open-modal', 'confirm-data-deletion'); 
+                                            $dispatch('data-title', '{{ $item->title }}');
+                                            $dispatch('set-delete-route', '{{ route('admin.website.ad.item.delete', $item->id) }}')
                                         " >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
@@ -377,82 +349,29 @@
     <x-admin.sidebar name="quick-data-view" maxWidth="sm" direction="right" header="Quick View" focusable>
         <div 
             class="p-4"
-            x-data="{
-                image: '',state_flag: '',state_name: '',state_code: '',code: '',
-                name: '',description: '',discount_type: '',
-                value: '',max_discount_amount: '',min_cart_value: '',
-                usage_limit: '',usage_per_user: '',used_count: '',
-                starts_at: '',expires_at: '',
-                show_in_frontend: '',
-                boolText(v) { return (v === '1' || v === 1 || v === true || v === 'true') ? 'Yes' : (v === '0' || v === 0 || v === false || v === 'false' ? 'No' : v); },
-                has(v) { return v !== null && v !== undefined && String(v).trim() !== ''; },
-                storageUrl(path) { return path ? ('{{ Storage::url('') }}' + path) : ''; }
-            }"
+            x-data="{image: '', title: '', slug: ''}"
             x-on:data-image.window="image = $event.detail"
-            x-on:data-state_flag.window="state_flag = $event.detail"
-            x-on:data-state_name.window="state_name = $event.detail"
-            x-on:data-state_code.window="state_code = $event.detail"
-            x-on:data-code.window="code = $event.detail"
-            x-on:data-name.window="name = $event.detail"
-            x-on:data-description.window="description = $event.detail"
-            x-on:data-discount_type.window="discount_type = $event.detail"
-            x-on:data-value.window="value = $event.detail"
-            x-on:data-max_discount_amount.window="max_discount_amount = $event.detail"
-            x-on:data-min_cart_value.window="min_cart_value = $event.detail"
-            x-on:data-usage_limit.window="usage_limit = $event.detail"
-            x-on:data-usage_per_user.window="usage_per_user = $event.detail"
-            x-on:data-used_count.window="used_count = $event.detail"
-            x-on:data-starts_at.window="starts_at = $event.detail"
-            x-on:data-expires_at.window="expires_at = $event.detail"
-            x-on:data-show_in_frontend.window="show_in_frontend = $event.detail"
+            x-on:data-title.window="title = $event.detail"
+            x-on:data-slug.window="slug = $event.detail"
         >
-            <h5 class="text-xs font-bold mb-1">State</h5>
-            <div class="mb-3">
-                <div x-data="{ state_flag: $store.item.state_flag }">
-                    <template x-if="state_flag">
-                        <div class="w-8 h-8 mb-3" x-html="state_flag"></div>
-                    </template>
-                    <template x-if="!state_flag">
-                        <p class="text-sm mb-3 text-orange-500 font-bold">NA</p>
-                    </template>
-                </div>
-                <div>
-                    <p class="text-sm font-semibold" x-text="has(state_name) ? state_name : 'NA'"></p>
-                    <p class="text-xs text-muted" x-text="has(state_code) ? ('Code: ' + state_code) : ''"></p>
-                </div>
+            <h5 class="text-xs font-bold mb-1">Image</h5>
+            <div>
+                <template x-if="image && image.trim() !== ''">
+                    <div class="h-50 mb-3">
+                        <img :src="'{{ Storage::url('') }}' + image" alt="Image" class="h-full w-auto border-4" />
+                    </div>
+                </template>
+                <template x-if="!image || image.trim() === ''">
+                    <p class="text-sm mb-3 text-orange-500 font-bold">NA</p>
+                </template>
             </div>
 
-            <h5 class="text-xs font-bold mb-1">Coupon Code</h5>
-            <p class="text-sm mb-3 px-2 py-1 inline-block text-white bg-slate-800" x-text="has(code) ? code : 'NA'"></p>
+            <h5 class="text-xs font-bold mb-1">Title</h5>
+            <p class="text-sm mb-3" x-text="title"></p>
 
-            <h5 class="text-xs font-bold mb-1">Name</h5>
-            <p class="text-sm mb-3" x-text="has(name) ? name : 'NA'"></p>
+            <h5 class="text-xs font-bold mb-1">Slug</h5>
+            <p class="text-sm mb-3" x-text="slug"></p>
 
-            <h5 class="text-xs font-bold mb-1">Description</h5>
-            <div class="text-sm mb-3" x-html="has(description) ? description : '<span class=&quot;text-orange-500 font-bold&quot;>NA</span>'"></div>
-
-            <h5 class="text-xs font-bold mb-1">Discount</h5>
-            <p class="text-sm mb-1" x-text="has(discount_type) ? (discount_type + (has(value) ? (' — ' + value) : '')) : 'NA'"></p>
-            <p class="text-sm mb-3 text-muted" x-text="has(max_discount_amount) ? ('Max: ' + max_discount_amount) : ''"></p>
-
-            {{-- MIN CART --}}
-            <h5 class="text-xs font-bold mb-1">Min Cart Value</h5>
-            <p class="text-sm mb-3" x-text="has(min_cart_value) ? min_cart_value : 'NA'"></p>
-
-            {{-- USAGE --}}
-            <h5 class="text-xs font-bold mb-1">Usage</h5>
-            <p class="text-sm mb-1" x-text="has(usage_limit) ? ('Limit: ' + usage_limit) : 'Limit: NA'"></p>
-            <p class="text-sm mb-3" x-text="has(usage_per_user) ? ('Per user: ' + usage_per_user) : 'Per user: NA'"></p>
-            <p class="text-sm mb-3 text-muted" x-text="has(used_count) ? ('Used: ' + used_count) : ''"></p>
-
-            {{-- DATES --}}
-            <h5 class="text-xs font-bold mb-1">Validity</h5>
-            <p class="text-sm mb-1" x-text="has(starts_at) ? ('Starts: ' + starts_at) : 'Starts: NA'"></p>
-            <p class="text-sm mb-3" x-text="has(expires_at) ? ('Expires: ' + expires_at) : 'Expires: NA'"></p>
-
-            {{-- SHOW IN FRONTEND --}}
-            <h5 class="text-xs font-bold mb-1">Show in frontend</h5>
-            <p class="text-sm mb-3" x-text="boolText(show_in_frontend)"></p>
         </div>
     </x-admin.sidebar>
 

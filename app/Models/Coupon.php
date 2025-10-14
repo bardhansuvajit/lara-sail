@@ -18,7 +18,7 @@ class Coupon extends Model
         'position','status',
     ];
 
-    public function state()
+    public function country()
     {
         return $this->belongsTo('App\Models\Country', 'country_code', 'code');
     }

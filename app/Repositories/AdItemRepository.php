@@ -31,10 +31,10 @@ class AdItemRepository implements AdItemInterface
             if (!empty($keyword)) {
                 $query->where(function ($query) use ($keyword) {
                     $query->where('title', 'like', '%' . $keyword . '%')
-                        ->orWhere('description', 'like', '%' . $keyword . '%')
-                        ->orWhere('web_redirect_url', 'like', '%' . $keyword . '%')
-                        ->orWhere('mobile_redirect_type', 'like', '%' . $keyword . '%')
-                        ->orWhere('mobile_redirect_target', 'like', '%' . $keyword . '%');
+                        ->orWhere('subtitle', 'like', '%' . $keyword . '%')
+                        ->orWhere('url', 'like', '%' . $keyword . '%')
+                        ->orWhere('cta_primary_text', 'like', '%' . $keyword . '%')
+                        ->orWhere('cta_secondary_text', 'like', '%' . $keyword . '%');
                 });
             }
 
@@ -167,18 +167,13 @@ class AdItemRepository implements AdItemInterface
             $data = $this->getById($array['id']);
 
             if ($data['code'] == 200) {
-                $data['data']->title = $array['title'];
-                $data['data']->slug = \Str::slug($array['title']);
-
-                if (!empty($array['image'])) {
-                    $uploadResp = fileUpload($array['image'], 'p-clt');
-
-                    $data['data']->image_s = $uploadResp['smallThumbName'];
-                    $data['data']->image_m = $uploadResp['mediumThumbName'];
-                    $data['data']->image_l = $uploadResp['largeThumbName'];
-                }
-
-                $data['data']->save();
+                $data = $data['data'];
+                $data->ad_section_id = $array['ad_section_id'];
+                $data->country_code = $array['country_code'];
+                $data->title = $array['title'];
+                $data->subtitle = $array['subtitle'];
+                $data->url = $array['url'];
+                $data->save();
 
                 return [
                     'code' => 200,

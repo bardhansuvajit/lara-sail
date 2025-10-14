@@ -83,9 +83,11 @@ class AdSectionRepository implements AdSectionInterface
         // dd($array['image']);
         try {
             $data = new AdSection();
-            $data->page = $array['page'];
-            $data->name = $array['name'] ?? null;
+            $data->pages = $array['pages'];
+            $data->name = $array['name'];
+            $data->slug = \Str::slug($array['name']);
             $data->type = $array['type'];
+            $data->status = 0;
 
             // get max position for given attribute_id and type
             $lastPosition = AdSection::max('position');
@@ -146,18 +148,12 @@ class AdSectionRepository implements AdSectionInterface
             $data = $this->getById($array['id']);
 
             if ($data['code'] == 200) {
-                $data['data']->title = $array['title'];
-                $data['data']->slug = \Str::slug($array['title']);
-
-                if (!empty($array['image'])) {
-                    $uploadResp = fileUpload($array['image'], 'p-clt');
-
-                    $data['data']->image_s = $uploadResp['smallThumbName'];
-                    $data['data']->image_m = $uploadResp['mediumThumbName'];
-                    $data['data']->image_l = $uploadResp['largeThumbName'];
-                }
-
-                $data['data']->save();
+                $data = $data['data'];
+                $data->pages = $array['pages'];
+                $data->name = $array['name'];
+                $data->slug = \Str::slug($array['name']);
+                $data->type = $array['type'];
+                $data->save();
 
                 return [
                     'code' => 200,

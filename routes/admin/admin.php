@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin\Application\ApplicationSettingsController;
 use App\Http\Controllers\Admin\NewsletterEmail\NewsletterEmailController;
 use App\Http\Controllers\Admin\ContentPage\ContentPageController;
 use App\Http\Controllers\Admin\SocialMedia\SocialMediaController;
+use App\Http\Controllers\Admin\Advertisement\AdSectionController;
+use App\Http\Controllers\Admin\Advertisement\AdItemController;
 
 use App\Http\Controllers\Admin\Product\Listing\ProductListingController;
 use App\Http\Controllers\Admin\Product\Category\ProductCategoryController;
@@ -302,6 +304,37 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/import', 'import')->name('import');
                 Route::get('/export/{type}', 'export')->name('export');
                 Route::post('/position', 'position')->name('position');
+            });
+
+            // advertisement
+            Route::prefix('ad')->name('ad.')->group(function() {
+                // section
+                Route::prefix('section')->name('section.')->controller(AdSectionController::class)->group(function() {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/create', 'create')->name('create');
+                    Route::post('/store', 'store')->name('store');
+                    Route::get('/edit/{id}', 'edit')->name('edit');
+                    Route::post('/update', 'update')->name('update');
+                    Route::delete('/delete/{id}', 'delete')->name('delete');
+                    Route::post('/bulk', 'bulk')->name('bulk');
+                    Route::post('/import', 'import')->name('import');
+                    Route::get('/export/{type}', 'export')->name('export');
+                    Route::post('/position', 'position')->name('position');
+                });
+
+                // item
+                Route::prefix('item')->name('item.')->controller(AdItemController::class)->group(function() {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/create', 'create')->name('create');
+                    Route::post('/store', 'store')->name('store');
+                    Route::get('/edit/{id}', 'edit')->name('edit');
+                    Route::post('/update', 'update')->name('update');
+                    Route::delete('/delete/{id}', 'delete')->name('delete');
+                    Route::post('/bulk', 'bulk')->name('bulk');
+                    Route::post('/import', 'import')->name('import');
+                    Route::get('/export/{type}', 'export')->name('export');
+                    Route::post('/position', 'position')->name('position');
+                });
             });
 
             // newsletter email
