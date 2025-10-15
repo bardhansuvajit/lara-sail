@@ -21,12 +21,14 @@ class AdvertisementController
     {
         $pagesGrouped = $this->adSectionRepository->listByGroup();
 
-        $page = $request->page ?? 'homepage';
-        $sections = $this->adSectionRepository->list($page, [], 'all', 'id', 'asc');
+        $page = $request->input('page', 'homepage');
+        $sectionsResult = $this->adSectionRepository->list($page, [], 'all', 'id', 'asc');
+        $sections = $sectionsResult['data'] ?? collect();
 
         return view('admin.advertisement.index', [
             'allPages' => $pagesGrouped['data'],
-            'sections' => $sections['data'],
+            'sections' => $sections,
+            'currentPage' => $page,
         ]);
     }
 

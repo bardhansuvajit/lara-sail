@@ -18,7 +18,7 @@ use App\Http\Controllers\Admin\NewsletterEmail\NewsletterEmailController;
 use App\Http\Controllers\Admin\ContentPage\ContentPageController;
 use App\Http\Controllers\Admin\SocialMedia\SocialMediaController;
 // use App\Http\Controllers\Admin\Advertisement\AdSectionController;
-// use App\Http\Controllers\Admin\Advertisement\AdItemController;
+use App\Http\Controllers\Admin\Advertisement\AdItemController;
 use App\Http\Controllers\Admin\Advertisement\AdvertisementController;
 
 use App\Http\Controllers\Admin\Product\Listing\ProductListingController;

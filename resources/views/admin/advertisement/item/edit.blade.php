@@ -5,9 +5,11 @@
         ['label' => 'Ad Item', 'url' => route('admin.website.ad.item.index')],
         ['label' => 'Edit']
     ]"
->
+    >
 
     <div class="w-full mt-2">
+
+        <x-ads.ad-set-1 :data="$data" />
 
         <div class="my-3 flex items-center text-red-600 dark:text-orange-600 bg-orange-100 dark:bg-orange-100 p-2">
             <div class="w-4 h-4 me-2">
