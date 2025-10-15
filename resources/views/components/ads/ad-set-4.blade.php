@@ -14,23 +14,25 @@
         </div>
 
         <div class="me-auto place-self-center lg:col-span-7 space-y-4 mt-4 sm:mt-0">
-            @if ($data->meta)
+            @if (isset($data->meta))
                 @php
                     $meta = $data->meta;
                 @endphp
                 <div class="flex items-center gap-3">
-                    @foreach ($meta['tags'] as $tIndex => $tag)
-                        @php
-                            $randomTagColors = FD['randomTagColors'];
-                            $colorClass = $randomTagColors[array_rand($randomTagColors)];
-                        @endphp
-                        <span class="inline-flex items-center rounded-full px-3 py-1 {{ FD['text'] }} font-medium {{ $colorClass }}">
-                            <div class="h-4 w-4 mr-2">
-                                {!! $tag['svg'] !!}
-                            </div>
-                            <span class="text-[10px] sm:text-xs">{{ $tag['title'] }}</span>
-                        </span>
-                    @endforeach
+                    @if(isset($meta['tags']))
+                        @foreach ($meta['tags'] as $tIndex => $tag)
+                            @php
+                                $randomTagColors = FD['randomTagColors'];
+                                $colorClass = $randomTagColors[array_rand($randomTagColors)];
+                            @endphp
+                            <span class="inline-flex items-center rounded-full px-3 py-1 {{ FD['text'] }} font-medium {{ $colorClass }}">
+                                <div class="h-4 w-4 mr-2">
+                                    {!! $tag['svg'] !!}
+                                </div>
+                                <span class="text-[10px] sm:text-xs">{{ $tag['title'] }}</span>
+                            </span>
+                        @endforeach
+                    @endif
                 </div>
             @endif
 
@@ -43,18 +45,20 @@
             </p>
 
             <div class="flex items-end gap-4">
-                @if ($data->meta)
+                @if (isset($data->meta))
                     @php
                         $meta = $data->meta;
                     @endphp
 
-                    <div class="flex items-center gap-3">
-                        <div class="text-2xl font-extrabold text-gray-900 dark:text-white leading-none">{!! $meta['pricing']['sell'] !!}</span></div>
-                        <div class="flex flex-col {{ FD['text'] }} text-gray-500 dark:text-gray-400">
-                            <span class="line-through">{!! $meta['pricing']['mrp'] !!}</span>
-                            <span class="text-green-600 dark:text-green-400 font-medium">{!! $meta['pricing']['sale_text'] !!}</span>
+                    @if (isset($meta['pricing']))
+                        <div class="flex items-center gap-3">
+                            <div class="text-2xl font-extrabold text-gray-900 dark:text-white leading-none">{!! $meta['pricing']['sell'] !!}</span></div>
+                            <div class="flex flex-col {{ FD['text'] }} text-gray-500 dark:text-gray-400">
+                                <span class="line-through">{!! $meta['pricing']['mrp'] !!}</span>
+                                <span class="text-green-600 dark:text-green-400 font-medium">{!! $meta['pricing']['sale_text'] !!}</span>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 @endif
 
                 <div class="ml-4 {{ FD['text'] }} text-gray-600 dark:text-gray-300" aria-live="polite">

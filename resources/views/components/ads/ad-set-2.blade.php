@@ -1,7 +1,7 @@
 @props(['data'])
 
 <div class="bg-indigo-600 text-white {{ FD['rounded'] }} p-4 sm:p-6 h-full flex flex-col justify-between shadow-md overflow-hidden">
-    @if ($data->meta['tags'])
+    @if (isset($data->meta['tags']))
         @php
             $tags = $data->meta['tags'];
         @endphp

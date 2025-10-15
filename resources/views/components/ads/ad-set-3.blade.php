@@ -22,16 +22,18 @@
 @endphp
 
 <div class="bg-white dark:bg-gray-800 {{ $adClass1 }} flex {{ $adClass11 }} shadow-sm h-full {{ FD['rounded'] }} relative overflow-hidden items-center">
-    <div class="absolute inset-0 opacity-30 dark:opacity-30 z-0">
-        <img src="{{ Storage::url($data->meta['bgImage']) }}" alt="{{ $data->title }}" class="w-full h-full object-cover object-center">
-    </div>
+    @if (isset($data->meta['bgImage']))
+        <div class="absolute inset-0 opacity-30 dark:opacity-30 z-0">
+            <img src="{{ Storage::url($data->meta['bgImage']) }}" alt="{{ $data->title }}" class="w-full h-full object-cover object-center">
+        </div>
+    @endif
 
     <div class="hidden sm:block h-full z-0">
         <img src="{{ Storage::url($data->image_m) }}" alt="" class="{{ $adClass3 }} object-cover flex-shrink-0 {{ $adClass2 }} z-0" aria-hidden="true" />
     </div>
 
     <div class="flex-1 flex flex-col justify-between h-full z-0 {{ $adClass4 }}">
-        @if ($data->meta['tags'])
+        @if (isset($data->meta['tags']))
             @php
                 $tags = $data->meta['tags'];
             @endphp

@@ -4,6 +4,14 @@
     :breadcrumb="[ ['label' => 'Ad Section'] ]"
 >
     <section class="sm:rounded-lg overflow-hidden px-1 py-2">
+
+        <div class="my-3 flex items-center text-red-600 dark:text-orange-600 bg-orange-100 dark:bg-orange-100 p-2">
+            <div class="w-4 h-4 me-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z"/></svg>
+            </div>
+            <p class="text-sm font-bold text-red-600 dark:text-orange-600">{!! __('Developer expertise is required to manage this section') !!}</p>
+        </div>
+
         {{-- Tabs --}}
         <nav role="tablist" aria-label="Ad pages" class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
             <ul class="flex flex-wrap -mb-px justify-center">
