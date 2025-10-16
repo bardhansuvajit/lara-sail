@@ -259,7 +259,7 @@
                                 </div>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-700 dark:text-gray-300 font-medium">
-                                <p class="text-xs">{{ $item->code }}</p>
+                                <p class="text-xs inline-block px-2 py-1 bg-stone-400/40 dark:bg-stone-800/70">{{ $item->code }}</p>
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900">
                                 <p class="text-xs">

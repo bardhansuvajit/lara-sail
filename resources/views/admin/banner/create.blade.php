@@ -38,13 +38,13 @@
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div>
                     <x-admin.input-label for="start_at" :value="__('Starts At *')" />
-                    <x-admin.text-input id="start_at" class="block w-full" type="datetime-local" name="start_at" :value="old('start_at')" placeholder="Enter Starts At" />
+                    <x-admin.text-input id="start_at" class="block w-full" type="datetime-local" name="start_at" :value="old('start_at', date('Y-m-d H:i:s'))" placeholder="Enter Starts At" />
                     <x-admin.input-error :messages="$errors->get('start_at')" class="mt-2" />
                 </div>
 
                 <div>
                     <x-admin.input-label for="end_at" :value="__('Ends At *')" />
-                    <x-admin.text-input id="end_at" class="block w-full" type="datetime-local" name="end_at" :value="old('end_at')" placeholder="Enter Starts At" />
+                    <x-admin.text-input id="end_at" class="block w-full" type="datetime-local" name="end_at" :value="old('end_at', date('Y-m-d H:i:s', strtotime('+7 days')))" placeholder="Enter Starts At" />
                     <x-admin.input-error :messages="$errors->get('end_at')" class="mt-2" />
                 </div>
             </div>

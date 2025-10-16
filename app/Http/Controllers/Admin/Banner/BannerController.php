@@ -81,15 +81,23 @@ class BannerController
         // dd($request->all());
 
         $request->validate([
-            'id' => 'required|integer',
-            'image' => 'nullable|image|max:1000',
+            'id' => 'required|integer|min:1',
             'title' => 'required|min:2|max:255',
-            'level' => 'required|in:1,2,3,4',
-            'parent_id' => 'nullable',
+            'description' => 'nullable|min:2|max:10000',
+            'start_at' => 'required|date',
+            'end_at' => 'required|date|after:start_at',
+
+            'web_image' => 'nullable|image|max:1000',
+            'app_image' => 'nullable|image|max:1000',
+
+            'web_redirect_url' => 'required|min:2',
+            'mobile_redirect_target' => 'required|min:2',
+            'mobile_redirect_type' => 'required|in:screen,deep-link,url'
         ]);
 
         $resp = $this->bannerRepository->update($request->all());
-        return redirect()->route('admin.website.banner.index')->with($resp['status'], $resp['message']);
+        return redirect()->back()->with($resp['status'], $resp['message']);
+        // return redirect()->route('admin.website.banner.index')->with($resp['status'], $resp['message']);
     }
 
     public function delete(Int $id)

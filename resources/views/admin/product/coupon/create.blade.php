@@ -106,7 +106,7 @@
 
                 <div>
                     <x-admin.input-label for="expires_at" :value="__('Ends at *')" />
-                    <x-admin.text-input id="expires_at" class="block w-full" type="date" name="expires_at" :value="old('expires_at')" placeholder="Enter end date" />
+                    <x-admin.text-input id="expires_at" class="block w-full" type="date" name="expires_at" :value="old('expires_at', date('Y-m-d', strtotime('+6 months')))" placeholder="Enter end date" />
                     <x-admin.input-error :messages="$errors->get('expires_at')" class="mt-2" />
                 </div>
 
