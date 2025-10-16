@@ -4,8 +4,11 @@ namespace App\Repositories;
 
 use App\Interfaces\PaymentGatewayInterface;
 use App\Models\Order;
+use App\Models\PaymentGateway;
 use Razorpay\Api\Api;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PaymentGatewayRepository implements PaymentGatewayInterface
@@ -19,6 +22,64 @@ class PaymentGatewayRepository implements PaymentGatewayInterface
         $this->key = config('razorpay.key');
         $this->secret = config('razorpay.secret');
         $this->api = new Api($this->key, $this->secret);
+    }
+
+    // Show all payment gateways
+    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    {
+        try {
+            DB::enableQueryLog();
+            $query = PaymentGateway::query();
+
+            // keyword
+            if (!empty($keyword)) {
+                $query->where(function ($query) use ($keyword) {
+                    $query->where('country_code', 'like', '%' . $keyword . '%')
+                        ->orWhere('code', 'like', '%' . $keyword . '%')
+                        ->orWhere('name', 'like', '%' . $keyword . '%')
+                        ->orWhere('settings', 'like', '%' . $keyword . '%');
+                });
+            }
+
+            // filters
+            foreach ($filters as $field => $value) {
+                if (!is_null($value) && $value !== '') {
+                    if (is_array($value)) {
+                        $query->whereIn($field, $value);
+                    } else {
+                        $query->where($field, '=', $value);
+                    }
+                }
+            }
+
+            // page
+            $data = $perPage !== 'all'
+            ? $query->orderBy($sortBy, $sortOrder)->paginate($perPage)->withQueryString()
+            : $query->orderBy($sortBy, $sortOrder)->get();
+
+            if ($data->isNotEmpty()) {
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            }
+    
+            return [
+                'code' => 404,
+                'status' => 'failure',
+                'message' => 'No data found',
+                'data' => [],
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
     }
 
     // Create razorpay order and return payload for frontend
@@ -59,7 +120,7 @@ class PaymentGatewayRepository implements PaymentGatewayInterface
         return hash_equals($expectedSignature, $payload['razorpay_signature']);
     }
 
-    public function handleWebhook(Request $request)
+    public function handleWebhook(Request $request): \Illuminate\Http\Response
     {
         $payload = $request->getContent();
         $signature = $request->header('X-Razorpay-Signature');

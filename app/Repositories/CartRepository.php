@@ -355,6 +355,7 @@ class CartRepository implements CartInterface
             // Get current cart values
             $itemsTotal = $cart->sub_total;
             $shippingCost = $cart->shipping_cost;
+            $couponDiscount = $cart->coupon_discount_amount;
 
             // Get payment method details
             $paymentMethod = $this->paymentMethodRepository->getById($id);
@@ -371,6 +372,7 @@ class CartRepository implements CartInterface
             $paymentDetails = $this->calculatePaymentAdjustments(
                 $itemsTotal, 
                 $shippingCost, 
+                $couponDiscount, 
                 $paymentMethod['data']
             );
 
@@ -479,7 +481,7 @@ class CartRepository implements CartInterface
         }
     }
 
-    protected function calculatePaymentAdjustments(float $itemsTotal, float $shippingCost, object $paymentMethod): array
+    protected function calculatePaymentAdjustments(float $itemsTotal, float $shippingCost, float $couponDiscount, object $paymentMethod): array
     {
         $adjustment = 0;
         $title = null;
@@ -507,7 +509,7 @@ class CartRepository implements CartInterface
             'title' => $title,
             'charge' => $isCharge ? $adjustment : 0,
             'discount' => $isCharge ? 0 : $adjustment,
-            'grandTotal' => $itemsTotal + ($isCharge ? $adjustment : -$adjustment) + $shippingCost
+            'grandTotal' => $itemsTotal + ($isCharge ? $adjustment : -$adjustment) + $shippingCost - $couponDiscount
         ];
     }
 

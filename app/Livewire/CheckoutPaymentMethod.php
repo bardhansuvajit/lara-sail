@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use Illuminate\Support\Collection;
 use App\Interfaces\PaymentMethodInterface;
+use App\Interfaces\PaymentGatewayInterface;
 use App\Interfaces\CartInterface;
 use Livewire\Attributes\On;
 
@@ -13,17 +14,22 @@ class CheckoutPaymentMethod extends Component
     public $user;
     public int $shippingAddressesCount = 0;
     public ?string $selectedMethod = null;
+    public ?string $selectedGateway = null;
     public Collection $paymentMethods;
+    public Collection $paymentGateways;
 
     private PaymentMethodInterface $paymentMethodRepository;
+    private PaymentGatewayInterface $paymentGatewayRepository;
     private CartInterface $cartRepository;
 
     public function boot(
         PaymentMethodInterface $paymentMethodRepository,
+        PaymentGatewayInterface $paymentGatewayRepository,
         CartInterface $cartRepository
     )
     {
         $this->paymentMethodRepository = $paymentMethodRepository;
+        $this->paymentGatewayRepository = $paymentGatewayRepository;
         $this->cartRepository = $cartRepository;
     }
 
@@ -38,6 +44,7 @@ class CheckoutPaymentMethod extends Component
             : 0;
 
         $this->loadPaymentMethods();
+        $this->loadPaymentGateways();
     }
 
     /**
@@ -58,6 +65,24 @@ class CheckoutPaymentMethod extends Component
         // Set default selected method
         if ($this->paymentMethods->isNotEmpty()) {
             $this->selectedMethod = $this->paymentMethods->first()->method;
+        }
+    }
+
+    public function loadPaymentGateways(): void
+    {
+        $gateways = $this->paymentGatewayRepository->list(
+            '',
+            ['status' => 1, 'country_code' => COUNTRY['country']],
+            'all',
+            'position',
+            'asc'
+        );
+
+        $this->paymentGateways = collect($gateways['data'] ?? []);
+
+        // Set default selected method
+        if ($this->paymentGateways->isNotEmpty()) {
+            $this->selectedGateway = $this->paymentGateways->first()->method;
         }
     }
 
