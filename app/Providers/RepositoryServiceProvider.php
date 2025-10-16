@@ -50,6 +50,7 @@ use App\Interfaces\ProductHighlightInterface;
 use App\Interfaces\ProductFaqInterface;
 use App\Interfaces\CouponInterface;
 use App\Interfaces\CouponUsageInterface;
+use App\Interfaces\PaymentGatewayInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -97,6 +98,7 @@ use App\Repositories\ProductHighlightRepository;
 use App\Repositories\ProductFaqRepository;
 use App\Repositories\CouponRepository;
 use App\Repositories\CouponUsageRepository;
+use App\Repositories\PaymentGatewayRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -152,6 +154,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ProductFaqInterface::class, ProductFaqRepository::class);
         $this->app->bind(CouponInterface::class, CouponRepository::class);
         $this->app->bind(CouponUsageInterface::class, CouponUsageRepository::class);
+        $this->app->bind(PaymentGatewayInterface::class, PaymentGatewayRepository::class);
     }
 
     /**

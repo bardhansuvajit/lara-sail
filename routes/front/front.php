@@ -17,6 +17,7 @@ use App\Http\Controllers\Front\Faq\FaqController;
 use App\Http\Controllers\Front\Error\ErrorPageController;
 use App\Http\Controllers\Front\Product\ProductController;
 use App\Http\Controllers\Front\Review\ProductReviewController;
+use App\Http\Controllers\Front\Payment\Razorpay\RazorpayController;
 
 Route::name('front.')->group(function () {
     // home
@@ -102,6 +103,15 @@ Route::name('front.')->group(function () {
         Route::get('{slug}', 'listByProduct')->name('list');
         Route::get('/create/{slug}', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
+    });
+
+    // payment
+    Route::name('payment.')->prefix('payment')->group(function() {
+        Route::name('razorpay.')->prefix('razorpay')->controller(RazorpayController::class)->group(function() {
+            Route::post('/create-order', 'createOrder')->name('razorpay.create');
+            Route::post('/verify', 'verify')->name('razorpay.verify');
+            Route::post('/webhook', 'webhook');
+        });
     });
 
     // product
