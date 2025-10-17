@@ -104,6 +104,12 @@ class CheckoutPaymentMethod extends Component
         $this->dispatch('hideFullPageLoader');
     }
 
+    public function getSelectedMethodTypeProperty()
+    {
+        $selectedMethod = $this->paymentMethods->firstWhere('id', $this->selectedMethod);
+        return $selectedMethod->method ?? 'cod';
+    }
+
     public function render()
     {
         return view('livewire.checkout-payment-method');

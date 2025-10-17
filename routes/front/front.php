@@ -108,8 +108,8 @@ Route::name('front.')->group(function () {
     // payment
     Route::name('payment.')->prefix('payment')->group(function() {
         Route::name('razorpay.')->prefix('razorpay')->controller(RazorpayController::class)->group(function() {
-            Route::post('/create-order', 'createOrder')->name('razorpay.create');
-            Route::post('/verify', 'verify')->name('razorpay.verify');
+            Route::post('/create-order', 'createOrder')->name('create');
+            Route::post('/verify', 'verify')->name('verify');
             Route::post('/webhook', 'webhook');
         });
     });
