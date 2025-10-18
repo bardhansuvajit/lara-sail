@@ -71,6 +71,7 @@
 
                     @if($this->selectedMethodType !== 'prepaid')
                         <div id="cod">
+                            {{-- Keep the COD form as is --}}
                             <form action="{{ route('front.order.store') }}" method="post" id="place-order-form">@csrf
                                 <button type="submit" class="flex w-full md:w-40 items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text-2']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                     Place Order
@@ -85,17 +86,12 @@
                                 @foreach ($paymentGateways as $gateway)
                                     @php
                                         $code = $gateway->code ?? $gateway['code'] ?? null;
-                                        $settings = $gateway->settings ?? $gateway['settings'] ?? null;
-                                        // ensure settings is JSON string when printing as data attribute
-                                        $settingsJson = is_string($settings) ? $settings : json_encode($settings);
                                     @endphp
 
                                     @if ($code === 'razorpay')
                                         <button
                                             type="button"
-                                            id="pay-with-razorpay"
-                                            data-gateway-id="{{ $gateway->id ?? $gateway['id'] ?? '' }}"
-                                            data-settings="{{ $settingsJson }}"
+                                            wire:click="initiateOnlinePayment({{ $gateway->id }})"
                                             class="flex w-full md:w-60 items-center justify-center {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium text-gray-800 hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-primary-300 bg-gray-100 hover:bg-gray-200">
                                             Pay with 
                                             <div class="ms-1 w-24 h-5">
@@ -106,9 +102,7 @@
                                     @elseif ($code === 'paypal')
                                         <button
                                             type="button"
-                                            id="pay-with-paypal"
-                                            data-gateway-id="{{ $gateway->id ?? $gateway['id'] ?? '' }}"
-                                            data-settings="{{ $settingsJson }}"
+                                            wire:click="initiateOnlinePayment({{ $gateway->id }})"
                                             class="flex w-full md:w-60 items-center justify-center {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium text-white hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-yellow-100 bg-yellow-500 hover:bg-yellow-600">
                                             Pay with 
                                             <div class="ms-1 w-24 h-5">
@@ -119,9 +113,7 @@
                                     @elseif ($code === 'stripe')
                                         <button
                                             type="button"
-                                            id="pay-with-stripe"
-                                            data-gateway-id="{{ $gateway->id ?? $gateway['id'] ?? '' }}"
-                                            data-settings="{{ $settingsJson }}"
+                                            wire:click="initiateOnlinePayment({{ $gateway->id }})"
                                             class="flex w-full md:w-60 items-center justify-center {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium text-white hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-primary-300 bg-slate-700">
                                             Pay with 
                                             <div class="ms-1 w-24 h-5">
@@ -130,13 +122,10 @@
                                         </button>
 
                                     @else
-                                        {{-- Generic online gateway button for other providers --}}
                                         <button
                                             type="button"
-                                            class="flex w-full md:w-60 items-center justify-center {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium text-white hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-primary-300 bg-primary-700"
-                                            data-gateway-id="{{ $gateway->id ?? $gateway['id'] ?? '' }}"
-                                            data-gateway-code="{{ $code }}"
-                                            data-settings="{{ $settingsJson }}">
+                                            wire:click="initiateOnlinePayment({{ $gateway->id }})"
+                                            class="flex w-full md:w-60 items-center justify-center {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium text-white hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-primary-300 bg-primary-700">
                                             Pay with {{ $gateway->name ?? $gateway['title'] ?? ucfirst($code) }}
                                         </button>
                                     @endif
@@ -149,109 +138,3 @@
         @endif
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Use event delegation on the parent container
-    document.addEventListener('click', async function (e) {
-        // Check if the clicked element is the razorpay button or inside it
-        if (e.target.closest('#pay-with-razorpay')) {
-            e.preventDefault();
-            const btn = e.target.closest('#pay-with-razorpay');
-            await handleRazorpayPayment(btn);
-        }
-        
-        // Add similar handlers for other payment buttons if needed
-        if (e.target.closest('#pay-with-paypal')) {
-            e.preventDefault();
-            const btn = e.target.closest('#pay-with-paypal');
-            // Handle PayPal payment
-            console.log('PayPal clicked');
-        }
-        
-        if (e.target.closest('#pay-with-stripe')) {
-            e.preventDefault();
-            const btn = e.target.closest('#pay-with-stripe');
-            // Handle Stripe payment
-            console.log('Stripe clicked');
-        }
-    });
-
-    async function handleRazorpayPayment(btn) {
-        // data-settings contains gateway settings (stringified JSON). You stored it in the button.
-        const settings = JSON.parse(btn.getAttribute('data-settings') || '{}');
-        console.log(settings);
-        
-        // get your app order id from JS state or DOM (example: set data-order-id on the button)
-        const appOrderId = btn.closest('[data-order-id]')?.getAttribute('data-order-id') || window.ORDER_ID;
-        if (!appOrderId) {
-            alert('Order id missing');
-            return;
-        }
-
-        // create order on server (saves gateway_order_id on the Order)
-        const res = await fetch("{{ route('front.payment.razorpay.create') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ order_id: appOrderId })
-        });
-
-        if (!res.ok) {
-            const err = await res.json().catch(()=>({message:'Create order failed'}));
-            alert(err.message || 'Could not create payment order');
-            return;
-        }
-
-        const payload = await res.json(); // { key, order_id, amount, currency, name, description }
-        const options = {
-            key: payload.key, // public key
-            amount: payload.amount, // in paise
-            currency: payload.currency,
-            name: payload.name,
-            description: payload.description,
-            order_id: payload.order_id, // razorpay order id
-            handler: async function (response) {
-                // response contains razorpay_payment_id, razorpay_order_id, razorpay_signature
-                // send to server verify route
-                const verifyRes = await fetch("{{ route('front.payment.razorpay.verify') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        razorpay_order_id: response.razorpay_order_id,
-                        razorpay_payment_id: response.razorpay_payment_id,
-                        razorpay_signature: response.razorpay_signature,
-                        order_id: appOrderId
-                    }),
-                });
-                const verifyJson = await verifyRes.json().catch(()=>({status:false, message:'Verification failed'}));
-                if (verifyRes.ok && verifyJson.status) {
-                    // success — redirect / show success
-                    window.location.href = "/order/success/" + appOrderId; // adapt to your flow
-                } else {
-                    alert(verifyJson.message || 'Payment verification failed');
-                }
-            },
-            prefill: {
-                // optional: fill based on user
-                name: "{{ optional(auth()->user())->name }}",
-                email: "{{ optional(auth()->user())->email }}"
-            },
-            theme: { color: '#3399cc' } // optional UI ; change as desired
-        };
-
-        const rzp = new Razorpay(options);
-        rzp.on('payment.failed', function (resp) {
-            console.error('Payment failed', resp);
-            alert('Payment failed: ' + (resp.error?.description || 'Unknown error'));
-        });
-
-        rzp.open();
-    }
-});
-</script>

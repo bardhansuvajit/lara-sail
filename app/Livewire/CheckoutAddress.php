@@ -279,6 +279,19 @@ class CheckoutAddress extends Component
         }
     }
 
+    /**
+     * When address selection changes, emit event to update payment method component - in CheckoutPaymentMethod
+     */
+    public function updated($property)
+    {
+        if (in_array($property, ['shipping_address_id', 'billing_address_id'])) {
+            $this->dispatch('addressSelected', 
+                shippingAddressId: $this->shipping_address_id,
+                billingAddressId: $this->billing_address_id
+            );
+        }
+    }
+
     public function render()
     {
         return view('livewire.checkout-address');

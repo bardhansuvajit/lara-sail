@@ -18,6 +18,10 @@ class CheckoutPaymentMethod extends Component
     public Collection $paymentMethods;
     public Collection $paymentGateways;
 
+    // These will store the currently selected addresses from the form
+    public $shipping_address_id;
+    public $billing_address_id;
+
     private PaymentMethodInterface $paymentMethodRepository;
     private PaymentGatewayInterface $paymentGatewayRepository;
     private CartInterface $cartRepository;
@@ -45,6 +49,9 @@ class CheckoutPaymentMethod extends Component
 
         $this->loadPaymentMethods();
         $this->loadPaymentGateways();
+
+        // Set default addresses if available
+        $this->setDefaultAddresses();
     }
 
     /**
@@ -64,7 +71,7 @@ class CheckoutPaymentMethod extends Component
 
         // Set default selected method
         if ($this->paymentMethods->isNotEmpty()) {
-            $this->selectedMethod = $this->paymentMethods->first()->method;
+            $this->selectedMethod = $this->paymentMethods->first()->id;
         }
     }
 
@@ -80,9 +87,9 @@ class CheckoutPaymentMethod extends Component
 
         $this->paymentGateways = collect($gateways['data'] ?? []);
 
-        // Set default selected method
+        // Set default selected gateway
         if ($this->paymentGateways->isNotEmpty()) {
-            $this->selectedGateway = $this->paymentGateways->first()->method;
+            $this->selectedGateway = $this->paymentGateways->first()->id;
         }
     }
 
@@ -102,6 +109,68 @@ class CheckoutPaymentMethod extends Component
         }
 
         $this->dispatch('hideFullPageLoader');
+    }
+
+    /**
+     * Set default addresses from user's addresses
+     */
+    private function setDefaultAddresses(): void
+    {
+        if ($this->user && $this->user->shippingAddresses->isNotEmpty()) {
+            $defaultShipping = $this->user->shippingAddresses->firstWhere('is_default', 1);
+            $this->shipping_address_id = $defaultShipping ? $defaultShipping->id : $this->user->shippingAddresses->first()->id;
+        }
+
+        if ($this->user && $this->user->billingAddresses->isNotEmpty()) {
+            $defaultBilling = $this->user->billingAddresses->firstWhere('is_default', 1);
+            $this->billing_address_id = $defaultBilling ? $defaultBilling->id : $this->user->billingAddresses->first()->id;
+        }
+    }
+
+    /**
+     * Listen for address selection changes from the form
+     */
+    #[On('addressSelected')]
+    public function updateSelectedAddresses($shippingAddressId = null, $billingAddressId = null)
+    {
+        if ($shippingAddressId) {
+            $this->shipping_address_id = $shippingAddressId;
+        }
+        if ($billingAddressId) {
+            $this->billing_address_id = $billingAddressId;
+        }
+    }
+
+    public function initiateOnlinePayment($gatewayId)
+    {
+        $this->dispatch('showFullPageLoader');
+        
+        try {
+            // Validate required fields - use the current component state
+            if (!$this->shipping_address_id) {
+                $this->dispatch('hideFullPageLoader');
+                $this->dispatch('show-notification', 'Please select a shipping address', ['type' => 'error']);
+                return;
+            }
+
+            if (!$this->selectedMethod) {
+                $this->dispatch('hideFullPageLoader');
+                $this->dispatch('show-notification', 'Please select a payment method', ['type' => 'error']);
+                return;
+            }
+
+            // Redirect to payment initiation with all required data
+            return redirect()->route('front.payment.initiate', [
+                'gateway_id' => $gatewayId,
+                'payment_method_id' => $this->selectedMethod,
+                'shipping_address_id' => $this->shipping_address_id,
+                'billing_address_id' => $this->billing_address_id
+            ]);
+
+        } catch (\Exception $e) {
+            $this->dispatch('hideFullPageLoader');
+            $this->dispatch('show-notification', 'Payment initiation failed: ' . $e->getMessage(), ['type' => 'error']);
+        }
     }
 
     public function getSelectedMethodTypeProperty()

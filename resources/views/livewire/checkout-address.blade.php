@@ -66,28 +66,33 @@
                                 :checked="$address->is_default == 1" 
                                 class="shipping-address" 
                                 form="place-order-form"
-                                {{-- x-model="selectedAddress" --}}
                                 :selectedElCheckoutAddress="true"
+                                {{-- wire:model="shipping_address_id" --}}
+                                wire:change="$dispatch('addressSelected', {shippingAddressId: '{{ $address->id }}'})"
                                 >
-                                <div class="grid grid-cols-5">
-                                    <div class="col-span-4">
-                                        <h5 class="mb-1 {{FD['text-1']}} font-bold tracking-tight text-gray-700 dark:text-white">{{$address->first_name}} {{$address->last_name}}</h5>
+                                <div class="relative">
+                                    <div class="grid grid-cols-5">
+                                        <div class="col-span-4">
+                                            <h5 class="mb-1 {{FD['text-1']}} font-bold tracking-tight text-gray-700 dark:text-white">{{$address->first_name}} {{$address->last_name}}</h5>
 
-                                        <p class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-300">
-                                            {{$address->address_line_1}} 
-                                            {{$address->address_line_2}} @if (!empty($address->landmark)), {{$address->landmark}} @endif
-                                        </p>
+                                            <p class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-300">
+                                                {{$address->address_line_1}} 
+                                                {{$address->address_line_2}} @if (!empty($address->landmark)), {{$address->landmark}} @endif
+                                            </p>
 
-                                        <p class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-300">
-                                            {{$address->city}}, 
-                                            {{strtoupper($address->stateDetail->name)}}, 
-                                            {{$address->postal_code}}
-                                        </p>
+                                            <p class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-300">
+                                                {{$address->city}}, 
+                                                {{strtoupper($address->stateDetail->name)}}, 
+                                                {{$address->postal_code}}
+                                            </p>
 
-                                        <p class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-300">{{strtoupper($address->countryDetail->name)}}</p>
+                                            <p class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-300">{{strtoupper($address->countryDetail->name)}}</p>
+                                        </div>
+
+                                        <div class="col-span-1"></div>
                                     </div>
 
-                                    <div class="col-span-1">
+                                    <div class="absolute -top-2 -right-2">
                                         <x-front.dropdown width="32">
                                             <x-slot name="trigger">
                                                 <button type="button" class="hidden sm:inline-flex items-center {{ FD['rounded'] }} justify-center p-2 hover:bg-gray-100 dark:hover:bg-gray-500/70 {{FD['text']}} font-medium leading-tight dark:text-white">
@@ -163,7 +168,17 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4">
                         @foreach ($billingAddresses as $billing_address)
-                            <x-front.radio-input-button-checkout-address id="addressId{{$billing_address->id}}" name="billing_address_id" value="{{$billing_address->id}}" :checked="$billing_address->is_default == 1" class="billing-address" labelClass="mb-2" form="place-order-form">
+                            <x-front.radio-input-button-checkout-address 
+                                id="addressId{{$billing_address->id}}" 
+                                name="billing_address_id" 
+                                value="{{$billing_address->id}}" 
+                                :checked="$billing_address->is_default == 1" 
+                                class="billing-address" 
+                                labelClass="mb-2" 
+                                form="place-order-form"
+                                {{-- wire:model="billing_address_id" --}}
+                                wire:change="$dispatch('addressSelected', {billingAddressId: '{{ $billing_address->id }}'})"
+                                >
                                 <div class="grid grid-cols-5">
                                     <div class="col-span-4">
                                         <h5 class="mb-1 {{FD['text-1']}} font-bold tracking-tight text-gray-700 dark:text-white">{{$billing_address->first_name}} {{$billing_address->last_name}}</h5>

@@ -17,6 +17,8 @@ use App\Http\Controllers\Front\Faq\FaqController;
 use App\Http\Controllers\Front\Error\ErrorPageController;
 use App\Http\Controllers\Front\Product\ProductController;
 use App\Http\Controllers\Front\Review\ProductReviewController;
+
+use App\Http\Controllers\Front\Payment\PaymentController;
 use App\Http\Controllers\Front\Payment\Razorpay\RazorpayController;
 
 Route::name('front.')->group(function () {
@@ -107,10 +109,12 @@ Route::name('front.')->group(function () {
 
     // payment
     Route::name('payment.')->prefix('payment')->group(function() {
+        Route::get('/initiate/{gateway_id}', [PaymentController::class, 'initiate'])->name('initiate');
+
         Route::name('razorpay.')->prefix('razorpay')->controller(RazorpayController::class)->group(function() {
             Route::post('/create-order', 'createOrder')->name('create');
             Route::post('/verify', 'verify')->name('verify');
-            Route::post('/webhook', 'webhook');
+            Route::post('/webhook', 'webhook')->name('webhook');
         });
     });
 

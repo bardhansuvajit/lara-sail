@@ -86,7 +86,7 @@ class PaymentGatewayRepository implements PaymentGatewayInterface
     public function createPayment(Order $order): array
     {
         // amount in smallest currency unit (paise)
-        $amountPaise = intval(round($order->grand_total * 100)); // e.g. 199.50 -> 19950
+        $amountPaise = intval(round($order->total * 100)); // e.g. 199.50 -> 19950
 
         $orderData = [
             'receipt'         => 'order_rcpt_' . $order->id,
