@@ -143,7 +143,7 @@ class PaymentMethodRepository implements PaymentMethodInterface
     public function getById(Int $id)
     {
         try {
-            $data = PaymentMethod::with('countryDetails')
+            $data = PaymentMethod::with('countryDetails', 'statuses')
             ->find($id);
 
             if (!empty($data)) {

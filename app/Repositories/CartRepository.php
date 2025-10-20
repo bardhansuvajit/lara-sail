@@ -287,7 +287,10 @@ class CartRepository implements CartInterface
                 $couponRepository = app(CouponInterface::class);
                 $couponApplyResp = $couponRepository->couponDiscountApplicableToCart($cart);
 
+                // dd($couponApplyResp);
+
                 if ($couponApplyResp['code'] != 200) {
+                    // dd('in here');
                     return $couponApplyResp;
                 }
 

@@ -234,7 +234,7 @@ class CouponRepository implements CouponInterface
             }
 
             // Increment coupon usage
-            $this->incrementCouponUsage($coupon->id);
+            // $this->incrementCouponUsage($coupon->id);
 
             // Record coupon redemption - Do this on order place
             // $this->recordCouponRedemption($coupon->id, $userId, $deviceId, $discountAmount);
@@ -274,6 +274,8 @@ class CouponRepository implements CouponInterface
                 ->where('expires_at', '>=', now())
                 ->first();
 
+            // dd($coupon);
+
             if (!$coupon) {
                 // Invalid or expired coupon code
                 $couponRemoveResp = $this->cartRepository->removeCouponById($cartId);
@@ -298,13 +300,18 @@ class CouponRepository implements CouponInterface
 
             // Check minimum cart value
             // dd($cartData, $coupon);
+            // this cartTotal is after coupon discount, which might be less than $coupon->min_cart_value
             $cartTotal = $cartData->total ?? 0;
+            $cartTotal += $cart->coupon_discount_amount;
+            // dd($cartTotal, $coupon->min_cart_value);
             if ($coupon->min_cart_value && $cartTotal < $coupon->min_cart_value) {
                 $symbol = $cartData->countryDetail->currency_symbol;
                 // Minimum cart value doesnt match
                 $couponRemoveResp = $this->cartRepository->removeCouponById($cartId);
                 // 'message' => "Minimum cart value required: {$symbol}" . formatIndianMoney($coupon->min_cart_value),
             }
+
+            // dd('jj');
 
             // Calculate discount
             $discountAmount = $this->calculateDiscount($coupon, $cartTotal);
@@ -435,11 +442,6 @@ class CouponRepository implements CouponInterface
         }
     }
 
-    private function incrementCouponUsage(int $couponId): void
-    {
-        Coupon::where('id', $couponId)->increment('used_count');
-    }
-
     private function recordCouponRedemption(int $couponId, ?int $userId, ?string $deviceId, float $discountAmount): void
     {
         try {
@@ -453,6 +455,11 @@ class CouponRepository implements CouponInterface
         } catch (\Exception $e) {
             logger()->error('Failed to record coupon redemption: ' . $e->getMessage());
         }
+    }
+
+    public function incrementCouponUsage(int $couponId): void
+    {
+        Coupon::where('id', $couponId)->increment('used_count');
     }
 
     public function store(Array $array)

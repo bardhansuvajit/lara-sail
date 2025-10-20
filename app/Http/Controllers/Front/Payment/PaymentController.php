@@ -8,6 +8,7 @@ use App\Interfaces\CartInterface;
 use App\Interfaces\AddressInterface;
 use App\Interfaces\OrderInterface;
 use App\Interfaces\PaymentGatewayInterface;
+use App\Interfaces\PaymentMethodInterface;
 use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
@@ -16,17 +17,20 @@ class PaymentController extends Controller
     private AddressInterface $addressRepository;
     private OrderInterface $orderRepository;
     private PaymentGatewayInterface $paymentGatewayRepository;
+    private PaymentMethodInterface $paymentMethodRepository;
 
     public function __construct(
         CartInterface $cartRepository,
         AddressInterface $addressRepository,
         OrderInterface $orderRepository,
-        PaymentGatewayInterface $paymentGatewayRepository
+        PaymentGatewayInterface $paymentGatewayRepository,
+        PaymentMethodInterface $paymentMethodRepository
     ) {
         $this->cartRepository = $cartRepository;
         $this->addressRepository = $addressRepository;
         $this->orderRepository = $orderRepository;
         $this->paymentGatewayRepository = $paymentGatewayRepository;
+        $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
     public function initiate(Request $request, $gatewayId)
@@ -90,6 +94,18 @@ class PaymentController extends Controller
                 }
             }
 
+            // Payment Method details
+            $paymentMethodId = $validated['payment_method_id'];
+            $paymentMethodResponse = $this->paymentMethodRepository->getById($paymentMethodId);
+            if ($paymentMethodResponse['code'] != 200) {
+                return back()->with('error', 'Invalid Payment Method.');
+            }
+            $paymentMethodStatus = isset($paymentMethodResponse['data']->statuses[0])
+                ? $paymentMethodResponse['data']->statuses[0]->slug
+                : 'pending_payment';
+
+            // dd($paymentMethodStatus);
+
             // Prepare order data (same as COD flow)
             $orderData = [
                 'cart_items' => $cart->items,
@@ -130,7 +146,7 @@ class PaymentController extends Controller
                 'payment_method_title' => $cart->payment_method_title,
                 'payment_method_charge' => $cart->payment_method_charge,
                 'payment_method_discount' => $cart->payment_method_discount,
-                'payment_status' => 'pending',
+                'payment_status' => $paymentMethodStatus,
                 'transaction_id' => null,
                 'payment_details' => null,
             ];

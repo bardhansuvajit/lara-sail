@@ -42,6 +42,122 @@ return new class extends Migration
             $table->index(['country_code', 'status', 'position']);
         });
 
+        /*
+        $cash_payment_order_status = json_encode([
+            [
+                'title' => 'Unpaid',
+                'slug' => 'unpaid',
+                'description' => 'Order placed but awaiting customer payment.',
+                'class' => 'bg-gray-100 text-gray-700'
+            ],
+            [
+                'title' => 'Payment Complete by Customer',
+                'slug' => 'customer_payment_complete',
+                'description' => 'Customer marked payment as completed, awaiting verification.',
+                'class' => 'bg-blue-100 text-blue-700'
+            ],
+            [
+                'title' => 'Payment Incomplete by Customer',
+                'slug' => 'customer_payment_incomplete',
+                'description' => 'Customer started but did not complete payment.',
+                'class' => 'bg-yellow-100 text-yellow-700'
+            ],
+            [
+                'title' => 'Payment Received',
+                'slug' => 'customer_payment_received',
+                'description' => 'Payment successfully received and verified.',
+                'class' => 'bg-green-100 text-green-700'
+            ],
+            [
+                'title' => 'Payment Not Received',
+                'slug' => 'customer_payment_not_received',
+                'description' => 'Payment was not received or failed verification.',
+                'class' => 'bg-red-100 text-red-700'
+            ],
+            [
+                'title' => 'Payment Settled — Return Window Closed',
+                'slug' => 'payment_settled_return_closed',
+                'description' => 'Payment fully settled and return window has expired.',
+                'class' => 'bg-emerald-100 text-emerald-700'
+            ],
+            [
+                'title' => 'Payment Settlement Failed — Full Refund Issued',
+                'slug' => 'payment_failed_full_refund',
+                'description' => 'Settlement failed, full amount refunded to customer.',
+                'class' => 'bg-red-100 text-red-700'
+            ],
+            [
+                'title' => 'Payment Settlement Failed — Partial Refund Issued',
+                'slug' => 'payment_failed_partial_refund',
+                'description' => 'Settlement failed, partial amount refunded to customer.',
+                'class' => 'bg-orange-100 text-orange-700'
+            ],
+        ]);
+
+        $prepaid_payment_order_status = json_encode([
+            [
+                'title' => 'Pending Payment',
+                'slug' => 'pending_payment',
+                'description' => 'Order placed but payment not yet initiated or confirmed.',
+                'class' => 'bg-gray-100 text-gray-700'
+            ],
+            [
+                'title' => 'Payment Initiated',
+                'slug' => 'payment_initiated',
+                'description' => 'Customer started the payment process with selected gateway.',
+                'class' => 'bg-blue-100 text-blue-700'
+            ],
+            [
+                'title' => 'Payment Processing',
+                'slug' => 'payment_processing',
+                'description' => 'Payment is being processed by the payment gateway.',
+                'class' => 'bg-yellow-100 text-yellow-700'
+            ],
+            [
+                'title' => 'Payment Successful',
+                'slug' => 'payment_successful',
+                'description' => 'Payment completed and verified successfully.',
+                'class' => 'bg-green-100 text-green-700'
+            ],
+            [
+                'title' => 'Payment Failed',
+                'slug' => 'payment_failed',
+                'description' => 'Payment attempt failed due to gateway or customer issue.',
+                'class' => 'bg-red-100 text-red-700'
+            ],
+            [
+                'title' => 'Payment Captured',
+                'slug' => 'payment_captured',
+                'description' => 'Payment captured by Payment Gateway.',
+                'class' => 'bg-lime-100 text-lime-700'
+            ],
+            [
+                'title' => 'Payment Refunded (Full)',
+                'slug' => 'payment_refunded_full',
+                'description' => 'Full payment refunded to the customer.',
+                'class' => 'bg-orange-100 text-orange-700'
+            ],
+            [
+                'title' => 'Payment Refunded (Partial)',
+                'slug' => 'payment_refunded_partial',
+                'description' => 'Partial payment refunded to the customer.',
+                'class' => 'bg-amber-100 text-amber-700'
+            ],
+            [
+                'title' => 'Payment Disputed',
+                'slug' => 'payment_disputed',
+                'description' => 'Customer raised a dispute or chargeback on this payment.',
+                'class' => 'bg-purple-100 text-purple-700'
+            ],
+            [
+                'title' => 'Payment Settled — Return Window Closed',
+                'slug' => 'payment_settled_return_closed',
+                'description' => 'Payment fully settled, return window expired.',
+                'class' => 'bg-emerald-100 text-emerald-700'
+            ],
+        ]);
+        */
+
         $data = [
             [
                 'country_code' => 'IN',

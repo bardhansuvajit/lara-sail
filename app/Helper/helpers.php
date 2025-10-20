@@ -457,6 +457,20 @@ if (!function_exists('floatConvert')) {
     }
 }
 
+if (!function_exists('getUserIp')) {
+    function getUserIp() {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            return $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            // Can contain multiple IPs – take the first one
+            $ipList = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            return trim($ipList[0]);
+        } else {
+            return $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
+        }
+    }
+}
+
 /*
 if (!function_exists('formatIndianMoney')) {
     function formatIndianMoney($amount, $decimalPlaces = 2) {

@@ -69,7 +69,7 @@ class Cart extends Component
             ]);
         }
 
-        // Update cart totals, if cart data exists
+        // Update cart totals, if cart data exists + check coupon
         if (!empty($cart['data'])) {
             $cartUpdateResp = $cartRepository->updateCartTotals($cart['data']);
         }

@@ -32,4 +32,9 @@ class PaymentMethod extends Model
     {
         return $this->belongsTo('App\Models\Country', 'country_code', 'code');
     }
+
+    public function statuses()
+    {
+        return $this->hasMany('App\Models\PaymentMethodStatus', 'type', 'method');
+    }
 }

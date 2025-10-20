@@ -139,7 +139,7 @@
                             @endif
 
                             @if ($order->coupon_discount_amount > 0)
-                                <div class="flex justify-between pb-1">
+                                <div class="flex justify-between">
                                     <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">Coupon Discount</p>
                                     <p class="{{FD['text']}} text-green-600">
                                         -<span class="currency-icon">{{$order->currency_symbol}}</span>{{ formatIndianMoney($order->coupon_discount_amount) }}

@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Interfaces\CartSettingInterface;
 use App\Interfaces\PaymentMethodInterface;
 use App\Interfaces\OrderItemInterface;
+use App\Interfaces\CouponInterface;
+use App\Interfaces\CouponUsageInterface;
 
 use App\Services\OrderNumberService;
 
@@ -24,13 +26,19 @@ class OrderRepository implements OrderInterface
     private CartSettingInterface $cartSettingRepository;
     private PaymentMethodInterface $paymentMethodRepository;
     private OrderItemInterface $orderItemRepository;
+    private CouponInterface $couponRepository;
+    private CouponUsageInterface $couponUsageRepository;
     protected OrderNumberService $orderNumberService;
+
+    private array $orderStatus = [];
 
     public function __construct(
         TrashInterface $trashRepository, 
         CartSettingInterface $cartSettingRepository, 
         PaymentMethodInterface $paymentMethodRepository,
         OrderItemInterface $orderItemRepository,
+        CouponInterface $couponRepository,
+        CouponUsageInterface $couponUsageRepository,
         OrderNumberService $orderNumberService
     )
     {
@@ -38,6 +46,8 @@ class OrderRepository implements OrderInterface
         $this->cartSettingRepository = $cartSettingRepository;
         $this->paymentMethodRepository = $paymentMethodRepository;
         $this->orderItemRepository = $orderItemRepository;
+        $this->couponRepository = $couponRepository;
+        $this->couponUsageRepository = $couponUsageRepository;
         $this->orderNumberService = $orderNumberService;
     }
 
@@ -116,6 +126,7 @@ class OrderRepository implements OrderInterface
             // Generate Order Number
             $orderNumber = $this->orderNumberService->generate($array['email'], $array['user_first_name'], $array['user_last_name']);
 
+            // Order data
             $data = new Order();
             $data->order_number = $orderNumber;
             $data->user_id = $array['user_id'];
@@ -158,6 +169,7 @@ class OrderRepository implements OrderInterface
 
             $data->save();
 
+            // Order items
             foreach ($array['cart_items'] as $key => $cartItem) {
                 $cartItemResp = $this->orderItemRepository->store([
                     'order_id' => $data->id,
@@ -179,6 +191,38 @@ class OrderRepository implements OrderInterface
                     'total' => $cartItem->total,
 
                     'cart_availability_message' => $cartItem->availability_message,
+                ]);
+            }
+
+            // Coupon Usage
+            if ( !empty($array['coupon_code_id']) && ($array['coupon_discount_amount'] > 0) ) {
+                // Coupon details
+                $couponId = $array['coupon_code_id'];
+                $couponDetails = $this->couponRepository->getById($couponId);
+                // dd($couponDetails);
+                if ($couponDetails['code'] != 200) {
+                    DB::rollback();
+
+                    return [
+                        'code' => 400,
+                        'status' => 'error',
+                        'message' => 'Coupon details could not be found.',
+                    ];
+                }
+                $couponData = $couponDetails['data'];
+
+                // Increment coupon usage
+                $this->couponRepository->incrementCouponUsage($couponId);
+
+                // Add coupon usage data
+                $couponSnapshot = json_encode($couponData->toArray());
+                $this->couponUsageRepository->store([
+                    'coupon_id' => $couponId,
+                    'user_id' => $array['user_id'],
+                    'order_id' => $data->id,
+                    'coupon_discount_amount' => $array['coupon_discount_amount'],
+                    'coupon_snapshot' => $couponSnapshot,
+                    'ip_address' => getUserIp()
                 ]);
             }
 

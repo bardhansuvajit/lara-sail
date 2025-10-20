@@ -9,6 +9,7 @@ use Illuminate\View\View;
 use App\Interfaces\CartInterface;
 use App\Interfaces\AddressInterface;
 use App\Interfaces\OrderInterface;
+use App\Interfaces\PaymentMethodInterface;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cookie;
@@ -18,16 +19,19 @@ class OrderController extends Controller
     private CartInterface $cartRepository;
     private AddressInterface $addressRepository;
     private OrderInterface $orderRepository;
+    private PaymentMethodInterface $paymentMethodRepository;
 
     public function __construct(
         CartInterface $cartRepository, 
         AddressInterface $addressRepository, 
         OrderInterface $orderRepository,
+        PaymentMethodInterface $paymentMethodRepository
     )
     {
         $this->cartRepository = $cartRepository;
         $this->addressRepository = $addressRepository;
         $this->orderRepository = $orderRepository;
+        $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
     public function index(): View
@@ -60,7 +64,7 @@ class OrderController extends Controller
 
         try {
             $user = auth()->guard('web')->user();
-            
+
             if (!$user) {
                 return back()->with('error', 'Authentication required to place order.');
             }
@@ -104,6 +108,17 @@ class OrderController extends Controller
                 $billingAddress = json_encode($billingResponse['data'][0]);
             }
 
+            // Payment Method details
+            $paymentMethodId = $validated['payment_method'];
+            $paymentMethodResponse = $this->paymentMethodRepository->getById($paymentMethodId);
+            if ($paymentMethodResponse['code'] != 200) {
+                return back()->with('error', 'Invalid Payment Method.');
+            }
+            $paymentMethodStatus = isset($paymentMethodResponse['data']->statuses[0])
+                ? $paymentMethodResponse['data']->statuses[0]->slug
+                : 'unpaid';
+            
+            // dd($paymentMethodResponse['data']->statuses[0]->slug);
             // Prepare order data
             $orderData = [
                 'cart_items' => $cart->items,
@@ -144,7 +159,7 @@ class OrderController extends Controller
                 'payment_method_title' => $cart->payment_method_title,
                 'payment_method_charge' => $cart->payment_method_charge,
                 'payment_method_discount' => $cart->payment_method_discount,
-                'payment_status' => 'pending',
+                'payment_status' => $paymentMethodStatus,
                 'transaction_id' => null,
                 'payment_details' => null,
             ];

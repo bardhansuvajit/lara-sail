@@ -56,7 +56,7 @@ class RazorpayController extends Controller
             if (!$isValid) {
                 // Update order status to failed
                 $order->update([
-                    'payment_status' => 'failed'
+                    'payment_status' => 'payment_failed'
                 ]);
 
                 return response()->json([
@@ -68,7 +68,7 @@ class RazorpayController extends Controller
             DB::transaction(function() use ($order, $data) {
                 // Update order payment status
                 $order->update([
-                    'payment_status' => 'captured',
+                    'payment_status' => 'payment_captured',
                     'transaction_id' => $data['razorpay_payment_id'],
                     'paid_at' => now(),
                 ]);
@@ -102,38 +102,6 @@ class RazorpayController extends Controller
             ], 500);
         }
     }
-
-    /*
-    public function verify(Request $request)
-    {
-        $data = $request->only(['razorpay_order_id','razorpay_payment_id','razorpay_signature','order_id']);
-        $order = Order::findOrFail($data['order_id']);
-
-        $isValid = $this->gateway->verifyPayment($data);
-
-        if (!$isValid) {
-            return response()->json(['status' => false, 'message' => 'Verification failed'], 422);
-        }
-
-        DB::transaction(function() use ($order, $data) {
-            $order->update([
-                'payment_status' => 'paid',
-                'payment_method' => 'razorpay',
-                'paid_at' => now(),
-            ]);
-
-            $order->payments()->create([
-                'gateway' => 'razorpay',
-                'gateway_payment_id' => $data['razorpay_payment_id'],
-                'gateway_order_id' => $data['razorpay_order_id'],
-                'amount' => $order->grand_total,
-                'meta' => json_encode($data),
-            ]);
-        });
-
-        return response()->json(['status' => true, 'message' => 'Payment successful']);
-    }
-    */
 
     public function webhook(Request $request)
     {

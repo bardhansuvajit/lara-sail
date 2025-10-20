@@ -9,6 +9,7 @@ interface CouponInterface
     public function listCountryBasedFrontendCoupons(string $country);
     public function checkAndApplyToCart(string $couponCode, $cartData);
     public function couponDiscountApplicableToCart($cartData);
+    public function incrementCouponUsage(int $couponId);
     public function store(Array $array);
     public function getById(Int $id);
     public function getBySlug(String $slug);

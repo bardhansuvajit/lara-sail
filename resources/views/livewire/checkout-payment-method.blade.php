@@ -105,7 +105,7 @@
                                             wire:click="initiateOnlinePayment({{ $gateway->id }})"
                                             class="flex w-full md:w-60 items-center justify-center {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium text-white hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-yellow-100 bg-yellow-500 hover:bg-yellow-600">
                                             Pay with 
-                                            <div class="ms-1 w-24 h-5">
+                                            <div class="ms-1 w-20 h-5">
                                                 {!! $gateway->svg_icon !!}
                                             </div>
                                         </button>
@@ -114,9 +114,9 @@
                                         <button
                                             type="button"
                                             wire:click="initiateOnlinePayment({{ $gateway->id }})"
-                                            class="flex w-full md:w-60 items-center justify-center {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium text-white hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-primary-300 bg-slate-700">
+                                            class="flex w-full md:w-60 items-center justify-center {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium text-gray-800 hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-primary-300 bg-gray-100 hover:bg-gray-20">
                                             Pay with 
-                                            <div class="ms-1 w-24 h-5">
+                                            <div class="ms-1 w-12 h-5">
                                                 {!! $gateway->svg_icon !!}
                                             </div>
                                         </button>
