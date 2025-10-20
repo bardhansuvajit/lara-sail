@@ -93,4 +93,9 @@ class Order extends Model
     {
         return $this->belongsTo('App\Models\ShippingMethod', 'shipping_method_id', 'id');
     }
+
+    public function payments()
+    {
+        return $this->hasMany(OrderPayment::class);
+    }
 }

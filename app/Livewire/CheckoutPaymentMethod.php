@@ -141,6 +141,43 @@ class CheckoutPaymentMethod extends Component
         }
     }
 
+    // In CheckoutPaymentMethod.php
+    public function initiateOnlinePayment($gatewayId)
+    {
+        $this->dispatch('showFullPageLoader');
+        
+        try {
+            // Validate required fields
+            if (!$this->shipping_address_id) {
+                $this->dispatch('hideFullPageLoader');
+                $this->dispatch('show-notification', 'Please select a shipping address', ['type' => 'error']);
+                return;
+            }
+
+            if (!$this->selectedMethod) {
+                $this->dispatch('hideFullPageLoader');
+                $this->dispatch('show-notification', 'Please select a payment method', ['type' => 'error']);
+                return;
+            }
+
+            // Build URL with query parameters
+            $url = route('front.payment.initiate', ['gateway_id' => $gatewayId]) . '?' . http_build_query([
+                'payment_method_id' => $this->selectedMethod,
+                'shipping_address_id' => $this->shipping_address_id,
+                'billing_address_id' => $this->billing_address_id
+            ]);
+
+            // Use wire:navigate for SPA-like navigation or return redirect
+            return redirect()->to($url);
+
+        } catch (\Exception $e) {
+            $this->dispatch('hideFullPageLoader');
+            $this->dispatch('show-notification', 'Payment initiation failed: ' . $e->getMessage(), ['type' => 'error']);
+            return null;
+        }
+    }
+
+    /*
     public function initiateOnlinePayment($gatewayId)
     {
         $this->dispatch('showFullPageLoader');
@@ -172,6 +209,7 @@ class CheckoutPaymentMethod extends Component
             $this->dispatch('show-notification', 'Payment initiation failed: ' . $e->getMessage(), ['type' => 'error']);
         }
     }
+    */
 
     public function getSelectedMethodTypeProperty()
     {

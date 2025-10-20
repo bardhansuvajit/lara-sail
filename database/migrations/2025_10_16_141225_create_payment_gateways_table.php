@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('name');
             $table->json('settings')->nullable();
             $table->text('svg_icon');
-            $table->text('physical_logo_path');
 
             $table->tinyInteger('status')->default(1);
             $table->integer('position')->default(0);
@@ -99,7 +98,6 @@ $paypalSvgIcon = '
                 'name' => 'Razorpay',
                 'settings' => json_encode(['key' => env('RAZORPAY_KEY')]),
                 'svg_icon' => $razorpaySvgIcon,
-                'physical_logo_path' => '',
                 'status' => 1,
                 'position' => 1,
             ],
@@ -109,7 +107,6 @@ $paypalSvgIcon = '
                 'name' => 'Stripe',
                 'settings' => json_encode(['key' => 'uyger6y7tf6e47wt8734tby7r834tu7rtb3u7']),
                 'svg_icon' => $stripeSvgIcon,
-                'physical_logo_path' => '',
                 'status' => 1,
                 'position' => 2,
             ],
@@ -119,7 +116,6 @@ $paypalSvgIcon = '
                 'name' => 'Paypal',
                 'settings' => json_encode(['key' => 'sdfjklhwuyiru4wtrw4utrysufyfsdf']),
                 'svg_icon' => $paypalSvgIcon,
-                'physical_logo_path' => '',
                 'status' => 1,
                 'position' => 3,
             ],

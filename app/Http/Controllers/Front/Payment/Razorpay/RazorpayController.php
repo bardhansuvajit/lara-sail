@@ -31,6 +31,81 @@ class RazorpayController extends Controller
 
     public function verify(Request $request)
     {
+        try {
+            $data = $request->only(['razorpay_order_id','razorpay_payment_id','razorpay_signature','order_id']);
+            
+            // Validate required fields
+            $validator = validator($data, [
+                'razorpay_order_id' => 'required',
+                'razorpay_payment_id' => 'required', 
+                'razorpay_signature' => 'required',
+                'order_id' => 'required|exists:orders,id'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false, 
+                    'message' => 'Invalid verification data'
+                ], 422);
+            }
+
+            $order = Order::findOrFail($data['order_id']);
+
+            $isValid = $this->gateway->verifyPayment($data);
+
+            if (!$isValid) {
+                // Update order status to failed
+                $order->update([
+                    'payment_status' => 'failed'
+                ]);
+
+                return response()->json([
+                    'status' => false, 
+                    'message' => 'Payment verification failed'
+                ], 422);
+            }
+
+            DB::transaction(function() use ($order, $data) {
+                // Update order payment status
+                $order->update([
+                    'payment_status' => 'captured',
+                    'transaction_id' => $data['razorpay_payment_id'],
+                    'paid_at' => now(),
+                ]);
+
+                // Create payment record
+                $order->payments()->create([
+                    'gateway' => 'razorpay',
+                    'gateway_payment_id' => $data['razorpay_payment_id'],
+                    'gateway_order_id' => $data['razorpay_order_id'],
+                    'amount' => $order->total, // Use the appropriate total field
+                    'currency' => $order->currency_code ?? 'INR',
+                    'meta' => $data,
+                ]);
+
+                // You might also want to update order status
+                $order->update(['status' => 'confirmed']);
+            });
+
+            return response()->json([
+                'status' => true, 
+                'message' => 'Payment successful',
+                'redirect_url' => route('front.order.thankyou', ['orderId' => $order->id])
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Razorpay verification error: ' . $e->getMessage());
+            
+            return response()->json([
+                'status' => false, 
+                'message' => 'Payment verification error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /*
+    public function verify(Request $request)
+    {
         $data = $request->only(['razorpay_order_id','razorpay_payment_id','razorpay_signature','order_id']);
         $order = Order::findOrFail($data['order_id']);
 
@@ -58,6 +133,7 @@ class RazorpayController extends Controller
 
         return response()->json(['status' => true, 'message' => 'Payment successful']);
     }
+    */
 
     public function webhook(Request $request)
     {

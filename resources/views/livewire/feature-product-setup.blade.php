@@ -350,7 +350,7 @@
     {{-- SEARCH PRODUCTS --}}
     <div id="search-products" class="mb-5">
         <div class="bg-red-500 px-4 py-2">
-            <h2 class="text-base font-bold text-white">Search (Min 9 products)</h2>
+            <h2 class="text-base font-bold text-white">Search (Min 6 products)</h2>
             <h5 class="text-xs font-medium text-gray-100">Featured Search Products will be displayed in search modal as Sponsored products</h5>
         </div>
 

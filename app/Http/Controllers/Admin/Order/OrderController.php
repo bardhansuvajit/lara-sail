@@ -96,7 +96,7 @@ class OrderController
     {
         $resp = $this->orderRepository->getById($id);
         return view('admin.order.edit', [
-            'data' => $resp['data'],
+            'order' => $resp['data'],
         ]);
     }
 

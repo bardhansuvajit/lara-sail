@@ -23,6 +23,6 @@ class Invoice extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.invoice');
+        return view('components.front.invoice');
     }
 }

@@ -264,13 +264,13 @@
                                 <p class="text-xs">{{ $item->id }}</p>
                             </th>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <p class="text-xs font-bold">{{ $item->order_number }}</p>
+                                <p class="text-[10px] font-bold">{{ $item->order_number }}</p>
                             </td>
 
                             {{-- User --}}
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 @if ($item->user)
-                                    <a href="{{ route('admin.user.edit', $item->user_id) }}" class="text-primary-400 underline hover:no-underline">
+                                    <a href="{{ route('admin.user.edit', $item->user_id) }}" class="text-[10px] text-primary-400 underline hover:no-underline">
                                         {{ $item->user?->first_name ?? 'NA' }} {{ $item->user?->last_name ?? 'NA' }}
                                     </a>
                                 @else
@@ -280,8 +280,13 @@
 
                             {{-- Payment Details --}}
                             <th scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <p class="text-xs text-green-500">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
-                                <p class="text-xs text-red-500">{{ strtoupper($item->paymentMethod->method).' '.$item->payment_status }}</p>
+                                @if ($item->payment_status == "captured")
+                                    <p class="text-[10px] text-green-500">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
+                                    <a href="https://dashboard.razorpay.com/app/payments/{{$item->transaction_id}}?init_page=Payments" target="_blank" class="text-[10px] text-green-500 underline hover:no-underline">{{ strtoupper($item->paymentMethod->method).' '.$item->payment_status }}</a>
+                                @else
+                                    <p class="text-[10px] text-red-500">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
+                                    <p class="text-[10px] text-red-500">{{ strtoupper($item->paymentMethod->method).' '.$item->payment_status }}</p>
+                                @endif
                             </td>
 
                             {{-- Order items --}}
@@ -292,13 +297,13 @@
                                             @if ($orderItem->image_s)
                                                 <img src="{{ Storage::url($orderItem->image_s) }}" alt="product" class="h-4">
                                             @endif
-                                            <a href="{{ route('admin.product.listing.edit', $orderItem->product_id) }}" class="text-primary-400 underline hover:no-underline">
+                                            <a href="{{ route('admin.product.listing.edit', $orderItem->product_id) }}" class="text-[10px] text-primary-400 underline hover:no-underline">
                                                 {{$orderItem->product_title}}
                                             </a>
                                             @if ($orderItem->variation_attributes)
-                                                <p class="text-gray-900 dark:text-white">{{$orderItem->variation_attributes}}</p>
+                                                <p class="text-[10px] text-gray-900 dark:text-white">{{$orderItem->variation_attributes}}</p>
                                             @endif
-                                            <p class="text-gray-600 dark:text-gray-400"> x {{$orderItem->quantity}}</p>
+                                            <p class="text-[10px] text-gray-600 dark:text-gray-400"> x {{$orderItem->quantity}}</p>
                                         </div>
                                     @endforeach
                                 </div>
@@ -312,25 +317,30 @@
                                 <div class="flex space-x-2 items-center">
                                     @if($item->country->flag) <div class="w-8 h-8 overflow-hidden flex">{!! $item->country->flag !!}</div> @endif
                                     <div>
-                                        <p>{{ $shippingAddress->postal_code }}, {{ $shippingAddress->state }}</p>
-                                        {{ strtoupper($item->shippingMethod->method) }} 
-                                        Delivery 
-                                        @if ($item->shipping_cost > 0) <span class="text-xs text-green-500">({{ $item->currency_symbol }} {{ formatIndianMoney($item->shipping_cost) }})</span> @endif
-                                        by {{ $item->created_at->addDays($item->shippingMethod->max_delivery_day)->format('l, F d, Y') }}
+                                        <p class="text-[10px]">
+                                            {{ $shippingAddress->postal_code }}, {{ $shippingAddress->state }}
+                                        </p>
+                                        <p class="text-[10px]">
+                                            {{ strtoupper($item->shippingMethod->method) }} Delivery 
+                                            @if ($item->shipping_cost > 0)
+                                                <span class="text-[10px] text-green-500">({{ $item->currency_symbol }} {{ formatIndianMoney($item->shipping_cost) }})</span>
+                                            @endif
+                                            by {{ $item->created_at->addDays($item->shippingMethod->max_delivery_day)->format('l, F d, Y') }}
+                                        </p>
                                     </div>
                                 </div>
                             </td>
 
                             {{-- Order Datetime --}}
                             <td scope="row" class="px-2 py-1 text-gray-500">
-                                <p class="text-xs">{{ $item->created_at->diffForHumans() }}</p>
-                                <p class="text-xs">{{ $item->created_at->format('F j, Y h:i a') }}</p>
+                                <p class="text-[10px]">{{ $item->created_at->diffForHumans() }}</p>
+                                <p class="text-[10px]">{{ $item->created_at->format('F j, Y h:i a') }}</p>
                             </td>
 
                             {{-- Action --}}
                             <td scope="row" class="px-2 py-1 text-gray-600 dark:text-gray-400">
                                 <div class="flex space-x-2 items-center justify-end">
-                                    <p class="text-xs">{{ ucwords($item->status) }}</p>
+                                    <p class="text-[10px]">{{ ucwords($item->status) }}</p>
                                     {{-- @livewire('toggle-status', [
                                         'model' => 'Order',
                                         'modelId' => $item->id,
