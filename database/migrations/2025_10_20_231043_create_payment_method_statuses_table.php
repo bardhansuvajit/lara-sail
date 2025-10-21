@@ -38,13 +38,14 @@ return new class extends Migration
             ['type'=>'prepaid','slug'=>'pending_payment','title'=>'Pending Payment','description'=>'Order placed but payment not yet initiated or confirmed.','class'=>'bg-gray-100 text-gray-700','position'=>1],
             ['type'=>'prepaid','slug'=>'payment_initiated','title'=>'Payment Initiated','description'=>'Customer started the payment process with selected gateway.','class'=>'bg-blue-100 text-blue-700','position'=>2],
             ['type'=>'prepaid','slug'=>'payment_processing','title'=>'Payment Processing','description'=>'Payment is being processed by the payment gateway.','class'=>'bg-yellow-100 text-yellow-700','position'=>3],
-            ['type'=>'prepaid','slug'=>'payment_successful','title'=>'Payment Successful','description'=>'Payment completed and verified successfully.','class'=>'bg-green-100 text-green-700','position'=>4],
-            ['type'=>'prepaid','slug'=>'payment_failed','title'=>'Payment Failed','description'=>'Payment attempt failed due to gateway or customer issue.','class'=>'bg-red-100 text-red-700','position'=>5],
-            ['type'=>'prepaid','slug'=>'payment_captured','title'=>'Payment Captured','description'=>'Payment captured by Payment Gateway.','class'=>'bg-lime-100 text-lime-700','position'=>6],
-            ['type'=>'prepaid','slug'=>'payment_refunded_full','title'=>'Payment Refunded (Full)','description'=>'Full payment refunded to the customer.','class'=>'bg-orange-100 text-orange-700','position'=>7],
-            ['type'=>'prepaid','slug'=>'payment_refunded_partial','title'=>'Payment Refunded (Partial)','description'=>'Partial payment refunded to the customer.','class'=>'bg-amber-100 text-amber-700','position'=>8],
-            ['type'=>'prepaid','slug'=>'payment_disputed','title'=>'Payment Disputed','description'=>'Customer raised a dispute or chargeback on this payment.','class'=>'bg-purple-100 text-purple-700','position'=>9],
-            ['type'=>'prepaid','slug'=>'payment_settled_return_closed','title'=>'Payment Settled — Return Window Closed','description'=>'Payment fully settled, return window expired.','class'=>'bg-emerald-100 text-emerald-700','position'=>10],
+            ['type'=>'prepaid','slug'=>'payment_cancelled','title'=>'Payment Cancelled','description'=>'Payment is cancelled by customer.','class'=>'bg-yellow-100 text-yellow-700','position'=>4],
+            ['type'=>'prepaid','slug'=>'payment_successful','title'=>'Payment Successful','description'=>'Payment completed and verified successfully.','class'=>'bg-green-100 text-green-700','position'=>5],
+            ['type'=>'prepaid','slug'=>'payment_failed','title'=>'Payment Failed','description'=>'Payment attempt failed due to gateway or customer issue.','class'=>'bg-red-100 text-red-700','position'=>6],
+            ['type'=>'prepaid','slug'=>'payment_captured','title'=>'Payment Captured','description'=>'Payment captured by Payment Gateway.','class'=>'bg-lime-100 text-lime-700','position'=>7],
+            ['type'=>'prepaid','slug'=>'payment_refunded_full','title'=>'Payment Refunded (Full)','description'=>'Full payment refunded to the customer.','class'=>'bg-orange-100 text-orange-700','position'=>8],
+            ['type'=>'prepaid','slug'=>'payment_refunded_partial','title'=>'Payment Refunded (Partial)','description'=>'Partial payment refunded to the customer.','class'=>'bg-amber-100 text-amber-700','position'=>9],
+            ['type'=>'prepaid','slug'=>'payment_disputed','title'=>'Payment Disputed','description'=>'Customer raised a dispute or chargeback on this payment.','class'=>'bg-purple-100 text-purple-700','position'=>10],
+            ['type'=>'prepaid','slug'=>'payment_settled_return_closed','title'=>'Payment Settled — Return Window Closed','description'=>'Payment fully settled, return window expired.','class'=>'bg-emerald-100 text-emerald-700','position'=>11],
         ];
 
         DB::table('payment_method_statuses')->insert($data);

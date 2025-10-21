@@ -11,6 +11,15 @@
         document.addEventListener('DOMContentLoaded', function () {
             const options = @json($paymentPayload);
 
+            // Customizations
+            options.name = "MyStore"; // ✅ App name
+            options.image = "{{ asset('images/logo.png') }}"; // ✅ Logo
+            options.prefill = {
+                name: "{{ $order->user->first_name ?? '' }}",
+                email: "{{ $order->user->email ?? '' }}",
+                contact: "{{ $order->user->phone ?? '' }}" // ✅ Auto-select phone
+            };
+
             // console.log('Payment options:', options);
 
             options.handler = async function (response) {
@@ -43,7 +52,7 @@
                         window.location.href = "{{ route('front.checkout.index') }}";
                     }
                 } catch (error) {
-                    console.error('Verification error:', error);
+                    // console.error('Verification error:', error);
                     alert('An error occurred during payment verification');
                     // window.location.href = "{{ route('front.checkout.index') }}";
                 }
@@ -51,6 +60,7 @@
 
             options.modal = {
                 ondismiss: function() {
+                    alert('here');
                     // User closed the modal without payment
                     window.location.href = "{{ route('front.checkout.index') }}";
                 }

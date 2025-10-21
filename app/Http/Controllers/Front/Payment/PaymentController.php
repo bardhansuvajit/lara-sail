@@ -56,7 +56,7 @@ class PaymentController extends Controller
 
         try {
             $user = auth()->guard('web')->user();
-            
+
             if (!$user) {
                 return back()->with('error', 'Authentication required.');
             }
@@ -101,8 +101,8 @@ class PaymentController extends Controller
                 return back()->with('error', 'Invalid Payment Method.');
             }
             $paymentMethodStatus = isset($paymentMethodResponse['data']->statuses[0])
-                ? $paymentMethodResponse['data']->statuses[0]->slug
-                : 'pending_payment';
+                ? $paymentMethodResponse['data']->statuses[2]->slug
+                : 'payment_processing';
 
             // dd($paymentMethodStatus);
 

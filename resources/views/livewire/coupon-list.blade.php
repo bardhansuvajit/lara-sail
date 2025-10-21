@@ -117,13 +117,13 @@
                                         </div>
                                     </div>
 
-                                    <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 flex flex-col items-center justify-between gap-3">
+                                    <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 flex flex-col justify-between gap-3">
                                         <div class="{{ FD['text-0'] }} text-gray-500 dark:text-gray-400">
                                             <span class="hidden sm:inline">*T&Cs apply. Valid once per user unless specified.</span>
                                             <span class="sm:hidden">*T&Cs apply</span>
                                         </div>
 
-                                        <div class="flex items-center gap-3">
+                                        <div class="flex ms-auto gap-3">
                                             <button
                                                 wire:click="copyCouponCode('{{ $coupon->code }}')"
                                                 class="flex items-center gap-2 p-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 {{ FD['rounded'] }} {{ FD['text'] }} font-semibold transition-all duration-200 min-w-[100px] justify-center"
@@ -139,20 +139,9 @@
                                                 @endif
                                             </button>
 
-                                            {{-- <button
-                                                wire:click="applyCoupon('{{ $coupon->code }}')"
-                                                class="flex items-center gap-2 p-2 bg-green-600 hover:bg-green-700 text-white {{ FD['rounded'] }} {{ FD['text'] }} font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
-                                                title="Apply coupon to cart"
-                                                >
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                                </svg>
-                                                <span>Apply Code</span>
-                                            </button> --}}
-
                                             @if($appliedCouponCode && strcasecmp($appliedCouponCode, $coupon->code) === 0)
                                                 <button
-                                                    class="flex items-center gap-2 p-2 bg-gray-300 text-gray-700 {{ FD['rounded'] }} {{ FD['text'] }}"
+                                                    class="flex items-center gap-2 p-2 bg-gray-300 text-gray-700 {{ FD['rounded'] }} {{ FD['text'] }} border border-gray-200"
                                                     disabled
                                                     aria-disabled="true"
                                                     title="Coupon already applied"
@@ -163,7 +152,7 @@
                                             @else
                                                 <button
                                                     wire:click="applyCoupon('{{ $coupon->code }}')"
-                                                    class="flex items-center gap-2 p-2 bg-green-600 hover:bg-green-700 text-white {{ FD['rounded'] }} {{ FD['text'] }}"
+                                                    class="flex items-center gap-2 p-2 bg-green-600 hover:bg-green-700 text-white {{ FD['rounded'] }} {{ FD['text'] }} border border-green-700 dark:border-green-600"
                                                     title="Apply coupon to cart"
                                                 >
                                                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/></svg>

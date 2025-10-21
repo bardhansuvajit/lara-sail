@@ -145,8 +145,14 @@ class CheckoutPaymentMethod extends Component
     public function initiateOnlinePayment($gatewayId)
     {
         $this->dispatch('showFullPageLoader');
-        
+
         try {
+            if ($gatewayId != 1) {
+                $this->dispatch('hideFullPageLoader');
+                $this->dispatch('show-notification', 'Please select Razorpay only', ['type' => 'error']);
+                return;
+            }
+
             // Validate required fields
             if (!$this->shipping_address_id) {
                 $this->dispatch('hideFullPageLoader');
