@@ -173,7 +173,7 @@ class PaymentController extends Controller
             session(['current_order_id' => $order->id]);
 
             // Return to frontend with payment data
-            return view('front.payment.redirect', [
+            return view('front.payment.razorpay.redirect', [
                 'order' => $order,
                 'paymentPayload' => $paymentPayload,
                 'gatewayId' => $gatewayId

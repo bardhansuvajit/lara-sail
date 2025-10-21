@@ -32,8 +32,9 @@ class RazorpayController extends Controller
     public function verify(Request $request)
     {
         try {
+            // dd($request->all());
             $data = $request->only(['razorpay_order_id','razorpay_payment_id','razorpay_signature','order_id']);
-            
+
             // Validate required fields
             $validator = validator($data, [
                 'razorpay_order_id' => 'required',
@@ -57,6 +58,20 @@ class RazorpayController extends Controller
                 // Update order status to failed
                 $order->update([
                     'payment_status' => 'payment_failed'
+                ]);
+
+                // Create failed payment record
+                $order->payments()->create([
+                    'gateway' => 'razorpay',
+                    'gateway_payment_id' => $data['razorpay_payment_id'] ?? null,
+                    'gateway_order_id' => $data['razorpay_order_id'] ?? null,
+                    'amount' => $order->total,
+                    'currency' => $order->currency_code ?? 'INR',
+                    'status' => 'failed',
+                    'meta' => array_merge($data, [
+                        'failure_reason' => 'verification_failed',
+                        'failed_at' => now()->toDateTimeString()
+                    ]),
                 ]);
 
                 return response()->json([
@@ -103,8 +118,121 @@ class RazorpayController extends Controller
         }
     }
 
+    public function handleFail(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'order_id' => 'required|exists:orders,id',
+                'gateway_order_id' => 'nullable|string',
+                'failure_reason' => 'required|string',
+                'error_description' => 'nullable|string',
+                'error_code' => 'nullable|string',
+                'error_meta' => 'nullable|array'
+            ]);
+
+            $order = Order::findOrFail($data['order_id']);
+
+            DB::transaction(function() use ($order, $data) {
+                // Update order payment status based on failure reason
+                $paymentStatus = $data['failure_reason'] === 'payment_process_discontinued' 
+                    ? 'payment_process_discontinued' 
+                    : 'payment_failed';
+
+                $order->update([
+                    'payment_status' => $paymentStatus
+                ]);
+
+                // Create failed payment record
+                $order->payments()->create([
+                    'gateway' => 'razorpay',
+                    'gateway_payment_id' => null,
+                    'gateway_order_id' => $data['gateway_order_id'] ?? null,
+                    'amount' => $order->total,
+                    'currency' => $order->currency_code ?? 'INR',
+                    'status' => 'failed',
+                    'meta' => array_merge($data, [
+                        'failed_at' => now()->toDateTimeString()
+                    ]),
+                ]);
+            });
+
+            return response()->json([
+                'status' => true, 
+                'message' => 'Payment failure recorded successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Razorpay payment failure recording error: ' . $e->getMessage());
+            
+            return response()->json([
+                'status' => false, 
+                'message' => 'Failed to record payment failure'
+            ], 500);
+        }
+    }
+
+    /*
     public function webhook(Request $request)
     {
         return $this->gateway->handleWebhook($request);
     }
+    */
+
+    public function webhook(Request $request)
+    {
+        try {
+            // Razorpay webhook for payment failures
+            $webhookBody = $request->getContent();
+            $webhookSignature = $request->header('X-Razorpay-Signature');
+
+            if (!$this->gateway->verifyWebhookSignature($webhookBody, $webhookSignature)) {
+                \Log::error('Razorpay webhook signature verification failed');
+                return response()->json(['status' => 'invalid signature'], 400);
+            }
+
+            // Verify webhook signature
+            // if ($this->gateway->verifyWebhookSignature($webhookBody, $webhookSignature)) {
+                $data = json_decode($webhookBody, true);
+
+                if ($data['event'] === 'payment.failed') {
+                    $payment = $data['payload']['payment']['entity'];
+
+                    // Find order by gateway_order_id or gateway_payment_id
+                    $order = Order::where('gateway_order_id', $payment['order_id'])
+                                ->orWhere('transaction_id', $payment['id'])
+                                ->first();
+
+                    if ($order) {
+                        DB::transaction(function() use ($order, $payment) {
+                            $order->update([
+                                'payment_status' => 'payment_failed'
+                            ]);
+
+                            $order->payments()->create([
+                                'gateway' => 'razorpay',
+                                'gateway_payment_id' => $payment['id'],
+                                'gateway_order_id' => $payment['order_id'],
+                                'amount' => $payment['amount'] / 100,
+                                'currency' => $payment['currency'],
+                                'status' => 'failed',
+                                'meta' => [
+                                    'failure_reason' => $payment['error_reason'] ?? 'unknown',
+                                    'error_code' => $payment['error_code'] ?? 'unknown',
+                                    'error_description' => $payment['error_description'] ?? 'Payment failed',
+                                    'failed_via' => 'webhook',
+                                    'failed_at' => now()->toDateTimeString()
+                                ],
+                            ]);
+                        });
+                    }
+                }
+            // }
+
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $e) {
+            \Log::error('Webhook error: ' . $e->getMessage());
+            return response()->json(['status' => 'error'], 500);
+        }
+    }
+
 }

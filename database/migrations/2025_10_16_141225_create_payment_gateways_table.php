@@ -63,7 +63,7 @@ return new class extends Migration
                 'name' => 'Paypal',
                 'settings' => json_encode(['key' => 'paypal_test_key']),
                 'svg_icon' => $paypalSvgIcon,
-                'status' => 1,
+                'status' => 0,
                 'position' => 3,
             ],
         ];
