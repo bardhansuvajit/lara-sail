@@ -48,7 +48,8 @@ class OfflineOrderController extends Controller
                 return redirect()->route('admin.user.create', [
                     'country' => $country,
                     'phone-no' => $phoneNo,
-                    'redirect-to' => 'offline-order'
+                    'redirect' => route('admin.order.offline.create')
+                    // 'redirect' => 'offline-order'
                 ]);
             }
 
@@ -97,7 +98,9 @@ class OfflineOrderController extends Controller
             return redirect()->route('admin.user.create', [
                 'country' => $request->country_code,
                 'phone-no' => $request->primary_phone_no,
-                'redirect-to' => 'offline-order'
+                'type' => 'offline-order',
+                'redirect' => route('admin.order.offline.create')
+                // 'redirect' => 'offline-order'
             ]);
         }
 

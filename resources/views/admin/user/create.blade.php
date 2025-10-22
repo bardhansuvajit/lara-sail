@@ -11,7 +11,7 @@
         <form action="{{ route('admin.user.store') }}" method="post" enctype="multipart/form-data">
             @csrf
 
-            @if (request()->input('redirect-to') == "offline-order")
+            @if (request()->input('type') == "offline-order")
                 <div class="mb-4">
                     <div>
                         <div class="bg-amber-600 text-gray-900 font-bold p-2">
@@ -137,7 +137,7 @@
             </div>
 
             <div class="items-center flex my-6">
-                <input type="hidden" name="redirect_to" value="{{ request()->input('redirect-to') }}">
+                <input type="hidden" name="redirect" value="{{ request()->input('redirect') }}">
 
                 <x-admin.button
                     type="submit"

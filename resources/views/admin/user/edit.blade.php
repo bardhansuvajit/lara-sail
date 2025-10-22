@@ -10,6 +10,17 @@
     <div class="w-full mt-2">
         <form action="{{ route('admin.user.update') }}" method="post" enctype="multipart/form-data">
             @csrf
+
+            @if (request()->input('type') == "order-detail")
+                <div class="mb-4">
+                    <div>
+                        <div class="bg-amber-600 text-gray-900 font-bold p-2">
+                            <p class="text-sm">Edit User for Order Detail ! </p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="grid gap-4 mb-4 sm:grid-cols-3">
                 <div>
                     <div class="grid grid-cols-[auto_1fr] gap-3 items-center">
@@ -130,7 +141,9 @@
 
             {{-- {{ dd($data->date_of_birth) }} --}}
 
-            <div class="items-center space-x-4 flex my-6">
+            <div class="items-center my-6">
+                <input type="hidden" name="redirect" value="{{ request()->input('redirect') }}">
+
                 <x-admin.button
                     type="submit"
                     element="button">

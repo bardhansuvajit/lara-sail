@@ -79,14 +79,27 @@ class UserController
 
         $resp = $this->userRepository->store($request->all());
 
-        if (isset($request->redirect_to) && $request->redirect_to == "offline-order") {
-            return redirect()->route('admin.order.offline.create', [
-                'country' => $request->country_code,
-                'phone-no' => $request->primary_phone_no
-            ])->with($resp['status'], $resp['message']);
+        if (isset($request->redirect)) {
+            if (isset($request->type) && $request->type == "offline-order") {
+                return redirect()->route('admin.order.offline.create', [
+                    'country' => $request->country_code,
+                    'phone-no' => $request->primary_phone_no
+                ])->with($resp['status'], $resp['message']);
+            } else {
+                return redirect()->to($request->redirect)->with($resp['status'], $resp['message']);
+            }
         } else {
             return redirect()->route('admin.user.index')->with($resp['status'], $resp['message']);
         }
+
+        // if (isset($request->redirect_to) && $request->redirect_to == "offline-order") {
+        //     return redirect()->route('admin.order.offline.create', [
+        //         'country' => $request->country_code,
+        //         'phone-no' => $request->primary_phone_no
+        //     ])->with($resp['status'], $resp['message']);
+        // } else {
+        //     return redirect()->route('admin.user.index')->with($resp['status'], $resp['message']);
+        // }
 
     }
 
@@ -128,7 +141,13 @@ class UserController
         ]);
 
         $resp = $this->userRepository->update($request->all());
-        return redirect()->back()->with($resp['status'], $resp['message']);
+
+        if (isset($request->redirect)) {
+            return redirect()->to($request->redirect)->with($resp['status'], $resp['message']);
+        } else {
+            return redirect()->back()->with($resp['status'], $resp['message']);
+        }
+
     }
 
     public function delete(Int $id)
