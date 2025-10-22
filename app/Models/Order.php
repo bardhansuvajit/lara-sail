@@ -98,4 +98,9 @@ class Order extends Model
     {
         return $this->hasMany(OrderPayment::class);
     }
+
+    public function paymentStatus()
+    {
+        return $this->belongsTo('App\Models\PaymentMethodStatus', 'payment_status', 'slug');
+    }
 }

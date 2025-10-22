@@ -415,6 +415,7 @@ class CouponRepository implements CouponInterface
                 'coupon_discount_amount' => $discountAmount,
                 'coupon_meta' => json_encode([
                     'coupon_id' => $coupon->id,
+                    'country_code' => $coupon->country_code,
                     'code' => $coupon->code,
                     'name' => $coupon->name,
                     'description' => $coupon->description,
@@ -423,6 +424,8 @@ class CouponRepository implements CouponInterface
                     'max_discount_amount' => $coupon->max_discount_amount,
                     'min_cart_value' => $coupon->min_cart_value,
                     'applied_at' => now()->toISOString(),
+                    'starts_at' => $coupon->starts_at,
+                    'expires_at' => $coupon->expires_at,
                 ]),
             ];
 
