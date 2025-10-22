@@ -116,10 +116,7 @@
                                             type="button"
                                             wire:click="initiateOnlinePayment({{ $gateway->id }})"
                                             class="flex w-full md:w-60 items-center justify-center {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium 
-                                            {{-- bg-gradient-to-r from-[#635bff] to-[#c3e0f7] hover:from-[#b8b3fc] hover:to-[#90c6fd] focus:ring-4 focus:ring-[#635bff]/40 text-white shadow-md hover:shadow-lg transition-all duration-300 --}}
-                                            bg-gradient-to-r from-[#b8b3fc] to-[#90c6fd] hover:from-[#a39cfb] hover:to-[#78b8fc] focus:ring-4 focus:ring-[#635bff]/40 text-gray-800 shadow-md hover:shadow-lg transition-all duration-300
-
-                                            ">
+                                            bg-gradient-to-r from-[#b8b3fc] to-[#90c6fd] hover:from-[#a39cfb] hover:to-[#78b8fc] focus:ring-4 focus:ring-[#635bff]/40 text-gray-800 shadow-md hover:shadow-lg transition-all duration-300">
                                             Pay with 
                                             <div class="ms-1 w-12 h-5">
                                                 {!! $gateway->svg_icon !!}
