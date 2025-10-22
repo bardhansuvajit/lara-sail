@@ -92,10 +92,7 @@
                                         <button
                                             type="button"
                                             wire:click="initiateOnlinePayment({{ $gateway->id }})"
-
-                                            {{-- class="flex w-full md:w-60 items-center justify-center {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium text-gray-800 hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-primary-300 bg-gray-100 hover:bg-gray-200" --}}
-
-                                            class="flex w-full md:w-60 items-center justify-center gap-2 {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all duration-200 shadow-md hover:shadow-lg">
+                                            class="flex w-full md:w-60 items-center justify-center gap-2 {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium bg-gradient-to-r from-[#0d47a1] to-[#43a1ff] hover:from-[#1565c0] hover:to-[#54afff] focus:ring-4 focus:ring-[#42a5f5]/40 text-white shadow-md hover:shadow-lg transition-all duration-300">
                                             Pay with 
                                             <div class="ms-1 w-24 h-5">
                                                 {!! $gateway->svg_icon !!}
@@ -107,8 +104,7 @@
                                             type="button"
                                             wire:click="initiateOnlinePayment({{ $gateway->id }})"
                                             class="flex w-full md:w-60 items-center justify-center gap-2 {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-semibold 
-                                            bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700text-white shadow-sky-300/30 dark:shadow-indigo-900/40
-                                            transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-[#0C66FF]/40">
+                                           bg-gradient-to-r from-[#ffc439] to-[#ffd166] hover:from-[#ffb300] hover:to-[#ffcf4d] focus:ring-4 focus:ring-[#ffd166]/40 text-[#003087] shadow-md hover:shadow-lg transition-all duration-300">
                                             Pay with 
                                             <div class="ms-1 w-20 h-5">
                                                 {!! $gateway->svg_icon !!}
@@ -119,7 +115,11 @@
                                         <button
                                             type="button"
                                             wire:click="initiateOnlinePayment({{ $gateway->id }})"
-                                            class="flex w-full md:w-60 items-center justify-center {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium text-gray-800 hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-primary-300 bg-gray-100 hover:bg-gray-20">
+                                            class="flex w-full md:w-60 items-center justify-center {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium 
+                                            {{-- bg-gradient-to-r from-[#635bff] to-[#c3e0f7] hover:from-[#b8b3fc] hover:to-[#90c6fd] focus:ring-4 focus:ring-[#635bff]/40 text-white shadow-md hover:shadow-lg transition-all duration-300 --}}
+                                            bg-gradient-to-r from-[#b8b3fc] to-[#90c6fd] hover:from-[#a39cfb] hover:to-[#78b8fc] focus:ring-4 focus:ring-[#635bff]/40 text-gray-800 shadow-md hover:shadow-lg transition-all duration-300
+
+                                            ">
                                             Pay with 
                                             <div class="ms-1 w-12 h-5">
                                                 {!! $gateway->svg_icon !!}
