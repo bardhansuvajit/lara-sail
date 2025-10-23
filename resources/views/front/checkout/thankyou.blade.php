@@ -207,7 +207,7 @@
                                     <p class="{{FD['text']}} text-gray-600 dark:text-gray-300">{!!$order->paymentMethod->after_order_title!!}</p>
                                 </div>
                             </div>
-                            <p class="mt-2 {{FD['text-0']}} text-gray-600 dark:text-gray-300">{{$order->paymentMethod->after_order_description}}</p>
+                            <p class="mt-2 {{FD['text-0']}} text-gray-600 dark:text-gray-300">{!!$order->paymentMethod->after_order_description!!}</p>
                         </div>
                     </div>
                 </div>
@@ -315,12 +315,14 @@
                             <a href="{{ route('front.order.invoice', $order->order_number) }}" class="px-3 py-1.5 {{FD['text']}} bg-indigo-600 hover:bg-indigo-700 text-white {{ FD['rounded'] }} transition-colors duration-300">
                                 Download Invoice (PDF)
                             </a>
-                            <button class="px-3 py-1.5 {{FD['text']}} border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 {{ FD['rounded'] }} transition-colors duration-300">
+
+                            <a href="{{ route('front.order.detail', $order->order_number) }}" class="px-3 py-1.5 {{FD['text']}} border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 {{ FD['rounded'] }} transition-colors duration-300">
                                 Track Your Order
-                            </button>
-                            <button class="px-3 py-1.5 {{FD['text']}} text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 {{ FD['rounded'] }} transition-colors duration-300">
+                            </a>
+
+                            <a href="{{ route('front.collection.index') }}" class="px-3 py-1.5 {{FD['text']}} text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 {{ FD['rounded'] }} transition-colors duration-300">
                                 Continue Shopping
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>

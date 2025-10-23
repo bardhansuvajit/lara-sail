@@ -37,9 +37,12 @@ class OrderController extends Controller
     public function index(): View
     {
         $userId = auth()->guard('web')->user()->id;
-        $orders = $this->orderRepository->exists([
+        // $orders = $this->orderRepository->exists([
+        //     'user_id' => $userId
+        // ]);
+        $orders = $this->orderRepository->list('', [
             'user_id' => $userId
-        ]);
+        ], 15, 'id', 'desc');
 
         return view('front.account.order.index', [
             'user' => auth()->guard('web')->user(),
@@ -231,5 +234,10 @@ class OrderController extends Controller
         } else {
             return redirect()->back()->with($orders['status'], $orders['message']);
         }
+    }
+
+    public function detail(Request $request, $orderNumber)
+    {
+        dd('here');
     }
 }

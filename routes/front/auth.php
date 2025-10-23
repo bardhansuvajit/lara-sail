@@ -58,6 +58,7 @@ Route::name('front.')->group(function () {
         // order
         Route::prefix('order')->name('order.')->controller(OrderController::class)->group(function() {
             Route::get('/', 'index')->name('index');
+            Route::get('/details/{orderNumber}', 'detail')->name('detail');
             Route::get('/invoice/{orderNumber}', 'invoice')->name('invoice');
         });
 
