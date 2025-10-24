@@ -149,6 +149,8 @@ class PaymentController extends Controller
                 'payment_status' => $paymentMethodStatus,
                 'transaction_id' => null,
                 'payment_details' => null,
+
+                'cart_meta' => json_encode($cart)
             ];
 
             // dd($orderData);

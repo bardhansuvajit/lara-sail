@@ -80,6 +80,7 @@ return new class extends Migration
             // Metadata
             $table->text('notes')->nullable();
             $table->text('custom_fields')->nullable();
+            $table->json('cart_meta')->nullable();
 
             // Timestamps
             $table->softDeletes();

@@ -13,6 +13,7 @@ use App\Interfaces\PaymentMethodInterface;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cookie;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
@@ -165,6 +166,8 @@ class OrderController extends Controller
                 'payment_status' => $paymentMethodStatus,
                 'transaction_id' => null,
                 'payment_details' => null,
+
+                'cart_meta' => json_encode($cart)
             ];
 
             $orderResponse = $this->orderRepository->store($orderData);
@@ -238,6 +241,58 @@ class OrderController extends Controller
 
     public function detail(Request $request, $orderNumber)
     {
-        dd('here');
+        $userId = auth()->guard('web')->user()->id;
+        // $orders = $this->orderRepository->exists([
+        //     'user_id' => $userId
+        // ]);
+        // $orders = $this->orderRepository->list('', [
+        //     'user_id' => $userId
+        // ], 15, 'id', 'desc');
+
+        // return view('front.account.order.index', [
+        //     'user' => auth()->guard('web')->user(),
+        //     'orders' => $orders['data']
+        // ]);
+
+
+        $order = \App\Models\Order::with(['items', 'user', 'paymentMethod', 'shippingMethod'])
+            ->where('order_number', $orderNumber)
+            ->firstOrFail();
+
+        if (auth()->check()) {
+            if ($order->user_id !== auth()->id()) {
+                abort(404);
+            }
+        } else {
+            abort(404);
+        }
+
+        return view('front.account.order.detail', [
+            'user' => auth()->guard('web')->user(),
+            'order' => $order
+        ]);
+
+        // return view('front.account.order.detail', compact('order'));
+    }
+
+    public function downloadInvoice($orderNumber)
+    {
+        $order = \App\Models\Order::with('items')
+            ->where('order_number', $orderNumber)
+            ->firstOrFail();
+
+        // Check if user is authorized to view this invoice
+        if (auth()->check()) {
+            if ($order->user_id !== auth()->id()) {
+                abort(404);
+            }
+        } else {
+            // For guest users, you might want to implement additional verification
+            abort(404);
+        }
+
+        $pdf = Pdf::loadView('front.account.invoice.download', compact('order'));
+
+        return $pdf->download("invoice-{$order->order_number}.pdf");
     }
 }

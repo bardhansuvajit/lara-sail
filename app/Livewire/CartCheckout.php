@@ -49,13 +49,16 @@ class CartCheckout extends Component
         // Get Cart Data
         $cartRepository = app(CartInterface::class);
 
+        $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
         if (auth()->guard('web')->check()) {
+            $userId = auth()->guard('web')->user()->id;
             $cart = $cartRepository->exists([
-                'user_id' => auth()->guard('web')->user()->id
+                'user_id' => $userId
             ]);
-        } else {
-            $deviceId = $_COOKIE['device_id'] ?? Str::uuid();
 
+            // incase of multiple deviceIds of same user, clean cart
+            $cartRepository->cleanCart($deviceId, $userId);
+        } else {
             $cart = $cartRepository->exists([
                 'device_id' => $deviceId,
             ]);

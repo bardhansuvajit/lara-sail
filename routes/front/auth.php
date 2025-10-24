@@ -60,6 +60,7 @@ Route::name('front.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/details/{orderNumber}', 'detail')->name('detail');
             Route::get('/invoice/{orderNumber}', 'invoice')->name('invoice');
+            Route::get('/invoice/{orderNumber}/download', 'downloadInvoice')->name('download-invoice');
         });
 
         // wishlist

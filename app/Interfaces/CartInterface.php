@@ -22,4 +22,6 @@ interface CartInterface
     public function updateCartDiscount(array $cartData);
     // public function updateCartDiscount(?int $userId, ?string $deviceId, array $discountData);
     public function removeCouponById(int $cartId);
+    // incase of multiple deviceIds of same user, clean cart
+    public function cleanCart(string $deviceId, int $userId);
 }

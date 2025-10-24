@@ -104,10 +104,14 @@ class CartController extends Controller
 
             // Insert if doesnt exist/ Get data from Cart
             if (auth()->guard('web')->check()) {
+                $userId = auth()->guard('web')->user()->id;
                 $cart = $this->cartRepository->store([
                     'device_id' => $deviceId,
-                    'user_id' => auth()->guard('web')->user()->id
+                    'user_id' => $userId
                 ]);
+
+                // incase of multiple deviceIds of same user, clean cart
+                $cartRepository->cleanCart($deviceId, $userId);
             } else {
                 $cart = $this->cartRepository->store([
                     'device_id' => $deviceId,

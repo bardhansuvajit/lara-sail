@@ -974,4 +974,25 @@ class CartRepository implements CartInterface
             ];
         }
     }
+
+    // incase of multiple deviceIds of same user, clean cart
+    public function cleanCart(string $deviceId, int $userId)
+    {
+        $cartData = Cart::select('id', 'device_id')->with('items')
+                    ->where('user_id', $userId)
+                    ->get();
+
+        foreach ($cartData as $cart) {
+            if ($cart->device_id != $deviceId) {
+                Cart::where('id', $cart->id)->delete();
+            }
+        }
+
+        return [
+            'code' => 200,
+            'status' => 'success',
+            'message' => 'Changes have been saved',
+        ];
+        // dd($cartData);
+    }
 }
