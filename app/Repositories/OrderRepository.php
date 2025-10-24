@@ -166,6 +166,7 @@ class OrderRepository implements OrderInterface
             $data->payment_status = $array['payment_status'];
             $data->transaction_id = $array['transaction_id'];
             $data->payment_details = $array['payment_details'];
+            $data->cart_meta = $array['cart_meta'];
 
             $data->save();
 

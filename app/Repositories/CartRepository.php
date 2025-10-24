@@ -12,7 +12,8 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Interfaces\CartSettingInterface;
 use App\Interfaces\PaymentMethodInterface;
 use App\Interfaces\ShippingMethodInterface;
-use App\Interfaces\CouponInterface;
+use App\Interfaces\CartItemInterface;
+// use App\Interfaces\CouponInterface;
 
 use App\Exports\CartsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -23,6 +24,7 @@ class CartRepository implements CartInterface
     private CartSettingInterface $cartSettingRepository;
     private PaymentMethodInterface $paymentMethodRepository;
     private ShippingMethodInterface $shippingMethodRepository;
+    private CartItemInterface $cartItemRepository;
     // private CouponInterface $couponRepository;
 
     public function __construct(
@@ -30,6 +32,7 @@ class CartRepository implements CartInterface
         CartSettingInterface $cartSettingRepository, 
         PaymentMethodInterface $paymentMethodRepository,
         ShippingMethodInterface $shippingMethodRepository,
+        CartItemInterface $cartItemRepository
         // CouponInterface $couponRepository
     )
     {
@@ -37,6 +40,7 @@ class CartRepository implements CartInterface
         $this->cartSettingRepository = $cartSettingRepository;
         $this->paymentMethodRepository = $paymentMethodRepository;
         $this->shippingMethodRepository = $shippingMethodRepository;
+        $this->cartItemRepository = $cartItemRepository;
         // // $this->couponRepository = $couponRepository;
     }
 
@@ -149,7 +153,7 @@ class CartRepository implements CartInterface
     public function getById(Int $id)
     {
         try {
-            $data = Cart::find($id);
+            $data = Cart::with('items', 'allItems')->find($id);
 
             if (!empty($data)) {
                 return [
@@ -603,18 +607,27 @@ class CartRepository implements CartInterface
             $data = $this->getById($id);
 
             if ($data['code'] == 200) {
+                $cart = $data['data'];
+
                 // Handling trash
                 $this->trashRepository->store([
                     'model' => 'Cart',
                     'table_name' => 'carts',
-                    'deleted_row_id' => $data['data']->id,
-                    'thumbnail' => $data['data']->image_s,
-                    'title' => $data['data']->product_title,
-                    'description' => $data['data']->product_title.' & '. $data['data']->variation_attributes.' data deleted from carts table',
+                    'deleted_row_id' => $cart->id,
+                    'thumbnail' => $cart->image_s,
+                    'title' => $cart->product_title,
+                    'description' => $cart->product_title.' & '. $cart->variation_attributes.' data deleted from carts table',
                     'status' => 'deleted',
                 ]);
 
-                $data['data']->delete();
+                // delete items too
+                if (isset($cart->allItems) && count($cart->allItems) > 0) {
+                    foreach ($cart->allItems as $key => $cartItem) {
+                        $this->cartItemRepository->delete($cartItem->id);
+                    }
+                }
+
+                $cart->delete();
 
                 return [
                     'code' => 200,

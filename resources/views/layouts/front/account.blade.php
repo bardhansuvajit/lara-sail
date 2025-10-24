@@ -5,7 +5,7 @@
     <section class="bg-gray-100 dark:bg-gray-900 antialiased">
         <div class="pt-2 md:pt-4 px-2 md:px-4">
 
-            <h2 class="{{ FD['text-2'] }} font-semibold text-gray-900 dark:text-white">{{ $title ?? __('Account') }}</h2>
+            {{-- <h2 class="{{ FD['text-2'] }} font-semibold text-gray-900 dark:text-white">{{ $title ?? __('Account') }}</h2> --}}
 
             @include('layouts.front.global-alert')
 

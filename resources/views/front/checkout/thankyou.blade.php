@@ -2,7 +2,7 @@
     screen="max-w-screen-xl"
     title="{{ __('Thank you') }}">
 
-    <section class="bg-gray-50 dark:bg-gray-900 min-h-screen py-5 px-2 sm:px-6 lg:px-8">
+    <section class="bg-gray-100 dark:bg-gray-900 min-h-screen py-5 px-2 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
             <div class="bg-white dark:bg-gray-800 {{ FD['rounded'] }} shadow-md overflow-hidden transition-all duration-300 transform hover:shadow-lg">
             <div class="bg-green-500 px-6 py-6 text-center relative overflow-hidden">

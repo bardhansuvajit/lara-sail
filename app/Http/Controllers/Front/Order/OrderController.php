@@ -176,13 +176,15 @@ class OrderController extends Controller
                 throw new \Exception('Order creation failed');
             }
 
+            // Delete from Cart
+            $cartDeleteResp = $this->cartRepository->delete($cart->id);
+
             DB::commit();
 
             // Store order ID in session for thank you page access control
-            $request->session()->put('last_order_id', $orderResponse['data']->id);
+            $request->session()->put('last_order_number', $orderResponse['data']->order_number);
 
-            return redirect()->route('front.order.thankyou', ['orderId' => $orderResponse['data']->id])->with('success', 'Order placed successfully!');
-            return redirect()->route('front.order.thankyou')->with('success', 'Order placed successfully!');
+            return redirect()->route('front.order.thankyou', ['orderNumber' => $orderResponse['data']->order_number])->with('success', 'Order placed successfully!');
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -199,31 +201,38 @@ class OrderController extends Controller
 
     public function thankyou(Request $request): View|RedirectResponse
     {
-        $orderResponse = $this->orderRepository->getById($_GET['orderId']);
-        return view('front.checkout.thankyou', [
-            'order' => $orderResponse['data']
-        ]);
+        $userId = auth()->guard('web')->user()->id;
 
-        if (!$request->session()->has('last_order_id')) {
-            return redirect()->route('front.home.index')->with('error', 'Invalid access to thank you page.');
+        // $orderResponse = $this->orderRepository->exists([
+        //     'user_id' => $userId,
+        //     'order_number' => $_GET['orderNumber'],
+        // ]);
+
+        if (!$request->session()->has('last_order_number')) {
+            return redirect()->route('front.order.detail', $_GET['orderNumber']);
         }
 
-        $orderId = $request->session()->pull('last_order_id');
+        $orderNumber = $request->session()->pull('last_order_number');
 
-        // Optionally fetch order details to display
-        $orderResponse = $this->orderRepository->getById($orderId);
+        // fetch order details to display
+        // $orderResponse = $this->orderRepository->getById($orderNumber);
+        $orderResponse = $this->orderRepository->exists([
+            'user_id' => $userId,
+            'order_number' => $orderNumber,
+        ]);
 
         if ($orderResponse['code'] != 200) {
             return redirect()->route('front.home.index')->with('error', 'Order not found.');
         }
 
         return view('front.checkout.thankyou', [
-            'order' => $orderResponse['data']
+            'order' => $orderResponse['data'][0]
         ]);
     }
 
     public function invoice(Request $request, $orderNumber): View|RedirectResponse {
         $userId = auth()->guard('web')->user()->id;
+
         $orders = $this->orderRepository->exists([
             'user_id' => $userId,
             'order_number' => $orderNumber

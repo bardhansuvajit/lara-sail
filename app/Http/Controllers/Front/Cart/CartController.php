@@ -111,7 +111,7 @@ class CartController extends Controller
                 ]);
 
                 // incase of multiple deviceIds of same user, clean cart
-                $cartRepository->cleanCart($deviceId, $userId);
+                $this->cartRepository->cleanCart($deviceId, $userId);
             } else {
                 $cart = $this->cartRepository->store([
                     'device_id' => $deviceId,

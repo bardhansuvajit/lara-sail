@@ -244,11 +244,33 @@
                 @else
                     <div class="{{ FD['rounded'] }} border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-4">
                         <div class="w-full text-center">
-                            <img src="{{ Storage::url('public/default/cart/undraw_web-shopping_m3o2.svg') }}" alt="empty-cart" class="w-72 m-auto mb-6">
+                            <img src="{{ Storage::url('public/default/cart/undraw_web-shopping_m3o2.svg') }}" alt="empty-cart" class="w-60 m-auto mb-10">
 
                             <h5 class="block text-base leading-tight font-bold text-gray-900 dark:text-gray-300 mb-4">
                                 Your cart is empty!
                             </h5>
+
+                            <p class="{{ FD['text'] }} text-gray-600 dark:text-gray-300 max-w-md mx-auto mb-0">
+                                Looks like you haven't added any items to your cart yet.
+                            </p>
+                            <p class="{{ FD['text'] }} text-gray-600 dark:text-gray-300 max-w-md mx-auto mb-8">
+                                Start shopping to discover amazing products!
+                            </p>
+                        </div>
+
+                        <div class="flex justify-center mt-8">
+                            <x-front.button
+                                class="w-60"
+                                element="a"
+                                size="md"
+                                tag="success"
+                                :href="route('front.collection.index')"
+                                >
+                                @slot('icon')
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-320h480v-480h-80v280l-100-60-100 60v-280H320v480Zm0 80q-33 0-56.5-23.5T240-320v-480q0-33 23.5-56.5T320-880h480q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H320ZM160-80q-33 0-56.5-23.5T80-160v-560h80v560h560v80H160Zm360-720h200-200Zm-200 0h480-480Z"/></svg>
+                                @endslot
+                                {{ __('Browse Our Collection') }}
+                            </x-front.button>
                         </div>
                     </div>
                 @endif
