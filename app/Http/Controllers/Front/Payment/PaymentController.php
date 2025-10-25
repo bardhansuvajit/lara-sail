@@ -166,7 +166,7 @@ class PaymentController extends Controller
 
             $order = $orderResponse['data'];
 
-            // Now initiate payment with the created order
+            // initiate payment with the created order
             $paymentPayload = $this->paymentGatewayRepository->createPayment($order);
 
             DB::commit();

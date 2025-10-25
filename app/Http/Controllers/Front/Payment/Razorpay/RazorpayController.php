@@ -102,10 +102,13 @@ class RazorpayController extends Controller
                 $order->update(['status' => 'confirmed']);
             });
 
+            // Store order ID in session for thank you page access control
+            $request->session()->put('last_order_number', $order->order_number);
+
             return response()->json([
                 'status' => true, 
                 'message' => 'Payment successful',
-                'redirect_url' => route('front.order.thankyou', ['orderId' => $order->id])
+                'redirect_url' => route('front.order.thankyou', ['orderNumber' => $order->order_number])
             ]);
 
         } catch (\Exception $e) {

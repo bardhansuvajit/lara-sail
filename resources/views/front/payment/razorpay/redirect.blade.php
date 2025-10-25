@@ -44,7 +44,7 @@
 
                     if (verifyRes.ok && verifyJson.status) {
                         // Success - redirect to thank you page
-                        window.location.href = verifyJson.redirect_url || "{{ route('front.order.thankyou', ['orderId' => $order->id]) }}";
+                        window.location.href = verifyJson.redirect_url || "{{ route('front.order.thankyou', ['orderNumber' => $order->order_number]) }}";
                     } else {
                         // Failure - redirect back to checkout with error
                         alert(verifyJson.message || 'Payment verification failed');
