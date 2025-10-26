@@ -56,7 +56,7 @@
                         <div class="">
                             <x-front.dropdown width="32">
                                 <x-slot name="trigger">
-                                    <button type="button" class="hidden sm:inline-flex items-center {{ FD['rounded'] }} justify-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700/100 {{FD['text']}} font-medium leading-tight dark:text-white">
+                                    <button type="button" class="inline-flex items-center {{ FD['rounded'] }} justify-center p-1 md:p-2 hover:bg-gray-100 dark:hover:bg-gray-700/100 {{FD['text']}} font-medium leading-tight dark:text-white">
                                         <svg class="w-4 h-4 lg:me-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/></svg>
 
                                         {!! FD['dropdownCaret'] !!}
@@ -142,120 +142,6 @@
                                         </ul>
                                     </div>
 
-                                    {{-- <div class="divide-y-2 overflow-hidden overflow-y-auto {{ FD['rounded'] }} bg-white antialiased dark:divide-gray-600 dark:bg-gray-700">
-                                        <ul class="p-2 text-start {{FD['text']}} font-medium dark:text-white dark:border-gray-600">
-                                            <li>
-                                                @if ($address->is_default == 1)
-                                                    <span class="inline-flex items-center gap-1 px-2 py-1 {{ FD['text'] }} font-semibold text-green-700 bg-green-100">
-                                                        <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                                        </svg>
-                                                        Default
-                                                    </span>
-                                                @else
-                                                    <button 
-                                                        type="button" 
-                                                        class="{{ FD['text'] }} inline-flex gap-2 items-center font-medium text-green-500 hover:text-green-700 hover:underline dark:text-green-600 dark:hover:text-green-700"
-                                                        x-data=""
-                                                        x-on:click="
-                                                            $dispatch('open-modal', 'confirm-address-make-default'); 
-                                                            $dispatch('data-name', @js($address->first_name.' '.$address->last_name));
-                                                            $dispatch('data-addressline1', @js($address->address_line_1));
-                                                            $dispatch('data-addressline2', @js($address->address_line_2));
-                                                            $dispatch('data-landmark', @js($address->landmark ?? ''));
-                                                            $dispatch('data-city', @js($address->city));
-                                                            $dispatch('data-state', @js(strtoupper($address->stateDetail?->name)));
-                                                            $dispatch('data-postalcode', @js($address->postal_code));
-                                                            $dispatch('data-country', @js(strtoupper($address->countryDetail?->name)));
-                                                            $dispatch('data-makedefaultroute', @js(route('front.address.default', $address->id)));
-                                                        "
-                                                    >
-                                                        Set Default
-                                                    </button>
-                                                @endif
-                                            </li>
-
-                                            <li>
-                                                <a href="{{ route('front.address.edit', $address->id) }}" class="{{ FD['text'] }} inline-flex gap-2 items-center font-medium text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-400 dark:hover:text-gray-500">Edit</a>
-                                            </li>
-
-                                            <li>
-                                                <button 
-                                                    type="button" 
-                                                    class="{{ FD['text'] }} inline-flex gap-2 items-center font-medium text-red-500 hover:text-red-700 hover:underline dark:text-red-600 dark:hover:text-red-700"
-                                                    x-data=""
-                                                    x-on:click="
-                                                        $dispatch('open-modal', 'confirm-address-delete'); 
-                                                        $dispatch('data-name', @js($address->first_name.' '.$address->last_name));
-                                                        $dispatch('data-addressline1', @js($address->address_line_1));
-                                                        $dispatch('data-addressline2', @js($address->address_line_2));
-                                                        $dispatch('data-landmark', @js($address->landmark ?? ''));
-                                                        $dispatch('data-city', @js($address->city));
-                                                        $dispatch('data-state', @js(strtoupper($address->stateDetail?->name)));
-                                                        $dispatch('data-postalcode', @js($address->postal_code));
-                                                        $dispatch('data-country', @js(strtoupper($address->countryDetail?->name)));
-                                                        $dispatch('data-deleteroute', @js(route('front.address.delete', $address->id)));
-                                                    "
-                                                >
-                                                    Remove
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div> --}}
-
-
-                                    {{-- <div class="flex flex-col space-y-2 items-center">
-                                        @if ($address->is_default == 1)
-                                            <span class="inline-flex items-center gap-1 px-2 py-1 {{ FD['text'] }} font-semibold text-green-700 bg-green-100">
-                                                <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                                </svg>
-                                                Default
-                                            </span>
-                                        @else
-                                            <button 
-                                                type="button" 
-                                                class="{{ FD['text'] }} inline-flex gap-2 items-center font-medium text-green-500 hover:text-green-700 hover:underline dark:text-green-600 dark:hover:text-green-700"
-                                                x-data=""
-                                                x-on:click="
-                                                    $dispatch('open-modal', 'confirm-address-make-default'); 
-                                                    $dispatch('data-name', @js($address->first_name.' '.$address->last_name));
-                                                    $dispatch('data-addressline1', @js($address->address_line_1));
-                                                    $dispatch('data-addressline2', @js($address->address_line_2));
-                                                    $dispatch('data-landmark', @js($address->landmark ?? ''));
-                                                    $dispatch('data-city', @js($address->city));
-                                                    $dispatch('data-state', @js(strtoupper($address->stateDetail?->name)));
-                                                    $dispatch('data-postalcode', @js($address->postal_code));
-                                                    $dispatch('data-country', @js(strtoupper($address->countryDetail?->name)));
-                                                    $dispatch('data-makedefaultroute', @js(route('front.address.default', $address->id)));
-                                                "
-                                            >
-                                                Set Default
-                                            </button>
-                                        @endif
-
-                                        <a href="{{ route('front.address.edit', $address->id) }}" class="{{ FD['text'] }} inline-flex gap-2 items-center font-medium text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-400 dark:hover:text-gray-500">Edit</a>
-
-                                        <button 
-                                            type="button" 
-                                            class="{{ FD['text'] }} inline-flex gap-2 items-center font-medium text-red-500 hover:text-red-700 hover:underline dark:text-red-600 dark:hover:text-red-700"
-                                            x-data=""
-                                            x-on:click="
-                                                $dispatch('open-modal', 'confirm-address-delete'); 
-                                                $dispatch('data-name', @js($address->first_name.' '.$address->last_name));
-                                                $dispatch('data-addressline1', @js($address->address_line_1));
-                                                $dispatch('data-addressline2', @js($address->address_line_2));
-                                                $dispatch('data-landmark', @js($address->landmark ?? ''));
-                                                $dispatch('data-city', @js($address->city));
-                                                $dispatch('data-state', @js(strtoupper($address->stateDetail?->name)));
-                                                $dispatch('data-postalcode', @js($address->postal_code));
-                                                $dispatch('data-country', @js(strtoupper($address->countryDetail?->name)));
-                                                $dispatch('data-deleteroute', @js(route('front.address.delete', $address->id)));
-                                            "
-                                        >
-                                            Remove
-                                        </button>
-                                    </div> --}}
                                 </x-slot>
                             </x-front.dropdown>
                         </div>

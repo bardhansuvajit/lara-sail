@@ -1,9 +1,9 @@
 <nav class="bg-white dark:bg-gray-800 shadow-sm">
-    <div class="max-w-7xl mx-auto px-0 px-2 md:px-4">
+    <div class="max-w-7xl mx-auto px-2 md:px-4">
         <div class="flex space-x-0 overflow-x-auto py-2 md:py-4 hide-scrollbar">
             @php
                 // Base: spacing, layout, and accessible focus ring + transition
-                $base = 'flex items-center shrink-0 px-3 py-2 rounded-md font-semibold transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500';
+                $base = 'text-xs md:text-base flex items-center shrink-0 px-3 py-2 {{ FD["rounded"] }} font-semibold transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500';
 
                 // Normal link: good contrast in light & dark, subtle hover
                 $classes = $base . ' text-gray-500 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-300';
@@ -18,9 +18,7 @@
             <a href="{{ route('front.account.index') }}"
                class="{{ $is ? $activeClasses : $classes }} border-transparent"
                @if($is) aria-current="page" @endif>
-                <svg xmlns="http://www.w3.org/2000/svg" class="{{ FD['iconClass'] }} mr-1" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="{{ FD['iconClass'] }} mr-1" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>
                 Account
             </a>
 
