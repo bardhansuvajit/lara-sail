@@ -4,7 +4,7 @@
     <!-- Highlights, Currency Dropdown, Support -->
     @include('layouts.front.navigation.quick')
 
-    <!-- Logo, Search, Cart, Account -->
+    <!-- Logo, Search, Cart, Login, Account -->
     @include('layouts.front.navigation.menu')
 
     <!-- Categories, Collections -->

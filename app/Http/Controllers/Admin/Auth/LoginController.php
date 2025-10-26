@@ -25,7 +25,6 @@ class LoginController
     public function loginCheck(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
         return redirect()->intended(route('admin.dashboard.index', absolute: false));

@@ -72,9 +72,9 @@
                     @if($this->selectedMethodType !== 'prepaid')
                         <div id="cod">
                             <form action="{{ route('front.order.store') }}" method="post" id="place-order-form">@csrf
-                                <x-front.button element="button" type="submit" size="lg" tag="primary">
+                                <x-front.button element="button" type="submit" size="xl" tag="primary">
                                     @slot('icon')
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M240-80q-33 0-56.5-23.5T160-160v-480q0-33 23.5-56.5T240-720h80q0-66 47-113t113-47q66 0 113 47t47 113h80q33 0 56.5 23.5T800-640v480q0 33-23.5 56.5T720-80H240Zm0-80h480v-480h-80v80q0 17-11.5 28.5T600-520q-17 0-28.5-11.5T560-560v-80H400v80q0 17-11.5 28.5T360-520q-17 0-28.5-11.5T320-560v-80h-80v480Zm160-560h160q0-33-23.5-56.5T480-800q-33 0-56.5 23.5T400-720ZM240-160v-480 480Z"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m691-150 139-138-42-42-97 95-39-39-42 43 81 81ZM240-600h480v-80H240v80ZM720-40q-83 0-141.5-58.5T520-240q0-83 58.5-141.5T720-440q83 0 141.5 58.5T920-240q0 83-58.5 141.5T720-40ZM120-80v-680q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v267q-19-9-39-15t-41-9v-243H200v562h243q5 31 15.5 59T486-86l-6 6-60-60-60 60-60-60-60 60-60-60-60 60Zm120-200h203q3-21 9-41t15-39H240v80Zm0-160h284q38-37 88.5-58.5T720-520H240v80Zm-40 242v-562 562Z"/></svg>
                                     @endslot
                                     {{ __('Place Order') }}
                                 </x-front.button>
@@ -91,7 +91,7 @@
                                     @endphp
 
                                     @if ($code === 'razorpay')
-                                        <button
+                                        {{-- <button
                                             type="button"
                                             wire:click="initiateOnlinePayment({{ $gateway->id }})"
                                             class="flex w-full md:w-60 items-center justify-center gap-2 {{ FD['rounded'] }} px-5 py-2.5 {{FD['text-2']}} font-medium bg-gradient-to-r from-[#0d47a1] to-[#43a1ff] hover:from-[#1565c0] hover:to-[#54afff] focus:ring-4 focus:ring-[#42a5f5]/40 text-white shadow-md hover:shadow-lg transition-all duration-300">
@@ -99,7 +99,19 @@
                                             <div class="ms-1 w-24 h-5">
                                                 {!! $gateway->svg_icon !!}
                                             </div>
-                                        </button>
+                                        </button> --}}
+                                        <x-front.button 
+                                            element="button" 
+                                            type="button" 
+                                            size="xl" 
+                                            tag="primary" 
+                                            wire:click="initiateOnlinePayment({{ $gateway->id }})"
+                                            >
+                                            {{ __('Pay with') }} 
+                                            <div class="ms-1 w-24 h-5">
+                                                {!! $gateway->svg_icon !!}
+                                            </div>
+                                        </x-front.button>
 
                                     @elseif ($code === 'paypal')
                                         <button

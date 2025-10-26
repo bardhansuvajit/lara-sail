@@ -11,8 +11,8 @@
         <div class="divide-y-2 overflow-hidden overflow-y-auto {{ FD['rounded'] }} bg-white antialiased dark:divide-gray-600 dark:bg-gray-700">
             <ul class="p-2 text-start {{FD['text']}} font-medium dark:text-white dark:border-gray-600">
                 <li>
-                    <a href="{{ route('front.order.index') }}" title="" class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600 dark:hover:text-white">
-                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400 dark:hover:text-white"
+                    <a href="{{ route('front.order.index') }}" title="" class="flex items-center gap-2 {{ FD['rounded'] }} px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600 dark:hover:text-white">
+                        <svg class="{{ FD['iconClass'] }} text-gray-500 dark:text-gray-400 dark:hover:text-white"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round"
@@ -25,8 +25,8 @@
                 </li>
                 {{-- <li>
                     <a href="#" title=""
-                        class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
-                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                        class="flex items-center gap-2 {{ FD['rounded'] }} px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
+                        <svg class="{{ FD['iconClass'] }} text-gray-500 dark:text-gray-400"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round"
@@ -39,8 +39,8 @@
                 </li> --}}
                 <li>
                     <a href="{{ route('front.wishlist.index') }}" title=""
-                        class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
-                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                        class="flex items-center gap-2 {{ FD['rounded'] }} px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
+                        <svg class="{{ FD['iconClass'] }} text-gray-500 dark:text-gray-400"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round"
@@ -52,8 +52,8 @@
                 </li>
                 {{-- <li>
                     <a href="#" title=""
-                        class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
-                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                        class="flex items-center gap-2 {{ FD['rounded'] }} px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
+                        <svg class="{{ FD['iconClass'] }} text-gray-500 dark:text-gray-400"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round"
@@ -65,8 +65,8 @@
                 </li> --}}
                 {{-- <li>
                     <a href="#" title=""
-                        class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
-                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                        class="flex items-center gap-2 {{ FD['rounded'] }} px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
+                        <svg class="{{ FD['iconClass'] }} text-gray-500 dark:text-gray-400"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round"
@@ -79,8 +79,8 @@
                 </li> --}}
                 {{-- <li>
                     <a href="#" title=""
-                        class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
-                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                        class="flex items-center gap-2 {{ FD['rounded'] }} px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
+                        <svg class="{{ FD['iconClass'] }} text-gray-500 dark:text-gray-400"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round"
@@ -95,15 +95,15 @@
 
             <ul class="p-2 text-start {{FD['text']}} font-medium dark:text-white dark:border-gray-600">
                 <li>
-                    <a href="{{ route('front.account.index') }}" class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
-                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M7 17v1c0 .6.4 1 1 1h8c.6 0 1-.4 1-1v-1a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3Zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path></svg>
+                    <a href="{{ route('front.account.index') }}" class="flex items-center gap-2 {{ FD['rounded'] }} px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
+                        <svg class="{{ FD['iconClass'] }} text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M7 17v1c0 .6.4 1 1 1h8c.6 0 1-.4 1-1v-1a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3Zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path></svg>
                         Account
                     </a>
                 </li>
                 {{-- <li>
                     <a href="#" title=""
-                        class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
-                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                        class="flex items-center gap-2 {{ FD['rounded'] }} px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
+                        <svg class="{{ FD['iconClass'] }} text-gray-500 dark:text-gray-400"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round"
@@ -119,8 +119,8 @@
                 </li> --}}
                 <li>
                     <a href="{{ route('front.account.password.edit') }}" title=""
-                        class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
-                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                        class="flex items-center gap-2 {{ FD['rounded'] }} px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
+                        <svg class="{{ FD['iconClass'] }} text-gray-500 dark:text-gray-400"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round"
@@ -133,8 +133,8 @@
                 </li>
                 {{-- <li>
                     <a href="#" title=""
-                        class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
-                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                        class="flex items-center gap-2 {{ FD['rounded'] }} px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
+                        <svg class="{{ FD['iconClass'] }} text-gray-500 dark:text-gray-400"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round"
@@ -150,8 +150,8 @@
             {{-- <ul class="p-2 text-start {{FD['text']}} font-medium dark:text-white dark:border-gray-600">
                 <li>
                     <a href="#" title=""
-                        class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
-                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                        class="flex items-center gap-2 {{ FD['rounded'] }} px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
+                        <svg class="{{ FD['iconClass'] }} text-gray-500 dark:text-gray-400"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round"
@@ -164,8 +164,8 @@
                 </li>
                 <li>
                     <a href="#" title=""
-                        class="flex items-center gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
-                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                        class="flex items-center gap-2 {{ FD['rounded'] }} px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
+                        <svg class="{{ FD['iconClass'] }} text-gray-500 dark:text-gray-400"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round"
@@ -180,7 +180,7 @@
 
             <ul class="p-2 text-start {{FD['text']}} font-medium dark:text-white dark:border-gray-600">
                 <li>
-                    <span class="flex items-center justify-between gap-2 rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
+                    <span class="flex items-center justify-between gap-2 {{ FD['rounded'] }} px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600">
                         <label class="inline-flex cursor-pointer items-center" @click.stop="open = true">
                             <input type="checkbox" value="" class="sr-only peer" name="dark-mode" id="dark-mode" />
 
@@ -195,8 +195,9 @@
             <ul class="p-2 text-start {{FD['text']}} font-medium dark:text-white dark:border-gray-600">
                 <li>
                     <form method="POST" action="{{ route('front.logout') }}">@csrf
-                        <button type="submit" class="w-full flex items-center gap-2 rounded px-3 py-2 {{FD['text']}} text-red-600 VhtI3z1ny8F7lVdACbUQ dark:text-red-400 dark:hover:bg-gray-600">
-                            <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"></path></svg>
+                        <input type="hidden" name="redirect" value="{{ url()->current() }}">
+                        <button type="submit" class="w-full flex items-center gap-2 {{ FD['rounded'] }} px-3 py-2 {{FD['text']}} text-red-600 dark:text-red-400 dark:hover:bg-gray-600">
+                            <svg class="{{ FD['iconClass'] }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"></path></svg>
                             Sign Out
                         </button>
                     </form>
