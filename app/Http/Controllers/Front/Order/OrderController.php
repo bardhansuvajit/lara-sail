@@ -37,16 +37,15 @@ class OrderController extends Controller
 
     public function index(): View
     {
-        $userId = auth()->guard('web')->user()->id;
-        // $orders = $this->orderRepository->exists([
-        //     'user_id' => $userId
-        // ]);
+        $user = auth()->guard('web')->user();
+        $userId = $user->id;
+
         $orders = $this->orderRepository->list('', [
             'user_id' => $userId
         ], 15, 'id', 'desc');
 
         return view('front.account.order.index', [
-            'user' => auth()->guard('web')->user(),
+            'user' => $user,
             'orders' => $orders['data']
         ]);
     }

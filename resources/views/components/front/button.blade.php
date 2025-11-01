@@ -3,7 +3,7 @@
     'icon' => false,
     'type' => false,
     'tag' => 'primary',
-    'size' => 'md', // default size
+    'size' => 'sm', // default size
     'disabled' => false
 ])
 
@@ -15,22 +15,24 @@
 
     // Size mapping
     $sizeClasses = match($size) {
-        'xs' => "h-4 {$roundedClass} ".FD['text-0']." p-1",
+        'xxs' => "h-4 ".FD['text']." p-1",
+        'xs' => "h-4 ".FD['text']." px-2 py-3",
         'sm' => "h-8 ".FD['text']." px-3 py-1.5",
         'md' => "h-10 ".FD['text-1']." px-4 py-2",
         'lg' => "h-10 ".FD['text-2']." px-5 py-2.5",
         'xl' => "h-12 ".FD['text-2']." px-5 py-2.5",
-        default => "h-10 ".FD['text-1']." px-4 py-2",
+        default => "h-8 ".FD['text']." px-3 py-1.5",
     };
 
     // Icon size mapping based on button size
     $defaultIconClass = match($size) {
+        'xxs' => "h-3 w-3 mr-1",
         'xs' => "h-3 w-3 mr-1",
         'sm' => "h-3.5 w-3.5 mr-1.5",
         'md' => "h-4 w-4 mr-2",
         'lg' => "h-5 w-5 mr-2.5",
         'xl' => "h-5 w-5 mr-2.5",
-        default => "h-4 w-4 mr-2",
+        default => "h-3.5 w-3.5 mr-1.5",
     };
 
     // Gradient & color mapping

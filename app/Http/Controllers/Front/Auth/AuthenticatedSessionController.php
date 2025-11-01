@@ -13,17 +13,25 @@ use App\Interfaces\CountryInterface;
 use App\Interfaces\UserInterface;
 use App\Interfaces\CartInterface;
 
+use App\Services\UserLoginHistoryService;
+
 class AuthenticatedSessionController extends Controller
 {
     private CountryInterface $countryRepository;
     private UserInterface $userRepository;
     private CartInterface $cartRepository;
+    private UserLoginHistoryService $userLoginHistoryService;
 
-    public function __construct(CountryInterface $countryRepository, UserInterface $userRepository, CartInterface $cartRepository)
-    {
+    public function __construct(
+        CountryInterface $countryRepository, 
+        UserInterface $userRepository, 
+        CartInterface $cartRepository, 
+        UserLoginHistoryService $userLoginHistoryService
+    ) {
         $this->countryRepository = $countryRepository;
         $this->userRepository = $userRepository;
-        $this->cartRepository = $cartRepository;    
+        $this->cartRepository = $cartRepository;
+        $this->userLoginHistoryService = $userLoginHistoryService;
     }
 
     /**
@@ -94,6 +102,24 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
+        $user = auth()->guard('web')->user();
+
+        // Record login history after successful authentication
+        try {
+            // for session-based auth, generate a token
+            $sessionToken = session()->getId();
+            
+            $this->userLoginHistoryService->recordLogin($user, $sessionToken, [
+                'device_brand' => $request->input('device_brand'),
+                'device_model' => $request->input('device_model'),
+                'app_version' => $request->input('app_version'),
+                // Add any additional data from request
+            ]);
+        } catch (\Exception $e) {
+            // Log error but don't break the login flow
+            \Log::error('Failed to record login history: ' . $e->getMessage());
+        }
+
         // Update Cart data
         if (!empty($_COOKIE['device_id'])) {
             $deviceId = $_COOKIE['device_id'];
@@ -107,7 +133,7 @@ class AuthenticatedSessionController extends Controller
 
                 $cartResp = $this->cartRepository->update([
                     'id' => $cartData->id,
-                    'user_id' => auth()->guard('web')->user()->id
+                    'user_id' => $user->id
                 ]);
             }
         }
@@ -131,20 +157,34 @@ class AuthenticatedSessionController extends Controller
     {
         // dd($request->all());
 
+        $user = auth()->guard('web')->user();
+
+        // Record logout before actually logging out
+        if ($user) {
+            try {
+                // Option 1: Logout current session only
+                $sessionToken = session()->getId();
+                $this->userLoginHistoryService->logoutSession($sessionToken, 'user');
+                
+                // OR Option 2: Logout from all devices
+                // $this->userLoginHistoryService->logoutFromAllDevices($user, 'user');
+            } catch (\Exception $e) {
+                \Log::error('Failed to record logout history: ' . $e->getMessage());
+            }
+        }
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
+        // redirect
         if ($request->redirect) {
             return redirect($request->redirect);
         }
 
-        // redirect
         $referrer = request()->headers->get('referer');
         if (Str::contains($referrer, 'checkout')) {
-            // The request came from a checkout page
             return redirect()->route('front.checkout.index');
         }
 

@@ -1,5 +1,16 @@
 @extends('layouts.front.account', [
-    'title' => __('Edit Password')
+    'showHeader' => true,
+    'title' => __('Edit Password'),
+    'subtitle' => __('Improve account safety by updating your password.'),
+    'breadcrumb' => [
+        [
+            'title' => 'Account',
+            'url' => route('front.account.index')
+        ],
+        [
+            'title' => 'Edit Password'
+        ]
+    ]
 ])
 
 @section('content')
@@ -47,9 +58,18 @@
                 </div>
 
                 <div>
-                    <button type="submit" class="w-full sm:w-max flex items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    {{-- <button type="submit" class="w-full sm:w-max flex items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                         Update
-                    </button>
+                    </button> --}}
+
+                    <x-front.button
+						element="button"
+						tag="success"
+                        type="submit"
+                        class="w-full md:w-36"
+						>
+						{{ __('Update') }}
+					</x-front.button>
                 </div>
             </form>
         </div>

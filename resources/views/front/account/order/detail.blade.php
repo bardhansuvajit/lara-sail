@@ -1,15 +1,26 @@
 @extends('layouts.front.account', [
-    'title' => __('Order Details')
+    'showHeader' => true,
+    'title' => __('Order Details'),
+    'subtitle' => __('Detailed summary of your order and timelines.'),
+    'breadcrumb' => [
+        [
+            'title' => 'Order',
+            'url' => route('front.order.index')
+        ],
+        [
+            'title' => 'Order Details'
+        ]
+    ]
 ])
 
 @section('content')
 <div class="space-y-2 md:space-y-4">
-    <!-- Order Header -->
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+    <!-- Header -->
+    {{-- <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
         <div class="flex items-start gap-4">
             <div>
-                <a href="{{ route('front.order.index') }}" class="inline-flex items-center justify-center p-2 border border-gray-300 dark:border-gray-600 {{ FD['rounded'] }} {{ FD['text'] }} font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-240 120-480l240-240 56 56-144 144h568v80H272l144 144-56 56Z"/></svg>
+                <a href="{{ route('front.order.index') }}" class="inline-flex items-center justify-center p-1 md:p-2 border border-gray-300 dark:border-gray-600 {{ FD['rounded'] }} {{ FD['text'] }} font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <svg class="{{ FD['iconClass-1'] }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-240 120-480l240-240 56 56-144 144h568v80H272l144 144-56 56Z"/></svg>
                 </a>
             </div>
             <div>
@@ -17,7 +28,7 @@
                 <p class="{{ FD['text'] }} text-gray-600 dark:text-gray-400 mt-1">Order #{{ $order->order_number }}</p>
             </div>
         </div>
-        <div class="flex flex-col sm:flex-row gap-3">
+        <div class="flex flex-row gap-3">
             <x-front.button
                 element="a"
                 size="md"
@@ -42,7 +53,7 @@
                 {{ __('Download PDF') }}
             </x-front.button>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Order Status Card -->
     <div class="bg-white dark:bg-gray-800 {{ FD['rounded'] }} shadow-sm border border-gray-200 dark:border-gray-700 p-2 md:p-4">
@@ -50,15 +61,21 @@
             <div>
                 <h2 class="{{ FD['text-1'] }} font-semibold text-gray-900 dark:text-white mb-2">Order Status</h2>
                 <div class="flex items-center gap-3">
-                    <span class="px-3 py-1 rounded-full {{ FD['text'] }} font-medium
-                        @if($order->status === 'delivered') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                        @elseif($order->status === 'cancelled') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
-                        @elseif($order->status === 'shipped') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
-                        @elseif($order->status === 'processing') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
-                        @elseif($order->status === 'pending') bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-200
-                        @else bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 @endif">
+                    @php
+                        $statusClasses = match($order->status) {
+                            'delivered'  => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+                            'cancelled'  => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+                            'shipped'    => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+                            'processing' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+                            'pending'    => 'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-200',
+                            default      => 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+                        };
+                    @endphp
+
+                    <span class="px-3 py-1 rounded-full font-medium {{ FD['text'] }} {{ $statusClasses }}">
                         {{ ucwords(str_replace('_', ' ', $order->status)) }}
                     </span>
+
                     <span class="{{ FD['text'] }} text-gray-600 dark:text-gray-400">
                         Ordered on {{ $order->created_at->format('F d, Y') }}
                     </span>
@@ -73,6 +90,30 @@
                 </p>
                 <p class="{{ FD['text'] }} text-gray-600 dark:text-gray-400">Total Amount</p>
             </div>
+        </div>
+
+        <div class="flex flex-row justify-end gap-3 mt-4">
+            <x-front.button
+                element="a"
+                tag="secondary"
+                :href="route('front.order.invoice', $order->order_number)"
+                >
+                @slot('icon')
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                @endslot
+                {{ __('View Invoice') }}
+            </x-front.button>
+
+            <x-front.button
+                element="a"
+                tag="success"
+                :href="route('front.order.download-invoice', $order->order_number)"
+                >
+                @slot('icon')
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                @endslot
+                {{ __('Download PDF') }}
+            </x-front.button>
         </div>
     </div>
 
@@ -97,7 +138,7 @@
                                              src="{{ str_replace('storage/storage', 'storage', Storage::url($item->image_m)) }}" 
                                              alt="{{ $item->product_title }}"
                                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                        <div class="hidden w-full h-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
+                                        <div class="w-full h-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
                                             <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                             </svg>

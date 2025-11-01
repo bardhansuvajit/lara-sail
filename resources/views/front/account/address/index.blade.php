@@ -1,5 +1,7 @@
 @extends('layouts.front.account', [
-    'title' => __('Address')
+    'showHeader' => true,
+    'title' => __('Address'),
+    'subtitle' => __('Save your favorite delivery locations for faster checkout.'),
 ])
 
 @section('content')
@@ -12,11 +14,23 @@
             <h3 class="mt-2 text-sm font-semibold text-gray-900 dark:text-gray-100">No delivery address found</h3>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Add an address for a faster checkout experience.</p>
 
-            <div class="mt-4">
-                <a href="{{ route('front.address.create', ['type' => 'shipping', 'redirect' => url()->current()]) }}"
+            <div class="flex justify-center mt-4">
+                {{-- <a href="{{ route('front.address.create', ['type' => 'shipping', 'redirect' => url()->current()]) }}"
                     class="inline-flex items-center {{ FD['rounded'] }} bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500">
                     + Add New Delivery Address
-                </a>
+                </a> --}}
+
+                <x-front.button
+                    element="a"
+                    tag="primary"
+                    :href="route('front.address.create', ['type' => 'shipping', 'redirect' => url()->current()])"
+                    class="w-48"
+                    >
+                    @slot('icon')
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                    @endslot
+                    {{ __('Add New Delivery Address') }}
+                </x-front.button>
             </div>
         </div>
     @else
@@ -37,6 +51,12 @@
                         <div>
                             <h5 class="mb-2 {{FD['text-1']}} font-bold tracking-tight text-gray-700 dark:text-white">
                                 {{$address->first_name}} {{$address->last_name}}, {{$address->phone_no}}
+
+                                @if ($address->address_type == 'billing')
+                                    <span title="Billing Address">
+                                        <svg class="{{ FD['iconClass'] }} inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M120-80v-800l60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60v800l-60-60-60 60-60-60-60 60-60-60-60 60-60-60-60 60-60-60-60 60-60-60-60 60Zm120-200h480v-80H240v80Zm0-160h480v-80H240v80Zm0-160h480v-80H240v80Zm-40 404h560v-568H200v568Zm0-568v568-568Z"/></svg>
+                                    </span>
+                                @endif
                             </h5>
 
                             <p class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-300">
@@ -53,7 +73,7 @@
                             <p class="{{ FD['text'] }} font-normal text-gray-500 dark:text-gray-300">{{strtoupper($address->countryDetail?->name)}}</p>
                         </div>
 
-                        <div class="">
+                        <div class="flex space-x-2">
                             <x-front.dropdown width="32">
                                 <x-slot name="trigger">
                                     <button type="button" class="inline-flex items-center {{ FD['rounded'] }} justify-center p-1 md:p-2 hover:bg-gray-100 dark:hover:bg-gray-700/100 {{FD['text']}} font-medium leading-tight dark:text-white">

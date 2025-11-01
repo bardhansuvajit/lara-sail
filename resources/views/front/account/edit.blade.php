@@ -1,5 +1,16 @@
 @extends('layouts.front.account', [
-    'title' => __('Edit Account')
+    'showHeader' => true,
+    'title' => __('Edit Account'),
+    'subtitle' => __('Keep your account information accurate and up to date.'),
+    'breadcrumb' => [
+        [
+            'title' => 'Account',
+            'url' => route('front.account.index')
+        ],
+        [
+            'title' => 'Edit Account'
+        ]
+    ]
 ])
 
 @section('content')
@@ -72,9 +83,14 @@
                 </div>
 
                 <div>
-                    <button type="submit" class="w-full sm:w-max flex items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                        Update
-                    </button>
+                    <x-front.button
+						element="button"
+						tag="success"
+                        type="submit"
+                        class="w-full md:w-36"
+						>
+						{{ __('Update') }}
+					</x-front.button>
                 </div>
             </form>
         </div>
@@ -147,9 +163,17 @@
                 </div>
 
                 <div>
-                    <button type="submit" class="w-full sm:w-max flex items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    {{-- <button type="submit" class="w-full sm:w-max flex items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                         Update
-                    </button>
+                    </button> --}}
+                    <x-front.button
+						element="button"
+						tag="success"
+                        type="submit"
+                        class="w-full md:w-36"
+						>
+						{{ __('Update') }}
+					</x-front.button>
                 </div>
             </form>
         </div>
@@ -222,11 +246,21 @@
                 </div> --}}
 
                 <div>
-                    <a href="{{ route('front.account.password.edit') }}" class="w-full sm:w-max flex gap-2 items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    {{-- <a href="{{ route('front.account.password.edit') }}" class="w-full sm:w-max flex gap-2 items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                         <svg class="{{ FD['iconClass'] }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q97-30 162-118.5T718-480H480v-315l-240 90v207q0 7 2 18h238v316Z"/></svg>
-
                         Edit Password
-                    </a>
+                    </a> --}}
+                    <x-front.button
+						element="a"
+						tag="primary"
+						:href="route('front.account.password.edit')"
+                        class="w-full md:w-36"
+						>
+						@slot('icon')
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q97-30 162-118.5T718-480H480v-315l-240 90v207q0 7 2 18h238v316Z"/></svg>
+						@endslot
+						{{ __('Edit password') }}
+					</x-front.button>
                 </div>
             {{-- </form> --}}
         </div>

@@ -1,6 +1,6 @@
 <nav class="bg-white dark:bg-gray-800 shadow-sm">
     <div class="max-w-7xl mx-auto px-2 md:px-4">
-        <div class="flex space-x-0 overflow-x-auto py-2 md:py-4 hide-scrollbar">
+        <div class="flex space-x-0 overflow-x-auto py-2 md:pt-4 hide-scrollbar scroll-smooth scroll-snap-x">
             @php
                 // Base: spacing, layout, and accessible focus ring + transition
                 $base = 'text-xs md:text-base flex items-center shrink-0 px-3 py-2 {{ FD["rounded"] }} font-semibold transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500';
@@ -61,4 +61,18 @@
 <style>
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .scroll-snap-x { scroll-snap-type: x mandatory; }
+    .scroll-snap-x a { scroll-snap-align: center; }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const container = document.querySelector('.overflow-x-auto.hide-scrollbar');
+    const active = container?.querySelector('[aria-current="page"]');
+    if (active && container) {
+        // center the active item; 'smooth' is optional
+        active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+    });
+</script>

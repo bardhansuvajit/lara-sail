@@ -6,6 +6,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\RedirectAdminIfAuthenticated;
 use App\Http\Middleware\RedirectAdminIfNotAuthenticated;
 use App\Http\Middleware\ApiAuthenticate;
+use App\Http\Middleware\CheckActiveSessionWeb;
 use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -20,6 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'redirectAdminIfAuthenticated' => RedirectAdminIfAuthenticated::class,
             'redirectAdminIfNotAuthenticated' => RedirectAdminIfNotAuthenticated::class,
+            'CheckActiveSessionWeb' => CheckActiveSessionWeb::class,
+
             'apiAuth' => ApiAuthenticate::class,
         ]);
     })

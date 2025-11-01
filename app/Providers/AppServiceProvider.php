@@ -15,6 +15,9 @@ use App\Models\SocialMedia;
 use App\Models\ProductFeature;
 
 use App\Services\OrderNumberService;
+use App\Services\UserLoginHistoryService;
+
+use App\Interfaces\UserLoginHistoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +29,16 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(OrderNumberService::class, function () {
             return new OrderNumberService();
         });
+
+        $this->app->bind(UserLoginHistoryService::class, function ($app) {
+            return new UserLoginHistoryService(
+                $app->make(UserLoginHistoryInterface::class)
+            );
+        });
+
+        // $this->app->bind(UserLoginHistoryService::class, function () {
+        //     return new UserLoginHistoryService();
+        // });
     }
 
     /**

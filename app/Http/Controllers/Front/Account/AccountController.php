@@ -6,26 +6,40 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Interfaces\OrderInterface;
 use App\Interfaces\CountryInterface;
 use App\Interfaces\ProfileInterface;
 use Illuminate\Support\Facades\Auth;
-// use Illuminate\Validation\Rule;
 
 class AccountController extends Controller
 {
+    private OrderInterface $orderRepository;
     private CountryInterface $countryRepository;
     private ProfileInterface $profileRepository;
 
-    public function __construct(CountryInterface $countryRepository, ProfileInterface $profileRepository)
+    public function __construct(
+        OrderInterface $orderRepository, 
+        CountryInterface $countryRepository, 
+        ProfileInterface $profileRepository
+    )
     {
+        $this->orderRepository = $orderRepository;
         $this->countryRepository = $countryRepository;
         $this->profileRepository = $profileRepository;
     }
 
     public function index(Request $request): View
     {
+        $user = auth()->guard('web')->user();
+        $userId = $user->id;
+
+        $orders = $this->orderRepository->list('', [
+            'user_id' => $userId
+        ], 2, 'id', 'desc');
+
         return view('front.account.index', [
-            'user' => auth()->guard('web')->user()
+            'user' => $user,
+            'orders' => $orders['data']
         ]);
     }
 

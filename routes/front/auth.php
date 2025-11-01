@@ -11,10 +11,13 @@ use App\Http\Controllers\Front\Auth\PasswordController;
 use App\Http\Controllers\Front\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Front\Auth\RegisteredUserController;
 use App\Http\Controllers\Front\Auth\VerifyEmailController;
+
 use App\Http\Controllers\Front\Account\AccountController;
+
 use App\Http\Controllers\Front\Address\AddressController;
 use App\Http\Controllers\Front\Order\OrderController;
 use App\Http\Controllers\Front\Wishlist\WishlistController;
+use App\Http\Controllers\Front\Session\SessionController;
 
 Route::name('front.')->group(function () {
     Route::middleware('guest')->group(function () {
@@ -31,7 +34,7 @@ Route::name('front.')->group(function () {
         Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.store');
     });
 
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['auth', 'CheckActiveSessionWeb'])->group(function () {
         Route::get('verify-email', EmailVerificationPromptController::class)->name('verification.notice');
         Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
         Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->middleware('throttle:6,1')->name('verification.send');
@@ -49,9 +52,17 @@ Route::name('front.')->group(function () {
             Route::post('/update', 'update')->name('update');
             Route::post('/update/optional', 'updateOptional')->name('update.optional');
 
+            // Password
             Route::prefix('password')->name('password.')->controller(PasswordController::class)->group(function() {
                 Route::get('/edit', 'edit')->name('edit');
                 // Route::post('/update', 'update')->name('update');
+            });
+
+            // Sessions
+            Route::prefix('session')->name('session.')->controller(SessionController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::post('/{session}/logout', 'logoutSession')->name('logout');
+                Route::post('/logout-all', 'logoutAllSessions')->name('logout-all');
             });
         });
 

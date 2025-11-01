@@ -69,4 +69,17 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\UserAddress', 'user_id', 'id')->where('address_type', 'billing')->orderBy('is_default', 'desc')->orderBy('id', 'desc');
     }
+
+    // Login history
+    public function loginHistories()
+    {
+        return $this->hasMany('App\Models\UserLoginHistory', 'user_id', 'id');
+    }
+
+    public function lastLoginHistory()
+    {
+        return $this->hasOne('App\Models\UserLoginHistory', 'user_id', 'id')
+            ->where('is_active', 1)
+            ->orderBy('id', 'desc');
+    }
 }

@@ -59,19 +59,26 @@
         </div>
 
         @if (!request()->is('account/edit*'))
-            <div class="flex space-x-2 lg:space-x-0">
-                <a href="{{route('front.account.edit')}}" class="flex w-full items-center justify-center {{ FD['rounded'] }} bg-primary-700 px-5 py-2.5 {{FD['text']}} font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                    Edit Profile
-                </a>
+            <div>
+                <x-front.button
+                    element="a"
+                    tag="secondary"
+                    :href="route('front.account.edit')"
+                    >
+                    @slot('icon')
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-240Zm-320 80v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q37 0 73 4.5t72 14.5l-67 68q-20-3-39-5t-39-2q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32h240v80H160Zm400 40v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q8 9 12.5 20t4.5 22q0 11-4 22.5T903-340L683-120H560Zm300-263-37-37 37 37ZM620-180h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19ZM480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm0-80q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Z"/></svg>
+                    @endslot
+                    {{ __('Edit Profile') }}
+                </x-front.button>
             </div>
         @endif
 
         <div class="flex items-center justify-center gap-2">
-            <p class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-primary-700 dark:text-primary-500">
+            <p class="inline-flex items-center gap-1 {{FD['text']}} font-medium text-primary-700 dark:text-primary-400">
                 Not {{$user->first_name}}?
             </p>
             <form method="POST" action="{{ route('front.logout') }}" class="flex">@csrf
-                <button type="submit" class="inline-flex items-center underline hover:no-underline {{FD['text']}} font-medium text-primary-700 dark:text-primary-500">Logout</button>
+                <button type="submit" class="inline-flex items-center underline hover:no-underline {{FD['text']}} font-medium text-primary-700 dark:text-primary-400">Logout</button>
             </form>
         </div>
     </div>
