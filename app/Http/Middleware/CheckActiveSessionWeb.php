@@ -24,6 +24,7 @@ class CheckActiveSessionWeb
 
             // Check if current session is still active
             $isActive = $this->loginHistoryService->isTokenActive($currentToken);
+            // dd($isActive);
 
             if (!$isActive) {
                 // Session was logged out from another device

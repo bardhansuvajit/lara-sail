@@ -20,6 +20,7 @@ class UserLoginHistoryService
             'token' => $token,
             'ip_address' => request()->ip(),
             'platform' => $this->detectPlatform(),
+            'expires_at' => now()->addDays(365),
         ], $additionalData);
 
         // Add location data if available

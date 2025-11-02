@@ -135,11 +135,6 @@
                                         >
                                         {{ __('Logout') }}
                                     </x-front.button>
-                                    {{-- <button type="submit" 
-                                            onclick="return confirm('Are you sure you want to logout from this device?')"
-                                            class="px-3 py-1 bg-red-100 text-red-700 {{ FD['text'] }} font-medium rounded hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800">
-                                        Logout
-                                    </button> --}}
                                 </form>
                             </div>
                         @endforeach
@@ -187,17 +182,11 @@
                                 <td class="p-2 md:px-4 md:py-3">
                                     <div class="flex items-center space-x-2">
                                         @if($session->platform === 'ios' || $session->platform === 'android')
-                                        <svg class="{{ FD['iconClass'] }} text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor">
-                                            <path d="M280-40q-33 0-56.5-23.5T200-120v-720q0-33 23.5-56.5T280-920h400q33 0 56.5 23.5T760-840v720q0 33-23.5 56.5T680-40H280Zm0-200v120h400v-120H280Zm200 100q17 0 28.5-11.5T520-180q0-17-11.5-28.5T480-220q-17 0-28.5 11.5T440-180q0 17 11.5 28.5T480-140ZM280-320h400v-400H280v400Zm0-480h400v-40H280v40Zm0 560v120-120Zm0-560v-40 40Z"/>
-                                        </svg>
+                                            <svg class="{{ FD['iconClass'] }} text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-40q-33 0-56.5-23.5T200-120v-720q0-33 23.5-56.5T280-920h400q33 0 56.5 23.5T760-840v720q0 33-23.5 56.5T680-40H280Zm0-200v120h400v-120H280Zm200 100q17 0 28.5-11.5T520-180q0-17-11.5-28.5T480-220q-17 0-28.5 11.5T440-180q0 17 11.5 28.5T480-140ZM280-320h400v-400H280v400Zm0-480h400v-40H280v40Zm0 560v120-120Zm0-560v-40 40Z"/></svg>
                                         @elseif($session->platform === 'tablet')
-                                        <svg class="{{ FD['iconClass'] }} text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor">
-                                            <path d="M100-120q-33 0-56.5-23.5T20-200v-560q0-33 23.5-56.5T100-840h760q33 0 56.5 23.5T940-760v560q0 33-23.5 56.5T860-120H100Zm0-120v40h760v-40H100Zm0-80h760v-440H100v440Zm0-520h760v-40H100v40Zm0 0v-40 40Zm0 600v40-40Z"/>
-                                        </svg>
+                                            <svg class="{{ FD['iconClass'] }} text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M100-120q-33 0-56.5-23.5T20-200v-560q0-33 23.5-56.5T100-840h760q33 0 56.5 23.5T940-760v560q0 33-23.5 56.5T860-120H100Zm0-120v40h760v-40H100Zm0-80h760v-440H100v440Zm0-520h760v-40H100v40Zm0 0v-40 40Zm0 600v40-40Z"/></svg>
                                         @else
-                                        <svg class="{{ FD['iconClass'] }} text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor">
-                                            <path d="M320-120v-80H160q-33 0-56.5-23.5T80-280v-440q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v440q0 33-23.5 56.5T800-200H640v80H320ZM160-280h640v-440H160v440Zm0 0v-440 440Z"/>
-                                        </svg>
+                                            <svg class="{{ FD['iconClass'] }} text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-120v-80H160q-33 0-56.5-23.5T80-280v-440q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v440q0 33-23.5 56.5T800-200H640v80H320ZM160-280h640v-440H160v440Zm0 0v-440 440Z"/></svg>
                                         @endif
                                         <span>{{ ucfirst($session->platform) }}</span>
                                     </div>
@@ -209,13 +198,27 @@
                                 </td>
                                 <td class="p-2 md:px-4 md:py-3">
                                     @if($session->is_active)
-                                    <span class="px-2 py-1 bg-green-100 text-green-800 {{ FD['text'] }} font-medium rounded-full dark:bg-green-900 dark:text-green-300">
-                                        Active
-                                    </span>
+                                        <div class="flex space-x-2">
+                                            <span class="px-2 py-1 bg-green-100 text-green-800 {{ FD['text'] }} font-medium rounded-full dark:bg-green-900 dark:text-green-300">
+                                                Active
+                                            </span>
+
+                                            <form action="{{ route('front.account.session.logout', $session->token) }}" method="POST">
+                                                @csrf
+                                                <x-front.button
+                                                    element="button"
+                                                    tag="danger"
+                                                    type="submit"
+                                                    size="xs"
+                                                    >
+                                                    {{ __('Logout') }}
+                                                </x-front.button>
+                                            </form>
+                                        </div>
                                     @else
-                                    <span class="px-2 py-1 bg-gray-100 text-gray-800 {{ FD['text'] }} font-medium rounded-full dark:bg-gray-600 dark:text-gray-300">
-                                        Logged out
-                                    </span>
+                                        <span class="px-2 py-1 bg-gray-100 text-gray-800 {{ FD['text'] }} font-medium rounded-full dark:bg-gray-600 dark:text-gray-300">
+                                            Logged out
+                                        </span>
                                     @endif
                                 </td>
                             </tr>
