@@ -7,19 +7,23 @@ use Illuminate\View\View;
 use Illuminate\Validation\Rule;
 use App\Interfaces\OrderInterface;
 use App\Interfaces\ShippingMethodInterface;
+use App\Interfaces\OrderStatusInterface;
 
 class OrderController
 {
     private OrderInterface $orderRepository;
     private ShippingMethodInterface $shippingMethodRepository;
+    private OrderStatusInterface $orderStatusRepository;
 
     public function __construct(
         OrderInterface $orderRepository, 
-        ShippingMethodInterface $shippingMethodRepository
+        ShippingMethodInterface $shippingMethodRepository, 
+        OrderStatusInterface $orderStatusRepository
     )
     {
         $this->orderRepository = $orderRepository;
         $this->shippingMethodRepository = $shippingMethodRepository;
+        $this->orderStatusRepository = $orderStatusRepository;
     }
 
     public function index(Request $request): View
@@ -95,8 +99,11 @@ class OrderController
     public function edit(Int $id): View
     {
         $resp = $this->orderRepository->getById($id);
+        $orderStatuses = $this->orderStatusRepository->list('', [], 'all', 'position', 'asc');
+
         return view('admin.order.edit', [
             'order' => $resp['data'],
+            'orderStatuses' => $orderStatuses['data'] ?? [],
         ]);
     }
 
@@ -130,6 +137,28 @@ class OrderController
         ]);
 
         $resp = $this->orderRepository->update($request->all());
+        return redirect()->back()->with($resp['status'], $resp['message']);
+    }
+
+    public function updateStatus(Request $request)
+    {
+        // dd($request->all());
+
+        $request->validate([
+            'id' => 'required|integer|min:1',
+            'status' => 'required|string|min:2|exists:order_statuses,slug',
+            'previous_status' => 'required|string|min:2|exists:order_statuses,slug',
+            'notes' => 'required|string|min:2',
+            'icon' => 'required|string',
+        ]);
+
+        // $resp = $this->orderRepository->updateStatus($request->all());
+        $data = $request->only(['id', 'status', 'previous_status', 'notes', 'icon']) + [
+            'actor_type' => 'admin',
+            'actor_id' => auth()->guard('admin')->user()->id,
+        ];
+
+        $resp = $this->orderRepository->updateStatus($data);
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 

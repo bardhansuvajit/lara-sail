@@ -22,6 +22,8 @@ class CheckActiveSessionWeb
             $user = auth()->guard('web')->user();
             $currentToken = session()->getId();
 
+            // dd($currentToken);
+
             // Check if current session is still active
             $isActive = $this->loginHistoryService->isTokenActive($currentToken);
             // dd($isActive);

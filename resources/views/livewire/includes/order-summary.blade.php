@@ -51,9 +51,15 @@
             @if (!is_null($cart['coupon_code_id']) && $cart['coupon_code_id'] > 0)
                 <dl class="flex items-center justify-between gap-4">
                     <dt class="{{FD['text']}} font-normal text-gray-500 dark:text-gray-400">Coupon Discount</dt>
-                    <dd class="{{FD['text']}} font-medium text-green-600" id="payment-method-summary-highlight">
-                        -<span id="payment-method-summary-icon"></span><span class="currency-symbol">{{COUNTRY['icon']}}</span><span id="payment-method-summary-amount">{{formatIndianMoney($cart['coupon_discount_amount'])}}</span>
-                    </dd>
+                    @if ($cart['coupon_discount_amount'] > 0)
+                        <dd class="{{FD['text']}} font-medium text-green-600" id="payment-method-summary-highlight">
+                            -<span id="payment-method-summary-icon"></span><span class="currency-symbol">{{COUNTRY['icon']}}</span><span id="payment-method-summary-amount">{{formatIndianMoney($cart['coupon_discount_amount'])}}</span>
+                        </dd>
+                    @else
+                        <dd class="{{FD['text']}} font-medium text-gray-500 dark:text-gray-400" id="payment-method-summary-highlight">
+                            <span id="payment-method-summary-icon"></span><span class="currency-symbol">{{COUNTRY['icon']}}</span><span id="payment-method-summary-amount">{{formatIndianMoney($cart['coupon_discount_amount'])}}</span>
+                        </dd>
+                    @endif
                 </dl>
                 <div class="flex items-center justify-end gap-4">
                     <div class="flex items-center gap-3">

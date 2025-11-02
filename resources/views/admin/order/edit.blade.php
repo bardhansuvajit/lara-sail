@@ -16,21 +16,25 @@
                     Placed on {{ $order->created_at->format('M j, Y \a\t g:i A') }}
                 </p>
             </div>
+
+            @php
+                $paymentClasses = [
+                    'paid'    => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+                    'pending' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+                    'failed'  => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+                ];
+
+                $defaultClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+
+                $paymentStatusClass = $paymentClasses[$order->payment_status] ?? $defaultClass;
+            @endphp
+
             <div class="flex flex-wrap gap-3">
-                <span class="px-3 py-1 rounded-full text-xs font-medium 
-                    @if($order->status === 'completed') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                    @elseif($order->status === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
-                    @elseif($order->status === 'processing') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
-                    @elseif($order->status === 'cancelled') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
-                    @elseif($order->status === 'shipped') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
-                    @else bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200 @endif">
-                    {{ ucfirst($order->status) }}
+                <span class="px-3 py-1 rounded-full text-xs font-medium {{ $order->orderStatus->class }}">
+                    Order status: {{ ucfirst($order->status) }}
                 </span>
-                <span class="px-3 py-1 rounded-full text-xs font-medium 
-                    @if($order->payment_status === 'paid') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                    @elseif($order->payment_status === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
-                    @elseif($order->payment_status === 'failed') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
-                    @else bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200 @endif">
+
+                <span class="px-3 py-1 rounded-full text-xs font-medium {{ $paymentStatusClass }}">
                     Payment: {{ ucfirst($order->payment_status) }}
                 </span>
             </div>
@@ -47,50 +51,93 @@
                     </div>
                     <div class="divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach ($order->items as $item)
-                        <div class="p-2">
-                            <div class="flex gap-4">
-                                <!-- Product Image -->
-                                <a href="{{ route('admin.product.listing.edit', $item->id) }}" target="_blank" class="flex-shrink-0">
-                                    <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
-                                        @if (!empty($item->image_m))
-                                            <img class="w-full h-full object-cover" 
-                                                 src="{{ str_replace('storage/storage', 'storage', Storage::url($item->image_m)) }}" 
-                                                 alt="{{ $item->product_title }}" />
-                                        @else
-                                            <div class="text-gray-400">
-                                                {!! FD['brokenImageFront'] !!}
-                                            </div>
-                                        @endif
-                                    </div>
-                                </a>
-
-                                <!-- Product Details -->
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex justify-between">
-                                        <div class="flex-1">
-                                            <a href="{{ route('admin.product.listing.edit', $item->id) }}" target="_blank" 
-                                               class="text-xs font-medium text-gray-900 dark:text-white underline hover:no-underline hover:text-primary-600 dark:hover:text-primary-400 line-clamp-2">
-                                                {{ $item->product_title }}
-                                            </a>
-                                            @if (!empty($item->variation_attributes))
-                                                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $item->variation_attributes }}</p>
+                            <div class="p-2">
+                                <div class="flex gap-4">
+                                    <!-- Product Image -->
+                                    <a href="{{ route('admin.product.listing.edit', $item->id) }}" target="_blank" class="flex-shrink-0">
+                                        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
+                                            @if (!empty($item->image_m))
+                                                <img class="w-full h-full object-cover" 
+                                                    src="{{ str_replace('storage/storage', 'storage', Storage::url($item->image_m)) }}" 
+                                                    alt="{{ $item->product_title }}" />
+                                            @else
+                                                <div class="text-gray-400">
+                                                    {!! FD['brokenImageFront'] !!}
+                                                </div>
                                             @endif
-                                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">SKU: {{ $item->sku ?? 'N/A' }}</p>
                                         </div>
-                                        <div class="text-right">
-                                            <p class="text-xs font-semibold text-gray-900 dark:text-white">
-                                                {{ $order->currency_symbol }}{{ formatIndianMoney($item->selling_price) }}
-                                            </p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">Qty: {{ $item->quantity }}</p>
-                                            <p class="text-xs font-medium text-gray-900 dark:text-white mt-1">
-                                                {{ $order->currency_symbol }}{{ formatIndianMoney($item->selling_price * $item->quantity) }}
-                                            </p>
+                                    </a>
+
+                                    <!-- Product Details -->
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex justify-between">
+                                            <div class="flex-1">
+                                                <a href="{{ route('admin.product.listing.edit', $item->id) }}" target="_blank" 
+                                                class="text-xs font-medium text-gray-900 dark:text-white underline hover:no-underline hover:text-primary-600 dark:hover:text-primary-400 line-clamp-2">
+                                                    {{ $item->product_title }}
+                                                </a>
+                                                @if (!empty($item->variation_attributes))
+                                                    <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $item->variation_attributes }}</p>
+                                                @endif
+                                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">SKU: {{ $item->sku ?? 'N/A' }}</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-xs font-semibold text-gray-900 dark:text-white">
+                                                    {{ $order->currency_symbol }}{{ formatIndianMoney($item->selling_price) }}
+                                                </p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">Qty: {{ $item->quantity }}</p>
+                                                <p class="text-xs font-medium text-gray-900 dark:text-white mt-1">
+                                                    {{ $order->currency_symbol }}{{ formatIndianMoney($item->selling_price * $item->quantity) }}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         @endforeach
+                    </div>
+                </div>
+
+                <!-- Order Status -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="p-2 border-b border-gray-200 dark:border-gray-600">
+                        <h2 class="text-sm font-semibold text-primary-500 dark:text-primary-300">Order Status</h2>
+                    </div>
+                    <div class="p-2">
+                        <div class="grid grid-cols-8 gap-2">
+                            @php
+                                $groupedStatuses = $orderStatuses->groupBy('category');
+                            @endphp
+
+                            @foreach ($groupedStatuses as $category => $statuses)
+                                <div class="grid-col-2">
+                                    <div class="text-[10px] w-full font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                        {{ ucfirst($category) }}
+                                    </div>
+
+                                    <div class="">
+                                        @foreach ($statuses as $os)
+                                            <button class="{{ $os->class }} mb-1 w-full text-[10px] flex items-center gap-2 rounded border-2 px-0.5
+                                                {{ ($order->status == $os->slug) ? 'border-gray-900 dark:border-gray-50 font-bold' : 'border-transparent' }}"
+                                                x-data=""
+                                                x-on:click.prevent="
+                                                    $dispatch('open-modal', 'confirm-status-update'); 
+                                                    $dispatch('data-cstat', '{{ $order->status }}');
+                                                    $dispatch('data-slug', '{{ $os->slug }}');
+                                                    $dispatch('data-title', '{{ $os->title }}');
+                                                    $dispatch('data-class', '{{ $os->class }}');
+                                                    $dispatch('data-description', '{{ $os->description }}');
+                                                    $dispatch('data-icon', '{{ $os->icon }}');
+                                                "
+                                            >
+                                                <div class="w-3 h-3">{!! $os->icon !!}</div>
+                                                {{ '#'.$os->position.' '.$os->title }}
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
 
@@ -487,25 +534,131 @@
 
         <!-- Notes Section -->
         @if($order->notes || $order->status_notes)
-        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="p-2 border-b border-gray-200 dark:border-gray-600">
-                <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Order Notes</h2>
-            </div>
-            <div class="p-2">
-                @if($order->notes)
-                <div class="mb-4">
-                    <h3 class="font-medium text-gray-900 dark:text-white mb-2">Customer Notes</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">{{ $order->notes }}</p>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                <div class="p-2 border-b border-gray-200 dark:border-gray-600">
+                    <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Order Notes</h2>
                 </div>
-                @endif
-                @if($order->status_notes)
-                <div>
-                    <h3 class="font-medium text-gray-900 dark:text-white mb-2">Status Notes</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">{{ $order->status_notes }}</p>
+                <div class="p-2">
+                    @if($order->notes)
+                    <div class="mb-4">
+                        <h3 class="font-medium text-gray-900 dark:text-white mb-2">Customer Notes</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">{{ $order->notes }}</p>
+                    </div>
+                    @endif
+                    @if($order->status_notes)
+                    <div>
+                        <h3 class="font-medium text-gray-900 dark:text-white mb-2">Status Notes</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">{{ $order->status_notes }}</p>
+                    </div>
+                    @endif
                 </div>
-                @endif
             </div>
-        </div>
         @endif
     </div>
+
+    {{-- Modal --}}
+    <x-admin.modal name="confirm-status-update" maxWidth="md" focusable>
+        <div 
+            class="p-6" 
+            x-data="{ 
+                cstat: '', 
+                slug: '', 
+                title: '', 
+                icon: '', 
+                statusClass: '', 
+                description: '', 
+                icon: ''
+            }" 
+            x-on:data-cstat.window="cstat = $event.detail"
+            x-on:data-slug.window="slug = $event.detail"
+            x-on:data-title.window="title = $event.detail"
+            x-on:data-icon.window="icon = $event.detail"
+            x-on:data-class.window="statusClass = $event.detail"
+            x-on:data-description.window="description = $event.detail"
+            x-on:data-icon.window="icon = $event.detail"
+            >
+            <!-- Header Section -->
+            <div class="flex items-center gap-3 mb-4">
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        {{ __('Update Order Status') }}
+                    </h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        {{ __('Confirm status change for order #') }}{{ $order->order_number }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Status Preview Card -->
+            <div x-bind:class="statusClass" class="rounded-lg p-4 mb-4 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center" x-html="icon"></div>
+                        <div>
+                            <h4 class="text-sm font-medium" x-text="title"></h4>
+                            <p class="text-xs" x-text="description"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Status Indicator -->
+            <div class="flex items-center justify-between py-3 px-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800 mb-4">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                    </svg>
+                    <span class="text-sm font-medium text-orange-800 dark:text-orange-200">
+                        Current Status: 
+                        <span class="capitalize" x-text="cstat"></span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end border-t border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-3">
+                    <x-admin.button
+                        element="button"
+                        tag="secondary"
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                        x-on:click="$dispatch('close')"
+                    >
+                        {{ __('Cancel') }}
+                    </x-admin.button>
+
+                    <form action="{{ route('admin.order.update.status') }}" method="POST" class="m-0">@csrf
+                        <input type="hidden" name="status" x-bind:value="slug" value="">
+                        <input type="hidden" name="previous_status" x-bind:value="cstat" value="">
+                        <input type="hidden" name="notes" x-bind:value="description" value="">
+                        <input type="hidden" name="icon" x-bind:value="icon" value="">
+                        <input type="hidden" name="id" value="{{ $order->id }}">
+
+                        <x-admin.button
+                            element="button"
+                            tag="primary"
+                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 text-white transition-colors"
+                        >
+                            <div class="flex items-center gap-2">
+                                {{ __('Yes, Change Status') }}
+                            </div>
+                        </x-admin.button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-800/30 rounded-lg">
+                <div class="flex items-start gap-2">
+                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                        This action will update the order status and may trigger automated notifications to the customer.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </x-admin.modal>
+
 </x-admin-app-layout>

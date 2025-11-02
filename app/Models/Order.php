@@ -103,4 +103,21 @@ class Order extends Model
     {
         return $this->belongsTo('App\Models\PaymentMethodStatus', 'payment_status', 'slug');
     }
+
+    public function orderStatus()
+    {
+        return $this->belongsTo('App\Models\OrderStatus', 'status', 'slug');
+    }
+
+    public function statusHistories()
+    {
+        return $this->hasMany('App\Models\OrderStatusHistory', 'order_id', 'id')->orderBy('id', 'desc');
+    }
+
+    public function statusHistoriesFrontend()
+    {
+        return $this->hasMany('App\Models\OrderStatusHistory', 'order_id', 'id')
+            ->where('show_in_frontend', true)
+            ->orderBy('id', 'desc');
+    }
 }

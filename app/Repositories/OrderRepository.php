@@ -14,6 +14,7 @@ use App\Interfaces\PaymentMethodInterface;
 use App\Interfaces\OrderItemInterface;
 use App\Interfaces\CouponInterface;
 use App\Interfaces\CouponUsageInterface;
+use App\Interfaces\OrderStatusHistoryInterface;
 
 use App\Services\OrderNumberService;
 
@@ -28,6 +29,7 @@ class OrderRepository implements OrderInterface
     private OrderItemInterface $orderItemRepository;
     private CouponInterface $couponRepository;
     private CouponUsageInterface $couponUsageRepository;
+    private OrderStatusHistoryInterface $orderStatusHistoryRepository;
     protected OrderNumberService $orderNumberService;
 
     private array $orderStatus = [];
@@ -39,6 +41,7 @@ class OrderRepository implements OrderInterface
         OrderItemInterface $orderItemRepository,
         CouponInterface $couponRepository,
         CouponUsageInterface $couponUsageRepository,
+        OrderStatusHistoryInterface $orderStatusHistoryRepository,
         OrderNumberService $orderNumberService
     )
     {
@@ -48,6 +51,7 @@ class OrderRepository implements OrderInterface
         $this->orderItemRepository = $orderItemRepository;
         $this->couponRepository = $couponRepository;
         $this->couponUsageRepository = $couponUsageRepository;
+        $this->orderStatusHistoryRepository = $orderStatusHistoryRepository;
         $this->orderNumberService = $orderNumberService;
     }
 
@@ -227,6 +231,19 @@ class OrderRepository implements OrderInterface
                 ]);
             }
 
+            // Order Status History
+            $statusHistory = $this->orderStatusHistoryRepository->store([
+                'order_id' => $data->id,
+                'status' => 'pending',
+                'previous_status' => null,
+                'notes' => 'Order placed successfully',
+                'show_in_frontend' => true,
+                'actor_type' => 'customer',
+                'actor_id' => $array['user_id'],
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+
             DB::commit();
 
             return [
@@ -352,6 +369,57 @@ class OrderRepository implements OrderInterface
                 'code' => 500,
                 'status' => 'error',
                 'message' => 'An error occurred while updating data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function updateStatus(Array $array)
+    {
+        // dd('here', $array);
+
+        DB::beginTransaction();
+
+        try {
+            $data = $this->getById($array['id']);
+
+            if ($data['code'] == 200) {
+                // orders table
+                $data = $data['data'];
+                $data->status = $array['status'];
+                $data->save();
+
+                // Order Status History
+                $statusHistory = $this->orderStatusHistoryRepository->store([
+                    'order_id' => $array['id'],
+                    'status' => $array['status'],
+                    'previous_status' => $array['previous_status'],
+                    'notes' => $array['notes'] ?? null,
+                    'show_in_frontend' => true,
+                    'actor_type' => $array['actor_type'],
+                    'actor_id' => $array['actor_id'],
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+
+                DB::commit();
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Changes have been saved',
+                    'data' => $data,
+                ];
+            } else {
+                return $data;
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while updating status.',
                 'error' => $e->getMessage(),
             ];
         }

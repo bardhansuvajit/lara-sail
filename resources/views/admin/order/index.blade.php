@@ -264,7 +264,7 @@
                                 <p class="text-xs">{{ $item->id }}</p>
                             </th>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                <p class="text-[10px] font-bold">{{ $item->order_number }}</p>
+                                <a href="{{ route('admin.order.edit', $item->id) }}" class="text-[10px] font-bold underline hover:no-underline">{{ $item->order_number }}</a>
                             </td>
 
                             {{-- User --}}
@@ -344,7 +344,7 @@
                             {{-- Action --}}
                             <td scope="row" class="px-2 py-1 text-gray-600 dark:text-gray-400">
                                 <div class="flex space-x-2 items-center justify-end">
-                                    <p class="text-[10px]">{{ ucwords($item->status) }}</p>
+                                    <p class="text-[10px] {{ $item->orderStatus?->class }} px-1">{{ ucwords($item->status) }}</p>
                                     {{-- @livewire('toggle-status', [
                                         'model' => 'Order',
                                         'modelId' => $item->id,

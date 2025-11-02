@@ -98,6 +98,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/store', 'store')->name('store');
             Route::get('/edit/{id}', 'edit')->name('edit');
             Route::post('/update', 'update')->name('update');
+            Route::post('/update/status', 'updateStatus')->name('update.status');
             Route::delete('/delete/{id}', 'delete')->name('delete');
             Route::post('/bulk', 'bulk')->name('bulk');
             Route::post('/import', 'import')->name('import');
