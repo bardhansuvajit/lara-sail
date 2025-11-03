@@ -164,7 +164,8 @@ class OrderRepository implements OrderInterface
             $data->tax_details = $array['tax_details'];
 
             $data->payment_method_id = $array['payment_method_id'];
-            $data->payment_method_title = $array['payment_method_title'];
+            $data->payment_method = $array['payment_method'];
+            $data->payment_method_desc = $array['payment_method_desc'];
             $data->payment_method_charge = $array['payment_method_charge'];
             $data->payment_method_discount = $array['payment_method_discount'];
             $data->payment_status = $array['payment_status'];
@@ -398,6 +399,8 @@ class OrderRepository implements OrderInterface
                     'show_in_frontend' => true,
                     'actor_type' => $array['actor_type'],
                     'actor_id' => $array['actor_id'],
+                    'class' => $array['class'] ?? null,
+                    'icon' => $array['icon'] ?? null,
                     'ip_address' => request()->ip(),
                     'user_agent' => request()->userAgent(),
                 ]);

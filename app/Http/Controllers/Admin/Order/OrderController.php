@@ -8,22 +8,26 @@ use Illuminate\Validation\Rule;
 use App\Interfaces\OrderInterface;
 use App\Interfaces\ShippingMethodInterface;
 use App\Interfaces\OrderStatusInterface;
+use App\Interfaces\PaymentMethodStatusInterface;
 
 class OrderController
 {
     private OrderInterface $orderRepository;
     private ShippingMethodInterface $shippingMethodRepository;
     private OrderStatusInterface $orderStatusRepository;
+    private PaymentMethodStatusInterface $paymentMethodStatusRepository;
 
     public function __construct(
         OrderInterface $orderRepository, 
         ShippingMethodInterface $shippingMethodRepository, 
-        OrderStatusInterface $orderStatusRepository
+        OrderStatusInterface $orderStatusRepository, 
+        PaymentMethodStatusInterface $paymentMethodStatusRepository
     )
     {
         $this->orderRepository = $orderRepository;
         $this->shippingMethodRepository = $shippingMethodRepository;
         $this->orderStatusRepository = $orderStatusRepository;
+        $this->paymentMethodStatusRepository = $paymentMethodStatusRepository;
     }
 
     public function index(Request $request): View
@@ -100,10 +104,14 @@ class OrderController
     {
         $resp = $this->orderRepository->getById($id);
         $orderStatuses = $this->orderStatusRepository->list('', [], 'all', 'position', 'asc');
+        $paymentMethodStatuses = $this->paymentMethodStatusRepository->list('', [], 'all', 'position', 'asc');
+
+        // dd($resp['data']);
 
         return view('admin.order.edit', [
             'order' => $resp['data'],
             'orderStatuses' => $orderStatuses['data'] ?? [],
+            'paymentMethodStatuses' => $paymentMethodStatuses['data'] ?? [],
         ]);
     }
 
@@ -150,10 +158,11 @@ class OrderController
             'previous_status' => 'required|string|min:2|exists:order_statuses,slug',
             'notes' => 'required|string|min:2',
             'icon' => 'required|string',
+            'class' => 'required|string|min:2',
         ]);
 
         // $resp = $this->orderRepository->updateStatus($request->all());
-        $data = $request->only(['id', 'status', 'previous_status', 'notes', 'icon']) + [
+        $data = $request->only(['id', 'status', 'previous_status', 'notes', 'icon', 'class']) + [
             'actor_type' => 'admin',
             'actor_id' => auth()->guard('admin')->user()->id,
         ];

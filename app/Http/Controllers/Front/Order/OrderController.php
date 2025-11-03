@@ -159,7 +159,8 @@ class OrderController extends Controller
                 'tax_details' => $cart->tax_details,
 
                 'payment_method_id' => $validated['payment_method'],
-                'payment_method_title' => $cart->payment_method_title,
+                'payment_method' => $cart->paymentMethod->method,
+                'payment_method_desc' => $cart->payment_method_title,
                 'payment_method_charge' => $cart->payment_method_charge,
                 'payment_method_discount' => $cart->payment_method_discount,
                 'payment_status' => $paymentMethodStatus,
@@ -168,6 +169,8 @@ class OrderController extends Controller
 
                 'cart_meta' => json_encode($cart)
             ];
+
+            // dd($orderData);
 
             $orderResponse = $this->orderRepository->store($orderData);
 
@@ -250,18 +253,6 @@ class OrderController extends Controller
     public function detail(Request $request, $orderNumber)
     {
         $userId = auth()->guard('web')->user()->id;
-        // $orders = $this->orderRepository->exists([
-        //     'user_id' => $userId
-        // ]);
-        // $orders = $this->orderRepository->list('', [
-        //     'user_id' => $userId
-        // ], 15, 'id', 'desc');
-
-        // return view('front.account.order.index', [
-        //     'user' => auth()->guard('web')->user(),
-        //     'orders' => $orders['data']
-        // ]);
-
 
         $order = \App\Models\Order::with(['items', 'user', 'paymentMethod', 'shippingMethod'])
             ->where('order_number', $orderNumber)

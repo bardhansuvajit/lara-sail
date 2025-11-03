@@ -43,6 +43,11 @@ class Cart extends Model
         return $this->belongsTo('App\Models\ShippingMethod', 'shipping_method_id', 'id');
     }
 
+    public function paymentMethod()
+    {
+        return $this->belongsTo('App\Models\PaymentMethod', 'payment_method_id', 'id');
+    }
+
     // mark abandon
     public function shouldBeMarkedAbandoned()
     {

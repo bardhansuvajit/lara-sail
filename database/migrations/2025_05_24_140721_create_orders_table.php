@@ -58,7 +58,8 @@ return new class extends Migration
 
             // Payment information
             $table->integer('payment_method_id')->nullable();
-            $table->string('payment_method_title', 20)->nullable();
+            $table->string('payment_method', 15)->nullable();
+            $table->string('payment_method_desc', 20)->nullable();
             $table->decimal('payment_method_charge', 12, 2)->default(0);
             $table->decimal('payment_method_discount', 12, 2)->default(0);
             $table->string('payment_status')->default('pending');

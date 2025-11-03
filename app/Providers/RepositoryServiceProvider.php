@@ -54,6 +54,7 @@ use App\Interfaces\PaymentGatewayInterface;
 use App\Interfaces\OrderShippingTrackingInterface;
 use App\Interfaces\OrderStatusHistoryInterface;
 use App\Interfaces\OrderStatusInterface;
+use App\Interfaces\PaymentMethodStatusInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -105,6 +106,7 @@ use App\Repositories\PaymentGatewayRepository;
 use App\Repositories\OrderShippingTrackingRepository;
 use App\Repositories\OrderStatusHistoryRepository;
 use App\Repositories\OrderStatusRepository;
+use App\Repositories\PaymentMethodStatusRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -164,6 +166,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(OrderShippingTrackingInterface::class, OrderShippingTrackingRepository::class);
         $this->app->bind(OrderStatusHistoryInterface::class, OrderStatusHistoryRepository::class);
         $this->app->bind(OrderStatusInterface::class, OrderStatusRepository::class);
+        $this->app->bind(PaymentMethodStatusInterface::class, PaymentMethodStatusRepository::class);
     }
 
     /**

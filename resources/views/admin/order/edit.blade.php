@@ -27,16 +27,21 @@
                 $defaultClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
 
                 $paymentStatusClass = $paymentClasses[$order->payment_status] ?? $defaultClass;
+
+                // Order Status
+                $orderStat = $order->orderStatus;
             @endphp
 
             <div class="flex flex-wrap gap-3">
-                <span class="px-3 py-1 rounded-full text-xs font-medium {{ $order->orderStatus->class }}">
-                    Order status: {{ ucfirst($order->status) }}
-                </span>
+                <div class="px-3 py-1 rounded-full text-xs font-medium {{ $orderStat->class }} flex items-center space-x-1">
+                    <p>Order status:</p>
+                    <div class="w-3 h-3">{!! $orderStat?->icon !!}</div>
+                    <p>{{ ucfirst($orderStat->title) }}</p>
+                </div>
 
-                <span class="px-3 py-1 rounded-full text-xs font-medium {{ $paymentStatusClass }}">
-                    Payment: {{ ucfirst($order->payment_status) }}
-                </span>
+                <div class="px-3 py-1 rounded-full text-xs font-medium {{ $paymentStatusClass }}">
+                    Payment status: {{ ucfirst($order->payment_status) }}
+                </div>
             </div>
         </div>
 
@@ -73,7 +78,7 @@
                                         <div class="flex justify-between">
                                             <div class="flex-1">
                                                 <a href="{{ route('admin.product.listing.edit', $item->id) }}" target="_blank" 
-                                                class="text-xs font-medium text-gray-900 dark:text-white underline hover:no-underline hover:text-primary-600 dark:hover:text-primary-400 line-clamp-2">
+                                                class="text-xs font-medium text-gray-900 dark:text-white underline hover:no-underline hover:text-primary-600 dark:hover:text-primary-400 line-clamp-2 inline-block">
                                                     {{ $item->product_title }}
                                                 </a>
                                                 @if (!empty($item->variation_attributes))
@@ -117,11 +122,12 @@
 
                                     <div class="">
                                         @foreach ($statuses as $os)
-                                            <button class="{{ $os->class }} mb-1 w-full text-[10px] flex items-center gap-2 rounded border-2 px-0.5
-                                                {{ ($order->status == $os->slug) ? 'border-gray-900 dark:border-gray-50 font-bold' : 'border-transparent' }}"
+                                            <button
+                                                class="{{ $os->class }} mb-1 w-full text-[11px] flex items-center justify-start gap-2 rounded border-2 px-2 py-1 transition-all duration-150
+                                                    {{ ($order->status == $os->slug) ? 'border-gray-900 dark:border-gray-50 font-semibold shadow-sm' : 'border-transparent hover:border-gray-400/40' }}"
                                                 x-data=""
                                                 x-on:click.prevent="
-                                                    $dispatch('open-modal', 'confirm-status-update'); 
+                                                    $dispatch('open-modal', 'confirm-status-update');
                                                     $dispatch('data-cstat', '{{ $order->status }}');
                                                     $dispatch('data-slug', '{{ $os->slug }}');
                                                     $dispatch('data-title', '{{ $os->title }}');
@@ -129,9 +135,63 @@
                                                     $dispatch('data-description', '{{ $os->description }}');
                                                     $dispatch('data-icon', '{{ $os->icon }}');
                                                 "
-                                            >
-                                                <div class="w-3 h-3">{!! $os->icon !!}</div>
-                                                {{ '#'.$os->position.' '.$os->title }}
+                                                >
+                                                <div class="flex-shrink-0 w-4 h-4 flex items-center justify-center">
+                                                    {!! $os->icon !!}
+                                                </div>
+
+                                                <p class="flex-1 text-left leading-tight" title="{{ $os->title }}">
+                                                    #{{ $os->position }} {{ $os->title }}
+                                                </p>
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Status -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="p-2 border-b border-gray-200 dark:border-gray-600">
+                        <h2 class="text-sm font-semibold text-primary-500 dark:text-primary-300">Payment Status</h2>
+                    </div>
+                    <div class="p-2">
+                        <div class="grid grid-cols-8 gap-2">
+                            @php
+                                $groupedStatuses = $paymentMethodStatuses->groupBy('category');
+                            @endphp
+
+                            @foreach ($groupedStatuses as $category => $statuses)
+                                <div class="grid-col-2">
+                                    <div class="text-[10px] w-full font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                        {{ ucfirst($category) }}
+                                    </div>
+
+                                    <div class="">
+                                        @foreach ($statuses as $os)
+                                            <button
+                                                class="{{ $os->class }} mb-1 w-full text-[11px] flex items-center justify-start gap-2 rounded border-2 px-2 py-1 transition-all duration-150
+                                                    {{ ($order->status == $os->slug) ? 'border-gray-900 dark:border-gray-50 font-semibold shadow-sm' : 'border-transparent hover:border-gray-400/40' }}"
+                                                x-data=""
+                                                x-on:click.prevent="
+                                                    $dispatch('open-modal', 'confirm-status-update');
+                                                    $dispatch('data-cstat', '{{ $order->status }}');
+                                                    $dispatch('data-slug', '{{ $os->slug }}');
+                                                    $dispatch('data-title', '{{ $os->title }}');
+                                                    $dispatch('data-class', '{{ $os->class }}');
+                                                    $dispatch('data-description', '{{ $os->description }}');
+                                                    $dispatch('data-icon', '{{ $os->icon }}');
+                                                "
+                                                >
+                                                <div class="flex-shrink-0 w-4 h-4 flex items-center justify-center">
+                                                    {!! $os->icon !!}
+                                                </div>
+
+                                                <p class="flex-1 text-left leading-tight" title="{{ $os->title }}">
+                                                    #{{ $os->position }} {{ $os->title }}
+                                                </p>
                                             </button>
                                         @endforeach
                                     </div>
@@ -148,6 +208,26 @@
                     </div>
                     <div class="p-2">
                         <div class="space-y-4">
+                            @foreach ($order->statusHistories as $statHist)
+                                <div class="flex items-center text-gray-600 dark:text-gray-400">
+                                    <div class="w-5 h-5 rounded-full flex items-center justify-center mr-3
+                                        @if ($statHist->class) {{ $statHist->class }} @else bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 @endif 
+                                        ">
+                                        @if ($statHist->icon)
+                                            {!! $statHist->icon !!}
+                                        @else
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-medium">{{ $statHist->notes }}</p>
+                                        <p class="text-xs">{{ $statHist->created_at->diffForHumans().' - '.( $statHist->created_at->format('M j, Y g:i A') ) }}</p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        {{-- <div class="space-y-4">
                             <div class="flex items-center text-green-600 dark:text-green-400">
                                 <div class="w-5 h-5 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
@@ -214,7 +294,7 @@
                                 </div>
                             </div>
                             @endif
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -381,9 +461,15 @@
                             </p>
                             <div class="flex items-center gap-2">
                                 <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z"/></svg>
-                                <a href="mailto:{{ $order->email }}" class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline">
-                                    {{ $order->email }}
-                                </a>
+                                @if (!empty($order->email))
+                                    <a href="mailto:{{ $order->email }}" class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline">
+                                        {{ $order->email }}
+                                    </a>
+                                @else
+                                    <p class="text-xs text-red-700 dark:text-red-500">
+                                        NA
+                                    </p>
+                                @endif
                             </div>
                             <div class="flex items-center gap-2">
                                 <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
@@ -567,7 +653,6 @@
                 icon: '', 
                 statusClass: '', 
                 description: '', 
-                icon: ''
             }" 
             x-on:data-cstat.window="cstat = $event.detail"
             x-on:data-slug.window="slug = $event.detail"
@@ -575,7 +660,6 @@
             x-on:data-icon.window="icon = $event.detail"
             x-on:data-class.window="statusClass = $event.detail"
             x-on:data-description.window="description = $event.detail"
-            x-on:data-icon.window="icon = $event.detail"
             >
             <!-- Header Section -->
             <div class="flex items-center gap-3 mb-4">
@@ -632,6 +716,7 @@
                         <input type="hidden" name="previous_status" x-bind:value="cstat" value="">
                         <input type="hidden" name="notes" x-bind:value="description" value="">
                         <input type="hidden" name="icon" x-bind:value="icon" value="">
+                        <input type="hidden" name="class" x-bind:value="statusClass" value="">
                         <input type="hidden" name="id" value="{{ $order->id }}">
 
                         <x-admin.button

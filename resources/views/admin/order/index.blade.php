@@ -283,13 +283,13 @@
                                 @if ($item->payment_status == "payment_captured")
                                     <p class="text-[10px] text-green-700 dark:text-green-400">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
                                     <a href="https://dashboard.razorpay.com/app/payments/{{$item->transaction_id}}?init_page=Payments" target="_blank" class="text-[10px] text-green-700 dark:text-green-400 underline hover:no-underline flex">
-                                        {{ strtoupper($item->paymentMethod->method).' '.$item->payment_status }}
+                                        {{ strtoupper($item->payment_method).' '.$item->payment_status }}
 
                                         <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z"/></svg>
                                     </a>
                                 @else
                                     <p class="text-[10px] text-red-500">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
-                                    <p class="text-[10px] text-red-500">{{ strtoupper($item->paymentMethod->method).' '.$item->payment_status }}</p>
+                                    <p class="text-[10px] text-red-500">{{ strtoupper($item->payment_method).' '.$item->payment_status }}</p>
                                 @endif
                             </td>
 
@@ -344,11 +344,15 @@
                             {{-- Action --}}
                             <td scope="row" class="px-2 py-1 text-gray-600 dark:text-gray-400">
                                 <div class="flex space-x-2 items-center justify-end">
-                                    <p class="text-[10px] {{ $item->orderStatus?->class }} px-1">{{ ucwords($item->status) }}</p>
-                                    {{-- @livewire('toggle-status', [
-                                        'model' => 'Order',
-                                        'modelId' => $item->id,
-                                    ]) --}}
+                                    <div class="w-16">
+                                        @php
+                                            $orderStat = $item->orderStatus;
+                                        @endphp
+                                        <div class="text-[10px] {{ $orderStat?->class }} px-1 flex items-center space-x-1">
+                                            <div class="w-3 h-3">{!! $orderStat?->icon !!}</div>
+                                            <p>{{ ucwords($orderStat->title) }}</p>
+                                        </div>
+                                    </div>
 
                                     <x-admin.button-icon
                                         element="a"
@@ -381,7 +385,7 @@
                                             $dispatch('data-tax_amount', '{{ $item->tax_amount }}');
                                             $dispatch('data-tax_type', '{{ $item->tax_type }}');
                                             $dispatch('data-tax_details', `{!! nl2br(e($item->tax_details)) !!}`);
-                                            $dispatch('data-payment_method', '{{ $item->payment_method_title }}');
+                                            $dispatch('data-payment_method', '{{ $item->payment_method_desc }}');
                                             $dispatch('data-payment_charge', '{{ $item->payment_method_charge }}');
                                             $dispatch('data-payment_discount', '{{ $item->payment_method_discount }}');
                                             $dispatch('data-payment_status', '{{ $item->payment_status }}');
