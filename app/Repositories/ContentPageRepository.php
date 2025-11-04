@@ -21,7 +21,7 @@ class ContentPageRepository implements ContentPageInterface
         $this->trashRepository = $trashRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -79,7 +79,7 @@ class ContentPageRepository implements ContentPageInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array['image']);
         try {
@@ -110,7 +110,7 @@ class ContentPageRepository implements ContentPageInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = ContentPage::find($id);
@@ -170,7 +170,7 @@ class ContentPageRepository implements ContentPageInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);
@@ -209,7 +209,7 @@ class ContentPageRepository implements ContentPageInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -247,7 +247,7 @@ class ContentPageRepository implements ContentPageInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = ContentPage::whereIn('id', $array['ids'])->get();
@@ -292,7 +292,7 @@ class ContentPageRepository implements ContentPageInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
@@ -344,7 +344,7 @@ class ContentPageRepository implements ContentPageInterface
         }
     }
 
-    public function position(Array $ids)
+    public function position(array $ids)
     {
         try {
             foreach ($ids as $index => $id) {

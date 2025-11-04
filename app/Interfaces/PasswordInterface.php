@@ -4,5 +4,5 @@ namespace App\Interfaces;
 
 interface PasswordInterface
 {
-    public function update(Array $array);
+    public function update(array $array);
 }

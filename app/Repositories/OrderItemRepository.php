@@ -21,7 +21,7 @@ class OrderItemRepository implements OrderItemInterface
         $this->trashRepository = $trashRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -79,7 +79,7 @@ class OrderItemRepository implements OrderItemInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array['image']);
         try {
@@ -130,7 +130,7 @@ class OrderItemRepository implements OrderItemInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = OrderItem::with('order')
@@ -161,7 +161,7 @@ class OrderItemRepository implements OrderItemInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);
@@ -209,7 +209,7 @@ class OrderItemRepository implements OrderItemInterface
         }
     }
 
-    public function qtyUpdate(Array $array)
+    public function qtyUpdate(array $array)
     {
         try {
             if (!isset($array['id']) || !isset($array['type'])) {
@@ -278,7 +278,7 @@ class OrderItemRepository implements OrderItemInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -323,7 +323,7 @@ class OrderItemRepository implements OrderItemInterface
         }
     }
 
-    public function saveForLater(Int $id)
+    public function saveForLater(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -358,7 +358,7 @@ class OrderItemRepository implements OrderItemInterface
         }
     }
 
-    public function moveToCart(Int $id)
+    public function moveToCart(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -392,7 +392,7 @@ class OrderItemRepository implements OrderItemInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = OrderItem::whereIn('id', $array['ids'])->get();
@@ -485,7 +485,7 @@ class OrderItemRepository implements OrderItemInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
@@ -537,7 +537,7 @@ class OrderItemRepository implements OrderItemInterface
         }
     }
 
-    public function position(Array $ids)
+    public function position(array $ids)
     {
         try {
             foreach ($ids as $index => $id) {

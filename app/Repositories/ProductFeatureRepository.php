@@ -16,7 +16,7 @@ class ProductFeatureRepository implements ProductFeatureInterface
         $this->trashRepository = $trashRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -140,7 +140,7 @@ class ProductFeatureRepository implements ProductFeatureInterface
         // return ['data' => $results];
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = ProductFeature::find($id);
@@ -170,7 +170,7 @@ class ProductFeatureRepository implements ProductFeatureInterface
         }
     }
 
-    public function getByProductId(Int $productId)
+    public function getByProductId(int $productId)
     {
         try {
             $data = ProductFeature::where('product_id', $productId)->first();
@@ -201,7 +201,7 @@ class ProductFeatureRepository implements ProductFeatureInterface
     }
 
     
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array);
 
@@ -240,7 +240,7 @@ class ProductFeatureRepository implements ProductFeatureInterface
         }
     }
 
-    public function update(Int $id, Array $array)
+    public function update(int $id, array $array)
     {
         // dd($id, $array);
 
@@ -270,7 +270,7 @@ class ProductFeatureRepository implements ProductFeatureInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -310,7 +310,7 @@ class ProductFeatureRepository implements ProductFeatureInterface
         }
     }
 
-    public function position(Array $ids)
+    public function position(array $ids)
     {
         try {
             foreach ($ids as $index => $id) {

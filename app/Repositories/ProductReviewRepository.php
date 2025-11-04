@@ -26,7 +26,7 @@ class ProductReviewRepository implements ProductReviewInterface
         $this->productReviewImageRepository = $productReviewImageRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -84,7 +84,7 @@ class ProductReviewRepository implements ProductReviewInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array['image']);
 
@@ -145,7 +145,7 @@ class ProductReviewRepository implements ProductReviewInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = ProductReview::find($id);
@@ -175,7 +175,7 @@ class ProductReviewRepository implements ProductReviewInterface
         }
     }
 
-    public function conditions(Array $array)
+    public function conditions(array $array)
     {
         try {
             $data = ProductReview::where($array)->get();
@@ -205,7 +205,7 @@ class ProductReviewRepository implements ProductReviewInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         // dd($array);
         try {
@@ -269,7 +269,7 @@ class ProductReviewRepository implements ProductReviewInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -307,7 +307,7 @@ class ProductReviewRepository implements ProductReviewInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = ProductReview::whereIn('id', $array['ids'])->get();
@@ -491,7 +491,7 @@ class ProductReviewRepository implements ProductReviewInterface
     }
     */
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
@@ -543,7 +543,7 @@ class ProductReviewRepository implements ProductReviewInterface
         }
     }
 
-    public function activeFDReviewsByProductId(Int $productId, Int $count)
+    public function activeFDReviewsByProductId(int $productId, int $count)
     {
         try {
             $data = ProductReview::with(['user', 'images'])
@@ -577,7 +577,7 @@ class ProductReviewRepository implements ProductReviewInterface
         }
     }
 
-    public function allActivePaginatedReviewsByProductId(Int $productId)
+    public function allActivePaginatedReviewsByProductId(int $productId)
     {
         try {
             $data = ProductReview::with(['user', 'images'])

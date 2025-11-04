@@ -10,10 +10,10 @@ use App\Interfaces\CartItemInterface;
 
 class ToggleStatusProduct extends Component
 {
-    public Int $productId;
-    public Int $currentStatus;
+    public int $productId;
+    public int $currentStatus;
     public Collection $allStatus;
-    public Int $selectedStatusId;
+    public int $selectedStatusId;
     private ProductStatusInterface $productStatusRepository;
     private ProductListingInterface $productListingRepository;
     private CartItemInterface $cartItemRepository;

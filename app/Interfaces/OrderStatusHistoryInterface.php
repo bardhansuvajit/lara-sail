@@ -8,4 +8,6 @@ interface OrderStatusHistoryInterface
     public function store(array $array);
     public function getByOrderId(int $orderId);
     public function exists(array $conditions);
+    public function updateFrontendStat(int $id);
+    public function position(array $ids);
 }

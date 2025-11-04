@@ -24,7 +24,7 @@ class ProductStatusRepository implements ProductStatusInterface
         $this->trashRepository = $trashRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -90,7 +90,7 @@ class ProductStatusRepository implements ProductStatusInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array['image']);
         DB::beginTransaction();
@@ -129,7 +129,7 @@ class ProductStatusRepository implements ProductStatusInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = ProductStatus::with('user', 'product')->find($id);
@@ -159,7 +159,7 @@ class ProductStatusRepository implements ProductStatusInterface
         }
     }
 
-    public function exists(Array $conditions)
+    public function exists(array $conditions)
     {
         try {
             $data = ProductStatus::with('user', 'product')->where($conditions)->get();
@@ -189,7 +189,7 @@ class ProductStatusRepository implements ProductStatusInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);
@@ -238,7 +238,7 @@ class ProductStatusRepository implements ProductStatusInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -276,7 +276,7 @@ class ProductStatusRepository implements ProductStatusInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = ProductStatus::whereIn('id', $array['ids'])->get();
@@ -369,7 +369,7 @@ class ProductStatusRepository implements ProductStatusInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);

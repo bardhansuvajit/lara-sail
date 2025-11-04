@@ -62,7 +62,7 @@ class ContentPageController
         return redirect()->route('admin.website.content.page.index')->with($resp['status'], $resp['message']);
     }
 
-    public function edit(Int $id): View
+    public function edit(int $id): View
     {
         $resp = $this->contentPageRepository->getById($id);
         return view('admin.content.page.edit', [
@@ -88,7 +88,7 @@ class ContentPageController
         // return redirect()->route('admin.website.content.page.index')->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->contentPageRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

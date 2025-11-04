@@ -62,7 +62,7 @@ class ProductImageController
         return redirect()->route('admin.product.Image.index')->with($resp['status'], $resp['message']);
     }
 
-    public function edit(Int $id): View|RedirectResponse
+    public function edit(int $id): View|RedirectResponse
     {
         $resp = $this->productImageRepository->getById($id);
         // dd($resp);
@@ -90,7 +90,7 @@ class ProductImageController
         return redirect()->route('admin.product.Image.index')->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->productImageRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

@@ -15,46 +15,6 @@
 
 @section('content')
 <div class="space-y-2 md:space-y-4">
-    <!-- Header -->
-    {{-- <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-        <div class="flex items-start gap-4">
-            <div>
-                <a href="{{ route('front.order.index') }}" class="inline-flex items-center justify-center p-1 md:p-2 border border-gray-300 dark:border-gray-600 {{ FD['rounded'] }} {{ FD['text'] }} font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                    <svg class="{{ FD['iconClass-1'] }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-240 120-480l240-240 56 56-144 144h568v80H272l144 144-56 56Z"/></svg>
-                </a>
-            </div>
-            <div>
-                <h1 class="{{ FD['text-1'] }} font-bold text-gray-900 dark:text-white">Order Details</h1>
-                <p class="{{ FD['text'] }} text-gray-600 dark:text-gray-400 mt-1">Order #{{ $order->order_number }}</p>
-            </div>
-        </div>
-        <div class="flex flex-row gap-3">
-            <x-front.button
-                element="a"
-                size="md"
-                tag="secondary"
-                :href="route('front.order.invoice', $order->order_number)"
-                >
-                @slot('icon')
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                @endslot
-                {{ __('View Invoice') }}
-            </x-front.button>
-
-            <x-front.button
-                element="a"
-                size="md"
-                tag="success"
-                :href="route('front.order.download-invoice', $order->order_number)"
-                >
-                @slot('icon')
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                @endslot
-                {{ __('Download PDF') }}
-            </x-front.button>
-        </div>
-    </div> --}}
-
     <!-- Order Status Card -->
     <div class="bg-white dark:bg-gray-800 {{ FD['rounded'] }} shadow-sm border border-gray-200 dark:border-gray-700 p-2 md:p-4">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -211,7 +171,50 @@
                 </div>
                 <div class="p-2 md:p-4">
                     <div class="space-y-8">
-                        <!-- Order Placed -->
+                        
+                        @foreach ($order->statusHistoriesFrontend as $stat)
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0">
+                                    @if ($stat->icon)
+                                        <div class="w-10 h-10 rounded-full {{ $stat->class }} flex items-center justify-center">
+                                            {!! $stat->icon !!}
+                                        </div>
+                                    @else
+                                        <div class="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center">
+                                            <svg class="{{ FD['iconClass-1'] }} text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="flex-1">
+                                    <p class="{{ FD['text-1'] }} font-medium text-gray-900 dark:text-white">{{ $stat->title }}</p>
+                                    <p class="{{ FD['text'] }} text-gray-600 dark:text-gray-400">{{ $stat->created_at->format('M d, Y \a\t h:i A') }}</p>
+                                    <p class="{{ FD['text'] }} text-gray-500 dark:text-gray-500 mt-1">{{ $stat->notes }}</p>
+                                </div>
+                            </div>
+
+                            {{-- <div class="hover:bg-gray-200 dark:hover:bg-gray-800 px-4 py-1">
+                                <div class="flex justify-between items-center w-100">
+                                    <div class="flex items-center text-gray-600 dark:text-gray-400">
+                                        <div class="w-6 h-6 rounded-full flex items-center justify-center mr-3
+                                            @if ($stat->class) {{ $stat->class }} @else bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 @endif 
+                                            ">
+                                            @if ($stat->icon)
+                                                {!! $stat->icon !!}
+                                            @else
+                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                            @endif
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ $stat->title }}</p>
+                                            <p class="text-xs font-medium">{{ $stat->notes }}</p>
+                                            <p class="text-xs">{{ $stat->created_at->diffForHumans().' - '.( $stat->created_at->format('M j, Y g:i A') ) }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> --}}
+                        @endforeach
+
+                        {{-- <!-- Order Placed -->
                         <div class="flex gap-4">
                             <div class="flex-shrink-0">
                                 <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center">
@@ -340,7 +343,7 @@
                                 </p>
                                 @endif
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

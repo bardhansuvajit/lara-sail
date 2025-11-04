@@ -5,7 +5,7 @@ use Illuminate\Http\UploadedFile;
 
 interface ProfileInterface
 {
-    public function getById(String $guard, Int $id);
-    public function update(Array $array);
-    public function updateOptional(Array $array);
+    public function getById(String $guard, int $id);
+    public function update(array $array);
+    public function updateOptional(array $array);
 }

@@ -103,7 +103,7 @@ class OrderShippingTrackingRepository implements OrderShippingTrackingInterface
         }
     }
 
-    public function getByOrderId(Int $orderId)
+    public function getByOrderId(int $orderId)
     {
         try {
             $data = OrderShippingTracking::find($orderId);

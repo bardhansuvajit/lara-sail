@@ -14,12 +14,12 @@ use Livewire\Attributes\On;
 class Cart extends Component
 {
     public String $page;
-    // public Int $cartTotals;
+    // public int $cartTotals;
     public Collection $cart;
     public Collection $savedItems;
     public Collection $shippingMethods;
     public Collection $cartSetting;
-    public ?Int $selectedShippingMethod;
+    public ?int $selectedShippingMethod;
     private CartInterface $cartRepository;
     private CartItemInterface $cartItemRepository;
     private CartSettingInterface $cartSettingRepository;

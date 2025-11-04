@@ -21,7 +21,7 @@ class ProductFaqRepository implements ProductFaqInterface
         $this->trashRepository = $trashRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -79,7 +79,7 @@ class ProductFaqRepository implements ProductFaqInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array);
 
@@ -264,7 +264,7 @@ class ProductFaqRepository implements ProductFaqInterface
             ->find($variationIds->first());
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = ProductFaq::where('id', $id)
@@ -296,7 +296,7 @@ class ProductFaqRepository implements ProductFaqInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         DB::beginTransaction();
 
@@ -404,7 +404,7 @@ class ProductFaqRepository implements ProductFaqInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -442,7 +442,7 @@ class ProductFaqRepository implements ProductFaqInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = ProductFaq::whereIn('id', $array['ids'])->get();
@@ -546,7 +546,7 @@ class ProductFaqRepository implements ProductFaqInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
@@ -598,7 +598,7 @@ class ProductFaqRepository implements ProductFaqInterface
         }
     }
 
-    public function position(Array $ids)
+    public function position(array $ids)
     {
         try {
             // dd($ids);

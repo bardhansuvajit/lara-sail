@@ -21,7 +21,7 @@ class AdSectionRepository implements AdSectionInterface
         $this->trashRepository = $trashRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -169,7 +169,7 @@ class AdSectionRepository implements AdSectionInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array['image']);
         try {
@@ -203,7 +203,7 @@ class AdSectionRepository implements AdSectionInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = AdSection::find($id);
@@ -233,7 +233,7 @@ class AdSectionRepository implements AdSectionInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);
@@ -265,7 +265,7 @@ class AdSectionRepository implements AdSectionInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -303,7 +303,7 @@ class AdSectionRepository implements AdSectionInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = AdSection::whereIn('id', $array['ids'])->get();
@@ -396,7 +396,7 @@ class AdSectionRepository implements AdSectionInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
@@ -448,7 +448,7 @@ class AdSectionRepository implements AdSectionInterface
         }
     }
 
-    public function position(Array $ids)
+    public function position(array $ids)
     {
         try {
             foreach ($ids as $index => $id) {

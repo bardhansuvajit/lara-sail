@@ -21,7 +21,7 @@ class ProductReviewImageRepository implements ProductReviewImageInterface
         $this->trashRepository = $trashRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -79,7 +79,7 @@ class ProductReviewImageRepository implements ProductReviewImageInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array);
         DB::beginTransaction();
@@ -114,7 +114,7 @@ class ProductReviewImageRepository implements ProductReviewImageInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = ProductReviewImage::find($id);
@@ -144,7 +144,7 @@ class ProductReviewImageRepository implements ProductReviewImageInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);
@@ -197,7 +197,7 @@ class ProductReviewImageRepository implements ProductReviewImageInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -235,7 +235,7 @@ class ProductReviewImageRepository implements ProductReviewImageInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = Product::whereIn('id', $array['ids'])->get();
@@ -304,7 +304,7 @@ class ProductReviewImageRepository implements ProductReviewImageInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
@@ -356,7 +356,7 @@ class ProductReviewImageRepository implements ProductReviewImageInterface
         }
     }
 
-    public function position(Array $ids)
+    public function position(array $ids)
     {
         try {
             foreach ($ids as $index => $id) {

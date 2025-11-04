@@ -53,7 +53,7 @@ class AdvertisementController
         return redirect()->route('admin.website.ad.section.index')->with($resp['status'], $resp['message']);
     }
 
-    public function edit(Int $id): View
+    public function edit(int $id): View
     {
         $resp = $this->adSectionRepository->getById($id);
         return view('admin.advertisement.section.edit', [
@@ -77,7 +77,7 @@ class AdvertisementController
         return redirect()->route('admin.website.ad.section.index')->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->adSectionRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

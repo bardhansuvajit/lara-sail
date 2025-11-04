@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface WishlistInterface
 {
-    public function list(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder);
-    public function store(Array $array);
-    public function getById(Int $id);
-    public function checkStatus(Array $productIds, Int $userId);
-    public function exists(Array $conditions);
-    public function update(Array $array);
-    public function delete(Int $id);
-    public function bulkAction(Array $array);
+    public function list(?String $keyword, array $filters = [], String $perPage, String $sortBy, String $sortOrder);
+    public function store(array $array);
+    public function getById(int $id);
+    public function checkStatus(array $productIds, int $userId);
+    public function exists(array $conditions);
+    public function update(array $array);
+    public function delete(int $id);
+    public function bulkAction(array $array);
     public function import(UploadedFile $file);
-    public function export(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder, String $type);
+    public function export(?String $keyword, array $filters = [], String $perPage, String $sortBy, String $sortOrder, String $type);
 }

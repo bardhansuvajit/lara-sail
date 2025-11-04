@@ -104,7 +104,7 @@ class ProductReviewController
         return redirect()->route('admin.product.review.index')->with($resp['status'], $resp['message']);
     }
 
-    public function edit(Int $id): View|RedirectResponse
+    public function edit(int $id): View|RedirectResponse
     {
         $resp = $this->productReviewRepository->getById($id);
         // dd($resp);
@@ -170,7 +170,7 @@ class ProductReviewController
         return redirect()->route('admin.product.review.index')->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->productReviewRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

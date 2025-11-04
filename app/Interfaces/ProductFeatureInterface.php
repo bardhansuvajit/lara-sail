@@ -5,13 +5,13 @@ namespace App\Interfaces;
 
 interface ProductFeatureInterface
 {
-    public function list(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder);
+    public function list(?String $keyword, array $filters = [], String $perPage, String $sortBy, String $sortOrder);
     public function listAllFeatured();
     public function listFeaturedOnly(string $type);
-    public function getById(Int $id);
-    public function getByProductId(Int $productId);
-    public function store(Array $array);
-    public function update(Int $id, Array $array);
-    public function delete(Int $id);
-    public function position(Array $ids);
+    public function getById(int $id);
+    public function getByProductId(int $productId);
+    public function store(array $array);
+    public function update(int $id, array $array);
+    public function delete(int $id);
+    public function position(array $ids);
 }

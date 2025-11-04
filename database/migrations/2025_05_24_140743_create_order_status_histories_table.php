@@ -21,8 +21,8 @@ return new class extends Migration
             // Status information
             $table->string('status'); // e.g., 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'
             $table->string('previous_status')->nullable(); // Track previous status for better auditing
+            $table->text('title')->nullable();
             $table->text('notes')->nullable();
-            $table->boolean('show_in_frontend')->default(false);
 
             // Additional status metadata
             $table->json('metadata')->nullable(); // For storing additional data like tracking numbers, reasons, etc.
@@ -39,6 +39,8 @@ return new class extends Migration
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
 
+            $table->boolean('show_in_frontend')->default(false);
+            $table->unsignedSmallInteger('position')->default(1);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));

@@ -9,7 +9,7 @@ use App\Interfaces\CartInterface;
 
 class CheckoutPaymentMethod extends Component
 {
-    public Int $shippingAddrExistCount;
+    public int $shippingAddrExistCount;
     public ?string $selectedMethod = null;
     public Collection $paymentMethods;
     private PaymentMethodInterface $paymentMethodRepository;

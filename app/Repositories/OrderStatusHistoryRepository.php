@@ -74,6 +74,7 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryInterface
             $data->order_id = $array['order_id'];
             $data->status = $array['status'];
             $data->previous_status = $array['previous_status'] ?? null;
+            $data->title = $array['title'] ?? null;
             $data->notes = $array['notes'] ?? null;
             $data->show_in_frontend = $array['show_in_frontend'] ?? false;
             $data->metadata = $array['metadata'] ?? null;
@@ -83,6 +84,13 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryInterface
             $data->icon = $array['icon'];
             $data->ip_address = $array['ip_address'] ?? request()->ip();
             $data->user_agent = $array['user_agent'] ?? request()->userAgent();
+
+            // get max position for given attribute_id and type
+            $lastPosition = OrderStatusHistory::where('order_id', $array['order_id'])
+                ->max('position');
+            $position = $lastPosition ? $lastPosition + 1 : 1;
+            $data->position = $position;
+
             $data->save();
 
             DB::commit();
@@ -106,7 +114,7 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryInterface
         }
     }
 
-    public function getByOrderId(Int $orderId)
+    public function getByOrderId(int $orderId)
     {
         try {
             $data = OrderStatusHistory::find($orderId);
@@ -161,6 +169,75 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryInterface
                 'code' => 500,
                 'status' => 'error',
                 'message' => 'An error occurred while fetching data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function updateFrontendStat(int $id)
+    {
+        try {
+            $data = OrderStatusHistory::find($id);
+
+            if (!empty($data)) {
+                $newStat = ($data->show_in_frontend == false) ? true : false;
+                // dd($data->show_in_frontend, $newStat);
+                $data->show_in_frontend = $newStat;
+                $data->save();
+
+                return [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data found',
+                    'data' => $data,
+                ];
+            } else {
+                return [
+                    'code' => 404,
+                    'status' => 'failure',
+                    'message' => 'No data found',
+                    'data' => [],
+                ];
+            }
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Position updated'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while positioning data.',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function position(array $ids)
+    {
+        try {
+            // dd($ids);
+
+            foreach ($ids as $index => $id) {
+                $resp = OrderStatusHistory::where('id', $id)->update([
+                    'position' => $index + 1
+                ]);
+
+                // dd($resp);
+            }
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Position updated'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'status' => 'error',
+                'message' => 'An error occurred while positioning data.',
                 'error' => $e->getMessage(),
             ];
         }

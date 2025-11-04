@@ -18,7 +18,7 @@ class ProfileRepository implements ProfileInterface
         $this->countryRepository = $countryRepository;
     }
 
-    public function getById(String $guard, Int $id)
+    public function getById(String $guard, int $id)
     {
         try {
             if ($guard == 'admin') {
@@ -52,7 +52,7 @@ class ProfileRepository implements ProfileInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             // dd($array);
@@ -125,7 +125,7 @@ class ProfileRepository implements ProfileInterface
         }
     }
 
-    public function updateOptional(Array $array)
+    public function updateOptional(array $array)
     {
         try {
             // dd($array);

@@ -21,7 +21,7 @@ class StateRepository implements StateInterface
         $this->trashRepository = $trashRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -81,7 +81,7 @@ class StateRepository implements StateInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         $data = new State();
         $data->title = $array['title'];
@@ -98,7 +98,7 @@ class StateRepository implements StateInterface
         ];
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = State::find($id);
@@ -158,7 +158,7 @@ class StateRepository implements StateInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);
@@ -189,7 +189,7 @@ class StateRepository implements StateInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -227,7 +227,7 @@ class StateRepository implements StateInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = State::whereIn('id', $array['ids'])->get();
@@ -311,7 +311,7 @@ class StateRepository implements StateInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);

@@ -128,7 +128,7 @@ class AddressController extends Controller
         }
     }
 
-    public function edit(Int $id, Request $request): View|RedirectResponse
+    public function edit(int $id, Request $request): View|RedirectResponse
     {
         // dd($request->all());
 

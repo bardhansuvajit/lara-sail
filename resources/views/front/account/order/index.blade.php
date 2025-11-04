@@ -16,7 +16,15 @@
                             <a href="{{ route('front.order.detail', $order->order_number) }}" class="{{ FD['text-1'] }} font-semibold text-gray-900 dark:text-white underline hover:no-underline">
                                 Order #{{ $order->order_number }}
                             </a>
+
                             @php
+                                $orderStat = $order->orderStatus;
+                            @endphp
+
+                            <span class="px-3 py-1 text-xs font-medium rounded-full {{ $orderStat->class }}">
+                                {{ $orderStat->title }}
+                            </span>
+                            {{-- @php
                                 $statusClasses = match($order->status) {
                                     'delivered'  => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
                                     'cancelled'  => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
@@ -28,7 +36,7 @@
 
                             <span class="px-3 py-1 text-xs font-medium rounded-full {{ $statusClasses }}">
                                 {{ ucwords(str_replace('_', ' ', $order->status)) }}
-                            </span>
+                            </span> --}}
 
                         </div>
                         <p class="{{ FD['text'] }} text-gray-600 dark:text-gray-400 mt-1">

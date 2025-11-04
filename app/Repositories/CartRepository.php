@@ -44,7 +44,7 @@ class CartRepository implements CartInterface
         // // $this->couponRepository = $couponRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -102,7 +102,7 @@ class CartRepository implements CartInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array);
 
@@ -150,7 +150,7 @@ class CartRepository implements CartInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = Cart::with('items', 'allItems')->find($id);
@@ -180,7 +180,7 @@ class CartRepository implements CartInterface
         }
     }
 
-    public function exists(Array $conditions)
+    public function exists(array $conditions)
     {
         try {
             $data = Cart::with('items', 'savedItems')->where($conditions)->first();
@@ -210,7 +210,7 @@ class CartRepository implements CartInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);
@@ -344,7 +344,7 @@ class CartRepository implements CartInterface
         }
     }
 
-    public function updatePaymentMethod(int $id, Int $cartId)
+    public function updatePaymentMethod(int $id, int $cartId)
     {
         try {
             $cart = $this->getById($cartId);
@@ -412,7 +412,7 @@ class CartRepository implements CartInterface
         }
     }
 
-    public function updateShippingMethod(int $id, Int $cartId)
+    public function updateShippingMethod(int $id, int $cartId)
     {
         try {
             $cart = $this->getById($cartId);
@@ -601,7 +601,7 @@ class CartRepository implements CartInterface
             : ($amount * $adjustmentValue) / 100;
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -648,7 +648,7 @@ class CartRepository implements CartInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = Cart::whereIn('id', $array['ids'])->get();
@@ -741,7 +741,7 @@ class CartRepository implements CartInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
@@ -793,7 +793,7 @@ class CartRepository implements CartInterface
         }
     }
 
-    public function position(Array $ids)
+    public function position(array $ids)
     {
         try {
             foreach ($ids as $index => $id) {

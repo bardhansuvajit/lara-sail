@@ -61,7 +61,7 @@ class StateController
         return redirect()->route('admin.state.index')->with($resp['status'], $resp['message']);
     }
 
-    public function edit(Int $id): View
+    public function edit(int $id): View
     {
         $resp = $this->stateRepository->getById($id);
         return view('admin.state.edit', [
@@ -85,7 +85,7 @@ class StateController
         return redirect()->route('admin.state.index')->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->stateRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

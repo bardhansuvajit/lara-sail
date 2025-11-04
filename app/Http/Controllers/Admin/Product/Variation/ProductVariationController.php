@@ -17,7 +17,7 @@ class ProductVariationController
         $this->productVariationRepository = $productVariationRepository;
     }
 
-    public function edit(Int $id): View|RedirectResponse
+    public function edit(int $id): View|RedirectResponse
     {
         $resp = $this->productVariationRepository->getById($id);
         if ($resp['code'] == 200) {
@@ -182,7 +182,7 @@ class ProductVariationController
         // return redirect()->route('admin.product.variation.attribute.index')->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->productVariationRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

@@ -61,7 +61,7 @@ class CountryController
         return redirect()->route('admin.country.index')->with($resp['status'], $resp['message']);
     }
 
-    public function edit(Int $id): View
+    public function edit(int $id): View
     {
         $resp = $this->countryRepository->getById($id);
         return view('admin.country.edit', [
@@ -85,7 +85,7 @@ class CountryController
         return redirect()->route('admin.country.index')->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->countryRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

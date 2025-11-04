@@ -25,7 +25,7 @@ class UserLoginHistoryRepository implements UserLoginHistoryInterface
         $this->request = $request;
     }
 
-    public function exists(Array $conditions)
+    public function exists(array $conditions)
     {
         try {
             $records = UserLoginHistory::where($conditions)->get();
@@ -55,7 +55,7 @@ class UserLoginHistoryRepository implements UserLoginHistoryInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         try {
             // UPDATE OTHER MATCHES
@@ -116,7 +116,7 @@ class UserLoginHistoryRepository implements UserLoginHistoryInterface
         }
     }
 
-    public function validateToken(String $token, Int $userId)
+    public function validateToken(String $token, int $userId)
     {
         try {
             $record = UserLoginHistory::where('user_id', $userId)
@@ -147,7 +147,7 @@ class UserLoginHistoryRepository implements UserLoginHistoryInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = UserLoginHistory::find($id);
@@ -177,7 +177,7 @@ class UserLoginHistoryRepository implements UserLoginHistoryInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);

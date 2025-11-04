@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DeveloperSettingRepository implements DeveloperSettingInterface
 {
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -70,7 +70,7 @@ class DeveloperSettingRepository implements DeveloperSettingInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         $data = new DeveloperSetting();
         $data->title = $array['title'];
@@ -87,7 +87,7 @@ class DeveloperSettingRepository implements DeveloperSettingInterface
         ];
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             if ($guard == 'Admin') {
@@ -149,7 +149,7 @@ class DeveloperSettingRepository implements DeveloperSettingInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);
@@ -180,7 +180,7 @@ class DeveloperSettingRepository implements DeveloperSettingInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);

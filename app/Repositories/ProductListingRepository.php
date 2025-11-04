@@ -41,7 +41,7 @@ class ProductListingRepository implements ProductListingInterface
         $this->productBadgeCombinationRepository = $productBadgeCombinationRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -99,7 +99,7 @@ class ProductListingRepository implements ProductListingInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array);
 
@@ -189,7 +189,7 @@ class ProductListingRepository implements ProductListingInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             // $data = Product::find($id);
@@ -225,7 +225,7 @@ class ProductListingRepository implements ProductListingInterface
         }
     }
 
-    public function getByIds(Array $ids)
+    public function getByIds(array $ids)
     {
         try {
             if (empty($ids)) {
@@ -328,7 +328,7 @@ class ProductListingRepository implements ProductListingInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         // dd($array);
 
@@ -508,7 +508,7 @@ class ProductListingRepository implements ProductListingInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -546,7 +546,7 @@ class ProductListingRepository implements ProductListingInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = Product::whereIn('id', $array['ids'])->get();
@@ -759,7 +759,7 @@ class ProductListingRepository implements ProductListingInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);

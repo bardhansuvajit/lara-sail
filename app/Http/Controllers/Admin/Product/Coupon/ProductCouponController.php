@@ -74,7 +74,7 @@ class ProductCouponController
         return redirect()->route('admin.product.coupon.index')->with($resp['status'], $resp['message']);
     }
 
-    public function edit(Int $id): View|RedirectResponse
+    public function edit(int $id): View|RedirectResponse
     {
         $resp = $this->couponRepository->getById($id);
         // dd($resp);
@@ -116,7 +116,7 @@ class ProductCouponController
         return redirect()->route('admin.product.coupon.index')->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->couponRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

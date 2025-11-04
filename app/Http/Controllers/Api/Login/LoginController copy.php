@@ -230,7 +230,7 @@ class LoginController extends Controller
         return $userRegistrationCheck;
     }
 
-    public function logout(Request $request, Int $userId)
+    public function logout(Request $request, int $userId)
     {
         $token = $request->bearerToken();
 

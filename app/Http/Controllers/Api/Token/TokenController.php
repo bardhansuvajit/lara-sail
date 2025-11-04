@@ -38,7 +38,7 @@ class TokenController
         }
     }
 
-    public function validateOld(Request $request, Int $userId)
+    public function validateOld(Request $request, int $userId)
     {
         // dd($request->phone);
 

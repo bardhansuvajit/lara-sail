@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class PasswordRepository implements PasswordInterface
 {
-    public function update(Array $array)
+    public function update(array $array)
     {
         // dd($array);
         try {

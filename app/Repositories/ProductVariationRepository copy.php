@@ -36,7 +36,7 @@ class ProductVariationRepository implements ProductVariationInterface
         $this->productPricingRepository = $productPricingRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -94,7 +94,7 @@ class ProductVariationRepository implements ProductVariationInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array);
 
@@ -284,7 +284,7 @@ class ProductVariationRepository implements ProductVariationInterface
             ->find($variationIds->first());
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = ProductVariation::where('id', $id)
@@ -316,7 +316,7 @@ class ProductVariationRepository implements ProductVariationInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         DB::beginTransaction();
 
@@ -426,7 +426,7 @@ class ProductVariationRepository implements ProductVariationInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -464,7 +464,7 @@ class ProductVariationRepository implements ProductVariationInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = ProductVariation::whereIn('id', $array['ids'])->get();
@@ -568,7 +568,7 @@ class ProductVariationRepository implements ProductVariationInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
@@ -620,7 +620,7 @@ class ProductVariationRepository implements ProductVariationInterface
         }
     }
 
-    public function position(Array $ids)
+    public function position(array $ids)
     {
         try {
             foreach ($ids as $index => $id) {
@@ -644,7 +644,7 @@ class ProductVariationRepository implements ProductVariationInterface
         }
     }
 
-    public function groupedVariation(Int $id)
+    public function groupedVariation(int $id)
     {
         try {
             $data = ProductVariation::with(['combinations.attribute', 'combinations.attributeValue'])

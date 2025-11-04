@@ -15,7 +15,7 @@ const marginEl = document.getElementById('margin');
 */
 const imagesPositionToggleButton = document.getElementById('imagesPositionToggleButton');
 const variantsPositionToggleButton = document.getElementById('variantsPositionToggleButton');
-const highlightPositionToggleButton = document.getElementById('highlightPositionToggleButton');
+const positionToggleButton = document.getElementById('positionToggleButton');
 const faqPositionToggleButton = document.getElementById('faqPositionToggleButton');
 const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const maxFileSize = 2000; // in kb
@@ -426,8 +426,8 @@ if (variantsPositionToggleButton) {
     });
 }
 
-if (highlightPositionToggleButton) {
-    highlightPositionToggleButton.addEventListener('click', function () {
+if (positionToggleButton) {
+    positionToggleButton.addEventListener('click', function () {
         document.querySelectorAll('.highlight-position-selector').forEach(el => {
             if (!el.classList.contains('hidden')) {
                 el.classList.add('hidden');

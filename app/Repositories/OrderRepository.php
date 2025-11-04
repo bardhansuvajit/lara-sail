@@ -55,7 +55,7 @@ class OrderRepository implements OrderInterface
         $this->orderNumberService = $orderNumberService;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -121,7 +121,7 @@ class OrderRepository implements OrderInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array['image']);
         DB::beginTransaction();
@@ -233,14 +233,20 @@ class OrderRepository implements OrderInterface
             }
 
             // Order Status History
+            $statusClass = 'bg-green-200 text-green-700';
+            $statusIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>';
+
             $statusHistory = $this->orderStatusHistoryRepository->store([
                 'order_id' => $data->id,
                 'status' => 'pending',
                 'previous_status' => null,
-                'notes' => 'Order placed successfully',
+                'title' => 'Order Placed',
+                'notes' => 'Your order has been successfully placed.',
                 'show_in_frontend' => true,
                 'actor_type' => 'customer',
                 'actor_id' => $array['user_id'],
+                'class' => $array['class'] ?? $statusClass,
+                'icon' => $array['icon'] ?? $statusIcon,
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
             ]);
@@ -266,7 +272,7 @@ class OrderRepository implements OrderInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = Order::with('items')->find($id);
@@ -296,7 +302,7 @@ class OrderRepository implements OrderInterface
         }
     }
 
-    public function exists(Array $conditions)
+    public function exists(array $conditions)
     {
         try {
             $data = Order::with('items', 'user', 'country', 'paymentMethod', 'shippingMethod')->where($conditions)->get();
@@ -326,7 +332,7 @@ class OrderRepository implements OrderInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);
@@ -375,7 +381,7 @@ class OrderRepository implements OrderInterface
         }
     }
 
-    public function updateStatus(Array $array)
+    public function updateStatus(array $array)
     {
         // dd('here', $array);
 
@@ -395,6 +401,7 @@ class OrderRepository implements OrderInterface
                     'order_id' => $array['id'],
                     'status' => $array['status'],
                     'previous_status' => $array['previous_status'],
+                    'title' => $array['title'] ?? null,
                     'notes' => $array['notes'] ?? null,
                     'show_in_frontend' => true,
                     'actor_type' => $array['actor_type'],
@@ -476,7 +483,7 @@ class OrderRepository implements OrderInterface
         }
     }
 
-    public function updatePaymentMethod(int $id, Int $cartId)
+    public function updatePaymentMethod(int $id, int $cartId)
     {
         try {
             $cart = $this->getById($cartId);
@@ -647,7 +654,7 @@ class OrderRepository implements OrderInterface
             : ($amount * $adjustmentValue) / 100;
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -685,7 +692,7 @@ class OrderRepository implements OrderInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = Order::whereIn('id', $array['ids'])->get();
@@ -778,7 +785,7 @@ class OrderRepository implements OrderInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);

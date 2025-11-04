@@ -24,7 +24,7 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
         $this->productVariationAttributeValueRepository = $productVariationAttributeValueRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -82,7 +82,7 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array['image']);
         DB::beginTransaction();
@@ -129,7 +129,7 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = ProductVariationAttribute::find($id);
@@ -159,7 +159,7 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         DB::beginTransaction();
 
@@ -209,7 +209,7 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -247,7 +247,7 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = ProductVariationAttribute::whereIn('id', $array['ids'])->get();
@@ -351,7 +351,7 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
@@ -403,7 +403,7 @@ class ProductVariationAttributeRepository implements ProductVariationAttributeIn
         }
     }
 
-    public function position(Array $ids)
+    public function position(array $ids)
     {
         try {
             foreach ($ids as $index => $id) {

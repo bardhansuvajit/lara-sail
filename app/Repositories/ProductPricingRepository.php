@@ -21,7 +21,7 @@ class ProductPricingRepository implements ProductPricingInterface
         $this->trashRepository = $trashRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -79,7 +79,7 @@ class ProductPricingRepository implements ProductPricingInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array);
         DB::beginTransaction();
@@ -120,7 +120,7 @@ class ProductPricingRepository implements ProductPricingInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = ProductPricing::find($id);
@@ -150,7 +150,7 @@ class ProductPricingRepository implements ProductPricingInterface
         }
     }
 
-    public function getByProductIdCountryCode(Int $productId, String $countryCode)
+    public function getByProductIdCountryCode(int $productId, String $countryCode)
     {
         try {
             $data = ProductPricing::where([
@@ -183,7 +183,7 @@ class ProductPricingRepository implements ProductPricingInterface
         }
     }
 
-    public function update(Int $id, Array $array)
+    public function update(int $id, array $array)
     {
         // dd($id, $array);
 
@@ -227,7 +227,7 @@ class ProductPricingRepository implements ProductPricingInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -265,7 +265,7 @@ class ProductPricingRepository implements ProductPricingInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = ProductPricing::whereIn('id', $array['ids'])->get();
@@ -363,7 +363,7 @@ class ProductPricingRepository implements ProductPricingInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);

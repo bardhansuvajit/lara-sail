@@ -10,7 +10,7 @@ use Livewire\Attributes\On;
 
 class ProductPageHighlight extends Component
 {
-    public Int $product_id;
+    public int $product_id;
     public ?Collection $highlights;
 
     // form fields

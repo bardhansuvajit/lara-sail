@@ -21,7 +21,7 @@ class AddressRepository implements AddressInterface
         $this->trashRepository = $trashRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -79,7 +79,7 @@ class AddressRepository implements AddressInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array['image']);
         try {
@@ -139,7 +139,7 @@ class AddressRepository implements AddressInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = UserAddress::with('countryDetail', 'stateDetail')
@@ -170,7 +170,7 @@ class AddressRepository implements AddressInterface
         }
     }
 
-    public function exists(Array $conditions)
+    public function exists(array $conditions)
     {
         try {
             $data = UserAddress::with('countryDetail', 'stateDetail')
@@ -204,7 +204,7 @@ class AddressRepository implements AddressInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);
@@ -261,7 +261,7 @@ class AddressRepository implements AddressInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -306,7 +306,7 @@ class AddressRepository implements AddressInterface
         }
     }
 
-    public function deleteLoggedInUserAddress(Int $id, Int $userId)
+    public function deleteLoggedInUserAddress(int $id, int $userId)
     {
         try {
             $data = $this->exists([
@@ -365,7 +365,7 @@ class AddressRepository implements AddressInterface
         }
     }
 
-    public function updateDefaultAddress(Int $id, Int $userId)
+    public function updateDefaultAddress(int $id, int $userId)
     {
         try {
             $data = $this->exists([
@@ -417,7 +417,7 @@ class AddressRepository implements AddressInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = UserAddress::whereIn('id', $array['ids'])->get();
@@ -510,7 +510,7 @@ class AddressRepository implements AddressInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
@@ -562,7 +562,7 @@ class AddressRepository implements AddressInterface
         }
     }
 
-    public function position(Array $ids)
+    public function position(array $ids)
     {
         try {
             foreach ($ids as $index => $id) {

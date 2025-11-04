@@ -5,16 +5,16 @@ use Illuminate\Http\UploadedFile;
 
 interface AddressInterface
 {
-    public function list(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder);
-    public function store(Array $array);
-    public function getById(Int $id);
-    public function exists(Array $conditions);
-    public function update(Array $array);
-    public function delete(Int $id);
-    public function deleteLoggedInUserAddress(Int $id, Int $userId);
-    public function updateDefaultAddress(Int $id, Int $userId);
-    public function bulkAction(Array $array);
+    public function list(?String $keyword, array $filters = [], String $perPage, String $sortBy, String $sortOrder);
+    public function store(array $array);
+    public function getById(int $id);
+    public function exists(array $conditions);
+    public function update(array $array);
+    public function delete(int $id);
+    public function deleteLoggedInUserAddress(int $id, int $userId);
+    public function updateDefaultAddress(int $id, int $userId);
+    public function bulkAction(array $array);
     public function import(UploadedFile $file);
-    public function export(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder, String $type);
-    public function position(Array $ids);
+    public function export(?String $keyword, array $filters = [], String $perPage, String $sortBy, String $sortOrder, String $type);
+    public function position(array $ids);
 }

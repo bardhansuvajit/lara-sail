@@ -21,7 +21,7 @@ class NewsletterSubscriptionEmailRepository implements NewsletterSubscriptionEma
         $this->trashRepository = $trashRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -79,7 +79,7 @@ class NewsletterSubscriptionEmailRepository implements NewsletterSubscriptionEma
         }
     }
 
-    public function subscribe(Array $array)
+    public function subscribe(array $array)
     {
         // dd($array['image']);
         try {
@@ -114,7 +114,7 @@ class NewsletterSubscriptionEmailRepository implements NewsletterSubscriptionEma
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = NewsletterSubscriptionEmail::find($id);
@@ -144,7 +144,7 @@ class NewsletterSubscriptionEmailRepository implements NewsletterSubscriptionEma
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);
@@ -175,7 +175,7 @@ class NewsletterSubscriptionEmailRepository implements NewsletterSubscriptionEma
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -213,7 +213,7 @@ class NewsletterSubscriptionEmailRepository implements NewsletterSubscriptionEma
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = NewsletterSubscriptionEmail::whereIn('id', $array['ids'])->get();
@@ -297,7 +297,7 @@ class NewsletterSubscriptionEmailRepository implements NewsletterSubscriptionEma
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);

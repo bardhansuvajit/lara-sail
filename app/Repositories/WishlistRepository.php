@@ -24,7 +24,7 @@ class WishlistRepository implements WishlistInterface
         $this->trashRepository = $trashRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -90,7 +90,7 @@ class WishlistRepository implements WishlistInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array['image']);
         DB::beginTransaction();
@@ -129,7 +129,7 @@ class WishlistRepository implements WishlistInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = ProductWishlist::with('user', 'product')->find($id);
@@ -159,7 +159,7 @@ class WishlistRepository implements WishlistInterface
         }
     }
 
-    public function checkStatus(Array $productIds, Int $userId)
+    public function checkStatus(array $productIds, int $userId)
     {
         try {
             $data = ProductWishlist::with('user', 'product')->where('user_id', $userId)
@@ -192,7 +192,7 @@ class WishlistRepository implements WishlistInterface
         }
     }
 
-    public function exists(Array $conditions)
+    public function exists(array $conditions)
     {
         try {
             $data = ProductWishlist::with('user', 'product')->where($conditions)->get();
@@ -222,7 +222,7 @@ class WishlistRepository implements WishlistInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);
@@ -271,7 +271,7 @@ class WishlistRepository implements WishlistInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -309,7 +309,7 @@ class WishlistRepository implements WishlistInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = ProductWishlist::whereIn('id', $array['ids'])->get();
@@ -402,7 +402,7 @@ class WishlistRepository implements WishlistInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);

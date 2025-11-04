@@ -29,7 +29,7 @@ class CouponRepository implements CouponInterface
         $this->couponUsageRepository = $couponUsageRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -465,7 +465,7 @@ class CouponRepository implements CouponInterface
         Coupon::where('id', $couponId)->increment('used_count');
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array['image']);
         try {
@@ -510,7 +510,7 @@ class CouponRepository implements CouponInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = Coupon::find($id);
@@ -570,7 +570,7 @@ class CouponRepository implements CouponInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         try {
             $data = $this->getById($array['id']);
@@ -626,7 +626,7 @@ class CouponRepository implements CouponInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -664,7 +664,7 @@ class CouponRepository implements CouponInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = Coupon::whereIn('id', $array['ids'])->get();
@@ -853,7 +853,7 @@ class CouponRepository implements CouponInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
@@ -905,7 +905,7 @@ class CouponRepository implements CouponInterface
         }
     }
 
-    public function position(Array $ids)
+    public function position(array $ids)
     {
         try {
             foreach ($ids as $index => $id) {

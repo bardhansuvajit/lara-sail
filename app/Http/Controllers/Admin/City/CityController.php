@@ -61,7 +61,7 @@ class CityController
         return redirect()->route('admin.city.index')->with($resp['status'], $resp['message']);
     }
 
-    public function edit(Int $id): View
+    public function edit(int $id): View
     {
         $resp = $this->cityRepository->getById($id);
         return view('admin.city.edit', [
@@ -85,7 +85,7 @@ class CityController
         return redirect()->route('admin.city.index')->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->cityRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

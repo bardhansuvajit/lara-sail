@@ -6,19 +6,19 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface CartInterface
 {
-    public function list(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder);
-    public function store(Array $array);
-    public function getById(Int $id);
-    public function exists(Array $conditions);
-    public function update(Array $array);
+    public function list(?String $keyword, array $filters = [], String $perPage, String $sortBy, String $sortOrder);
+    public function store(array $array);
+    public function getById(int $id);
+    public function exists(array $conditions);
+    public function update(array $array);
     public function updateCartTotals($cart);
-    public function updatePaymentMethod(Int $id, Int $cartId);
-    public function updateShippingMethod(Int $id, Int $cartId);
-    public function delete(Int $id);
-    public function bulkAction(Array $array);
+    public function updatePaymentMethod(int $id, int $cartId);
+    public function updateShippingMethod(int $id, int $cartId);
+    public function delete(int $id);
+    public function bulkAction(array $array);
     public function import(UploadedFile $file);
-    public function export(?String $keyword, Array $filters = [], String $perPage, String $sortBy, String $sortOrder, String $type);
-    public function position(Array $ids);
+    public function export(?String $keyword, array $filters = [], String $perPage, String $sortBy, String $sortOrder, String $type);
+    public function position(array $ids);
     public function updateCartDiscount(array $cartData);
     // public function updateCartDiscount(?int $userId, ?string $deviceId, array $discountData);
     public function removeCouponById(int $cartId);

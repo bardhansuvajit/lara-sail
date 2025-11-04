@@ -111,13 +111,13 @@ class Order extends Model
 
     public function statusHistories()
     {
-        return $this->hasMany('App\Models\OrderStatusHistory', 'order_id', 'id')->orderBy('id', 'desc');
+        return $this->hasMany('App\Models\OrderStatusHistory', 'order_id', 'id')->orderBy('position', 'desc');
     }
 
     public function statusHistoriesFrontend()
     {
         return $this->hasMany('App\Models\OrderStatusHistory', 'order_id', 'id')
             ->where('show_in_frontend', true)
-            ->orderBy('id', 'desc');
+            ->orderBy('position', 'desc');
     }
 }

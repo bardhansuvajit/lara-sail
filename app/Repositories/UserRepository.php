@@ -22,7 +22,7 @@ class UserRepository implements UserInterface
         $this->trashRepository = $trashRepository;
     }
 
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -84,7 +84,7 @@ class UserRepository implements UserInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         // dd($array['image']);
         try {
@@ -118,7 +118,7 @@ class UserRepository implements UserInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = User::with('country', 'shippingAddresses', 'billingAddresses')->find($id);
@@ -216,7 +216,7 @@ class UserRepository implements UserInterface
         }
     }
 
-    public function exists(Array $conditions)
+    public function exists(array $conditions)
     {
         try {
             $data = User::with('country', 'shippingAddresses', 'billingAddresses')->where($conditions)->get();
@@ -246,7 +246,7 @@ class UserRepository implements UserInterface
         }
     }
 
-    public function update(Array $array)
+    public function update(array $array)
     {
         // dd($array);
 
@@ -297,7 +297,7 @@ class UserRepository implements UserInterface
         }
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -342,7 +342,7 @@ class UserRepository implements UserInterface
         }
     }
 
-    public function bulkAction(Array $array)
+    public function bulkAction(array $array)
     {
         try {
             $data = User::whereIn('id', $array['ids'])->get();
@@ -435,7 +435,7 @@ class UserRepository implements UserInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);

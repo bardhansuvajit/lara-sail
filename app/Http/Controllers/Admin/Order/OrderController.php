@@ -100,7 +100,7 @@ class OrderController
         return redirect()->route('admin.order.index')->with($resp['status'], $resp['message']);
     }
 
-    public function edit(Int $id): View
+    public function edit(int $id): View
     {
         $resp = $this->orderRepository->getById($id);
         $orderStatuses = $this->orderStatusRepository->list('', [], 'all', 'position', 'asc');
@@ -156,13 +156,13 @@ class OrderController
             'id' => 'required|integer|min:1',
             'status' => 'required|string|min:2|exists:order_statuses,slug',
             'previous_status' => 'required|string|min:2|exists:order_statuses,slug',
+            'title' => 'required|string|min:2',
             'notes' => 'required|string|min:2',
             'icon' => 'required|string',
             'class' => 'required|string|min:2',
         ]);
 
-        // $resp = $this->orderRepository->updateStatus($request->all());
-        $data = $request->only(['id', 'status', 'previous_status', 'notes', 'icon', 'class']) + [
+        $data = $request->only(['id', 'status', 'previous_status', 'title', 'notes', 'icon', 'class']) + [
             'actor_type' => 'admin',
             'actor_id' => auth()->guard('admin')->user()->id,
         ];
@@ -171,7 +171,7 @@ class OrderController
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->orderRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

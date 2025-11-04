@@ -10,7 +10,7 @@ use Livewire\Attributes\On;
 
 class ProductPageFaq extends Component
 {
-    public Int $product_id;
+    public int $product_id;
     public ?Collection $faqs;
 
     // form fields

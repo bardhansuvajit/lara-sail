@@ -254,7 +254,7 @@ class ProductListingController
         return redirect()->route('admin.product.listing.edit', $productId)->with($resp['status'], $resp['message']);
     }
 
-    public function edit(Int $id): View|RedirectResponse
+    public function edit(int $id): View|RedirectResponse
     {
         $resp = $this->productListingRepository->getById($id);
         if ($resp['code'] == 200) {
@@ -483,7 +483,7 @@ class ProductListingController
         return redirect()->back()->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->productListingRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

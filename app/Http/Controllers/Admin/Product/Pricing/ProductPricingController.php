@@ -62,7 +62,7 @@ class ProductPricingController
     //     return redirect()->route('admin.product.Pricing.index')->with($resp['status'], $resp['message']);
     // }
 
-    public function edit(Int $id): View|RedirectResponse
+    public function edit(int $id): View|RedirectResponse
     {
         $resp = $this->productPricingRepository->getById($id);
         // dd($resp);
@@ -90,7 +90,7 @@ class ProductPricingController
         return redirect()->route('admin.product.Pricing.index')->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->productPricingRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

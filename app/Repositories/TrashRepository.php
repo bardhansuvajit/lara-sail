@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class TrashRepository implements TrashInterface
 {
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();
@@ -69,7 +69,7 @@ class TrashRepository implements TrashInterface
         }
     }
 
-    public function store(Array $array)
+    public function store(array $array)
     {
         try {
             $data = new Trash();
@@ -98,7 +98,7 @@ class TrashRepository implements TrashInterface
         }
     }
 
-    public function getById(Int $id)
+    public function getById(int $id)
     {
         try {
             $data = Trash::find($id);
@@ -128,7 +128,7 @@ class TrashRepository implements TrashInterface
         }
     }
 
-    public function restore(Int $id)
+    public function restore(int $id)
     {
         try {
             $data = $this->getById($id);
@@ -174,7 +174,7 @@ class TrashRepository implements TrashInterface
         }
     }
 
-    public function export(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
+    public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
         try {
             $data = $this->list($keyword, $filters, $perPage, $sortBy, $sortOrder);

@@ -124,7 +124,7 @@
                                         @foreach ($statuses as $os)
                                             <button
                                                 class="{{ $os->class }} mb-1 w-full text-[11px] flex items-center justify-start gap-2 rounded border-2 px-2 py-1 transition-all duration-150
-                                                    {{ ($order->status == $os->slug) ? 'border-gray-900 dark:border-gray-50 font-semibold shadow-sm' : 'border-transparent hover:border-gray-400/40' }}"
+                                                    {{ ($order->status == $os->slug) ? 'border-gray-900  font-bold shadow-sm' : 'border-transparent hover:border-gray-400/40 font-light' }}"
                                                 x-data=""
                                                 x-on:click.prevent="
                                                     $dispatch('open-modal', 'confirm-status-update');
@@ -173,7 +173,7 @@
                                         @foreach ($statuses as $os)
                                             <button
                                                 class="{{ $os->class }} mb-1 w-full text-[11px] flex items-center justify-start gap-2 rounded border-2 px-2 py-1 transition-all duration-150
-                                                    {{ ($order->status == $os->slug) ? 'border-gray-900 dark:border-gray-50 font-semibold shadow-sm' : 'border-transparent hover:border-gray-400/40' }}"
+                                                    {{ ($order->payment_status == $os->slug) ? 'border-gray-900 dark:border-gray-50 font-semibold shadow-sm' : 'border-transparent hover:border-gray-400/40' }}"
                                                 x-data=""
                                                 x-on:click.prevent="
                                                     $dispatch('open-modal', 'confirm-status-update');
@@ -204,98 +204,28 @@
                 <!-- Order Timeline -->
                 <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                     <div class="p-2 border-b border-gray-200 dark:border-gray-600">
-                        <h2 class="text-sm font-semibold text-primary-500 dark:text-primary-300">Order Timeline</h2>
-                    </div>
-                    <div class="p-2">
-                        <div class="space-y-4">
-                            @foreach ($order->statusHistories as $statHist)
-                                <div class="flex items-center text-gray-600 dark:text-gray-400">
-                                    <div class="w-5 h-5 rounded-full flex items-center justify-center mr-3
-                                        @if ($statHist->class) {{ $statHist->class }} @else bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 @endif 
-                                        ">
-                                        @if ($statHist->icon)
-                                            {!! $statHist->icon !!}
-                                        @else
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                        @endif
+                        <div class="flex justify-between">
+                            <h2 class="text-sm font-semibold text-primary-500 dark:text-primary-300">Order Timeline</h2>
+
+                            <button 
+                                type="button"
+                                class="text-xs inline-block text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-500" 
+                                id="positionToggleButton" 
+                                >
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 mr-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"/></svg>
                                     </div>
-                                    <div>
-                                        <p class="text-xs font-medium">{{ $statHist->notes }}</p>
-                                        <p class="text-xs">{{ $statHist->created_at->diffForHumans().' - '.( $statHist->created_at->format('M j, Y g:i A') ) }}</p>
-                                    </div>
+                                    Change position
                                 </div>
-                            @endforeach
+                            </button>
                         </div>
-
-                        {{-- <div class="space-y-4">
-                            <div class="flex items-center text-green-600 dark:text-green-400">
-                                <div class="w-5 h-5 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                </div>
-                                <div>
-                                    <p class="text-xs font-medium">Order Placed</p>
-                                    <p class="text-xs text-gray-600 dark:text-gray-400">{{ $order->created_at->format('M j, Y g:i A') }}</p>
-                                </div>
-                            </div>
-
-                            @if($order->paid_at)
-                            <div class="flex items-center text-green-600 dark:text-green-400">
-                                <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p class="font-medium">Payment Received</p>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">{{ $order->paid_at->format('M j, Y g:i A') }}</p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if($order->processed_at)
-                            <div class="flex items-center text-blue-600 dark:text-blue-400">
-                                <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mr-3">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p class="font-medium">Order Processed</p>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">{{ $order->processed_at->format('M j, Y g:i A') }}</p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if($order->shipped_at)
-                                <div class="flex items-center text-purple-600 dark:text-purple-400">
-                                    <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center mr-3">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
-                                            <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1v-1h4a1 1 0 001-1v-1h2a1 1 0 001-1V5a1 1 0 00-1-1H3z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="font-medium">Order Shipped</p>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">{{ $order->shipped_at->format('M j, Y g:i A') }}</p>
-                                    </div>
-                                </div>
-                            @endif
-
-                            @if($order->delivered_at)
-                            <div class="flex items-center text-green-600 dark:text-green-400">
-                                <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p class="font-medium">Order Delivered</p>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">{{ $order->delivered_at->format('M j, Y g:i A') }}</p>
-                                </div>
-                            </div>
-                            @endif
-                        </div> --}}
                     </div>
+
+                    @livewire('order-status-history-timeline', [
+                        'order' => $order
+                    ])
+
                 </div>
             </div>
 
@@ -714,6 +644,7 @@
                     <form action="{{ route('admin.order.update.status') }}" method="POST" class="m-0">@csrf
                         <input type="hidden" name="status" x-bind:value="slug" value="">
                         <input type="hidden" name="previous_status" x-bind:value="cstat" value="">
+                        <input type="hidden" name="title" x-bind:value="title" value="">
                         <input type="hidden" name="notes" x-bind:value="description" value="">
                         <input type="hidden" name="icon" x-bind:value="icon" value="">
                         <input type="hidden" name="class" x-bind:value="statusClass" value="">

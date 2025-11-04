@@ -68,7 +68,7 @@ class AdItemController
         return redirect()->route('admin.website.ad.item.index')->with($resp['status'], $resp['message']);
     }
 
-    public function edit(Int $id): View
+    public function edit(int $id): View
     {
         $adSections = $this->adSectionRepository->list('', ['status' => 1], 'all', 'position', 'asc');
         $resp = $this->adItemRepository->getById($id);
@@ -98,7 +98,7 @@ class AdItemController
         // return redirect()->route('admin.website.ad.item.index')->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->adItemRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

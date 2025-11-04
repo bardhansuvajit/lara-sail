@@ -103,7 +103,7 @@ class UserController
 
     }
 
-    public function edit(Int $id): View
+    public function edit(int $id): View
     {
         $resp = $this->userRepository->getById($id);
         return view('admin.user.edit', [
@@ -150,7 +150,7 @@ class UserController
 
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->userRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

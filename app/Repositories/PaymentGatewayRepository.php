@@ -25,7 +25,7 @@ class PaymentGatewayRepository implements PaymentGatewayInterface
     }
 
     // Show all payment gateways
-    public function list(?String $keyword = '', Array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
+    public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
     {
         try {
             DB::enableQueryLog();

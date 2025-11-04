@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class OfflineOrderCart extends Component
 {
-    public Int $userId;
+    public int $userId;
     public String $page;
     public Collection $cart;
     public Collection $savedItems;
@@ -22,7 +22,7 @@ class OfflineOrderCart extends Component
     protected $listeners = ['updateCartData' => 'getCartDataWOPaymentMethodUpdate'];
 
     public function mount(
-        Int $userId,
+        int $userId,
         CartInterface $cartRepository, 
         CartItemInterface $cartItemRepository, 
         CartSettingInterface $cartSettingRepository

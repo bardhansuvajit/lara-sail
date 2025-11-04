@@ -61,7 +61,7 @@ class NewsletterEmailController
         return redirect()->route('admin.website.newsletter.email.index')->with($resp['status'], $resp['message']);
     }
 
-    public function edit(Int $id): View
+    public function edit(int $id): View
     {
         $resp = $this->newsletterSubscriptionEmailRepository->getById($id);
         return view('admin.newsletter.email.edit', [
@@ -85,7 +85,7 @@ class NewsletterEmailController
         return redirect()->route('admin.website.newsletter.email.index')->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->newsletterSubscriptionEmailRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

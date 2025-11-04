@@ -45,7 +45,7 @@ class ProductFeatureController
         ]);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->productFeatureRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

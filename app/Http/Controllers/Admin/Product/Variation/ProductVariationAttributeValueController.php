@@ -94,7 +94,7 @@ class ProductVariationAttributeValueController
         }
     }
 
-    public function edit(Int $id): View|RedirectResponse
+    public function edit(int $id): View|RedirectResponse
     {
         $resp = $this->productVariationAttributeValueRepository->getById($id);
         // dd($resp);
@@ -131,7 +131,7 @@ class ProductVariationAttributeValueController
             ->with($resp['status'], $resp['message']);
     }
 
-    public function delete(Int $id)
+    public function delete(int $id)
     {
         $resp = $this->productVariationAttributeValueRepository->delete($id);
         return redirect()->back()->with($resp['status'], $resp['message']);

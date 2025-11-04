@@ -9,11 +9,11 @@ use Illuminate\Support\Collection;
 
 interface UserLoginHistoryInterface
 {
-    public function exists(Array $conditions);
-    public function store(Array $array);
-    public function validateToken(String $token, Int $userId);
-    public function getById(Int $id);
-    public function update(Array $array);
+    public function exists(array $conditions);
+    public function store(array $array);
+    public function validateToken(String $token, int $userId);
+    public function getById(int $id);
+    public function update(array $array);
 
     public function createLoginHistory(User $user, array $data): UserLoginHistory;
     public function updateLastActivity(string $token): bool;

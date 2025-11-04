@@ -41,7 +41,7 @@ class TrashController
         ]);
     }
 
-    public function restore(Int $id)
+    public function restore(int $id)
     {
         $resp = $this->trashRepository->restore($id);
         return redirect()->back()->with($resp['status'], $resp['message']);
