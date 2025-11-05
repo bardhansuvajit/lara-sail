@@ -19,22 +19,17 @@
     <div class="bg-white dark:bg-gray-800 {{ FD['rounded'] }} shadow-sm border border-gray-200 dark:border-gray-700 p-2 md:p-4">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                <h2 class="{{ FD['text-1'] }} font-semibold text-gray-900 dark:text-white mb-2">Order Status</h2>
+                <h2 class="{{ FD['text-1'] }} font-semibold text-gray-900 dark:text-white mb-2">Order Details</h2>
                 <div class="flex items-center gap-3">
                     @php
-                        $statusClasses = match($order->status) {
-                            'delivered'  => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-                            'cancelled'  => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-                            'shipped'    => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-                            'processing' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-                            'pending'    => 'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-200',
-                            default      => 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-                        };
+                        $orderStat = $order->orderStatus;
                     @endphp
 
-                    <span class="px-3 py-1 rounded-full font-medium {{ FD['text'] }} {{ $statusClasses }}">
-                        {{ ucwords(str_replace('_', ' ', $order->status)) }}
-                    </span>
+                    @if ($orderStat)
+                        <span class="px-3 py-1 text-xs font-medium rounded-full {{ $orderStat->class }}">
+                            {{ $orderStat->title ?? '' }}
+                        </span>
+                    @endif
 
                     <span class="{{ FD['text'] }} text-gray-600 dark:text-gray-400">
                         Ordered on {{ $order->created_at->format('F d, Y') }}
