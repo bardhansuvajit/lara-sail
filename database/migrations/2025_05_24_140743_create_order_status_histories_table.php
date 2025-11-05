@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('order_status_histories', function (Blueprint $table) {
             $table->id();
 
+            $table->enum('type', ['order_status', 'payment_status'])->default('order_status');
+
             // Order relationship
             $table->unsignedBigInteger('order_id');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');

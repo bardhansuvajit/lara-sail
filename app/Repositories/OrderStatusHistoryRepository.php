@@ -70,13 +70,16 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryInterface
         DB::beginTransaction();
 
         try {
+            // dd($array);
+
             $data = new OrderStatusHistory();
+            $data->type = $array['type'];
             $data->order_id = $array['order_id'];
             $data->status = $array['status'];
             $data->previous_status = $array['previous_status'] ?? null;
             $data->title = $array['title'] ?? null;
             $data->notes = $array['notes'] ?? null;
-            $data->show_in_frontend = $array['show_in_frontend'] ?? false;
+            $data->show_in_frontend = (bool) $array['show_in_frontend'] ?? false;
             $data->metadata = $array['metadata'] ?? null;
             $data->actor_type = $array['actor_type'];
             $data->actor_id = $array['actor_id'];

@@ -55,6 +55,8 @@ class OrderController
         ];
         $resp = $this->orderRepository->list($keyword, $filters, $perPage, $sortBy, $sortOrder);
 
+        // dd($resp);
+
         // Order status
         $orderStatus = developerSettings('order_status');
 
@@ -154,18 +156,34 @@ class OrderController
 
         $request->validate([
             'id' => 'required|integer|min:1',
-            'status' => 'required|string|min:2|exists:order_statuses,slug',
-            'previous_status' => 'required|string|min:2|exists:order_statuses,slug',
+            'type' => 'required|string|min:2',
+            'status' => 'required|string|min:2',
+            'previous_status' => 'required|string|min:2',
             'title' => 'required|string|min:2',
             'notes' => 'required|string|min:2',
             'icon' => 'required|string',
             'class' => 'required|string|min:2',
         ]);
 
-        $data = $request->only(['id', 'status', 'previous_status', 'title', 'notes', 'icon', 'class']) + [
+        if (!empty($request->previous_status)) {
+            if ($request->previous_status == $request->status) {
+                return redirect()->back()->with('failure', $request->title.' is the last status');
+
+                return [
+                    'code' => 400,
+                    'status' => 'failure',
+                    'message' => $request->title.' is the last status',
+                ];
+            }
+        }
+
+        $data = $request->only(['id', 'type', 'status', 'previous_status', 'title', 'notes', 'icon', 'class']) + [
             'actor_type' => 'admin',
             'actor_id' => auth()->guard('admin')->user()->id,
+            'show_in_frontend' => isset($request->show_in_frontend) ? $request->show_in_frontend : false
         ];
+
+        // dd($data);
 
         $resp = $this->orderRepository->updateStatus($data);
         return redirect()->back()->with($resp['status'], $resp['message']);

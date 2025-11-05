@@ -241,7 +241,7 @@
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Order number</th>
                         <th scope="col" class="px-2 py-1">User</th>
-                        <th scope="col" class="px-2 py-1">Total amount</th>
+                        <th scope="col" class="px-2 py-1">Amount</th>
                         <th scope="col" class="px-2 py-1">Items</th>
                         <th scope="col" class="px-2 py-1">Shipping</th>
                         <th scope="col" class="px-2 py-1">Datetime</th>
@@ -280,16 +280,10 @@
 
                             {{-- Payment Details --}}
                             <th scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                @if ($item->payment_status == "payment_captured")
+                                @if ($item->payment_status == "payment_settled_return_closed")
                                     <p class="text-[10px] text-green-700 dark:text-green-400">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
-                                    <a href="https://dashboard.razorpay.com/app/payments/{{$item->transaction_id}}?init_page=Payments" target="_blank" class="text-[10px] text-green-700 dark:text-green-400 underline hover:no-underline flex">
-                                        {{ strtoupper($item->payment_method).' '.$item->payment_status }}
-
-                                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z"/></svg>
-                                    </a>
                                 @else
                                     <p class="text-[10px] text-red-500">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
-                                    <p class="text-[10px] text-red-500">{{ strtoupper($item->payment_method).' '.$item->payment_status }}</p>
                                 @endif
                             </td>
 
@@ -344,13 +338,30 @@
                             {{-- Action --}}
                             <td scope="row" class="px-2 py-1 text-gray-600 dark:text-gray-400">
                                 <div class="flex space-x-2 items-center justify-end">
-                                    <div class="w-16">
+                                    <div>
                                         @php
                                             $orderStat = $item->orderStatus;
+                                            $paymentStat = $item->paymentStatus;
                                         @endphp
-                                        <div class="text-[10px] {{ $orderStat?->class }} px-1 flex items-center space-x-1">
-                                            <div class="w-3 h-3">{!! $orderStat?->icon !!}</div>
-                                            <p>{{ ucwords($orderStat->title) }}</p>
+
+                                        <div class="w-48 space-y-0.5">
+                                            @if($orderStat)
+                                                <div class="text-[10px] {{ $orderStat->class }} px-1 flex items-center space-x-1 truncate">
+                                                    <div class="w-4 h-4 flex items-center justify-center">
+                                                        {!! html_entity_decode($orderStat->icon) !!}
+                                                    </div>
+                                                    <p>{{ ucwords($orderStat->title) }}</p>
+                                                </div>
+                                            @endif
+
+                                            @if($paymentStat)
+                                                <div class="text-[10px] {{ $paymentStat->class }} px-1 flex items-center space-x-1">
+                                                    <div class="w-4 h-4 flex items-center justify-center">
+                                                        {!! html_entity_decode($paymentStat->icon) !!}
+                                                    </div>
+                                                    <p>{{ ucwords($paymentStat->title) }}</p>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
 

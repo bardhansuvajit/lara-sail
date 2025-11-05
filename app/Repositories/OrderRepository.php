@@ -74,7 +74,6 @@ class OrderRepository implements OrderInterface
                         ->orWhere('coupon_code', 'like', '%' . $keyword . '%')
                         ->orWhere('shipping_address', 'like', '%' . $keyword . '%')
                         ->orWhere('billing_address', 'like', '%' . $keyword . '%')
-                        ->orWhere('payment_method_title', 'like', '%' . $keyword . '%')
                         ->orWhere('payment_status', 'like', '%' . $keyword . '%')
                         ->orWhere('status', 'like', '%' . $keyword . '%');
                 });
@@ -237,6 +236,7 @@ class OrderRepository implements OrderInterface
             $statusIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>';
 
             $statusHistory = $this->orderStatusHistoryRepository->store([
+                'type' => 'order_status',
                 'order_id' => $data->id,
                 'status' => 'pending',
                 'previous_status' => null,
@@ -393,17 +393,25 @@ class OrderRepository implements OrderInterface
             if ($data['code'] == 200) {
                 // orders table
                 $data = $data['data'];
-                $data->status = $array['status'];
+
+                if ($array['type'] == "order_status") {
+                    $data->status = $array['status'];
+                } else {
+                    $data->payment_status = $array['status'];
+                }
+
                 $data->save();
 
                 // Order Status History
                 $statusHistory = $this->orderStatusHistoryRepository->store([
+                    'type' => $array['type'],
                     'order_id' => $array['id'],
                     'status' => $array['status'],
                     'previous_status' => $array['previous_status'],
                     'title' => $array['title'] ?? null,
                     'notes' => $array['notes'] ?? null,
-                    'show_in_frontend' => true,
+                    // 'show_in_frontend' => (bool) $array['show_in_frontend'] ?? false,
+                    'show_in_frontend' => (bool) false,
                     'actor_type' => $array['actor_type'],
                     'actor_id' => $array['actor_id'],
                     'class' => $array['class'] ?? null,

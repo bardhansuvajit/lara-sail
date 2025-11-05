@@ -18,30 +18,42 @@
             </div>
 
             @php
-                $paymentClasses = [
-                    'paid'    => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-                    'pending' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-                    'failed'  => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-                ];
-
-                $defaultClass = 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
-
-                $paymentStatusClass = $paymentClasses[$order->payment_status] ?? $defaultClass;
-
-                // Order Status
                 $orderStat = $order->orderStatus;
+                $paymentStat = $order->paymentStatus;
             @endphp
 
             <div class="flex flex-wrap gap-3">
-                <div class="px-3 py-1 rounded-full text-xs font-medium {{ $orderStat->class }} flex items-center space-x-1">
-                    <p>Order status:</p>
-                    <div class="w-3 h-3">{!! $orderStat?->icon !!}</div>
-                    <p>{{ ucfirst($orderStat->title) }}</p>
-                </div>
+                @if ($orderStat)
+                    <div class="px-3 py-1 rounded-full text-xs font-medium {{ $orderStat->class }} flex items-center space-x-1">
+                        <p>Order status:</p>
+                        <div class="w-3 h-3">{!! $orderStat?->icon !!}</div>
+                        <p>{{ ucfirst($orderStat->title) }}</p>
+                    </div>
+                @else
+                    <div class="px-3 py-1 rounded-full text-xs font-medium bg-red-500 text-red-900 flex items-center space-x-1">
+                        <p>Order status:</p>
+                        <div class="w-3 h-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-680q-33 0-56.5-23.5T400-760q0-33 23.5-56.5T480-840q33 0 56.5 23.5T560-760q0 33-23.5 56.5T480-680Zm-60 560v-480h120v480H420Z"/></svg>
+                        </div>
+                        <p>ERROR</p>
+                    </div>
+                @endif
 
-                <div class="px-3 py-1 rounded-full text-xs font-medium {{ $paymentStatusClass }}">
-                    Payment status: {{ ucfirst($order->payment_status) }}
-                </div>
+                @if ($paymentStat)
+                    <div class="px-3 py-1 rounded-full text-xs font-medium {{ $paymentStat->class }} flex items-center space-x-1">
+                        <p>Payment status:</p>
+                        <div class="w-3 h-3">{!! $paymentStat?->icon !!}</div>
+                        <p>{{ ucfirst($paymentStat->title) }}</p>
+                    </div>
+                @else
+                    <div class="px-3 py-1 rounded-full text-xs font-medium bg-red-500 text-red-900 flex items-center space-x-1">
+                        <p>Payment status:</p>
+                        <div class="w-3 h-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-680q-33 0-56.5-23.5T400-760q0-33 23.5-56.5T480-840q33 0 56.5 23.5T560-760q0 33-23.5 56.5T480-680Zm-60 560v-480h120v480H420Z"/></svg>
+                        </div>
+                        <p>ERROR</p>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -123,12 +135,15 @@
                                     <div class="">
                                         @foreach ($statuses as $os)
                                             <button
-                                                class="{{ $os->class }} mb-1 w-full text-[11px] flex items-center justify-start gap-2 rounded border-2 px-2 py-1 transition-all duration-150
-                                                    {{ ($order->status == $os->slug) ? 'border-gray-900  font-bold shadow-sm' : 'border-transparent hover:border-gray-400/40 font-light' }}"
+                                                class="{{ $os->class }} mb-1 w-full flex items-center justify-start gap-2 rounded border-2 px-2 py-1 transition-all duration-150
+                                                    {{ ($order->status == $os->slug) ? 'text-[20px] border-gray-900 font-bold shadow-sm' : 'text-[11px] border-transparent hover:border-gray-400/40 font-light' }}"
                                                 x-data=""
                                                 x-on:click.prevent="
                                                     $dispatch('open-modal', 'confirm-status-update');
-                                                    $dispatch('data-cstat', '{{ $order->status }}');
+                                                    $dispatch('data-modal-heading', 'Update Order Status');
+                                                    $dispatch('data-type', 'order');
+                                                    $dispatch('data-current-order-status-type', '{{ $order->status }}');
+                                                    $dispatch('data-current-payment-status-type', '{{ $order->payment_status }}');
                                                     $dispatch('data-slug', '{{ $os->slug }}');
                                                     $dispatch('data-title', '{{ $os->title }}');
                                                     $dispatch('data-class', '{{ $os->class }}');
@@ -173,11 +188,14 @@
                                         @foreach ($statuses as $os)
                                             <button
                                                 class="{{ $os->class }} mb-1 w-full text-[11px] flex items-center justify-start gap-2 rounded border-2 px-2 py-1 transition-all duration-150
-                                                    {{ ($order->payment_status == $os->slug) ? 'border-gray-900 dark:border-gray-50 font-semibold shadow-sm' : 'border-transparent hover:border-gray-400/40' }}"
+                                                    {{ ($order->payment_status == $os->slug) ? 'text-[20px] border-gray-900 dark:border-gray-50 font-bold shadow-sm' : 'text-[11px] border-transparent hover:border-gray-400/40 font-light' }}"
                                                 x-data=""
                                                 x-on:click.prevent="
                                                     $dispatch('open-modal', 'confirm-status-update');
-                                                    $dispatch('data-cstat', '{{ $order->status }}');
+                                                    $dispatch('data-modal-heading', 'Update Payment Status');
+                                                    $dispatch('data-type', 'payment');
+                                                    $dispatch('data-current-order-status-type', '{{ $order->status }}');
+                                                    $dispatch('data-current-payment-status-type', '{{ $order->payment_status }}');
                                                     $dispatch('data-slug', '{{ $os->slug }}');
                                                     $dispatch('data-title', '{{ $os->title }}');
                                                     $dispatch('data-class', '{{ $os->class }}');
@@ -207,24 +225,32 @@
                         <div class="flex justify-between">
                             <h2 class="text-sm font-semibold text-primary-500 dark:text-primary-300">Order Timeline</h2>
 
-                            <button 
-                                type="button"
-                                class="text-xs inline-block text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-500" 
-                                id="positionToggleButton" 
-                                >
-                                <div class="flex items-center">
-                                    <div class="w-3 h-3 mr-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"/></svg>
+                            @if (count($order->statusHistories) > 0)
+                                <button 
+                                    type="button"
+                                    class="text-xs inline-block text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-500" 
+                                    id="positionToggleButton" 
+                                    >
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 mr-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"/></svg>
+                                        </div>
+                                        Change position
                                     </div>
-                                    Change position
-                                </div>
-                            </button>
+                                </button>
+                            @endif
                         </div>
                     </div>
 
-                    @livewire('order-status-history-timeline', [
-                        'order' => $order
-                    ])
+                    @if (count($order->statusHistories) > 0)
+                        @livewire('order-status-history-timeline', [
+                            'order' => $order
+                        ])
+                    @else
+                        <div class="p-2">
+                            <p class="text-xs text-gray-400 dark:text-gray-400">No Order Timeline found!</p>
+                        </div>
+                    @endif
 
                 </div>
             </div>
@@ -245,7 +271,7 @@
                                     {{ $order->currency_symbol }}{{ formatIndianMoney($order->sub_total) }}
                                 </span>
                             </div>
-                            
+
                             @if(($order->mrp - $order->sub_total) > 0)
                                 <div class="flex justify-between">
                                     <span class="text-xs text-gray-600 dark:text-gray-400">Savings</span>
@@ -430,6 +456,19 @@
                     </div>
                     <div class="p-2 space-y-4">
                         <div>
+                            <h3 class="text-xs font-bold text-gray-900 dark:text-white mb-2">Shipping Method</h3>
+                            <p class="text-xs font-bold text-gray-600 dark:text-gray-400">
+                                {{ strtoupper($order->shipping_method_name) ?? 'Standard Shipping' }}
+                            </p>
+
+                            @if($order->shippingMethod)
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                    Est. delivery: {{ $order->created_at->addDays($order->shippingMethod->max_delivery_day)->format('M j, Y') }}
+                                </p>
+                            @endif
+                        </div>
+
+                        <div>
                             <h3 class="text-xs font-bold text-gray-900 dark:text-white mb-2">Shipping Address</h3>
                             @php $shippingAddress = json_decode($order->shipping_address); @endphp
                             <div class="text-xs text-gray-600 dark:text-gray-400">
@@ -454,61 +493,54 @@
                                 {{ empty($order->billing_address) ? 'Billing Address' : 'Billing Address (Different)' }}
                             </h3>
                             @if(empty($order->billing_address))
-                            <p class="text-xs text-gray-600 dark:text-gray-400">Same as shipping address</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">Same as shipping address</p>
                             @else
-                            @php $billingAddress = json_decode($order->billing_address); @endphp
-                            <div class="text-xs text-gray-600 dark:text-gray-400">
-                                <p>{{ $billingAddress->first_name }} {{ $billingAddress->last_name }}</p>
-                                <p>{{ $billingAddress->phone_no }}</p>
-                                <p>{{ $billingAddress->address_line_1 }}</p>
-                                @if($billingAddress->address_line_2)
-                                <p>{{ $billingAddress->address_line_2 }}</p>
-                                @endif
-                                @if($billingAddress->landmark)
-                                <p>Landmark: {{ $billingAddress->landmark }}</p>
-                                @endif
-                                <p>{{ $billingAddress->city }}, {{ strtoupper($billingAddress->state) }} - {{ $billingAddress->postal_code }}</p>
-                                @if($order->country->code != $billingAddress->country_code)
-                                <p>{{ $billingAddress->country_code }}</p>
-                                @endif
-                            </div>
+                                @php $billingAddress = json_decode($order->billing_address); @endphp
+                                <div class="text-xs text-gray-600 dark:text-gray-400">
+                                    <p>{{ $billingAddress->first_name }} {{ $billingAddress->last_name }}</p>
+                                    <p>{{ $billingAddress->phone_no }}</p>
+                                    <p>{{ $billingAddress->address_line_1 }}</p>
+                                    @if($billingAddress->address_line_2)
+                                    <p>{{ $billingAddress->address_line_2 }}</p>
+                                    @endif
+                                    @if($billingAddress->landmark)
+                                    <p>Landmark: {{ $billingAddress->landmark }}</p>
+                                    @endif
+                                    <p>{{ $billingAddress->city }}, {{ strtoupper($billingAddress->state) }} - {{ $billingAddress->postal_code }}</p>
+                                    @if($order->country->code != $billingAddress->country_code)
+                                    <p>{{ $billingAddress->country_code }}</p>
+                                    @endif
+                                </div>
                             @endif
                         </div>
                     </div>
                 </div>
 
-                <!-- Payment & Shipping Methods -->
+                <!-- Payment Method -->
                 <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                     <div class="p-2 border-b border-gray-200 dark:border-gray-600">
-                        <h2 class="text-sm font-semibold text-primary-500 dark:text-primary-300">Payment & Shipping</h2>
+                        <h2 class="text-sm font-semibold text-primary-500 dark:text-primary-300">Payment</h2>
                     </div>
                     <div class="p-2 space-y-4">
                         <div>
                             <h3 class="text-xs font-bold text-gray-900 dark:text-white mb-2">Payment Method</h3>
                             <div class="flex items-center">
                                 <div>
-                                    <p class="text-xs font-bold text-gray-900 dark:text-white">{{ $order->paymentMethod->title ?? 'N/A' }}</p>
-                                    <p class="mt-1 px-2 py-1 text-xs text-gray-600 dark:text-gray-400 {{ $order->paymentStatus->class }}">
-                                        {{ $order->paymentStatus->title }} - {{ $order->paymentStatus->description }}
-                                    </p>
+                                    <p class="text-xs font-bold text-gray-600 dark:text-gray-400">{{ $order->paymentMethod->title ?? 'N/A' }}</p>
+                                    <div class="mt-1 px-2 py-1  {{ $paymentStat->class }} flex items-center">
+                                        <div class="w-6 h-6 me-3">
+                                            {!! $paymentStat->icon !!}
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium">{{ $paymentStat->title }}</p>
+                                            <p class="text-xs">{{ $paymentStat->description }}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             @if($order->transaction_id)
                                 <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">
                                     Transaction ID: <span class="font-mono">{{ $order->transaction_id }}</span>
-                                </p>
-                            @endif
-                        </div>
-
-                        <div>
-                            <h3 class="text-xs font-bold text-gray-900 dark:text-white mb-2">Shipping Method</h3>
-                            <p class="text-xs font-bold text-gray-600 dark:text-gray-400">
-                                {{ strtoupper($order->shipping_method_name) ?? 'Standard Shipping' }}
-                            </p>
-
-                            @if($order->shippingMethod)
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    Est. delivery: {{ $order->created_at->addDays($order->shippingMethod->max_delivery_day)->format('M j, Y') }}
                                 </p>
                             @endif
                         </div>
@@ -577,14 +609,16 @@
         <div 
             class="p-6" 
             x-data="{ 
-                cstat: '', 
+                modalheading: '', 
+                type: '', 
                 slug: '', 
                 title: '', 
                 icon: '', 
                 statusClass: '', 
                 description: '', 
             }" 
-            x-on:data-cstat.window="cstat = $event.detail"
+            x-on:data-modal-heading.window="modalheading = $event.detail"
+            x-on:data-type.window="type = $event.detail"
             x-on:data-slug.window="slug = $event.detail"
             x-on:data-title.window="title = $event.detail"
             x-on:data-icon.window="icon = $event.detail"
@@ -594,9 +628,7 @@
             <!-- Header Section -->
             <div class="flex items-center gap-3 mb-4">
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                        {{ __('Update Order Status') }}
-                    </h2>
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100" x-text="modalheading"></h2>
                     <p class="text-sm text-gray-500 dark:text-gray-400">
                         {{ __('Confirm status change for order #') }}{{ $order->order_number }}
                     </p>
@@ -619,12 +651,23 @@
             <!-- Current Status Indicator -->
             <div class="flex items-center justify-between py-3 px-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800 mb-4">
                 <div class="flex items-center gap-2">
-                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
-                    </svg>
+                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
                     <span class="text-sm font-medium text-orange-800 dark:text-orange-200">
                         Current Status: 
-                        <span class="capitalize" x-text="cstat"></span>
+                        <template x-if="type === 'order'">
+                            @if ($orderStat)
+                                <span>{{ ucfirst($orderStat->title) }}</span>
+                            @else
+                                <span>Error</span>
+                            @endif
+                        </template>
+                        <template x-if="type === 'payment'">
+                            @if ($paymentStat)
+                                <span>{{ ucfirst($paymentStat->title) }}</span>
+                            @else
+                                <span>Error</span>
+                            @endif
+                        </template>
                     </span>
                 </div>
             </div>
@@ -641,25 +684,58 @@
                         {{ __('Cancel') }}
                     </x-admin.button>
 
-                    <form action="{{ route('admin.order.update.status') }}" method="POST" class="m-0">@csrf
-                        <input type="hidden" name="status" x-bind:value="slug" value="">
-                        <input type="hidden" name="previous_status" x-bind:value="cstat" value="">
-                        <input type="hidden" name="title" x-bind:value="title" value="">
-                        <input type="hidden" name="notes" x-bind:value="description" value="">
-                        <input type="hidden" name="icon" x-bind:value="icon" value="">
-                        <input type="hidden" name="class" x-bind:value="statusClass" value="">
-                        <input type="hidden" name="id" value="{{ $order->id }}">
+                    <template x-if="type === 'order'">
+                        <template x-if="slug != '{{ $order->status }}'">
+                            <form action="{{ route('admin.order.update.status') }}" method="POST" class="m-0">@csrf
+                                <input type="hidden" name="type" value="order_status">
+                                <input type="hidden" name="status" x-bind:value="slug" value="">
+                                <input type="hidden" name="previous_status" value="{{ $order->status }}">
+                                <input type="hidden" name="title" x-bind:value="title" value="">
+                                <input type="hidden" name="notes" x-bind:value="description" value="">
+                                <input type="hidden" name="icon" x-bind:value="icon" value="">
+                                <input type="hidden" name="class" x-bind:value="statusClass" value="">
+                                <input type="hidden" name="id" value="{{ $order->id }}">
+                                <input type="hidden" name="show_in_frontend" value="false">
 
-                        <x-admin.button
-                            element="button"
-                            tag="primary"
-                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 text-white transition-colors"
-                        >
-                            <div class="flex items-center gap-2">
-                                {{ __('Yes, Change Status') }}
-                            </div>
-                        </x-admin.button>
-                    </form>
+                                <x-admin.button
+                                    element="button"
+                                    tag="primary"
+                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 text-white transition-colors"
+                                >
+                                    <div class="flex items-center gap-2">
+                                        {{ __('Yes, Change Status') }}
+                                    </div>
+                                </x-admin.button>
+                            </form>
+                        </template>
+                    </template>
+
+                    <template x-if="type === 'payment'">
+                        <template x-if="slug != '{{ $order->payment_status }}'">
+                            <form action="{{ route('admin.order.update.status') }}" method="POST" class="m-0">@csrf
+                                <input type="hidden" name="type" value="payment_status">
+                                <input type="hidden" name="status" x-bind:value="slug" value="">
+                                <input type="hidden" name="previous_status" value="{{ $order->payment_status }}">
+                                <input type="hidden" name="title" x-bind:value="title" value="">
+                                <input type="hidden" name="notes" x-bind:value="description" value="">
+                                <input type="hidden" name="icon" x-bind:value="icon" value="">
+                                <input type="hidden" name="class" x-bind:value="statusClass" value="">
+                                <input type="hidden" name="id" value="{{ $order->id }}">
+                                <input type="hidden" name="show_in_frontend" value="false">
+
+                                <x-admin.button
+                                    element="button"
+                                    tag="primary"
+                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 text-white transition-colors"
+                                >
+                                    <div class="flex items-center gap-2">
+                                        {{ __('Yes, Change Status') }}
+                                    </div>
+                                </x-admin.button>
+                            </form>
+                        </template>
+                    </template>
+
                 </div>
             </div>
 
