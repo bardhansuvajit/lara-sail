@@ -99,7 +99,7 @@ class RazorpayController extends Controller
                 ]);
 
                 // You might also want to update order status
-                $order->update(['status' => 'confirmed']);
+                // $order->update(['payment_status' => 'payment_captured']);
             });
 
             // Store order ID in session for thank you page access control

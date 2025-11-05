@@ -448,19 +448,13 @@
                     <div class="flex justify-between">
                         <span class="text-gray-600 dark:text-gray-400">Method</span>
                         <span class="text-gray-900 dark:text-white font-medium">
-                            {{ $order->payment_method_title ? ucwords($order->payment_method_title) : 'Not Specified' }}
-                        </span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-600 dark:text-gray-400">Status</span>
-                        <span class="font-medium {{ $order->payment_status === 'paid' ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400' }}">
-                            {{ ucfirst($order->payment_status) }}
+                            {{ ucwords($order->paymentMethod?->title) ?? 'Not Specified' }}
                         </span>
                     </div>
                     @if($order->transaction_id)
                     <div class="flex justify-between">
                         <span class="text-gray-600 dark:text-gray-400">Transaction ID</span>
-                        <span class="text-gray-900 dark:text-white font-mono {{ FD['text-0'] }}">{{ $order->transaction_id }}</span>
+                        <span class="text-gray-900 dark:text-white font-mono">{{ $order->transaction_id }}</span>
                     </div>
                     @endif
                     @if($order->paid_at)

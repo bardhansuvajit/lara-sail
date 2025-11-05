@@ -143,7 +143,8 @@ class PaymentController extends Controller
                 'tax_details' => $cart->tax_details,
 
                 'payment_method_id' => $validated['payment_method_id'],
-                'payment_method_title' => $cart->payment_method_title,
+                'payment_method' => $cart->paymentMethod->method,
+                'payment_method_desc' => $cart->payment_method_title,
                 'payment_method_charge' => $cart->payment_method_charge,
                 'payment_method_discount' => $cart->payment_method_discount,
                 'payment_status' => $paymentMethodStatus,
