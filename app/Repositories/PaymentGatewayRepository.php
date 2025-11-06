@@ -82,6 +82,51 @@ class PaymentGatewayRepository implements PaymentGatewayInterface
         }
     }
 
+    public function createPayment(Order $order): array
+    {
+        try {
+            $amountPaise = intval(round($order->total * 100));
+
+            $orderData = [
+                'receipt'         => 'order_rcpt_' . $order->id,
+                'amount'          => $amountPaise,
+                'currency'        => config('razorpay.currency', 'INR'),
+                'payment_capture' => 1,
+            ];
+
+            // Log Razorpay API request
+            \Log::info('Razorpay Create Order API Request', [
+                'order_id' => $order->id,
+                'order_data' => $orderData
+            ]);
+
+            $razorpayOrder = $this->api->order->create($orderData);
+
+            // Log Razorpay API response
+            \Log::info('Razorpay Create Order API Response', [
+                'order_id' => $order->id,
+                'razorpay_order_id' => $razorpayOrder['id'],
+                'response' => $razorpayOrder
+            ]);
+
+            return [
+                'key' => $this->key,
+                'order_id' => $razorpayOrder['id'],
+                'amount' => $amountPaise,
+                'currency' => $orderData['currency'],
+                'name' => config('app.name'),
+                'description' => 'Order #' . $order->id,
+            ];
+        } catch (\Exception $e) {
+            \Log::error('Razorpay Create Order API Error', [
+                'order_id' => $order->id,
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
+
+    /*
     // Create razorpay order and return payload for frontend
     public function createPayment(Order $order): array
     {
@@ -95,7 +140,20 @@ class PaymentGatewayRepository implements PaymentGatewayInterface
             'payment_capture' => 1, // auto-capture
         ];
 
+        // Log Razorpay API request
+        \Log::info('Razorpay Create Order API Request', [
+            'order_id' => $order->id,
+            'order_data' => $orderData
+        ]);
+
         $razorpayOrder = $this->api->order->create($orderData);
+
+        // Log Razorpay API response
+        \Log::info('Razorpay Create Order API Response', [
+            'order_id' => $order->id,
+            'razorpay_order_id' => $razorpayOrder['id'],
+            'response' => $razorpayOrder
+        ]);
 
         return [
             'key' => $this->key,
@@ -106,6 +164,7 @@ class PaymentGatewayRepository implements PaymentGatewayInterface
             'description' => 'Order #' . $order->id,
         ];
     }
+    */
 
     public function verifyPayment(array $payload): bool
     {

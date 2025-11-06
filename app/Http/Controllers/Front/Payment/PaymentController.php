@@ -9,6 +9,7 @@ use App\Interfaces\AddressInterface;
 use App\Interfaces\OrderInterface;
 use App\Interfaces\PaymentGatewayInterface;
 use App\Interfaces\PaymentMethodInterface;
+use App\Interfaces\PaymentLogInterface;
 use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
@@ -18,19 +19,22 @@ class PaymentController extends Controller
     private OrderInterface $orderRepository;
     private PaymentGatewayInterface $paymentGatewayRepository;
     private PaymentMethodInterface $paymentMethodRepository;
+    private PaymentLogInterface $paymentLogRepository;
 
     public function __construct(
         CartInterface $cartRepository,
         AddressInterface $addressRepository,
         OrderInterface $orderRepository,
         PaymentGatewayInterface $paymentGatewayRepository,
-        PaymentMethodInterface $paymentMethodRepository
+        PaymentMethodInterface $paymentMethodRepository,
+        PaymentLogInterface $paymentLogRepository
     ) {
         $this->cartRepository = $cartRepository;
         $this->addressRepository = $addressRepository;
         $this->orderRepository = $orderRepository;
         $this->paymentGatewayRepository = $paymentGatewayRepository;
         $this->paymentMethodRepository = $paymentMethodRepository;
+        $this->paymentLogRepository = $paymentLogRepository;
     }
 
     public function initiate(Request $request, $gatewayId)
@@ -169,6 +173,22 @@ class PaymentController extends Controller
 
             // initiate payment with the created order
             $paymentPayload = $this->paymentGatewayRepository->createPayment($order);
+
+            // In initiate method
+            $this->paymentLogRepository->log([
+                'order_id' => $order->id,
+                'gateway' => 'razorpay',
+                'type' => 'request',
+                'action' => 'initiate',
+                'request_data' => [
+                    'order_id' => $order->id,
+                    'gateway_id' => $gatewayId,
+                    'payment_method_id' => $paymentMethodId,
+                    'amount' => $order->total,
+                    'currency' => $order->currency_code,
+                ],
+                'notes' => 'Payment initiation started',
+            ]);
 
             DB::commit();
 

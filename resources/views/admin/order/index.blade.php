@@ -241,10 +241,10 @@
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
                         <th scope="col" class="px-2 py-1">Order number</th>
                         <th scope="col" class="px-2 py-1">User</th>
-                        <th scope="col" class="px-2 py-1">Amount</th>
                         <th scope="col" class="px-2 py-1">Items</th>
                         <th scope="col" class="px-2 py-1">Shipping</th>
                         <th scope="col" class="px-2 py-1">Datetime</th>
+                        <th scope="col" class="px-2 py-1 text-end">Amount</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
@@ -275,15 +275,6 @@
                                     </a>
                                 @else
                                     <p class="text-red-500">ERROR</p>
-                                @endif
-                            </td>
-
-                            {{-- Payment Details --}}
-                            <th scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
-                                @if ($item->payment_status == "payment_settled_return_closed")
-                                    <p class="text-[10px] text-green-700 dark:text-green-400">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
-                                @else
-                                    <p class="text-[10px] text-red-500">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
                                 @endif
                             </td>
 
@@ -333,6 +324,17 @@
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <p class="text-[10px]">{{ $item->created_at->diffForHumans() }}</p>
                                 <p class="text-[10px]">{{ $item->created_at->format('F j, Y h:i a') }}</p>
+                            </td>
+
+                            {{-- Payment Details --}}
+                            <th scope="row" class="px-2 py-1 text-gray-900 dark:text-white text-end">
+                                @if ($item->payment_status == "payment_settled_return_closed")
+                                    <p class="text-[10px] text-green-700 dark:text-green-400">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
+                                    <p class="text-[10px] text-green-700 dark:text-green-400">{{ strtoupper($item->payment_method) }}</p>
+                                @else
+                                    <p class="text-[10px] text-red-500">{{ $item->currency_symbol }} {{ formatIndianMoney($item->total) }}</p>
+                                    <p class="text-[10px] text-red-500">{{ strtoupper($item->payment_method) }}</p>
+                                @endif
                             </td>
 
                             {{-- Action --}}

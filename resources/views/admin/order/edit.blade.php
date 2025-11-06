@@ -458,6 +458,18 @@
                         <div>
                             <h3 class="text-xs font-bold text-gray-900 dark:text-white mb-2">Shipping Method</h3>
                             <p class="text-xs font-bold text-gray-600 dark:text-gray-400">
+                                {{ strtoupper($order->shipping_method_name) }} Delivery
+
+                                @if ($order->shipping_cost > 0)
+                                    <span class="text-green-500">({{ $order->currency_symbol }} {{ formatIndianMoney($order->shipping_cost) }})</span>
+                                @endif
+                            </p>
+
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                Est. delivery by {{ $order->created_at->addDays($order->shippingMethod->max_delivery_day)->format('l, F d, Y') }}
+                            </p>
+
+                            {{-- <p class="text-xs font-bold text-gray-600 dark:text-gray-400">
                                 {{ strtoupper($order->shipping_method_name) ?? 'Standard Shipping' }}
                             </p>
 
@@ -465,7 +477,7 @@
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                     Est. delivery: {{ $order->created_at->addDays($order->shippingMethod->max_delivery_day)->format('M j, Y') }}
                                 </p>
-                            @endif
+                            @endif --}}
                         </div>
 
                         <div>
@@ -538,11 +550,153 @@
                                     </div>
                                 </div>
                             </div>
+
                             @if($order->transaction_id)
                                 <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">
                                     Transaction ID: <span class="font-mono">{{ $order->transaction_id }}</span>
                                 </p>
                             @endif
+
+                            {{-- @if ($order->paymentLogs)
+                                <div class="mt-3">
+                                    <h3 class="text-xs font-bold text-gray-900 dark:text-white mb-2">Payment Log</h3>
+                                    @foreach ($order->paymentLogs as $log)
+                                        <p class="text-xs">{{ $log }}</p>
+                                    @endforeach
+                                </div>
+                            @endif --}}
+
+                            @if ($order->paymentLogs->count() > 0)
+                                <div class="mt-6">
+                                    <h3 class="text-xs font-bold text-gray-900 dark:text-white mb-2 flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        Payment Logs ({{ $order->paymentLogs->count() }})
+                                    </h3>
+
+                                    <div class="space-y-2">
+                                        @foreach ($order->paymentLogs->sortByDesc('created_at') as $log)
+                                            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-xs">
+                                                <!-- Header -->
+                                                <div class="flex items-center justify-between mb-2">
+                                                    <div class="flex items-center space-x-2">
+                                                        <!-- Icon based on type -->
+                                                        @if($log->type === 'request')
+                                                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                                            </svg>
+                                                            <span class="text-xs font-medium text-blue-600 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded">Request</span>
+                                                        @elseif($log->type === 'response')
+                                                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                            </svg>
+                                                            <span class="text-xs font-medium text-green-600 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded">Response</span>
+                                                        @elseif($log->type === 'webhook')
+                                                            <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                                            </svg>
+                                                            <span class="text-xs font-medium text-purple-600 bg-purple-50 dark:bg-purple-900/20 px-2 py-1 rounded">Webhook</span>
+                                                        @else
+                                                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                                            </svg>
+                                                            <span class="text-xs font-medium text-gray-600 bg-gray-50 dark:bg-gray-700 px-2 py-1 rounded">{{ ucfirst($log->type) }}</span>
+                                                        @endif
+                                                        
+                                                        <!-- Action -->
+                                                        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300 capitalize">
+                                                            {{ str_replace('_', ' ', $log->action) }}
+                                                        </span>
+                                                    </div>
+
+                                                    <!-- Status badge -->
+                                                    @if($log->http_status)
+                                                        <span class="text-xs font-medium px-2 py-1 rounded 
+                                                            {{ $log->http_status >= 200 && $log->http_status < 300 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' }}">
+                                                            HTTP {{ $log->http_status }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+
+                                                <!-- Notes -->
+                                                @if($log->notes)
+                                                    <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">{{ $log->notes }}</p>
+                                                @endif
+
+                                                <!-- Data Sections -->
+                                                <div class="grid grid-cols-1 gap-2 text-xs">
+                                                    <!-- Request Data -->
+                                                    @if($log->request_data && count($log->request_data) > 0)
+                                                        <div>
+                                                            <div class="flex items-center mb-1">
+                                                                <span class="font-medium text-gray-700 dark:text-gray-300">Request</span>
+                                                            </div>
+                                                            <div class="bg-gray-50 dark:bg-gray-700/50 rounded p-2">
+                                                                @foreach($log->request_data as $key => $value)
+                                                                    <div class="flex justify-between">
+                                                                        <span class="text-gray-600 dark:text-gray-400">{{ $key }}:</span>
+                                                                        <span class="font-medium text-gray-800 dark:text-gray-200 text-right truncate">
+                                                                            @if(is_array($value))
+                                                                                {{ json_encode($value) }}
+                                                                            @else
+                                                                                {{ $value }}
+                                                                            @endif
+                                                                        </span>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    @endif
+
+                                                    <!-- Response Data -->
+                                                    @if($log->response_data && count($log->response_data) > 0)
+                                                        <div>
+                                                            <div class="flex items-center mb-1">
+                                                                <span class="font-medium text-gray-700 dark:text-gray-300">Response</span>
+                                                            </div>
+                                                            <div class="bg-gray-50 dark:bg-gray-700/50 rounded p-2">
+                                                                @foreach($log->response_data as $key => $value)
+                                                                    <div class="flex justify-between">
+                                                                        <span class="text-gray-600 dark:text-gray-400">{{ $key }}:</span>
+                                                                        <span class="font-medium text-gray-800 dark:text-gray-200 text-right truncate">
+                                                                            @if(is_array($value))
+                                                                                {{ json_encode($value) }}
+                                                                            @elseif(is_bool($value))
+                                                                                {{ $value ? 'true' : 'false' }}
+                                                                            @else
+                                                                                {{ $value }}
+                                                                            @endif
+                                                                        </span>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                </div>
+
+                                                <!-- Footer -->
+                                                <div class="flex justify-between items-center mt-3 pt-2 border-t border-gray-200 dark:border-gray-600">
+                                                    <div class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        <span>{{ $log->created_at->format('M j, Y g:i A') }}</span>
+                                                    </div>
+                                                    
+                                                    <div class="flex items-center space-x-1 text-xs text-gray-500 dark:text-gray-400">
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        <span>{{ $log->gateway }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
                         </div>
                     </div>
                 </div>

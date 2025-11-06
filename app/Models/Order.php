@@ -120,4 +120,9 @@ class Order extends Model
             ->where('show_in_frontend', true)
             ->orderBy('position', 'desc');
     }
+
+    public function paymentLogs()
+    {
+        return $this->hasMany('App\Models\PaymentLog', 'order_id', 'id')->orderBy('id', 'desc');
+    }
 }

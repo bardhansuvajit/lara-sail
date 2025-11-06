@@ -7,21 +7,52 @@ use App\Repositories\PaymentGatewayRepository;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Interfaces\PaymentLogInterface;
 
 class RazorpayController extends Controller
 {
     protected PaymentGatewayRepository $gateway;
+    private PaymentLogInterface $paymentLogRepository;
 
-    public function __construct(PaymentGatewayRepository $gateway)
-    {
+    public function __construct(
+        PaymentGatewayRepository $gateway,
+        PaymentLogInterface $paymentLogRepository
+    ) {
         $this->gateway = $gateway;
+        $this->paymentLogRepository = $paymentLogRepository;
     }
+
+    // public function __construct(PaymentGatewayRepository $gateway)
+    // {
+    //     $this->gateway = $gateway;
+    // }
 
     public function createOrder(Request $request)
     {
         $order = Order::findOrFail($request->input('order_id'));
 
+        // Log request
+        $this->paymentLogRepository->log([
+            'order_id' => $order->id,
+            'gateway' => 'razorpay',
+            'type' => 'request',
+            'action' => 'create_order',
+            'request_data' => $request->all(),
+            'notes' => 'Creating Razorpay order',
+        ]);
+
         $payload = $this->gateway->createPayment($order);
+
+        // Log response
+        $this->paymentLogRepository->log([
+            'order_id' => $order->id,
+            'gateway' => 'razorpay',
+            'type' => 'response',
+            'action' => 'create_order',
+            'response_data' => $payload,
+            'http_status' => 200,
+            'notes' => 'Razorpay order created successfully',
+        ]);
 
         // store Razorpay order_id in DB
         $order->update(['gateway_order_id' => $payload['order_id']]);
@@ -34,6 +65,16 @@ class RazorpayController extends Controller
         try {
             // dd($request->all());
             $data = $request->only(['razorpay_order_id','razorpay_payment_id','razorpay_signature','order_id']);
+
+            // Log verification request
+            $this->paymentLogRepository->log([
+                'order_id' => $data['order_id'],
+                'gateway' => 'razorpay',
+                'type' => 'request',
+                'action' => 'verify',
+                'request_data' => $data,
+                'notes' => 'Payment verification started',
+            ]);
 
             // Validate required fields
             $validator = validator($data, [
@@ -53,6 +94,21 @@ class RazorpayController extends Controller
             $order = Order::findOrFail($data['order_id']);
 
             $isValid = $this->gateway->verifyPayment($data);
+
+            // Log verification result
+            $this->paymentLogRepository->log([
+                'order_id' => $data['order_id'],
+                'gateway' => 'razorpay',
+                'type' => 'response',
+                'action' => 'verify',
+                'response_data' => [
+                    'is_valid' => $isValid,
+                    'razorpay_order_id' => $data['razorpay_order_id'],
+                    'razorpay_payment_id' => $data['razorpay_payment_id'],
+                ],
+                'http_status' => $isValid ? 200 : 422,
+                'notes' => $isValid ? 'Payment verified successfully' : 'Payment verification failed',
+            ]);
 
             if (!$isValid) {
                 // Update order status to failed
@@ -112,6 +168,17 @@ class RazorpayController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            // Log verification error
+            $this->paymentLogRepository->log([
+                'order_id' => $data['order_id'] ?? null,
+                'gateway' => 'razorpay',
+                'type' => 'response',
+                'action' => 'verify',
+                'response_data' => ['error' => $e->getMessage()],
+                'http_status' => 500,
+                'notes' => 'Payment verification error: ' . $e->getMessage(),
+            ]);
+
             \Log::error('Razorpay verification error: ' . $e->getMessage());
             
             return response()->json([
@@ -131,6 +198,16 @@ class RazorpayController extends Controller
                 'error_description' => 'nullable|string',
                 'error_code' => 'nullable|string',
                 'error_meta' => 'nullable|array'
+            ]);
+
+            // Log failure request
+            $this->paymentLogRepository->log([
+                'order_id' => $data['order_id'],
+                'gateway' => 'razorpay',
+                'type' => 'request',
+                'action' => 'fail',
+                'request_data' => $data,
+                'notes' => 'Payment failure recorded',
             ]);
 
             $order = Order::findOrFail($data['order_id']);
@@ -159,12 +236,34 @@ class RazorpayController extends Controller
                 ]);
             });
 
+            // Log failure completion
+            $this->paymentLogRepository->log([
+                'order_id' => $data['order_id'],
+                'gateway' => 'razorpay',
+                'type' => 'response',
+                'action' => 'fail',
+                'response_data' => ['status' => 'recorded'],
+                'http_status' => 200,
+                'notes' => 'Payment failure processed successfully',
+            ]);
+
             return response()->json([
                 'status' => true, 
                 'message' => 'Payment failure recorded successfully'
             ]);
 
         } catch (\Exception $e) {
+            // Log failure error
+            $this->paymentLogRepository->log([
+                'order_id' => $data['order_id'] ?? null,
+                'gateway' => 'razorpay',
+                'type' => 'response',
+                'action' => 'fail',
+                'response_data' => ['error' => $e->getMessage()],
+                'http_status' => 500,
+                'notes' => 'Failed to record payment failure: ' . $e->getMessage(),
+            ]);
+
             \Log::error('Razorpay payment failure recording error: ' . $e->getMessage());
             
             return response()->json([
@@ -187,6 +286,17 @@ class RazorpayController extends Controller
             // Razorpay webhook for payment failures
             $webhookBody = $request->getContent();
             $webhookSignature = $request->header('X-Razorpay-Signature');
+            $data = json_decode($webhookBody, true);
+
+            // Log webhook request
+            $this->paymentLogRepository->log([
+                'order_id' => null, // Will be determined later
+                'gateway' => 'razorpay',
+                'type' => 'webhook',
+                'action' => $data['event'] ?? 'unknown',
+                'request_data' => $data,
+                'notes' => 'Webhook received: ' . ($data['event'] ?? 'unknown'),
+            ]);
 
             if (!$this->gateway->verifyWebhookSignature($webhookBody, $webhookSignature)) {
                 \Log::error('Razorpay webhook signature verification failed');
@@ -231,8 +341,32 @@ class RazorpayController extends Controller
                 }
             // }
 
+            // Log webhook processing result
+            if ($order) {
+                $this->paymentLogRepository->log([
+                    'order_id' => $order->id,
+                    'gateway' => 'razorpay',
+                    'type' => 'webhook',
+                    'action' => $data['event'] ?? 'unknown',
+                    'response_data' => ['status' => 'processed'],
+                    'http_status' => 200,
+                    'notes' => 'Webhook processed successfully',
+                ]);
+            }
+
             return response()->json(['status' => 'success']);
         } catch (\Exception $e) {
+            // Log webhook error
+            $this->paymentLogRepository->log([
+                'order_id' => $order->id ?? null,
+                'gateway' => 'razorpay',
+                'type' => 'webhook',
+                'action' => $data['event'] ?? 'unknown',
+                'response_data' => ['error' => $e->getMessage()],
+                'http_status' => 500,
+                'notes' => 'Webhook processing error: ' . $e->getMessage(),
+            ]);
+
             \Log::error('Webhook error: ' . $e->getMessage());
             return response()->json(['status' => 'error'], 500);
         }
