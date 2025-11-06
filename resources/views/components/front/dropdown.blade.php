@@ -20,6 +20,7 @@ $width = match ($width) {
     '60' => 'sm:w-60',
     '96' => 'sm:w-96',
     'full' => 'sm:w-full',
+    // default => $width,
     default => $width,
 };
 
