@@ -1,4 +1,5 @@
 @props([
+    'name' => false,
     'align' => 'right', 
     'width' => '48', 
     'contentClasses' => 'py-1 bg-white dark:bg-gray-700'
@@ -26,6 +27,9 @@ $width = match ($width) {
 
 // Determine whether it's a drop-up or drop-down based on align
 $positionClasses = str_starts_with($align, 'top') ? 'bottom-full mb-2' : 'top-full mt-2';
+
+// category dropdown wants a large min-width at xl+; use Tailwind arbitrary value
+$specialMinClass = $name === 'category-dropdown' ? 'md:min-w-[1280px] w-screen' : '';
 @endphp
 
 <div class="relative" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
@@ -40,7 +44,7 @@ $positionClasses = str_starts_with($align, 'top') ? 'bottom-full mb-2' : 'top-fu
             x-transition:leave="transition ease-in duration-75"
             x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95"
-            class="absolute z-50 mt-2 {{ $positionClasses }} w-sc reen {{ $width }} {{ FD['rounded'] }} shadow-lg {{ $alignmentClasses }}"
+            class="absolute z-50 mt-2 {{ $positionClasses }} w-sc reen {{ $width }} {{ FD['rounded'] }} shadow-lg {{ $alignmentClasses }} {{ $specialMinClass }}"
             style="display: none;"
             @click="open = false">
         <div class="{{ FD['rounded'] }} ring-1 ring-black ring-opacity-5 {{ $contentClasses }}">
