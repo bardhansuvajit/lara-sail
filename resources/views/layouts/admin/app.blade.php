@@ -37,9 +37,9 @@
             <!-- sidebar -->
             @include('layouts.admin.sidebar')
 
-            <main class="p-o md:p-4 md:ml-64 justify-center h-auto pt-10 md:pt-[4.3rem]">
+            <main class="p-o md:p-4 md:ml-64 justify-center h-auto pt-10 md:pt-[4.3rem]" id="main-container">
                 <div class="flex flex-col justify-center items-center">
-                    <section class="bg-white w-full {!! $screen !!} py-8 md:px-4 rounded-lg antialiased dark:bg-gray-800 md:py-4">
+                    <section class="bg-white w-full {!! $screen !!} py-8 px-4 md:px-4 rounded-lg antialiased dark:bg-gray-800 md:py-4">
                         <div class="mx-auto">
 
                             <!-- breadcrumb -->

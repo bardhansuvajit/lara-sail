@@ -4,6 +4,17 @@ const bulkActionDiv = document.getElementById('bulkAction');
 const systemTheme = document.getElementById('systemTheme');
 const lightTheme = document.getElementById('lightTheme');
 const darkTheme = document.getElementById('darkTheme');
+const drawerToggle = document.getElementById('drawer-toggle');
+const sideDrawer = document.getElementById('drawer-navigation');
+const mainContainer = document.getElementById('main-container');
+const sidebarDropdowns = document.querySelectorAll('.sidebar-dropdowns');
+
+// Load sidebar state from localStorage
+const savedState = localStorage.getItem('sidebarState');
+
+// Device Detection
+const isMobileDevice = () => window.innerWidth <= 768;
+
 /*
 // const sellingPriceEl = document.getElementById('selling_price');
 const sellingPriceEl = document.querySelector("[id^='selling_price']");
@@ -30,6 +41,77 @@ document.querySelector('form').addEventListener('submit', function () {
         submitBtn.innerText = 'Loading...';
     }
 });
+
+if (sideDrawer && mainContainer) {
+    if (savedState === 'collapsed') {
+        // console.log('hh');
+
+        if (!isMobileDevice()) {
+            // collapsed state
+            sideDrawer.classList.remove('open', 'w-64');
+            sideDrawer.classList.add('w-[3.5rem]');
+            mainContainer.classList.remove('md:ml-64');
+            mainContainer.classList.add('md:ml-[3.5rem]');
+            sidebarDropdowns.forEach(el => {
+                el.querySelector('ul').classList.remove('ml-6');
+            });
+        }
+
+    } else {
+
+        if (!isMobileDevice()) {
+            // expanded (default)
+            sideDrawer.classList.add('open', 'w-64');
+            sideDrawer.classList.remove('w-[3.5rem]');
+            mainContainer.classList.add('md:ml-64');
+            mainContainer.classList.remove('md:ml-[3.5rem]');
+            sidebarDropdowns.forEach(el => {
+                el.querySelector('ul').classList.add('ml-6');
+            });
+        }
+
+    }
+}
+
+// Toggle sidebar drawer
+if (drawerToggle && sideDrawer && mainContainer) {
+    drawerToggle.addEventListener('click', function () {
+        if (sideDrawer.classList.contains('open')) {
+            if (!isMobileDevice()) {
+                // collapse sidebar
+                sideDrawer.classList.remove('open', 'w-64');
+                sideDrawer.classList.add('w-[3.5rem]');
+                mainContainer.classList.remove('md:ml-64');
+                mainContainer.classList.add('md:ml-[3.5rem]');
+                sidebarDropdowns.forEach(el => {
+                    el.querySelector('ul').classList.remove('ml-6');
+                });
+            } else {
+                // expand sidebar
+                sideDrawer.classList.remove('open', 'left-64');
+            }
+
+            localStorage.setItem('sidebarState', 'collapsed');
+        } else {
+
+            if (!isMobileDevice()) {
+                // expand sidebar
+                sideDrawer.classList.add('open', 'w-64');
+                sideDrawer.classList.remove('w-[3.5rem]');
+                mainContainer.classList.add('md:ml-64');
+                mainContainer.classList.remove('md:ml-[3.5rem]');
+                sidebarDropdowns.forEach(el => {
+                    el.querySelector('ul').classList.add('ml-6');
+                });
+            } else {
+                // expand sidebar
+                sideDrawer.classList.add('open', 'left-64');
+            }
+
+            localStorage.setItem('sidebarState', 'expanded');
+        }
+    });
+}
 
 // ## listing pages, check all checkboxes
 if (parentCheckbox && otherCheckboxes && bulkActionDiv) {
@@ -122,8 +204,6 @@ if (systemTheme && lightTheme && darkTheme) {
 // mask input fields, to accept 2 decimal digits
 // const formatPriceInput = (e) => {
 window.formatPriceInput = function (e) {
-    console.log('hh');
-    
     let value = e.target.value;
     // Remove non-numeric and non-decimal characters
     value = value.replace(/[^0-9.]/g, '');

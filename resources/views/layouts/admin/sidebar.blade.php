@@ -1,12 +1,13 @@
 <aside class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700 block" aria-label="Sidenav" id="drawer-navigation">
-    <div class="overflow-y-auto py-5 px-3 bg-white dark:bg-gray-800" style="height: calc(100vh - 110px);">
+    {{-- <div class="overflow-y-auto py-5 px-3 bg-white dark:bg-gray-800" style="height: calc(100vh - 110px);"> --}}
+    <div class="overflow-y-auto overflow-x-hidden py-2 px-3 bg-white dark:bg-gray-800" style="height: calc(100vh - 110px);">
 
         <ul class="space-y-2">
-            <li>
+            <li class="relative">
                 <a class="flex items-center p-2 font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
                     @if(request()->routeIs('admin.dashboard.index')) bg-primary-200 dark:bg-gray-600 @endif"
                     href="{{ route('admin.dashboard.index') }}"
-                >
+                    >
                     <div class="flex-shrink-0 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
                         <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
                     </div>
@@ -41,7 +42,7 @@
                 </a>
             </li>
 
-            <li x-data="{ expanded: @if(request()->is('admin/product*')) true @else false @endif }">
+            <li class="sidebar-dropdowns" x-data="{ expanded: @if(request()->is('admin/product*')) true @else false @endif }">
                 <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 cursor-pointer 
                     @if(request()->is('admin/product*')) bg-primary-200 dark:bg-gray-600 @endif "
                     @click="expanded = ! expanded" 
@@ -154,7 +155,7 @@
                 </div>
             </li>
 
-            <li x-data="{ expanded: @if(request()->is('admin/master*')) true @else false @endif }">
+            <li class="sidebar-dropdowns" x-data="{ expanded: @if(request()->is('admin/master*')) true @else false @endif }">
                 <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 cursor-pointer 
                     @if(request()->is('admin/master*')) bg-primary-200 dark:bg-gray-600 @endif "
                     @click="expanded = ! expanded" 
@@ -214,7 +215,7 @@
                 </div>
             </li>
 
-            <li x-data="{ expanded: @if(request()->is('admin/website*')) true @else false @endif }">
+            <li class="sidebar-dropdowns" x-data="{ expanded: @if(request()->is('admin/website*')) true @else false @endif }">
                 <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 cursor-pointer 
                     @if(request()->is('admin/website*')) bg-primary-200 dark:bg-gray-600 @endif "
                     @click="expanded = ! expanded" 
@@ -296,7 +297,7 @@
                 </div>
             </li>
 
-            <li x-data="{ expanded: @if(request()->is('admin/developer*')) true @else false @endif }">
+            <li class="sidebar-dropdowns" x-data="{ expanded: @if(request()->is('admin/developer*')) true @else false @endif }">
                 <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 cursor-pointer 
                     @if(request()->is('admin/developer*')) bg-primary-200 dark:bg-gray-600 @endif "
                     @click="expanded = ! expanded" 
