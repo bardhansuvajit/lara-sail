@@ -160,6 +160,7 @@ class ApplicationSettingRepository implements ApplicationSettingInterface
 
             if ($data['code'] == 200) {
                 $data['data']->value = $array['value'];
+                $data['data']->pretty_value = $array['pretty_value'];
                 $data['data']->save();
 
                 return [

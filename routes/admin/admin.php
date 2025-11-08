@@ -413,3 +413,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/download-sample-csv/{model}', [CsvTemplateController::class, 'download'])->name('csv-template.download');
     });
 });
+
+// Include
+if (applicationSettings('company_domain') == 'ed-tech') {
+    require __DIR__.'/ed-tech.php';
+}

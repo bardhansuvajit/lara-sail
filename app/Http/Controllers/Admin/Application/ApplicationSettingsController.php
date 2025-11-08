@@ -73,7 +73,7 @@ class ApplicationSettingsController
     {
         if ($model == "basic") {
             $resp = $this->applicationSettingRepository->list('', [], 'all', 'id', 'asc');
-            $productTypes = $this->developerSettingRepository->getByKey('product_type');
+            $productTypes = $this->developerSettingRepository->getByKey('company_category');
 
             return view('admin.application.basic.edit', [
                 'data' => $resp['data'],

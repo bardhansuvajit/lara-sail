@@ -73,7 +73,7 @@ class ProductListingController
 
         // product type
         $companyDomain = applicationSettings('company_domain');
-        $productTypes = json_decode($this->developerSettingRepository->getByKey('product_type')['data']->value);
+        $productTypes = json_decode($this->developerSettingRepository->getByKey('company_category')['data']->value);
         $productType = collect($productTypes)->firstWhere('key', $companyDomain);
 
         return view('admin.product.listing.create', [
@@ -265,7 +265,7 @@ class ProductListingController
 
             // product type
             $companyDomain = applicationSettings('company_domain');
-            $productTypes = json_decode($this->developerSettingRepository->getByKey('product_type')['data']->value);
+            $productTypes = json_decode($this->developerSettingRepository->getByKey('company_category')['data']->value);
             $productType = collect($productTypes)->firstWhere('key', $companyDomain);
 
             $allStatusResp = $this->productStatusRepository->list('', ['status' => 1], 'all', 'position', 'asc');

@@ -147,10 +147,14 @@ class AppServiceProvider extends ServiceProvider
             }
         }
 
+        // Company Domain
+        $companyDomain = applicationSettings('company_domain');
+
         View::share('activeCountries', $countries);
         View::share('activeCategories', $categories);
         View::share('activeCollections', $collections);
         View::share('socialMedia', $socialMedia);
+        View::share('companyDomain', $companyDomain);
         // View::share('searchBarSponsoredProducts', $searchBarSponsoredProducts);
     }
 }

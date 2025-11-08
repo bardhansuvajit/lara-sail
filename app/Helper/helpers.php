@@ -4,6 +4,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Route;
 use App\Repositories\DeveloperSettingRepository;
 use App\Repositories\ApplicationSettingRepository;
 
@@ -471,62 +472,114 @@ if (!function_exists('getUserIp')) {
     }
 }
 
-/*
-if (!function_exists('formatIndianMoney')) {
-    function formatIndianMoney($amount, $decimalPlaces = 2) {
-        // Set Indian locale (requires intl extension)
-        if (extension_loaded('intl')) {
-            $formatter = new NumberFormatter('en_IN', NumberFormatter::DECIMAL);
-            $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $decimalPlaces);
-            $formatted = $formatter->format($amount);
+if (!function_exists('isDropdownActive')) {
+    /**
+     * Check if any child route in a dropdown is active
+     * Exact replica of your original sidebar logic
+     */
+    function isDropdownActive($children): bool
+    {
+        foreach ($children as $child) {
+            if (isRouteActive($child['route'])) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
 
-            // Remove trailing ".00" or any ".X0"/".0X" if decimal part is zero
-            if (strpos($formatted, '.') !== false) {
-                $formatted = rtrim(rtrim($formatted, '0'), '.');
+if (!function_exists('isRouteActive')) {
+    /**
+     * Check if a specific route is active.
+     *
+     * Accepts:
+     *  - exact route name (e.g. 'admin.dashboard.index')
+     *  - wildcard route name (e.g. 'admin.product.listing.*')
+     *  - base prefix (e.g. 'admin.product.listing' or 'admin.product.listing.index')
+     *
+     * Falls back to request()->is() if route names are not available.
+     */
+    function isRouteActive($route): bool
+    {
+        if (!$route) return false;
+
+        // if a wildcard pattern is provided, use Laravel's routeIs directly
+        if (Str::contains($route, '*')) {
+            return (bool) request()->routeIs($route);
+        }
+
+        // If current route has a name, prefer route-name checks
+        $currentName = Route::currentRouteName();
+
+        if ($currentName) {
+            // 1) Exact match (e.g. menu has exact named route)
+            if (request()->routeIs($route)) {
+                return true;
             }
 
-            return $formatted;
+            // 2) If item is a specific action like '...index', match its prefix
+            //    so 'admin.product.listing.index' will match 'admin.product.listing.create' too.
+            $prefix = $route;
+
+            // If the route ends with a common action name, drop it to get the prefix.
+            // Common action suffixes: index, show, create, edit, store, update, destroy
+            $suffixes = ['.index', '.show', '.create', '.edit', '.store', '.update', '.destroy'];
+            foreach ($suffixes as $sfx) {
+                if (Str::endsWith($prefix, $sfx)) {
+                    $prefix = Str::replaceLast($sfx, '', $prefix);
+                    break;
+                }
+            }
+
+            // check prefix wildcard
+            if ($prefix && request()->routeIs($prefix . '.*')) {
+                return true;
+            }
+
+            // fallback: also allow startsWith (covers some edge cases)
+            if (Str::startsWith($currentName, $prefix)) {
+                return true;
+            }
         }
 
-        // Fallback for when intl extension is not available
-        $amount = round((float) $amount, $decimalPlaces);
-        $parts = explode('.', number_format($amount, $decimalPlaces, '.', ''));
-
-        $whole = $parts[0];
-        $lastThree = substr($whole, -3);
-        $otherNumbers = substr($whole, 0, -3);
-
-        $formatted = ($otherNumbers ? preg_replace("/\B(?=(\d{2})+(?!\d))/", ",", $otherNumbers) . ',' : '') . $lastThree;
-
-        // Only add decimal if it's not zero
-        if ($decimalPlaces > 0 && !empty($parts[1]) && (int)$parts[1] !== 0) {
-            $formatted .= '.' . rtrim($parts[1], '0');
-        }
-
-        return $formatted;
+        // Last fallback: compare by URL path if routes are not named.
+        // Convert dot notation to slash and use request()->is()
+        $guessed = str_replace('.', '/', $route);
+        return request()->is($guessed . '*');
     }
 }
-*/
 
-/*
-if (! function_exists('ratingBadgeClasses')) {
-    function ratingBadgeClasses(?float $rating): string
+if (!function_exists('canAccess')) {
+    /**
+     * Check if user has permission to access a resource
+     */
+    function canAccess($permission = null): bool
     {
-        if (empty($rating) || $rating <= 0) {
-            return 'hidden';
-        }
-
-        $base = 'pointer-events-auto inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 shadow-sm';
-        if ($rating >= 4.5)
-            return "$base bg-green-600 dark:bg-green-700 text-white";
-        if ($rating >= 3.5)
-            return "$base bg-green-500 dark:bg-green-600 text-white";
-        if ($rating >= 2.5)
-            return "$base bg-amber-400 dark:bg-amber-500 text-black";
-        if ($rating >= 1.5)
-            return "$base bg-orange-500 dark:bg-orange-600 text-white".FD['rounded'];
-
-        return "$base bg-red-600 dark:bg-red-700 text-white";
+        // For now, allow all access
+        return true;
     }
 }
-*/
+
+if (!function_exists('getSidebarItems')) {
+    /**
+     * Get sidebar items based on company category
+     */
+    function getSidebarItems($companyCategory)
+    {
+        $sidebarConfig = \App\Models\SidebarConfiguration::getByCategory($companyCategory);
+        return $sidebarConfig ? $sidebarConfig->sidebar_items : [];
+    }
+}
+
+if (!function_exists('generateRouteUrl')) {
+    /**
+     * Generate route URL with parameters if they exist
+     */
+    function generateRouteUrl($item)
+    {
+        if (isset($item['params'])) {
+            return route($item['route'], $item['params']);
+        }
+        return route($item['route']);
+    }
+}

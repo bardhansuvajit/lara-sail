@@ -35,7 +35,8 @@
             @include('layouts.admin.navigation')
 
             <!-- sidebar -->
-            @include('layouts.admin.sidebar')
+            <x-admin.panel-sidebar />
+            {{-- @include('layouts.admin.sidebar') --}}
 
             <main class="p-o md:p-4 md:ml-64 justify-center h-auto pt-10 md:pt-[4.3rem]" id="main-container">
                 <div class="flex flex-col justify-center items-center">

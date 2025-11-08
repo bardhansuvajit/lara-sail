@@ -36,7 +36,7 @@ return new class extends Migration
             'image_thumbnail_height_array' => [100, 250, 500]
         ]);
 
-        $product_type = json_encode([
+        $company_category = json_encode([
             [
                 'key' => 'core-commerce',
                 'title' => 'Core Commerce',
@@ -212,9 +212,9 @@ return new class extends Migration
                 'description' => '',
             ],
             [
-                'category' => 'product',
-                'key' => 'product_type',
-                'value' => $product_type,
+                'category' => 'application',
+                'key' => 'company_category',
+                'value' => $company_category,
                 'description' => '',
             ],
             [

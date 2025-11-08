@@ -3,7 +3,7 @@
     <div class="overflow-y-auto overflow-x-hidden py-2 px-3 bg-white dark:bg-gray-800" style="height: calc(100vh - 110px);">
 
         <ul class="space-y-2">
-            <li class="relative">
+            <li>
                 <a class="flex items-center p-2 font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
                     @if(request()->routeIs('admin.dashboard.index')) bg-primary-200 dark:bg-gray-600 @endif"
                     href="{{ route('admin.dashboard.index') }}"
@@ -297,9 +297,9 @@
                 </div>
             </li>
 
-            <li class="sidebar-dropdowns" x-data="{ expanded: @if(request()->is('admin/developer*')) true @else false @endif }">
+            <li class="sidebar-dropdowns" x-data="{ expanded: @if(request()->is('admin/developer*') || request()->is('admin/application/settings*')) true @else false @endif }">
                 <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 cursor-pointer 
-                    @if(request()->is('admin/developer*')) bg-primary-200 dark:bg-gray-600 @endif "
+                    @if(request()->is('admin/developer*') || request()->is('admin/application/settings*')) bg-primary-200 dark:bg-gray-600 @endif "
                     @click="expanded = ! expanded" 
                 >
                     <div class="flex-shrink-0 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
@@ -325,6 +325,19 @@
                                 </div>
 
                                 <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __('Trash') }}</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="flex items-center p-2 text-base font-medium text-gray-900 rounded dark:text-white hover:bg-primary-300 dark:hover:bg-gray-700 
+                                @if(request()->is('admin/application/settings*')) bg-primary-200 dark:bg-gray-600 @endif"
+                                href="{{ route('admin.application.settings.index', 'basic') }}"
+                            >
+                                <div class="flex-shrink-0 w-4 h-4 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 -960 960 960" fill="currentColor"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg>
+                                </div>
+
+                                <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __('Settings') }}</span>
                             </a>
                         </li>
 
