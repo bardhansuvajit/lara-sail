@@ -29,7 +29,7 @@ return new class extends Migration
                 'category' => 'stage1',
                 'key' => 'company_domain',
                 'value' => 'core-commerce',
-                'pretty_value' => 'core-commerce',
+                'pretty_value' => 'Core Commerce',
                 'description' => 'Default domain category for company setup',
             ],
             [
@@ -57,7 +57,7 @@ return new class extends Migration
                 'category' => 'stage2',
                 'key' => 'country_code',
                 'value' => 'IN',
-                'pretty_value' => 'core-commerce',
+                'pretty_value' => 'INDIA',
                 'description' => '',
             ],
             [

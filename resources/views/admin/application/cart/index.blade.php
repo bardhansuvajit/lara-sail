@@ -10,6 +10,10 @@
         @include('admin.application.includes.navbar')
 
         <div class="py-5 px-5 bg-gray-50 dark:bg-gray-700">
+            <div class="mb-3">
+                <x-admin.developer-expertise-alert />
+            </div>
+
             <div class="space-y-4">
                 @foreach ($data as $item)
                     @php

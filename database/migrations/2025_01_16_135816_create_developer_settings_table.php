@@ -39,7 +39,7 @@ return new class extends Migration
         $product_type = json_encode([
             [
                 'key' => 'core-commerce',
-                'title' => 'Core Commerce Products',
+                'title' => 'Core Commerce',
                 'children' => [
                     ['key' => 'physical-product', 'title' => 'Physical Product', 'description' => 'Tangible goods that require shipping'],
                     ['key' => 'digital-product', 'title' => 'Digital Product', 'description' => 'Downloadable files, software, or media'],
@@ -77,16 +77,16 @@ return new class extends Migration
                 ]
             ],
             [
-                'key' => 'financial',
-                'title' => 'Financial Products',
+                'key' => 'fin-tech',
+                'title' => 'Financial Technology',
                 'children' => [
                     ['key' => 'insurance', 'title' => 'Insurance', 'description' => 'Insurance policy products'],
                     ['key' => 'loan', 'title' => 'Loan', 'description' => 'Financial lending products'],
                 ]
             ],
             [
-                'key' => 'education',
-                'title' => 'Education',
+                'key' => 'ed-tech',
+                'title' => 'Educational Technology',
                 'children' => [
                     ['key' => 'online-course', 'title' => 'Online Course', 'description' => 'Digital educational programs'],
                     ['key' => 'ebook', 'title' => 'E-Book', 'description' => 'Digital books and publications'],

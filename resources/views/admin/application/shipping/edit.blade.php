@@ -10,6 +10,10 @@
         @include('admin.application.includes.navbar')
 
         <div class="py-5 px-5 bg-gray-100 dark:bg-gray-700">
+            <div class="mb-3">
+                <x-admin.developer-expertise-alert />
+            </div>
+
             <form action="{{ route('admin.application.settings.update', 'shipping') }}" method="POST" class="space-y-4">@csrf
                 @foreach ($data as $item)
                     <input type="hidden" name="id[]" value="{{ $item->id }}">

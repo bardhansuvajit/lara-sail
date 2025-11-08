@@ -5,6 +5,6 @@
     'hidden' => false,
 ])
 
-<option value="{{ $value }}" {{ $selected ? 'selected' : '' }} {{ $disabled ? 'disabled' : '' }} {{ $hidden ? 'hidden' : '' }}>
+<option value="{{ $value }}" {{ $selected ? 'selected' : '' }} {{ $disabled ? 'disabled' : '' }} {{ $hidden ? 'hidden' : '' }} {{ $attributes }}>
     {{ $slot }}
 </option>

@@ -121,7 +121,8 @@ class ApplicationSettingsController
                 $this->applicationSettingRepository->update([
                     'id' => $request->id[$index],
                     // 'key' => $request->key[$index],
-                    'value' => $request->value[$index]
+                    'value' => $request->value[$index],
+                    'pretty_value' => $request->pretty_value[$index],
                 ]);
             }
         } elseif ($request->type == "cart") {

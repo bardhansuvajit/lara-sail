@@ -10,52 +10,28 @@
         @include('admin.application.includes.navbar')
 
         <div class="py-5 px-5 bg-gray-50 dark:bg-gray-700">
-            <div class="mb-3">
-                <x-admin.developer-expertise-alert />
-            </div>
-
             <div class="space-y-4">
-                <div class="grid grid-cols-4">
-                    <div class="col-span-1">
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Company Domain</p>
-                        <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ ucwords($data[0]->pretty_value) }}</p>
-                    </div>
-
-                    <div class="col-span-1">
-                        <p class="text-xs  text-gray-500 dark:text-gray-400">Domain</p>
-                        <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $data[1]->pretty_value }}</p>
-                    </div>
-
-                    <div class="col-span-1">
-                        <p class="text-xs  text-gray-500 dark:text-gray-400">Title</p>
-                        <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $data[2]->pretty_value }}</p>
-                    </div>
-
-                    <div class="col-span-1">
-                        <p class="text-xs  text-gray-500 dark:text-gray-400">Company Establish Year</p>
-                        <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $data[3]->pretty_value }}</p>
-                    </div>
+                <div class="flex items-center gap-3">
+                    {{-- <div class="w-8">
+                        {!! $item->countryDetails->flag !!}
+                    </div> --}}
+                    <p class="text-xl font-semibold text-gray-900 dark:text-white">{{ $data[3]->value }}</p>
                 </div>
 
                 <div class="grid grid-cols-4">
                     <div class="col-span-1">
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Country</p>
-                        <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ ucwords($data[4]->pretty_value) }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Company Domain</p>
+                        <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ ucwords($data[0]->value) }}</p>
                     </div>
 
                     <div class="col-span-1">
-                        <p class="text-xs  text-gray-500 dark:text-gray-400">Support Contact</p>
-                        <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $data[5]->pretty_value }}</p>
+                        <p class="text-xs  text-gray-500 dark:text-gray-400">Domain</p>
+                        <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $data[1]->value }}</p>
                     </div>
 
                     <div class="col-span-1">
-                        <p class="text-xs  text-gray-500 dark:text-gray-400">Support Email</p>
-                        <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $data[6]->pretty_value }}</p>
-                    </div>
-
-                    <div class="col-span-1">
-                        <p class="text-xs  text-gray-500 dark:text-gray-400">Address</p>
-                        <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $data[7]->pretty_value }}</p>
+                        <p class="text-xs  text-gray-500 dark:text-gray-400">Title</p>
+                        <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $data[2]->value }}</p>
                     </div>
                 </div>
 
