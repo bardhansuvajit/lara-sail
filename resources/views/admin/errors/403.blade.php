@@ -1,75 +1,54 @@
-@extends('layouts.admin')
+<x-admin-app-layout
+    screen="lg"
+    title="{{ __('404') }}">
 
-@section('content')
-<div class="container-fluid px-4">
-    <div class="row justify-content-center min-vh-80">
-        <div class="col-md-8 col-lg-6">
-            <div class="text-center py-5">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto">
+            <div class="text-center">
                 <!-- Icon -->
-                <div class="mb-4">
-                    <div class="display-1 text-warning">
-                        <i class="fas fa-lock"></i>
-                    </div>
+                <div class="mb-8">
+                    <svg class="w-24 h-24 md:w-32 md:h-32 text-gray-400 dark:text-gray-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
                 </div>
                 
                 <!-- Title -->
-                <h1 class="h2 text-gray-800 mb-3">403 - Access Forbidden</h1>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                    403 - Unauthorized
+                </h1>
                 
                 <!-- Message -->
-                <div class="alert alert-light border mb-4">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-exclamation-triangle text-warning me-3 fs-4"></i>
-                        <div class="text-start">
-                            <p class="mb-1 fw-semibold">Permission Required</p>
-                            <p class="mb-0 text-muted small">
-                                @if(session('message'))
-                                    {{ session('message') }}
-                                @else
-                                    Your account does not have the necessary permissions to view this page.
-                                @endif
-                            </p>
-                        </div>
-                    </div>
+                <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
+                    The page you are looking for doesn't exist in the admin panel.
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <a href="{{ url()->previous() }}" class="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Go Back
+                    </a>
+                    <a href="{{ route('admin.dashboard.index') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        Dashboard
+                    </a>
                 </div>
 
-                <!-- Technical Details (for admins) -->
-                @if(auth()->guard('admin')->user()->hasRole('Super Admin') && session('permission'))
-                <div class="card border-0 bg-light mb-4">
-                    <div class="card-body">
-                        <h6 class="card-title">Technical Details</h6>
-                        <div class="row text-start small">
-                            <div class="col-md-6">
-                                <strong>Required Permission:</strong><br>
-                                <code>{{ session('permission') }}</code>
-                            </div>
-                            <div class="col-md-6">
-                                <strong>Requested URL:</strong><br>
-                                <span class="text-truncate">{{ session('intended_url') }}</span>
-                            </div>
-                        </div>
+                <!-- Debug Info (for admins) -->
+                @if(auth()->guard('admin')->check() && auth()->guard('admin')->user()->hasRole('Super Admin'))
+                <div class="mt-8 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-left max-w-2xl mx-auto">
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">Debug Information:</h3>
+                    <div class="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                        <p><strong>URL:</strong> {{ request()->fullUrl() }}</p>
+                        <p><strong>Method:</strong> {{ request()->method() }}</p>
                     </div>
                 </div>
                 @endif
-
-                <!-- Action Buttons -->
-                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
-                    <a href="{{ url()->previous() }}" class="btn btn-lg btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i>Return Back
-                    </a>
-                    <a href="{{ route('admin.dashboard.index') }}" class="btn btn-lg btn-primary">
-                        <i class="fas fa-home me-2"></i>Go to Dashboard
-                    </a>
-                </div>
-
-                <!-- Support Information -->
-                <div class="mt-5 pt-4 border-top">
-                    <p class="text-muted small">
-                        Need access? Contact your system administrator or 
-                        <a href="mailto:admin@example.com" class="text-decoration-none">support team</a>.
-                    </p>
-                </div>
             </div>
         </div>
     </div>
-</div>
-@endsection
+</x-admin-app-layout>

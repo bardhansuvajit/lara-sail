@@ -3,7 +3,7 @@
 @endphp
 
 <aside class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700 block" aria-label="Sidenav" id="drawer-navigation">
-    <div class="overflow-y-auto overflow-x-hidden py-2 px-3 bg-white dark:bg-gray-800" style="height: calc(100vh - 110px);">
+    <div class="overflow-y-auto overflow-x-hidden py-2 px-3 bg-white dark:bg-gray-800" style="height: calc(100vh - 60px);">
         <ul class="space-y-2">
             @foreach($sidebarItems as $item)
                 @if(canAccess($item['permission'] ?? null))
@@ -13,7 +13,9 @@
                                 @if(isRouteActive($item['route'])) bg-primary-200 dark:bg-gray-600 @endif"
                                 href="{{ generateRouteUrl($item) }}">
                                 <div class="flex-shrink-0 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
-                                    <x-admin.panel-sidebar-icon :name="$item['icon']" />
+                                    <div class="w-4 h-4">
+                                        <x-admin.panel-sidebar-icon :name="$item['icon']" />
+                                    </div>
                                 </div>
                                 <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __($item['title']) }}</span>
                             </a>
@@ -24,7 +26,9 @@
                                 @if(isDropdownActive($item['children'])) bg-primary-200 dark:bg-gray-600 @endif"
                                 @click="expanded = ! expanded">
                                 <div class="flex-shrink-0 text-gray-700 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
-                                    <x-admin.panel-sidebar-icon :name="$item['icon']" />
+                                    <div class="w-4 h-4">
+                                        <x-admin.panel-sidebar-icon :name="$item['icon']" />
+                                    </div>
                                 </div>
                                 <span class="flex-1 whitespace-nowrap ml-6 text-xs">{{ __($item['title']) }}</span>
                                 <svg x-show="!expanded" aria-hidden="true" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">

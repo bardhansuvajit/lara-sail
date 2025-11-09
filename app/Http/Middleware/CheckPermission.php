@@ -10,7 +10,6 @@ class CheckPermission
     public function handle(Request $request, Closure $next, $permission)
     {
         if (!canAccess($permission)) {
-            dd('here');
             // abort(403, 'Unauthorized action.');
             // Redirect to custom 403 page
             return redirect()->route('admin.unauthorized')->with([

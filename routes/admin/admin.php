@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\SocialMedia\SocialMediaController;
 // use App\Http\Controllers\Admin\Advertisement\AdSectionController;
 use App\Http\Controllers\Admin\Advertisement\AdItemController;
 use App\Http\Controllers\Admin\Advertisement\AdvertisementController;
+use App\Http\Controllers\Admin\Role\RoleController;
 
 use App\Http\Controllers\Admin\Product\Listing\ProductListingController;
 use App\Http\Controllers\Admin\Product\Category\ProductCategoryController;
