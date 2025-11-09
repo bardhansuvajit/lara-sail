@@ -126,10 +126,19 @@ Route::name('front.')->group(function () {
         Route::get('{slug}', [ProductController::class, 'detail'])->name('detail');
     });
     */
+
+    /*
     Route::name('product.')->group(function() {
         Route::get('{slug}', [ProductController::class, 'detail'])
             // ->where('slug', '^(?!terms-and-conditions|privacy-policy|return-policy|refund-policy|support|404).+$')
             ->where('slug', '^(?!terms-and-conditions$|privacy-policy$|return-policy$|refund-policy$|support$|contact-us$|404$).+')
+            ->name('detail');
+    });
+    */
+
+    Route::name('product.')->group(function() {
+        Route::get('{slug}', [ProductController::class, 'detail'])
+            ->where('slug', '^(?!admin|terms-and-conditions|privacy-policy|return-policy|refund-policy|support|contact-us|404).+$')
             ->name('detail');
     });
 });

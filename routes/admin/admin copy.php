@@ -46,12 +46,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['redirectAdminIfNotAuthenticated'])->group(function () {
         Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 
-        // DASHBOARD - All authenticated admins should have dashboard access
-        Route::prefix('dashboard')->name('dashboard.')->middleware(['permission:view_dashboard'])->group(function() {
+        // dashboard
+        Route::prefix('dashboard')->name('dashboard.')->group(function() {
             Route::get('/', [DashboardController::class, 'index'])->name('index');
         });
 
-        // PROFILE - All authenticated admins can manage their own profile
+        // profile
         Route::prefix('profile')->name('profile.')->controller(ProfileController::class)->group(function() {
             Route::get('/', 'index')->name('index');
             Route::get('/edit', 'edit')->name('edit');
@@ -70,8 +70,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
         });
 
-        // APPLICATION SETTINGS - Only specific admins
-        Route::prefix('application')->name('application.')->middleware(['permission:manage_settings'])->group(function() {
+        // application
+        Route::prefix('application')->name('application.')->group(function() {
             Route::prefix('settings')->name('settings.')->controller(ApplicationSettingsController::class)->group(function() {
                 Route::get('/{model}', 'index')->name('index');
                 Route::get('/{model}/edit', 'edit')->name('edit');
@@ -79,8 +79,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
         });
 
-        // USERS MANAGEMENT
-        Route::prefix('user')->name('user.')->middleware(['permission:manage_users'])->controller(UserController::class)->group(function() {
+        // user
+        Route::prefix('user')->name('user.')->controller(UserController::class)->group(function() {
             Route::get('/', 'index')->name('index');
             Route::get('/create', 'create')->name('create');
             Route::post('/store', 'store')->name('store');
@@ -92,8 +92,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/export/{type}', 'export')->name('export');
         });
 
-        // ORDERS MANAGEMENT
-        Route::prefix('order')->name('order.')->middleware(['permission:manage_orders'])->controller(OrderController::class)->group(function() {
+        // order
+        Route::prefix('order')->name('order.')->controller(OrderController::class)->group(function() {
             Route::get('/', 'index')->name('index');
             Route::post('/store', 'store')->name('store');
             Route::get('/edit/{id}', 'edit')->name('edit');
@@ -111,8 +111,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
         });
 
-        // PRODUCTS MANAGEMENT - Main product permission group
-        Route::prefix('product')->name('product.')->middleware(['permission:manage_products'])->group(function() {
+        // product
+        Route::prefix('product')->name('product.')->group(function() {
             // listing
             Route::prefix('listing')->name('listing.')->controller(ProductListingController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
@@ -135,7 +135,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
 
             // category
-            Route::prefix('category')->name('category.')->middleware(['permission:manage_categories'])->controller(ProductCategoryController::class)->group(function() {
+            Route::prefix('category')->name('category.')->controller(ProductCategoryController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
@@ -154,7 +154,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
 
             // collection
-            Route::prefix('collection')->name('collection.')->middleware(['permission:manage_collections'])->controller(ProductCollectionController::class)->group(function() {
+            Route::prefix('collection')->name('collection.')->controller(ProductCollectionController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
@@ -167,12 +167,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/position', 'position')->name('position');
             });
 
-            // image - Part of product management
+            // image
             Route::prefix('image')->name('image.')->controller(ProductImageController::class)->group(function() {
                 Route::delete('/delete/{id}', 'delete')->name('delete');
             });
 
-            // pricing - Part of product management
+            // pricing
             Route::prefix('pricing')->name('pricing.')->controller(ProductPricingController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
@@ -186,13 +186,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
 
             // feature
-            Route::prefix('feature')->name('feature.')->middleware(['permission:manage_features'])->controller(ProductFeatureController::class)->group(function() {
+            Route::prefix('feature')->name('feature.')->controller(ProductFeatureController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::delete('/delete/{id}', 'delete')->name('delete');
             });
 
             // review
-            Route::prefix('review')->name('review.')->middleware(['permission:manage_reviews'])->controller(ProductReviewController::class)->group(function() {
+            Route::prefix('review')->name('review.')->controller(ProductReviewController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
@@ -205,7 +205,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
 
             // variation
-            Route::prefix('variation')->name('variation.')->middleware(['permission:manage_variations'])->group(function() {
+            Route::prefix('variation')->name('variation.')->group(function() {
                 // attribute
                 Route::prefix('attribute')->name('attribute.')->controller(ProductVariationAttributeController::class)->group(function() {
                     Route::get('/', 'index')->name('index');
@@ -236,7 +236,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
 
             // coupon
-            Route::prefix('coupon')->name('coupon.')->middleware(['permission:manage_coupons'])->controller(ProductCouponController::class)->group(function() {
+            Route::prefix('coupon')->name('coupon.')->controller(ProductCouponController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
@@ -250,10 +250,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
         });
 
-        // MASTER DATA MANAGEMENT
-        Route::prefix('master')->name('master.')->middleware(['permission:manage_master'])->group(function() {
+        // master
+        Route::prefix('master')->name('master.')->group(function() {
             // country
-            Route::prefix('country')->name('country.')->middleware(['permission:manage_countries'])->controller(CountryController::class)->group(function() {
+            Route::prefix('country')->name('country.')->controller(CountryController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
@@ -266,7 +266,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
 
             // state
-            Route::prefix('state')->name('state.')->middleware(['permission:manage_states'])->controller(StateController::class)->group(function() {
+            Route::prefix('state')->name('state.')->controller(StateController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
@@ -279,7 +279,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
 
             // city
-            Route::prefix('city')->name('city.')->middleware(['permission:manage_cities'])->controller(CityController::class)->group(function() {
+            Route::prefix('city')->name('city.')->controller(CityController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
@@ -292,10 +292,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
         });
 
-        // WEBSITE MANAGEMENT
-        Route::prefix('website')->name('website.')->middleware(['permission:manage_website'])->group(function() {
+        // website
+        Route::prefix('website')->name('website.')->group(function() {
             // banner
-            Route::prefix('banner')->name('banner.')->middleware(['permission:manage_banners'])->controller(BannerController::class)->group(function() {
+            Route::prefix('banner')->name('banner.')->controller(BannerController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
@@ -309,7 +309,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
 
             // advertisement
-            Route::prefix('advertisement')->name('advertisement.')->middleware(['permission:manage_advertisements'])->controller(AdvertisementController::class)->group(function() {
+            Route::prefix('advertisement')->name('advertisement.')->controller(AdvertisementController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
@@ -354,7 +354,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
 
             // newsletter email
-            Route::prefix('newsletter/email')->name('newsletter.email.')->middleware(['permission:manage_newsletters'])->controller(NewsletterEmailController::class)->group(function() {
+            Route::prefix('newsletter/email')->name('newsletter.email.')->controller(NewsletterEmailController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
@@ -368,7 +368,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
 
             // content page
-            Route::prefix('content/page')->name('content.page.')->middleware(['permission:manage_content_pages'])->controller(ContentPageController::class)->group(function() {
+            Route::prefix('content/page')->name('content.page.')->controller(ContentPageController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
@@ -382,7 +382,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
 
             // social media
-            Route::prefix('social-media')->name('social.media.')->middleware(['permission:manage_social_media'])->controller(SocialMediaController::class)->group(function() {
+            Route::prefix('social-media')->name('social.media.')->controller(SocialMediaController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
@@ -396,9 +396,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
         });
 
-        // DEVELOPER OPTIONS
-        Route::prefix('developer')->name('developer.')->middleware(['permission:access_developer'])->group(function() {
-            Route::prefix('trash')->name('trash.')->middleware(['permission:manage_trash'])->controller(TrashController::class)->group(function() {
+        // developer
+        Route::prefix('developer')->name('developer.')->group(function() {
+            Route::prefix('trash')->name('trash.')->controller(TrashController::class)->group(function() {
                 Route::get('/', 'index')->name('index');
                 // Route::get('/create', 'create')->name('create');
                 // Route::post('/store', 'store')->name('store');
@@ -409,29 +409,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
         });
 
-        // CSV TEMPLATE - Available to anyone with product/user management permissions
+        // csv template
         Route::get('/download-sample-csv/{model}', [CsvTemplateController::class, 'download'])->name('csv-template.download');
     });
-
-    Route::get('/unauthorized', function () {
-        return view('admin.errors.403');
-    })->name('unauthorized');
-
-    Route::get('/not-found', function () {
-        return view('admin.errors.404');
-    })->name('not-found');
 });
 
 // Include
 if (applicationSettings('company_domain') == 'ed-tech') {
     require __DIR__.'/ed-tech.php';
 }
-
-Route::fallback(function () {
-    if (request()->is('admin/*')) {
-        return response()->view('admin.errors.404', [], 404);
-    }
-    
-    // For non-admin routes, use your frontend 404
-    return response()->view('front.404', [], 404);
-});

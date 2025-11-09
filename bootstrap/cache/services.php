@@ -37,10 +37,11 @@
     33 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     34 => 'Termwind\\Laravel\\TermwindServiceProvider',
     35 => 'Pest\\Laravel\\PestServiceProvider',
-    36 => 'App\\Providers\\AppServiceProvider',
-    37 => 'App\\Providers\\RepositoryServiceProvider',
-    38 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
-    39 => 'Barryvdh\\Debugbar\\ServiceProvider',
+    36 => 'Spatie\\Permission\\PermissionServiceProvider',
+    37 => 'App\\Providers\\AppServiceProvider',
+    38 => 'App\\Providers\\RepositoryServiceProvider',
+    39 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
+    40 => 'Barryvdh\\Debugbar\\ServiceProvider',
   ),
   'eager' => 
   array (
@@ -64,10 +65,11 @@
     17 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     18 => 'Termwind\\Laravel\\TermwindServiceProvider',
     19 => 'Pest\\Laravel\\PestServiceProvider',
-    20 => 'App\\Providers\\AppServiceProvider',
-    21 => 'App\\Providers\\RepositoryServiceProvider',
-    22 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
-    23 => 'Barryvdh\\Debugbar\\ServiceProvider',
+    20 => 'Spatie\\Permission\\PermissionServiceProvider',
+    21 => 'App\\Providers\\AppServiceProvider',
+    22 => 'App\\Providers\\RepositoryServiceProvider',
+    23 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
+    24 => 'Barryvdh\\Debugbar\\ServiceProvider',
   ),
   'deferred' => 
   array (

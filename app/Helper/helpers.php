@@ -555,10 +555,72 @@ if (!function_exists('canAccess')) {
      */
     function canAccess($permission = null): bool
     {
-        // For now, allow all access
-        return true;
+        if (!$permission) {
+            return true;
+        }
+
+        if (!auth()->guard('admin')->check()) {
+            return false;
+        }
+
+        $admin = auth()->guard('admin')->user();
+        
+        // Get all valid permissions from cache
+        $validPermissions = cache()->remember('valid_permissions', 3600, function () {
+            return \Spatie\Permission\Models\Permission::pluck('name')->toArray();
+        });
+        
+        // Check if permission is valid
+        if (!in_array($permission, $validPermissions)) {
+            return false;
+        }
+
+        return $admin->hasPermissionTo($permission);
+    }
+    /*
+    function canAccess($permission = null): bool
+    {
+        // If no permission required, allow access
+        if (!$permission) {
+            return true;
+        }
+
+        // Check if admin is logged in and has permission
+        if (auth()->guard('admin')->check()) {
+            $admin = auth()->guard('admin')->user();
+
+            // If using Spatie package
+            return $admin->hasPermissionTo($permission);
+
+            // If using custom permission method
+            // return $admin->hasPermission($permission);
+            
+            // If using Laravel's built-in Gate
+            // return Gate::forUser($admin)->allows($permission);
+        }
+
+        return false;
+    }
+    */
+}
+
+/*
+if (!function_exists('canAccess')) {
+    function canAccess($permission = null): bool
+    {
+        // If no permission required, allow access
+        if (!$permission) {
+            return true;
+        }
+
+        // return true;
+
+        // Implement your permission logic here
+        // This could check against user roles, permissions, etc.
+        return auth()->guard('admin')->check() && auth()->guard('admin')->user()->can($permission);
     }
 }
+*/
 
 if (!function_exists('getSidebarItems')) {
     /**
