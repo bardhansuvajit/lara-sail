@@ -412,6 +412,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // CSV TEMPLATE - Available to anyone with product/user management permissions
         Route::get('/download-sample-csv/{model}', [CsvTemplateController::class, 'download'])->name('csv-template.download');
+
+        // Include
+        if (applicationSettings('company_domain') == 'ed-tech') {
+            require __DIR__.'/ed-tech.php';
+        }
     });
 
     Route::get('/unauthorized', function () {
@@ -423,16 +428,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     })->name('not-found');
 });
 
-// Include
-if (applicationSettings('company_domain') == 'ed-tech') {
-    require __DIR__.'/ed-tech.php';
-}
-
 Route::fallback(function () {
     if (request()->is('admin/*')) {
         return response()->view('admin.errors.404', [], 404);
     }
-    
-    // For non-admin routes, use your frontend 404
-    return response()->view('front.404', [], 404);
 });

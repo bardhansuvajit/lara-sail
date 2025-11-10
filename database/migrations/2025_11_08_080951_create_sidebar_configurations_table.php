@@ -218,6 +218,32 @@ return new class extends Migration
                     ]
                 ]
             ],
+            // [
+            //     'type' => 'dropdown',
+            //     'title' => 'Role & Permission',
+            //     'icon' => 'shield-toggle',
+            //     'permission' => 'manage_roles',
+            //     'children' => [
+            //         [
+            //             'title' => 'Roles',
+            //             'route' => 'admin.roles.index',
+            //             'icon' => 'passkey',
+            //             'permission' => 'manage_roles'
+            //         ],
+            //         [
+            //             'title' => 'Permissions',
+            //             'route' => 'admin.permissions.index',
+            //             'icon' => 'shield-check',
+            //             'permission' => 'manage_permissions'
+            //         ],
+            //         [
+            //             'title' => 'User Roles',
+            //             'route' => 'admin.user.roles.index',
+            //             'icon' => 'users-gear',
+            //             'permission' => 'assign_roles'
+            //         ]
+            //     ]
+            // ],
             [
                 'type' => 'dropdown',
                 'title' => 'Developer options',
@@ -490,19 +516,19 @@ return new class extends Migration
                 'children' => [
                     [
                         'title' => 'Class',
-                        'route' => 'admin.class.index',
+                        'route' => 'admin.school.class.index',
                         'icon' => 'class',
                         'permission' => 'manage_classes'
                     ],
                     [
                         'title' => 'Subject',
-                        'route' => 'admin.subject.index',
+                        'route' => 'admin.school.subject.index',
                         'icon' => 'subject',
                         'permission' => 'manage_subjects'
                     ],
                     [
                         'title' => 'School',
-                        'route' => 'admin.school.index',
+                        'route' => 'admin.school.listing.index',
                         'icon' => 'school',
                         'permission' => 'manage_schools'
                     ],
@@ -565,6 +591,32 @@ return new class extends Migration
                     ]
                 ]
             ],
+            // [
+            //     'type' => 'dropdown',
+            //     'title' => 'Role & Permission',
+            //     'icon' => 'shield-toggle',
+            //     'permission' => 'manage_roles',
+            //     'children' => [
+            //         [
+            //             'title' => 'Roles',
+            //             'route' => 'admin.roles.index',
+            //             'icon' => 'passkey',
+            //             'permission' => 'manage_roles'
+            //         ],
+            //         [
+            //             'title' => 'Permissions',
+            //             'route' => 'admin.permissions.index',
+            //             'icon' => 'shield-check',
+            //             'permission' => 'manage_permissions'
+            //         ],
+            //         [
+            //             'title' => 'User Roles',
+            //             'route' => 'admin.user.roles.index',
+            //             'icon' => 'users-gear',
+            //             'permission' => 'assign_roles'
+            //         ]
+            //     ]
+            // ],
             [
                 'type' => 'dropdown',
                 'title' => 'Developer options',

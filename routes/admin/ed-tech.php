@@ -2,54 +2,55 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Admin\Class\ClassController;
-use App\Http\Controllers\Admin\Subject\SubjectController;
-use App\Http\Controllers\Admin\School\SchoolController;
+use App\Http\Controllers\Admin\School\Class\SchoolClassController;
+use App\Http\Controllers\Admin\School\Subject\SchoolSubjectController;
+use App\Http\Controllers\Admin\School\Listing\SchoolListingController;
 
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::middleware(['redirectAdminIfNotAuthenticated'])->group(function () {
+// Route::prefix('admin')->name('admin.')->group(function () {
+//     Route::middleware(['redirectAdminIfNotAuthenticated'])->group(function () {
+        Route::prefix('school')->name('school.')->group(function() {
 
-        // class
-        Route::prefix('class')->name('class.')->controller(ClassController::class)->group(function() {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/store', 'store')->name('store');
-            Route::get('/edit/{id}', 'edit')->name('edit');
-            Route::post('/update', 'update')->name('update');
-            Route::delete('/delete/{id}', 'delete')->name('delete');
-            Route::post('/bulk', 'bulk')->name('bulk');
-            Route::post('/import', 'import')->name('import');
-            Route::get('/export/{type}', 'export')->name('export');
-            Route::post('/position', 'position')->name('position');
+            // class
+            Route::prefix('class')->name('class.')->controller(SchoolClassController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+                Route::post('/bulk', 'bulk')->name('bulk');
+                Route::post('/import', 'import')->name('import');
+                Route::get('/export/{type}', 'export')->name('export');
+                Route::post('/position', 'position')->name('position');
+            });
+
+            // subject
+            Route::prefix('subject')->name('subject.')->controller(SchoolSubjectController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+                Route::post('/bulk', 'bulk')->name('bulk');
+                Route::post('/import', 'import')->name('import');
+                Route::get('/export/{type}', 'export')->name('export');
+                Route::post('/position', 'position')->name('position');
+            });
+
+            // school
+            Route::prefix('listing')->name('listing.')->controller(SchoolListingController::class)->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update', 'update')->name('update');
+                Route::delete('/delete/{id}', 'delete')->name('delete');
+                Route::post('/bulk', 'bulk')->name('bulk');
+                Route::post('/import', 'import')->name('import');
+                Route::get('/export/{type}', 'export')->name('export');
+                Route::post('/position', 'position')->name('position');
+            });
         });
-
-        // subject
-        Route::prefix('subject')->name('subject.')->controller(SubjectController::class)->group(function() {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/store', 'store')->name('store');
-            Route::get('/edit/{id}', 'edit')->name('edit');
-            Route::post('/update', 'update')->name('update');
-            Route::delete('/delete/{id}', 'delete')->name('delete');
-            Route::post('/bulk', 'bulk')->name('bulk');
-            Route::post('/import', 'import')->name('import');
-            Route::get('/export/{type}', 'export')->name('export');
-            Route::post('/position', 'position')->name('position');
-        });
-
-        // school
-        Route::prefix('school')->name('school.')->controller(SchoolController::class)->group(function() {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/store', 'store')->name('store');
-            Route::get('/edit/{id}', 'edit')->name('edit');
-            Route::post('/update', 'update')->name('update');
-            Route::delete('/delete/{id}', 'delete')->name('delete');
-            Route::post('/bulk', 'bulk')->name('bulk');
-            Route::post('/import', 'import')->name('import');
-            Route::get('/export/{type}', 'export')->name('export');
-            Route::post('/position', 'position')->name('position');
-        });
-
-    });
-});
+//     });
+// });

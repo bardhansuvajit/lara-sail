@@ -56,6 +56,10 @@ use App\Interfaces\OrderStatusHistoryInterface;
 use App\Interfaces\OrderStatusInterface;
 use App\Interfaces\PaymentMethodStatusInterface;
 use App\Interfaces\PaymentLogInterface;
+use App\Interfaces\SchoolClassInterface;
+use App\Interfaces\SchoolBoardInterface;
+use App\Interfaces\SchoolSubjectInterface;
+use App\Interfaces\SchoolInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -109,6 +113,10 @@ use App\Repositories\OrderStatusHistoryRepository;
 use App\Repositories\OrderStatusRepository;
 use App\Repositories\PaymentMethodStatusRepository;
 use App\Repositories\PaymentLogRepository;
+use App\Repositories\SchoolClassRepository;
+use App\Repositories\SchoolBoardRepository;
+use App\Repositories\SchoolSubjectRepository;
+use App\Repositories\SchoolRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -170,6 +178,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(OrderStatusInterface::class, OrderStatusRepository::class);
         $this->app->bind(PaymentMethodStatusInterface::class, PaymentMethodStatusRepository::class);
         $this->app->bind(PaymentLogInterface::class, PaymentLogRepository::class);
+        $this->app->bind(SchoolClassInterface::class, SchoolClassRepository::class);
+        $this->app->bind(SchoolBoardInterface::class, SchoolBoardRepository::class);
+        $this->app->bind(SchoolSubjectInterface::class, SchoolSubjectRepository::class);
+        $this->app->bind(SchoolInterface::class, SchoolRepository::class);
     }
 
     /**

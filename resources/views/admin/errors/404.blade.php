@@ -1,4 +1,4 @@
-<x-admin-app-layout
+<x-admin-guest-layout
     screen="lg"
     title="{{ __('404') }}">
 
@@ -51,4 +51,4 @@
             </div>
         </div>
     </div>
-</x-admin-app-layout>
+</x-admin-guest-layout>
