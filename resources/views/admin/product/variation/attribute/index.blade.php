@@ -235,7 +235,7 @@
                 </thead>
                 <tbody id="sortable-container" data-route="{{ route('admin.product.variation.attribute.position') }}">
                     @forelse ($data as $item)
-                        <tr class="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700" data-id="{{$item->id}}">
+                        <tr class="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700" data-id="{{$item->id}}">
                             <td class="p-2 w-2">
                                 <x-admin.input-checkbox 
                                     class="w-[1.2rem]"

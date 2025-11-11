@@ -22,7 +22,7 @@
                         </thead>
                         <tbody>
                             @forelse ($data as $item)
-                                <tr class="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <tr class="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <td scope="row" class="px-2 py-1 w-8 text-gray-900 dark:text-white">
                                         <p class="text-xs">{{ $item->id }}</p>
                                         <input type="hidden" name="id[]" value="{{ $item->id }}">

@@ -233,7 +233,7 @@
                 </thead>
                 <tbody>
                     @forelse ($data as $item)
-                        <tr class="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <tr class="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <td class="p-2 w-2">
                                 <x-admin.input-checkbox 
                                     class="w-[1.2rem]"

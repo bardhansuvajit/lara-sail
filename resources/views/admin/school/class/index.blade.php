@@ -223,7 +223,7 @@
                 </thead>
                 <tbody id="sortable-container" data-route="{{ route('admin.school.class.position') }}">
                     @forelse ($data as $item)
-                        <tr class="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700" data-id="{{$item->id}}">
+                        <tr class="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700" data-id="{{$item->id}}">
                             <td class="p-2 w-2">
                                 <x-admin.input-checkbox 
                                     class="w-[1.2rem]"
@@ -268,13 +268,13 @@
                                         x-data=""
                                         x-on:click.prevent="
                                             $dispatch('open-sidebar', 'quick-data-view');
-                                            $dispatch('data-icon', `{{ $item->thumbnail_icon }}`);
-                                            $dispatch('data-name', `{{ htmlspecialchars($item->name, ENT_QUOTES) }}`);
-                                            $dispatch('data-slug', `{{ $item->slug }}`);
-                                            $dispatch('data-description', `{{ htmlspecialchars($item->description, ENT_QUOTES) }}`);
-                                            $dispatch('data-meta-title', `{{ htmlspecialchars($item->meta_title, ENT_QUOTES) }}`);
-                                            $dispatch('data-meta-description', `{{ htmlspecialchars($item->meta_description, ENT_QUOTES) }}`);
-                                            $dispatch('data-tags', `{{ htmlspecialchars(json_encode($item->tags), ENT_QUOTES) }}`);
+                                            $dispatch('data-icon', {{ Js::from($item->thumbnail_icon) }});
+                                            $dispatch('data-name', {{ Js::from($item->name) }});
+                                            $dispatch('data-slug', {{ Js::from($item->slug) }});
+                                            $dispatch('data-description', {{ Js::from($item->description) }});
+                                            $dispatch('data-tags', {{ Js::from($item->tags) }});
+                                            $dispatch('data-metat', {{ Js::from($item->meta_title) }});
+                                            $dispatch('data-metad', {{ Js::from($item->meta_description) }});
                                             $dispatch('data-position', `{{ $item->position }}`);
                                             $dispatch('data-status', `{{ $item->status }}`);
                                             $dispatch('data-question-papers-count', `{{ $item->question_papers_count }}`);
@@ -342,16 +342,22 @@
                 icon: '', 
                 name: '', 
                 slug: '', 
-                description: ''
+                description: '',
+                tags: '',
+                metat: '',
+                metad: '',
             }"
             x-on:data-icon.window="icon = $event.detail"
             x-on:data-name.window="name = $event.detail"
             x-on:data-slug.window="slug = $event.detail"
             x-on:data-description.window="description = $event.detail"
+            x-on:data-tags.window="tags = $event.detail"
+            x-on:data-metat.window="metat = $event.detail"
+            x-on:data-metad.window="metad = $event.detail"
         >
             <div class="mb-4 flex justify-center">
                 <template x-if="icon && icon.trim() !== ''">
-                    <div class="w-32 text-blue-600" x-html="icon"></div>
+                    <div class="w-32" x-html="icon"></div>
                 </template>
                 <template x-if="!icon || icon.trim() === ''">
                     <p class="text-sm text-gray-500">No Icon</p>
@@ -359,19 +365,34 @@
             </div>
 
             <div class="space-y-3">
-                <div>
+                <div class="text-gray-400 dark:text-gray-400 font-thin">
                     <h5 class="text-xs font-bold mb-1">Name</h5>
-                    <p class="text-sm" x-text="name"></p>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 font-medium" x-text="name"></p>
                 </div>
 
-                <div>
+                <div class="text-gray-400 dark:text-gray-400 font-thin">
                     <h5 class="text-xs font-bold mb-1">Slug</h5>
-                    <p class="text-sm" x-text="slug"></p>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 font-medium" x-text="slug"></p>
                 </div>
 
-                <div>
+                <div class="text-gray-400 dark:text-gray-400 font-thin">
                     <h5 class="text-xs font-bold mb-1">Description</h5>
-                    <p class="text-sm" x-text="description"></p>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 font-medium" x-text="description"></p>
+                </div>
+
+                <div class="text-gray-400 dark:text-gray-400 font-thin">
+                    <h5 class="text-xs font-bold mb-1">Tags</h5>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 font-medium" x-html="tags"></p>
+                </div>
+
+                <div class="text-gray-400 dark:text-gray-400 font-thin">
+                    <h5 class="text-xs font-bold mb-1">Meta Title</h5>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 font-medium" x-html="metat"></p>
+                </div>
+
+                <div class="text-gray-400 dark:text-gray-400 font-thin">
+                    <h5 class="text-xs font-bold mb-1">Meta Description</h5>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 font-medium" x-text="metad"></p>
                 </div>
             </div>
         </div>
