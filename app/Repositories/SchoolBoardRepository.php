@@ -30,10 +30,14 @@ class SchoolBoardRepository implements SchoolBoardInterface
             // keyword
             if (!empty($keyword)) {
                 $query->where(function ($query) use ($keyword) {
-                    $query->where('title', 'like', '%' . $keyword . '%')
+                    $query->where('name', 'like', '%' . $keyword . '%')
                         ->orWhere('slug', 'like', '%' . $keyword . '%')
-                        ->orWhere('short_description', 'like', '%' . $keyword . '%')
-                        ->orWhere('long_description', 'like', '%' . $keyword . '%')
+                        ->orWhere('code', 'like', '%' . $keyword . '%')
+                        ->orWhere('description', 'like', '%' . $keyword . '%')
+                        ->orWhere('region', 'like', '%' . $keyword . '%')
+                        ->orWhere('type', 'like', '%' . $keyword . '%')
+                        ->orWhere('meta_title', 'like', '%' . $keyword . '%')
+                        ->orWhere('meta_description', 'like', '%' . $keyword . '%')
                         ->orWhere('tags', 'like', '%' . $keyword . '%');
                 });
             }
@@ -91,7 +95,7 @@ class SchoolBoardRepository implements SchoolBoardInterface
             $data->long_description = $array['long_description'] ?? null;
 
             if (!empty($array['image'])) {
-                $uploadResp = fileUpload($array['image'], 'p-clt');
+                $uploadResp = fileUpload($array['image'], 'sch-brd');
 
                 $data->image_s = $uploadResp['smallThumbName'];
                 $data->image_m = $uploadResp['mediumThumbName'];
@@ -196,7 +200,7 @@ class SchoolBoardRepository implements SchoolBoardInterface
                 $data['data']->long_description = $array['long_description'] ?? null;
 
                 if (!empty($array['image'])) {
-                    $uploadResp = fileUpload($array['image'], 'p-clt');
+                    $uploadResp = fileUpload($array['image'], 'sch-brd');
 
                     $data['data']->image_s = $uploadResp['smallThumbName'];
                     $data['data']->image_m = $uploadResp['mediumThumbName'];

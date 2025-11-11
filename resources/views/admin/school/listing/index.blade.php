@@ -1,8 +1,8 @@
 <x-admin-app-layout
     screen="md:w-full"
-    title="{{ __('Subject') }}"
+    title="{{ __('School') }}"
     :breadcrumb="[
-        ['label' => 'Subject']
+        ['label' => 'School']
     ]"
 >
 
@@ -11,7 +11,7 @@
         <div class="flex space-x-2 justify-end">
             <x-admin.button
                 element="a"
-                :href="route('admin.school.subject.create')">
+                :href="route('admin.school.listing.create')">
                 @slot('icon')
                     <svg fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" /></svg>
                 @endslot
@@ -27,8 +27,8 @@
                 id="importButton" 
                 x-on:click.prevent="
                     $dispatch('open-modal', 'import');
-                    $dispatch('set-model', 'SchoolSubject');
-                    $dispatch('set-route', '{{ route('admin.school.subject.import') }}');
+                    $dispatch('set-model', 'School');
+                    $dispatch('set-route', '{{ route('admin.school.listing.import') }}');
                 ">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
@@ -45,7 +45,7 @@
                 id="exportButton" 
                 x-on:click.prevent="
                     $dispatch('open-modal', 'export');
-                    $dispatch('set-route', '{{ route('admin.school.subject.export', 'csv') }}');
+                    $dispatch('set-route', '{{ route('admin.school.listing.export', 'csv') }}');
                 ">
                 @slot('icon')
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
@@ -78,7 +78,7 @@
                                 id="perPage" 
                                 name="perPage" 
                                 :title="request()->input('perPage')"
-                            >
+                                >
                                 @slot('options')
                                     <x-admin.input-select-option value="15" :selected="request()->input('perPage') == 15"> 15 </x-admin.input-select-option>
                                     <x-admin.input-select-option value="25" :selected="request()->input('perPage') == 25"> 25 </x-admin.input-select-option>
@@ -94,11 +94,12 @@
                             <x-admin.input-select 
                                 id="sortBy" 
                                 name="sortBy"
-                                :title="request()->input('sortBy') == 'id' ? 'ID' : (request()->input('sortBy') == 'title' ? 'Title' : 'Position')"
-                            >
+                                {{-- :title="request()->input('sortBy') == 'id' ? 'ID' : (request()->input('sortBy') == 'name' ? 'Name' : 'Position')" --}}
+                                :title="request()->input('sortBy') ?? 'Position'"
+                                >
                                 @slot('options')
                                     <x-admin.input-select-option value="id" :selected="request()->input('sortBy') == 'id'"> {{ __('ID') }} </x-admin.input-select-option>
-                                    <x-admin.input-select-option value="title" :selected="request()->input('sortBy') == 'title'"> {{ __('Title') }} </x-admin.input-select-option>
+                                    <x-admin.input-select-option value="name" :selected="request()->input('sortBy') == 'name'"> {{ __('Name') }} </x-admin.input-select-option>
                                     <x-admin.input-select-option value="position" :selected="request()->input('sortBy') == 'position'"> {{ __('Position') }} </x-admin.input-select-option>
                                 @endslot
                             </x-admin.input-select>
@@ -153,7 +154,7 @@
                                         $dispatch('open-modal', 'confirm-bulk-action');
                                         $dispatch('data-desc', 'Are you sure you want to Delete selected data?');
                                         $dispatch('data-button-text', 'Yes, Delete');
-                                        $dispatch('set-route', '{{ route('admin.school.subject.bulk') }}');
+                                        $dispatch('set-route', '{{ route('admin.school.listing.bulk') }}');
                                         document.getElementById('bulkActionInput').value = 'delete';
                                     ">
                                     @slot('icon')
@@ -216,12 +217,12 @@
                             <x-admin.input-checkbox id="checkbox-all" />
                         </th>
                         <th scope="col" class="px-2 py-1 text-start">ID</th>
-                        <th scope="col" class="px-2 py-1">Title</th>
+                        <th scope="col" class="px-2 py-1">Name</th>
                         <th scope="col" class="px-2 py-1">Description</th>
                         <th scope="col" class="px-2 py-1 text-end">Action</th>
                     </tr>
                 </thead>
-                <tbody id="sortable-container" data-route="{{ route('admin.school.subject.position') }}">
+                <tbody id="sortable-container" data-route="{{ route('admin.school.listing.position') }}">
                     @forelse ($data as $item)
                         <tr class="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700" data-id="{{$item->id}}">
                             <td class="p-2 w-2">
@@ -242,7 +243,9 @@
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 <div class="flex space-x-2 items-center">
-                                    <div class="w-20 text-gray-800 dark:text-gray-50">{!! $item->thumbnail_icon !!}</div>
+                                    {{-- @if ($item->logo_path)
+                                        <div class="h-12 text-gray-800 dark:text-gray-50">{{ Storage::url($item->logo_path) }}</div>
+                                    @endif --}}
                                     <div>
                                         <p class="text-xs font-bold">{{ $item->name }}</p>
                                         <p class="text-xs text-gray-500">{{ $item->slug }}</p>
@@ -255,7 +258,7 @@
                             <td scope="row" class="px-2 py-1 text-gray-500">
                                 <div class="flex space-x-2 items-center justify-end">
                                     @livewire('toggle-status', [
-                                        'model' => 'SchoolSubject',
+                                        'model' => 'School',
                                         'modelId' => $item->id,
                                     ])
 
@@ -290,7 +293,7 @@
                                     <x-admin.button-icon
                                         element="a"
                                         tag="secondary"
-                                        :href="route('admin.school.subject.edit', $item->id)"
+                                        :href="route('admin.school.listing.edit', $item->id)"
                                         title="Edit"
                                         class="border" >
                                         @slot('icon')
@@ -306,7 +309,7 @@
                                         x-on:click.prevent="
                                             $dispatch('open-modal', 'confirm-data-deletion');
                                             $dispatch('data-title', '{{ htmlspecialchars($item->title, ENT_QUOTES) }}');
-                                            $dispatch('set-delete-route', '{{ route('admin.school.subject.delete', $item->id) }}')
+                                            $dispatch('set-delete-route', '{{ route('admin.school.listing.delete', $item->id) }}')
                                         " >
                                         @slot('icon')
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>

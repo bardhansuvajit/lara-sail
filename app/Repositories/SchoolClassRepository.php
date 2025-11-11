@@ -92,7 +92,7 @@ class SchoolClassRepository implements SchoolClassInterface
             $data->long_description = $array['long_description'] ?? null;
 
             if (!empty($array['image'])) {
-                $uploadResp = fileUpload($array['image'], 'p-clt');
+                $uploadResp = fileUpload($array['image'], 'sch-cls');
 
                 $data->image_s = $uploadResp['smallThumbName'];
                 $data->image_m = $uploadResp['mediumThumbName'];
@@ -197,7 +197,7 @@ class SchoolClassRepository implements SchoolClassInterface
                 $data['data']->long_description = $array['long_description'] ?? null;
 
                 if (!empty($array['image'])) {
-                    $uploadResp = fileUpload($array['image'], 'p-clt');
+                    $uploadResp = fileUpload($array['image'], 'sch-cls');
 
                     $data['data']->image_s = $uploadResp['smallThumbName'];
                     $data['data']->image_m = $uploadResp['mediumThumbName'];

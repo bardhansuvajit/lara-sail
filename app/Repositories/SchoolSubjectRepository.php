@@ -94,7 +94,7 @@ class SchoolSubjectRepository implements SchoolSubjectInterface
             $data->long_description = $array['long_description'] ?? null;
 
             if (!empty($array['image'])) {
-                $uploadResp = fileUpload($array['image'], 'p-clt');
+                $uploadResp = fileUpload($array['image'], 'sch-sub');
 
                 $data->image_s = $uploadResp['smallThumbName'];
                 $data->image_m = $uploadResp['mediumThumbName'];
@@ -199,7 +199,7 @@ class SchoolSubjectRepository implements SchoolSubjectInterface
                 $data['data']->long_description = $array['long_description'] ?? null;
 
                 if (!empty($array['image'])) {
-                    $uploadResp = fileUpload($array['image'], 'p-clt');
+                    $uploadResp = fileUpload($array['image'], 'sch-sub');
 
                     $data['data']->image_s = $uploadResp['smallThumbName'];
                     $data['data']->image_m = $uploadResp['mediumThumbName'];

@@ -17,18 +17,41 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('code')->nullable(); // School code
+            $table->string('country_code')->nullable()->default('IN');
 
             // Icon Fields
-            $table->text('thumbnail_icon')->nullable();
             $table->text('logo_path')->nullable();
 
             // Additional Metadata
             $table->text('description')->nullable();
             $table->string('district')->nullable();
             $table->string('address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable()->default('West Bengal');
+            $table->string('pincode')->nullable();
+
+            // School Type & Level
             $table->string('type')->default('government'); // government, private, aided
             $table->string('level')->default('secondary'); // primary, secondary, higher_secondary
+            $table->string('board_affiliation')->nullable(); // WBBSE, WBCHSE, CBSE, ICSE, etc.
 
+            // Contact Information
+            $table->string('official_email')->nullable();
+            $table->string('phone_number')->nullable();
+            $table->string('alternate_phone')->nullable();
+            $table->string('website')->nullable();
+            $table->string('fax')->nullable();
+
+            // Contact Person Details
+            $table->string('contact_person_name')->nullable();
+            $table->string('contact_person_designation')->nullable();
+            $table->string('contact_person_mobile')->nullable();
+            $table->string('contact_person_email')->nullable();
+
+            // Academic Information
+            $table->unsignedSmallInteger('established_year')->nullable();
+            $table->string('principal_name')->nullable();
+            
             // SEO & Display
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
@@ -38,10 +61,13 @@ return new class extends Migration
 
             // Statistics
             $table->integer('question_papers_count')->default(0);
+            $table->integer('student_count')->nullable();
+            $table->integer('teacher_count')->nullable();
 
-            // Timestamps
+            // Timestamps & Status
             $table->unsignedSmallInteger('position')->default(1);
             $table->tinyInteger('status')->default(1)->comment('1 active, 0 inactive');
+            $table->boolean('is_featured')->default(false);
             $table->softDeletes();
             $table->timestamps();
 
@@ -49,6 +75,10 @@ return new class extends Migration
             $table->index(['status', 'position']);
             $table->index('district');
             $table->index('type');
+            $table->index('level');
+            $table->index('board_affiliation');
+            $table->index('is_featured');
+            $table->index('established_year');
         });
 
         $schools = [
@@ -58,16 +88,31 @@ return new class extends Migration
                 'code' => 'BZS',
                 'position' => 1,
                 'status' => 1,
-                'thumbnail_icon' => $this->getSchoolSvg('#DC2626'),
                 'description' => 'Bankura Zilla School, one of the oldest and most prestigious schools in Bankura district, West Bengal.',
                 'district' => 'Bankura',
                 'address' => 'Bankura, West Bengal',
+                'city' => 'Bankura',
+                'state' => 'West Bengal',
+                'country_code' => 'IN',
+                'pincode' => '722101',
                 'type' => 'government',
                 'level' => 'higher_secondary',
+                'board_affiliation' => 'WBBSE, WBCHSE',
+                'official_email' => 'bankurazillaschool@edu.in',
+                'phone_number' => '+91-3242-XXXXXX',
+                'website' => 'https://bankurazillaschool.edu.in',
+                'contact_person_name' => 'Mr. Pinaki Banerjee',
+                'contact_person_designation' => 'Principal',
+                'contact_person_mobile' => '+91-9876543210',
+                'established_year' => 1845,
+                'principal_name' => 'Dr. S. K. Mukherjee',
                 'meta_title' => 'Bankura Zilla School Question Papers - WBBSE WBCHSE',
                 'meta_description' => 'Question papers and study materials from Bankura Zilla School for WBBSE and WBCHSE boards.',
-                'tags' => json_encode(['bankura', 'zilla_school', 'government', 'prestigious']),
+                'tags' => json_encode(['bankura', 'zilla_school', 'government', 'prestigious', 'wbbse', 'wbchse']),
                 'question_papers_count' => 0,
+                'student_count' => 1200,
+                'teacher_count' => 45,
+                'is_featured' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -77,16 +122,31 @@ return new class extends Migration
                 'code' => 'MCS',
                 'position' => 2,
                 'status' => 1,
-                'thumbnail_icon' => $this->getSchoolSvg('#7C3AED'),
                 'description' => 'Midnapore Collegiate School, a renowned institution in West Medinipur district with excellent academic records.',
                 'district' => 'West Medinipur',
                 'address' => 'Midnapore, West Bengal',
+                'city' => 'Midnapore',
+                'state' => 'West Bengal',
+                'country_code' => 'IN',
+                'pincode' => '721101',
                 'type' => 'government',
                 'level' => 'higher_secondary',
+                'board_affiliation' => 'WBBSE, WBCHSE',
+                'official_email' => 'midnaporecollegiate@edu.in',
+                'phone_number' => '+91-3222-XXXXXX',
+                'website' => 'https://midnaporecollegiateschool.edu.in',
+                'contact_person_name' => 'Dr. A. K. Sen',
+                'contact_person_designation' => 'Principal',
+                'contact_person_mobile' => '+91-9876543211',
+                'established_year' => 1834,
+                'principal_name' => 'Dr. A. K. Sen',
                 'meta_title' => 'Midnapore Collegiate School Question Papers',
                 'meta_description' => 'Question papers from Midnapore Collegiate School for secondary and higher secondary levels.',
-                'tags' => json_encode(['midnapore', 'collegiate_school', 'government', 'renowned']),
+                'tags' => json_encode(['midnapore', 'collegiate_school', 'government', 'renowned', 'wbbse', 'wbchse']),
                 'question_papers_count' => 0,
+                'student_count' => 1500,
+                'teacher_count' => 52,
+                'is_featured' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -96,16 +156,31 @@ return new class extends Migration
                 'code' => 'HCS',
                 'position' => 3,
                 'status' => 1,
-                'thumbnail_icon' => $this->getSchoolSvg('#10B981'),
                 'description' => 'Hooghly Collegiate School, established in 1836, is one of the oldest schools in Hooghly district.',
                 'district' => 'Hooghly',
                 'address' => 'Chinsurah, Hooghly, West Bengal',
+                'city' => 'Chinsurah',
+                'state' => 'West Bengal',
+                'country_code' => 'IN',
+                'pincode' => '712101',
                 'type' => 'government',
                 'level' => 'higher_secondary',
+                'board_affiliation' => 'WBBSE, WBCHSE',
+                'official_email' => 'hooghlycollegiate@edu.in',
+                'phone_number' => '+91-33-XXXXXX',
+                'website' => 'https://hooghlycollegiateschool.edu.in',
+                'contact_person_name' => 'Mr. Rajesh Kudrapalli',
+                'contact_person_designation' => 'Principal',
+                'contact_person_mobile' => '+91-9876543212',
+                'established_year' => 1836,
+                'principal_name' => 'Dr. P. K. Ghosh',
                 'meta_title' => 'Hooghly Collegiate School Question Papers',
                 'meta_description' => 'Question papers from Hooghly Collegiate School for WBBSE and WBCHSE examinations.',
-                'tags' => json_encode(['hooghly', 'collegiate_school', 'historic', 'government']),
+                'tags' => json_encode(['hooghly', 'collegiate_school', 'historic', 'government', 'wbbse', 'wbchse']),
                 'question_papers_count' => 0,
+                'student_count' => 1100,
+                'teacher_count' => 48,
+                'is_featured' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -115,16 +190,31 @@ return new class extends Migration
                 'code' => 'SPHS',
                 'position' => 4,
                 'status' => 1,
-                'thumbnail_icon' => $this->getSchoolSvg('#F59E0B'),
                 'description' => 'South Point High School, a premier private school in Kolkata known for academic excellence.',
                 'district' => 'Kolkata',
                 'address' => 'Kolkata, West Bengal',
+                'city' => 'Kolkata',
+                'state' => 'West Bengal',
+                'country_code' => 'IN',
+                'pincode' => '700026',
                 'type' => 'private',
                 'level' => 'higher_secondary',
+                'board_affiliation' => 'WBBSE, WBCHSE, ISC',
+                'official_email' => 'info@southpoint.edu.in',
+                'phone_number' => '+91-33-XXXXXX',
+                'website' => 'https://southpoint.edu.in',
+                'contact_person_name' => 'Mr. PK Sarkar',
+                'contact_person_designation' => 'Administrative Officer',
+                'contact_person_mobile' => '+91-9876543213',
+                'established_year' => 1954,
+                'principal_name' => 'Ms. R. S. Sarker',
                 'meta_title' => 'South Point High School Question Papers',
                 'meta_description' => 'Question papers from South Point High School for secondary and higher secondary levels.',
-                'tags' => json_encode(['kolkata', 'south_point', 'private', 'premier']),
+                'tags' => json_encode(['kolkata', 'south_point', 'private', 'premier', 'wbbse', 'wbchse', 'isc']),
                 'question_papers_count' => 0,
+                'student_count' => 3000,
+                'teacher_count' => 120,
+                'is_featured' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -141,15 +231,4 @@ return new class extends Migration
         Schema::dropIfExists('schools');
     }
 
-    private function getSchoolSvg($color)
-    {
-        return '<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="20" y="25" width="40" height="30" rx="4" fill="'.$color.'" opacity="0.1"/>
-            <rect x="25" y="30" width="30" height="20" rx="2" fill="'.$color.'" opacity="0.2"/>
-            <rect x="30" y="25" width="20" height="25" rx="2" fill="'.$color.'" opacity="0.3"/>
-            <rect x="35" y="20" width="10" height="5" rx="1" fill="'.$color.'"/>
-            <circle cx="40" cy="40" r="3" fill="'.$color.'" opacity="0.7"/>
-            <path d="M25 55L55 55" stroke="'.$color.'" stroke-width="2"/>
-        </svg>';
-    }
 };

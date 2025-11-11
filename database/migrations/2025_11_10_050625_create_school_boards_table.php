@@ -85,6 +85,42 @@ return new class extends Migration
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'name' => 'Central Board of Secondary Education',
+                'slug' => 'cbse',
+                'code' => 'CBSE',
+                'position' => 3,
+                'status' => 0,
+                'thumbnail_icon' => $this->getCbseSvg(),
+                'description' => 'Central Board of Secondary Education (CBSE) - National level board of education in India for public and private schools, controlled and managed by Union Government of India.',
+                'region' => 'National',
+                'type' => 'National Board',
+                'meta_title' => 'CBSE Question Papers - Class 10 & 12 Board Papers',
+                'meta_description' => 'Access CBSE question papers, previous year board papers, sample papers, and study materials for Class 1 to 12.',
+                'tags' => json_encode(['cbse', 'central_board', 'national_board', 'all_india', 'class_10', 'class_12']),
+                'schools_count' => 0,
+                'question_papers_count' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Council for the Indian School Certificate Examinations',
+                'slug' => 'icse',
+                'code' => 'ICSE',
+                'position' => 4,
+                'status' => 0,
+                'thumbnail_icon' => $this->getIcseSvg(),
+                'description' => 'Council for the Indian School Certificate Examinations (CISCE) - Conducts ICSE (Class 10) and ISC (Class 12) examinations for private schools in India.',
+                'region' => 'National',
+                'type' => 'National Board',
+                'meta_title' => 'ICSE/ISC Question Papers - CISCE Board Papers',
+                'meta_description' => 'Access ICSE Class 10 and ISC Class 12 question papers, previous year papers, and study materials from CISCE board.',
+                'tags' => json_encode(['icse', 'isc', 'cisce', 'private_board', 'class_10', 'class_12', 'national_board']),
+                'schools_count' => 0,
+                'question_papers_count' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
         ];
 
         DB::table('school_boards')->insert($boards);
@@ -119,6 +155,26 @@ return new class extends Migration
             <text x="40" y="42" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="10" font-weight="bold">WBCHSE</text>
             <text x="40" y="58" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="8">HS Education</text>
             <path d="M25 20L30 25L35 20M55 20L50 25L45 20" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+        </svg>';
+    }
+
+    private function getCbseSvg()
+    {
+        return '<?xml version="1.0" encoding="utf-8"?>
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <rect x="10" y="10" width="80" height="80" rx="5" ry="5" fill="#004684"/>
+            <text x="50" y="45" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="bold">CBSE</text>
+            <text x="50" y="65" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="8">EDUCATION</text>
+        </svg>';
+    }
+
+    private function getIcseSvg()
+    {
+        return '<?xml version="1.0" encoding="utf-8"?>
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="#8B0000"/>
+            <text x="50" y="45" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">ICSE</text>
+            <text x="50" y="65" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="8">ISC</text>
         </svg>';
     }
 };
