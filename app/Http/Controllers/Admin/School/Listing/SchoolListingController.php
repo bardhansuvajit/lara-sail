@@ -121,8 +121,6 @@ class SchoolListingController
             
             // Additional settings
             'tags' => 'nullable|max:500',
-            'status' => 'required|in:0,1',
-            
         ], [
             'image.max' => 'The image field must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
             'slug.unique' => 'The slug has already been taken. Please choose a different one.',

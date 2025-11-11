@@ -149,7 +149,7 @@ class SchoolRepository implements SchoolInterface
             // Position and Status
             $lastPosition = School::max('position');
             $data->position = $lastPosition ? $lastPosition + 1 : 1;
-            $data->status = $array['status'] ?? 1; // Use status from form
+            $data->status = 0;
 
             $data->save();
 
