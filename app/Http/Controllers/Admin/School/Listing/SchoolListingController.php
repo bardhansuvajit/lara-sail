@@ -79,7 +79,6 @@ class SchoolListingController
             'image' => 'nullable|image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
             
             'name' => 'required|min:2|max:255',
-            'slug' => 'required|min:2|max:255|unique:schools,slug',
             'code' => 'nullable|min:2|max:255',
             'description' => 'nullable|min:2|max:1000',
             
@@ -123,7 +122,6 @@ class SchoolListingController
             'tags' => 'nullable|max:500',
         ], [
             'image.max' => 'The image field must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
-            'slug.unique' => 'The slug has already been taken. Please choose a different one.',
             'established_year.max' => 'Established year cannot be in the future.',
         ]);
 

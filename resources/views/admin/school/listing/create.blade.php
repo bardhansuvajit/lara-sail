@@ -16,7 +16,6 @@
                 <div>
                     <x-admin.input-label for="image" :value="__('School Logo')" />
                     <x-admin.file-input id="image" name="image" />
-                    <p class="mt-1 text-sm text-gray-500">Upload school logo image</p>
                     <x-admin.input-error :messages="$errors->get('image')" class="mt-2" />
                 </div>
             </div>
@@ -45,7 +44,7 @@
             <div class="mb-6">
                 <div>
                     <x-admin.input-label for="description" :value="__('Description')" />
-                    <x-admin.textarea id="description" class="block w-full" name="description" rows="4" placeholder="Enter school description" maxlength="1000">{{ old('description') }}</x-admin.textarea>
+                    <x-admin.textarea id="description" class="block w-full" name="description" placeholder="Enter school description" maxlength="1000" :value="old('description')"></x-admin.textarea>
                     <p class="mt-1 text-sm text-gray-500">Max 1000 characters</p>
                     <x-admin.input-error :messages="$errors->get('description')" class="mt-2" />
                 </div>
@@ -100,7 +99,7 @@
                 <div class="grid gap-4 sm:grid-cols-1">
                     <div>
                         <x-admin.input-label for="address" :value="__('Address')" />
-                        <x-admin.textarea id="address" class="block w-full" name="address" rows="4" placeholder="Enter Street Address" maxlength="1000">{{ old('address') }}</x-admin.textarea>
+                        <x-admin.textarea id="address" class="block w-full" name="address" placeholder="Enter Street Address" maxlength="1000" :value="old('address')"></x-admin.textarea>
                         <x-admin.input-error :messages="$errors->get('address')" class="mt-2" />
                     </div>
                 </div>
@@ -127,7 +126,7 @@
                         <x-admin.input-select id="level" name="level" title="Select Education Level" class="w-full">
                             @slot('options')
                                 @foreach ($educationLevel as $key => $val)
-                                    <x-admin.input-select-option value="{{ $key }}" :selected="old('type', 'higher_secondary') == $key">{{ $val }}</x-admin.input-select-option>
+                                    <x-admin.input-select-option value="{{ $key }}" :selected="old('level', 'higher_secondary') == $key">{{ $val }}</x-admin.input-select-option>
                                 @endforeach
                             @endslot
                         </x-admin.input-select>
@@ -257,7 +256,7 @@
                     
                     <div>
                         <x-admin.input-label for="meta_description" :value="__('Meta Description')" />
-                        <x-admin.textarea id="meta_description" class="block w-full" name="meta_description" rows="3" placeholder="Enter meta description for SEO" maxlength="160">{{ old('meta_description') }}</x-admin.textarea>
+                        <x-admin.textarea id="meta_description" class="block w-full" name="meta_description" placeholder="Enter meta description for SEO" maxlength="160" :value="old('meta_description')"></x-admin.textarea>
                         <p class="mt-1 text-sm text-gray-500">Recommended: 150-160 characters</p>
                         <x-admin.input-error :messages="$errors->get('meta_description')" class="mt-2" />
                     </div>

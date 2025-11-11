@@ -94,7 +94,7 @@ class SchoolRepository implements SchoolInterface
 
             // Basic Information
             $data->name = $array['name'];
-            $data->slug = $array['slug']; // Use the slug from form input
+            $data->slug = Str::slug($array['name']);
             $data->code = !empty($array['code']) ? strtoupper($array['code']) : null;
             $data->description = $array['description'] ?? null;
 
@@ -167,7 +167,8 @@ class SchoolRepository implements SchoolInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => 'An error occurred while creating the school.',
+                'message' => $e->getMessage(),
+                // 'message' => 'An error occurred while creating the school.',
                 'error' => $e->getMessage(),
             ];
         }
