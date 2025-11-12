@@ -41,13 +41,6 @@ class ProductListingRepository implements ProductListingInterface
         $this->productImageRepository = $productImageRepository;
         $this->productPricingRepository = $productPricingRepository;
         $this->productBadgeCombinationRepository = $productBadgeCombinationRepository;
-
-        // fixing default type
-        $companyDomain = applicationSettings('company_domain');
-        $productTypes = developerSettings('company_category');
-        $productType = collect($productTypes)->firstWhere('key', $companyDomain);
-        $productTypeArray = json_decode(json_encode($productType), true);
-        dd($productTypeArray);
     }
 
     public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array
@@ -641,6 +634,15 @@ class ProductListingRepository implements ProductListingInterface
                     continue;
                 }
 
+                // default product type based on application domain
+                $companyDomain = applicationSettings('company_domain');
+                $productTypes = developerSettings('company_category');
+                $productType = collect($productTypes)->firstWhere('key', $companyDomain);
+                $productTypeArray = json_decode(json_encode($productType), true);
+                $defaultProductType = $productTypeArray['children'][0];
+                // dd($defaultProductType);
+                // $defaultProductType = $productTypeArray['children'][0];
+
                 // per-row try/catch so one bad row doesn't abort the whole import
                 try {
                     DB::beginTransaction();
@@ -673,7 +675,7 @@ class ProductListingRepository implements ProductListingInterface
                         'search_tags' => Arr::get($row, 'search_tags') ?: null,
                         'meta_title' => Arr::get($row, 'meta_title') ?: null,
                         'meta_desc' => Arr::get($row, 'meta_desc') ?: null,
-                        'type' => Arr::get($row, 'type', 'physical-product') ?: 'physical-product',
+                        'type' => Arr::get($row, 'type', $defaultProductType) ?: $defaultProductType,
                         // use status from CSV if provided; default to 4/DEFAULT_PROD_STAT_ID so it matches your CSV defaults
                         'status' => $toIntOrNull(Arr::get($row, 'status', DEFAULT_PROD_STAT_ID)) ?? DEFAULT_PROD_STAT_ID,
                     ];
