@@ -97,22 +97,34 @@ class ProductListingController
 
         // $request->validate([
         $validator = Validator::make($request->all(), [
+            // 'type' => 'required|string|in:'.collect(PRODUCT_TYPE)->pluck('key')->implode(','),
             'type' => 'required|string',
             'title' => 'required|string|min:2|max:1000',
-            'description' => 'nullable|string|min:2',
+            'description' => 'required|string|min:2',
             'short_description' => 'nullable|string|min:2',
 
-            'category_id' => 'nullable|integer|min:0',
-            'category_name' => 'nullable|string|min:2',
-            'collection_id' => 'nullable|regex:/^\d+(,\d+)*$/',
-            'collection_name' => 'nullable|string|min:2',
+            'category_id' => 'required|integer|min:1',
+            'category_name' => 'required|string|min:2',
+            'collection_id' => 'required|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
+            'collection_name' => 'required|string|min:2',
+
+            // 'country_code' => 'required|string|min:1|exists:countries,code',
+            // 'selling_price' => 'required|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
+            // 'mrp' => 'nullable|numeric|min:1|max:1000000|gt:selling_price|regex:'.PRICE_REGEX,
+            // 'discount' => 'nullable|numeric|min:0|max:100',
+            // 'cost' => 'nullable|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
+            // 'profit' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
+            // 'margin' => 'nullable|numeric|min:0|max:99',
 
             'country_code'       => 'required|array|min:1',
             'country_code.*'     => 'required|string|exists:countries,code',
-            'selling_price'      => 'nullable|array|min:1',
-            'selling_price.*'    => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            // selling prices (required array)
+            'selling_price'      => 'required|array|min:1',
+            'selling_price.*'    => ['required','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            // mrp can be nullable per item
             'mrp'                => 'nullable|array',
             'mrp.*'              => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            // discount/profit/margin arrays (readonly front-end but validate anyway)
             'discount'           => 'nullable|array',
             'discount.*'         => ['nullable','numeric','min:0','max:100'],
             'cost'               => 'nullable|array',
@@ -179,7 +191,7 @@ class ProductListingController
         // discount/profit/margin are computed on server; ignore incoming values if you prefer
 
         $pricing = [];
-        $entries = !empty($sellingPrices) ? count($sellingPrices) : 0; // selling_price is required; use its count
+        $entries = count($sellingPrices); // selling_price is required; use its count
 
         for ($i = 0; $i < $entries; $i++) {
             $cc = $countryCodes[$i] ?? null;
@@ -214,6 +226,14 @@ class ProductListingController
             'long_description' => ($request->description != "<p>&nbsp;</p>") ? $request->description : null,
             'category_id' => (int) $request->category_id,
             'collection_ids' => json_encode(array_map('intval', explode(',', $request->collection_id))),
+
+            // 'country_code' => $request->country_code,
+            // 'selling_price' => (float) filter_var($request->selling_price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
+            // 'mrp' => $request->mrp ? (float) filter_var($request->mrp, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
+            // 'discount_percentage' => $request->mrp ? discountPercentageCalc($request->selling_price, $request->mrp) : 0,
+            // 'cost' => $request->cost ? (float) filter_var($request->cost, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : 0,
+            // 'profit' => $request->cost ? profitCalc($request->selling_price, $request->cost) : 0,
+            // 'margin_percentage' => $request->cost ? marginCalc($request->selling_price, $request->cost) : 0,
 
             'pricing' => $pricing,
 
@@ -280,21 +300,36 @@ class ProductListingController
             // 'type' => 'required|string|in:'.collect(PRODUCT_TYPE)->pluck('key')->implode(','),
             'type' => 'required|string',
             'title' => 'required|string|min:2|max:1000',
-            'description' => 'nullable|string|min:2',
+            'description' => 'required|string|min:2',
             'short_description' => 'nullable|string|min:2',
 
-            'category_id' => 'nullable|integer|min:0',
-            'category_name' => 'nullable|string|min:2',
-            'collection_id' => 'nullable|regex:/^\d+(,\d+)*$/',
-            'collection_name' => 'nullable|string|min:2',
+            'category_id' => 'required|integer|min:1',
+            'category_name' => 'required|string|min:2',
+            'collection_id' => 'required|regex:/^\d+(,\d+)*$/', // regex for comma separated numbers
+            'collection_name' => 'required|string|min:2',
+
+            // 'country_code' => 'required|string|min:1|exists:countries,code',
+            // 'selling_price' => 'required|numeric|min:1|max:1000000|regex:'.PRICE_REGEX,
+            // 'mrp' => [
+            //     'nullable',
+            //     'numeric',
+            //     'min:0',
+            //     'max:1000000',
+            //     Rule::when(fn ($input) => $input['mrp'] > 0, 'gte:selling_price'),
+            //     'regex:'.PRICE_REGEX
+            // ],
+            // 'discount' => 'nullable|numeric|min:0|max:100',
+            // 'cost' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
+            // 'profit' => 'nullable|numeric|min:0|max:1000000|regex:'.PRICE_REGEX,
+            // 'margin' => 'nullable|numeric|min:0|max:99',
 
             'price_ids'       => 'required|array|min:1',
             'price_ids.*'     => 'required|integer|min:1',
             'country_code'       => 'required|array|min:1',
             'country_code.*'     => 'required|string|exists:countries,code',
             // selling prices (required array)
-            'selling_price'      => 'nullable|array|min:1',
-            'selling_price.*'    => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            'selling_price'      => 'required|array|min:1',
+            'selling_price.*'    => ['required','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
             // mrp can be nullable per item
             'mrp'                => 'nullable|array',
             'mrp.*'              => ['nullable','numeric','max:1000000','regex:'.PRICE_REGEX],
@@ -377,7 +412,7 @@ class ProductListingController
         // discount/profit/margin are computed on server; ignore incoming values if you prefer
 
         $pricing = [];
-        $entries = !empty($sellingPrices) ? count($sellingPrices) : 0;
+        $entries = count($sellingPrices); // selling_price is required; use its count
 
         for ($i = 0; $i < $entries; $i++) {
             $pId = $priceIds[$i] ?? null;
@@ -413,11 +448,8 @@ class ProductListingController
             'title' => $request->title,
             'short_description' => $request->short_description ? $request->short_description : null,
             'long_description' => ($request->description != "<p>&nbsp;</p>") ? $request->description : null,
-            // 'category_id' => (int) $request->category_id,
-            // 'collection_ids' => json_encode(array_map('intval', explode(',', $request->collection_id))),
-
-            'category_id' => $request->category_id ? (int) $request->category_id : null,
-            'collection_ids' => $request->collection_id ? json_encode(array_map('intval', explode(',', $request->collection_id))) : null,
+            'category_id' => (int) $request->category_id,
+            'collection_ids' => json_encode(array_map('intval', explode(',', $request->collection_id))),
 
             // 'country_code' => $request->country_code,
             // 'selling_price' => (float) filter_var($request->selling_price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),

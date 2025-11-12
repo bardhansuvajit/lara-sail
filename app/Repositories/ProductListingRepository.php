@@ -115,8 +115,8 @@ class ProductListingRepository implements ProductListingInterface
             $data->slug = Str::slug($array['title']);
             $data->short_description = $array['short_description'];
             $data->long_description = $array['long_description'];
-            $data->category_id = $array['category_id'];
-            $data->collection_ids = $array['collection_ids'];
+            $data->category_id = $array['category_id'] ?? null;
+            $data->collection_ids = !empty($array['collection_ids']) ? $array['collection_ids'] : null;
 
             $data->sku = $array['sku'];
             $data->track_quantity = $array['track_quantity'];
@@ -128,7 +128,7 @@ class ProductListingRepository implements ProductListingInterface
             $data->save();
 
             // PRICING
-            if (count($array['pricing']) > 0) {
+            if (!empty($array['pricing']) && count($array['pricing']) > 0) {
                 foreach ($array['pricing'] as $key => $pricing) {
                     $pricingData = [
                         'product_id' => $data->id,
@@ -349,8 +349,10 @@ class ProductListingRepository implements ProductListingInterface
 
                 if (!empty($array['short_description']))    $data['data']->short_description = $array['short_description'];
                 if (!empty($array['long_description']))     $data['data']->long_description = $array['long_description'];
-                if (!empty($array['category_id']))          $data['data']->category_id = $array['category_id'];
-                if (!empty($array['collection_ids']))       $data['data']->collection_ids = $array['collection_ids'];
+                // if (!empty($array['category_id']))          $data['data']->category_id = $array['category_id'];
+                // if (!empty($array['collection_ids']))       $data['data']->collection_ids = $array['collection_ids'];
+                $data['data']->category_id = $array['category_id'] ?? null;
+                $data['data']->collection_ids = $array['collection_ids'] ?? null;
 
                 if (!empty($array['sku']))                  $data['data']->sku = $array['sku'];
                 if (!empty($array['track_quantity']))       $data['data']->track_quantity = $array['track_quantity'];
@@ -369,7 +371,8 @@ class ProductListingRepository implements ProductListingInterface
                     }
                 }
 
-                if (count($array['pricing']) > 0) {
+                // if (count($array['pricing']) > 0) {
+                if (!empty($array['pricing']) && count($array['pricing']) > 0) {
                     // dd($array['pricing']);
                     foreach ($array['pricing'] as $key => $pricing) {
 
@@ -640,8 +643,6 @@ class ProductListingRepository implements ProductListingInterface
                 $productType = collect($productTypes)->firstWhere('key', $companyDomain);
                 $productTypeArray = json_decode(json_encode($productType), true);
                 $defaultProductType = $productTypeArray['children'][0];
-                // dd($defaultProductType);
-                // $defaultProductType = $productTypeArray['children'][0];
 
                 // per-row try/catch so one bad row doesn't abort the whole import
                 try {

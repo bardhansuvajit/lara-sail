@@ -10,7 +10,7 @@
     <section class="grid grid-cols-6 lg:grid-cols-10 gap-4">
         {{-- <div class="col-span-2"></div> --}}
 
-        @if ($errors->any())
+        {{-- @if ($errors->any())
             @foreach ($errors->all() as $error)
                 @if (is_array($error))
                     @foreach ($error as $error)
@@ -20,7 +20,7 @@
                     <p class="text-red-600">{{ $error }}</p>
                 @endif
             @endforeach
-        @endif
+        @endif --}}
 
         <div class="col-span-6 lg:col-start-3">
             <div class="w-full mt-2">
