@@ -25,13 +25,15 @@ class ProductListingRepository implements ProductListingInterface
     private ProductImageInterface $productImageRepository;
     private ProductPricingInterface $productPricingRepository;
     private ProductBadgeCombinationInterface $productBadgeCombinationRepository;
+    private array $defaultType;
 
     public function __construct(
         TrashInterface $trashRepository, 
         CountryInterface $countryRepository,
         ProductImageInterface $productImageRepository, 
         ProductPricingInterface $productPricingRepository, 
-        ProductBadgeCombinationInterface $productBadgeCombinationRepository
+        ProductBadgeCombinationInterface $productBadgeCombinationRepository,
+        array $defaultType = []
     )
     {
         $this->trashRepository = $trashRepository;
@@ -39,6 +41,13 @@ class ProductListingRepository implements ProductListingInterface
         $this->productImageRepository = $productImageRepository;
         $this->productPricingRepository = $productPricingRepository;
         $this->productBadgeCombinationRepository = $productBadgeCombinationRepository;
+
+        // fixing default type
+        $companyDomain = applicationSettings('company_domain');
+        $productTypes = developerSettings('company_category');
+        $productType = collect($productTypes)->firstWhere('key', $companyDomain);
+        $productTypeArray = json_decode(json_encode($productType), true);
+        dd($productTypeArray);
     }
 
     public function list(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc') : array

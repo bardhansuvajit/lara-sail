@@ -88,9 +88,18 @@ return new class extends Migration
                 'key' => 'ed-tech',
                 'title' => 'Educational Technology',
                 'children' => [
-                    ['key' => 'online-course', 'title' => 'Online Course', 'description' => 'Digital educational programs'],
-                    ['key' => 'ebook', 'title' => 'E-Book', 'description' => 'Digital books and publications'],
-                    ['key' => 'workshop', 'title' => 'Workshop', 'description' => 'In-person training sessions'],
+                    ['key' => 'question-bank', 'title' => 'Question Bank', 'description' => 'Collection of practice questions and solutions for exam preparation'],
+                    ['key' => 'online-course', 'title' => 'Online Course', 'description' => 'Structured digital learning programs with video lessons and assessments'],
+                    ['key' => 'ebook', 'title' => 'E-Book', 'description' => 'Digital books and publications for various subjects'],
+                    ['key' => 'workshop', 'title' => 'Workshop', 'description' => 'In-person or live virtual training sessions focused on skill development'],
+                    ['key' => 'mock-test', 'title' => 'Mock Test', 'description' => 'Simulated exams to help students practice under test-like conditions'],
+                    ['key' => 'study-material', 'title' => 'Study Material', 'description' => 'Printable or digital notes, summaries, and reference content'],
+                    ['key' => 'video-lecture', 'title' => 'Video Lecture', 'description' => 'Recorded or live video-based learning sessions by expert instructors'],
+                    ['key' => 'interactive-quiz', 'title' => 'Interactive Quiz', 'description' => 'Gamified quizzes and self-assessments for active learning'],
+                    ['key' => 'learning-app', 'title' => 'Learning App', 'description' => 'Mobile or web-based applications offering personalized learning experiences'],
+                    ['key' => 'mentorship-program', 'title' => 'Mentorship Program', 'description' => 'Guided learning under the supervision of experienced mentors or educators'],
+                    ['key' => 'certificate-program', 'title' => 'Certificate Program', 'description' => 'Accredited short-term courses providing certification upon completion'],
+                    ['key' => 'tutoring-session', 'title' => 'Tutoring Session', 'description' => 'One-on-one or group sessions with expert tutors for personalized learning']
                 ]
             ],
             [
