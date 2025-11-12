@@ -242,7 +242,9 @@
                             </td>
                             <td scope="row" class="px-2 py-1 text-gray-900 dark:text-white">
                                 <div class="flex space-x-2 items-center">
-                                    <div class="w-20 text-gray-800 dark:text-gray-50">{!! $item->thumbnail_icon !!}</div>
+                                    @if ($item->thumbnail_icon)
+                                        <div class="w-20 text-gray-800 dark:text-gray-50">{!! $item->thumbnail_icon !!}</div>
+                                    @endif
                                     <div>
                                         <p class="text-xs font-bold">{{ $item->name }}</p>
                                         <p class="text-xs text-gray-500">{{ $item->slug }}</p>

@@ -8,6 +8,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Arr;
 
 use App\Exports\SchoolsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -395,9 +397,9 @@ class SchoolRepository implements SchoolInterface
                     'model' => 'School',
                     'table_name' => 'schools',
                     'deleted_row_id' => $data['data']->id,
-                    'thumbnail' => $data['data']->image_s,
-                    'title' => $data['data']->title,
-                    'description' => $data['data']->title.' data deleted from schools table',
+                    'thumbnail' => $data['data']->logo_path,
+                    'title' => $data['data']->name,
+                    'description' => $data['data']->name.' data deleted from schools table',
                     'status' => 'deleted',
                 ]);
 
@@ -434,9 +436,9 @@ class SchoolRepository implements SchoolInterface
                         'model' => 'School',
                         'table_name' => 'schools',
                         'deleted_row_id' => $item->id,
-                        'thumbnail' => $item->image_s,
-                        'title' => $item->title,
-                        'description' => $item->title.' data deleted from schools table',
+                        'thumbnail' => $item->logo_path,
+                        'title' => $item->name,
+                        'description' => $item->name.' data deleted from schools table',
                         'status' => 'deleted',
                     ]);
 
@@ -467,6 +469,177 @@ class SchoolRepository implements SchoolInterface
         }
     }
 
+    public function import(UploadedFile $file)
+    {
+        $summary = [
+            'processed' => 0,
+            'created'   => 0,
+            'skipped'   => 0,
+            'failed'    => 0,
+            'errors'    => [],
+            'skipped_rows' => [],
+        ];
+
+        $toIntOrNull = fn($v) => ($v === '' || $v === null || $v === '""') ? null : (int)$v;
+        $toStringOrNull = fn($v) => ($v === '' || $v === null || $v === '""') ? null : (string)$v;
+        $toBool = fn($v) => ($v === '1' || $v === 1 || $v === 'true' || $v === true);
+
+        try {
+            $filePath = fileStore($file);
+            $rows = readCsvFile(public_path($filePath)); // array of assoc rows
+
+            foreach ($rows as $i => $row) {
+                $summary['processed']++;
+
+                $name = trim(Arr::get($row, 'name', ''));
+                if ($name === '' || $name === '""') {
+                    $summary['failed']++;
+                    $summary['errors'][] = ['row' => $i + 1, 'reason' => 'missing school name'];
+                    continue;
+                }
+
+                try {
+                    DB::beginTransaction();
+
+                    // Check if already exists - use provided slug or generate from name
+                    $slug = $toStringOrNull(Arr::get($row, 'slug'));
+                    if (!$slug) {
+                        $slug = Str::slug($name);
+                    }
+                    
+                    $existing = School::where('slug', $slug)->first();
+
+                    if ($existing) {
+                        $summary['skipped']++;
+                        $summary['skipped_rows'][] = $i + 1;
+                        DB::rollBack(); // no changes
+                        continue;
+                    }
+
+                    // Get next position
+                    $lastPosition = School::max('position') ?? 1;
+
+                    // Process tags - handle both JSON string and comma-separated formats
+                    $tags = null;
+                    $tagsInput = $toStringOrNull(Arr::get($row, 'tags'));
+                    if ($tagsInput) {
+                        // Check if it's already a JSON string (starts with [ and ends with ])
+                        if (str_starts_with($tagsInput, '[') && str_ends_with($tagsInput, ']')) {
+                            // It's JSON format, decode it
+                            $decodedTags = json_decode($tagsInput, true);
+                            if (json_last_error() === JSON_ERROR_NONE) {
+                                $tags = json_encode($decodedTags);
+                            } else {
+                                // If JSON decode fails, treat as comma-separated
+                                $tagsArray = array_map('trim', explode(',', str_replace(['"', '[', ']'], '', $tagsInput)));
+                                $tags = json_encode($tagsArray);
+                            }
+                        } else {
+                            // Treat as comma-separated values
+                            $tagsArray = array_map('trim', explode(',', $tagsInput));
+                            $tags = json_encode($tagsArray);
+                        }
+                    }
+
+                    // Process numeric fields with proper null handling
+                    $establishedYear = $toIntOrNull(Arr::get($row, 'established_year'));
+                    $studentCount = $toIntOrNull(Arr::get($row, 'student_count'));
+                    $teacherCount = $toIntOrNull(Arr::get($row, 'teacher_count'));
+                    $questionPapersCount = $toIntOrNull(Arr::get($row, 'question_papers_count'));
+
+                    // Create school record
+                    School::create([
+                        // Basic Information
+                        'name' => $name,
+                        'slug' => $slug,
+                        'code' => $toStringOrNull(Arr::get($row, 'code')),
+                        'country_code' => $toStringOrNull(Arr::get($row, 'country_code', 'IN')),
+                        'logo_path' => $toStringOrNull(Arr::get($row, 'logo_path')),
+                        'description' => $toStringOrNull(Arr::get($row, 'description')),
+
+                        // Location Information
+                        'district' => $toStringOrNull(Arr::get($row, 'district')),
+                        'address' => $toStringOrNull(Arr::get($row, 'address')),
+                        'city' => $toStringOrNull(Arr::get($row, 'city')),
+                        'state' => $toStringOrNull(Arr::get($row, 'state', 'West Bengal')),
+                        'pincode' => $toStringOrNull(Arr::get($row, 'pincode')),
+
+                        // School Details
+                        'type' => $toStringOrNull(Arr::get($row, 'type', 'government')),
+                        'level' => $toStringOrNull(Arr::get($row, 'level', 'secondary')),
+                        'board_affiliation' => $toStringOrNull(Arr::get($row, 'board_affiliation')),
+
+                        // Contact Information
+                        'official_email' => $toStringOrNull(Arr::get($row, 'official_email')),
+                        'phone_number' => $toStringOrNull(Arr::get($row, 'phone_number')),
+                        'alternate_phone' => $toStringOrNull(Arr::get($row, 'alternate_phone')),
+                        'website' => $toStringOrNull(Arr::get($row, 'website')),
+                        'fax' => $toStringOrNull(Arr::get($row, 'fax')),
+
+                        // Contact Person Details
+                        'contact_person_name' => $toStringOrNull(Arr::get($row, 'contact_person_name')),
+                        'contact_person_designation' => $toStringOrNull(Arr::get($row, 'contact_person_designation')),
+                        'contact_person_mobile' => $toStringOrNull(Arr::get($row, 'contact_person_mobile')),
+                        'contact_person_email' => $toStringOrNull(Arr::get($row, 'contact_person_email')),
+
+                        // Academic Information
+                        'established_year' => $establishedYear,
+                        'principal_name' => $toStringOrNull(Arr::get($row, 'principal_name')),
+
+                        // SEO Information
+                        'meta_title' => $toStringOrNull(Arr::get($row, 'meta_title')),
+                        'meta_description' => $toStringOrNull(Arr::get($row, 'meta_description')),
+
+                        // Tags
+                        'tags' => $tags,
+
+                        // Statistics
+                        'question_papers_count' => $questionPapersCount ?? 0,
+                        'student_count' => $studentCount,
+                        'teacher_count' => $teacherCount,
+
+                        // Position and Status (default values)
+                        'position' => $toIntOrNull(Arr::get($row, 'position', $lastPosition + 1)),
+                        'status' => $toIntOrNull(Arr::get($row, 'status', 1)),
+                        'is_featured' => $toBool(Arr::get($row, 'is_featured', false)),
+
+                        // Timestamps
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+                    DB::commit();
+                    $summary['created']++;
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    $summary['failed']++;
+                    $summary['errors'][] = [
+                        'row'    => $i + 1,
+                        'reason' => $e->getMessage(),
+                    ];
+                    Log::error("School import row ".($i+1)." failed: ".$e->getMessage());
+                    continue;
+                }
+            }
+
+            return [
+                'code'    => 200,
+                'status'  => 'success',
+                'message' => "{$summary['created']} / {$summary['processed']} schools processed. {$summary['skipped']} skipped, {$summary['failed']} failed.",
+                'data'    => $summary,
+            ];
+        } catch (\Throwable $e) {
+            Log::error('CSV School Import Error: ' . $e->getMessage());
+            return [
+                'code'    => 500,
+                'status'  => 'error',
+                'message' => 'Import failed: ' . $e->getMessage(),
+                'error'   => $e->getMessage(),
+            ];
+        }
+    }
+
+    /*
     public function import(UploadedFile $file)
     {
         try {
@@ -518,6 +691,7 @@ class SchoolRepository implements SchoolInterface
             ];
         }
     }
+    */
 
     public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
@@ -596,55 +770,4 @@ class SchoolRepository implements SchoolInterface
         }
     }
 
-    private function getSchoolSvg()
-    {
-        return '<?xml version="1.0" encoding="iso-8859-1"?>
-            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.001 512.001" xml:space="preserve">
-            <polygon style="fill:#D35B38;" points="10.01,202.261 501.991,202.261 440.932,113.913 71.069,113.913 "/>
-            <polygon style="fill:#F2F2F2;" points="189.189,202.261 25.773,202.261 25.773,414.102 483.719,414.102 483.719,202.261 320.303,202.261 254.746,97.898 "/>
-            <circle style="fill:#73C1DD;" cx="254.742" cy="219.016" r="29.029"/>
-            <rect x="210.699" y="300.947" style="fill:#FFAD61;" width="88.087" height="113.112"/>
-            <rect x="328.815" y="276.073" style="fill:#73C1DD;" width="47.337" height="43.897"/>
-            <rect x="328.815" y="319.966" style="fill:#FFE6B8;" width="47.337" height="27.177"/>
-            <rect x="406.602" y="276.073" style="fill:#73C1DD;" width="47.337" height="43.897"/>
-            <rect x="406.602" y="319.966" style="fill:#FFE6B8;" width="47.337" height="27.177"/>
-            <rect x="55.545" y="276.073" style="fill:#73C1DD;" width="47.337" height="43.897"/>
-            <rect x="55.545" y="319.966" style="fill:#FFE6B8;" width="47.337" height="27.177"/>
-            <rect x="133.332" y="276.073" style="fill:#73C1DD;" width="47.337" height="43.897"/>
-            <rect x="133.332" y="319.966" style="fill:#FFE6B8;" width="47.337" height="27.177"/>
-            <g>
-                <path style="fill:#4D3D36;" d="M510.226,196.57l-61.059-88.347c-1.869-2.705-4.947-4.318-8.235-4.318H270.34l-7.117-11.33
-                    c-1.832-2.916-5.033-4.686-8.476-4.686c-3.443,0-6.645,1.77-8.476,4.686l-7.117,11.33H71.069c-3.287,0-6.365,1.615-8.235,4.318
-                    L1.775,196.57c-2.116,3.062-2.358,7.045-0.63,10.34c1.729,3.296,5.143,5.36,8.865,5.36h5.753v201.831
-                    c0,5.528,4.481,10.01,10.01,10.01h457.947c5.528,0,10.01-4.481,10.01-10.01V212.271h8.261c3.722,0,7.136-2.065,8.865-5.36
-                    C512.584,203.614,512.342,199.631,510.226,196.57z M435.682,123.923l47.223,68.328H325.836l-42.92-68.328H435.682z M76.319,123.923
-                    h150.258l-42.92,68.328H29.096L76.319,123.923z M220.713,404.054v-93.092h68.067v93.092H220.713z M189.19,212.271
-                    c3.443,0,6.645-1.77,8.476-4.686l57.08-90.87l57.08,90.87c1.832,2.916,5.033,4.686,8.476,4.686h153.407v191.822H308.8v-103.14
-                    c0-5.528-4.481-10.01-10.01-10.01h-88.087c-5.528,0-10.01,4.481-10.01,10.01v103.14H35.783V212.271H189.19z"/>
-                <path style="fill:#4D3D36;" d="M254.746,179.979c-21.526,0-39.039,17.512-39.039,39.039s17.512,39.039,39.039,39.039
-                    c21.526,0,39.039-17.512,39.039-39.039S276.272,179.979,254.746,179.979z M254.746,238.036c-10.487,0-19.019-8.531-19.019-19.019
-                    c0-10.487,8.531-19.019,19.019-19.019s19.019,8.531,19.019,19.019C273.765,229.505,265.234,238.036,254.746,238.036z"/>
-                <path style="fill:#4D3D36;" d="M240.232,321.347c-5.528,0-10.01,4.481-10.01,10.01v10.636c0,5.528,4.481,10.01,10.01,10.01
-                    s10.01-4.481,10.01-10.01v-10.636C250.242,325.829,245.76,321.347,240.232,321.347z"/>
-                <path style="fill:#4D3D36;" d="M269.26,321.347c-5.528,0-10.01,4.481-10.01,10.01v10.636c0,5.528,4.481,10.01,10.01,10.01
-                    s10.01-4.481,10.01-10.01v-10.636C279.27,325.829,274.789,321.347,269.26,321.347z"/>
-                <path style="fill:#4D3D36;" d="M386.168,276.074c0-5.528-4.481-10.01-10.01-10.01h-47.339c-5.528,0-10.01,4.481-10.01,10.01v71.07
-                    c0,5.528,4.481,10.01,10.01,10.01h47.339c5.528,0,10.01-4.481,10.01-10.01V276.074z M366.148,337.134h-27.319v-7.153h27.319
-                    V337.134z M338.829,286.084h27.319v23.878h-27.319V286.084z"/>
-                <path style="fill:#4D3D36;" d="M463.953,276.074c0-5.528-4.481-10.01-10.01-10.01h-47.339c-5.528,0-10.01,4.481-10.01,10.01v71.07
-                    c0,5.528,4.481,10.01,10.01,10.01h47.339c5.528,0,10.01-4.481,10.01-10.01V276.074z M443.933,337.134h-27.319v-7.153h27.319
-                    V337.134z M416.614,286.084h27.319v23.878h-27.319V286.084z"/>
-                <path style="fill:#4D3D36;" d="M112.898,276.074c0-5.528-4.481-10.01-10.01-10.01H55.549c-5.528,0-10.01,4.481-10.01,10.01v71.07
-                    c0,5.528,4.481,10.01,10.01,10.01h47.339c5.528,0,10.01-4.481,10.01-10.01C112.898,347.144,112.898,276.074,112.898,276.074z
-                    M65.559,286.084h27.319v23.878H65.559V286.084z M92.878,337.134H65.559v-7.153h27.319V337.134z"/>
-                <path style="fill:#4D3D36;" d="M190.683,276.074c0-5.528-4.481-10.01-10.01-10.01h-47.339c-5.528,0-10.01,4.481-10.01,10.01v71.07
-                    c0,5.528,4.481,10.01,10.01,10.01h47.339c5.528,0,10.01-4.481,10.01-10.01L190.683,276.074L190.683,276.074z M143.344,286.084
-                    h27.319v23.878h-27.319V286.084z M170.663,337.134h-27.319v-7.153h27.319L170.663,337.134L170.663,337.134z"/>
-                <path style="fill:#4D3D36;" d="M340.831,182.982h55.054c5.528,0,10.01-4.481,10.01-10.01s-4.481-10.01-10.01-10.01h-55.054
-                    c-5.528,0-10.01,4.481-10.01,10.01S335.303,182.982,340.831,182.982z"/>
-                <path style="fill:#4D3D36;" d="M426.916,182.982h4.004c5.528,0,10.01-4.481,10.01-10.01s-4.481-10.01-10.01-10.01h-4.004
-                    c-5.528,0-10.01,4.481-10.01,10.01S421.388,182.982,426.916,182.982z"/>
-            </g>
-        </svg>';
-    }
 }

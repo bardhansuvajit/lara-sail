@@ -8,6 +8,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Arr;
 
 use App\Exports\SchoolSubjectsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -238,9 +240,9 @@ class SchoolSubjectRepository implements SchoolSubjectInterface
                     'model' => 'SchoolSubject',
                     'table_name' => 'school_subjects',
                     'deleted_row_id' => $data['data']->id,
-                    'thumbnail' => $data['data']->image_s,
-                    'title' => $data['data']->title,
-                    'description' => $data['data']->title.' data deleted from school subjects table',
+                    'thumbnail' => $data['data']->logo_path,
+                    'title' => $data['data']->name,
+                    'description' => $data['data']->name.' data deleted from school subjects table',
                     'status' => 'deleted',
                 ]);
 
@@ -277,9 +279,9 @@ class SchoolSubjectRepository implements SchoolSubjectInterface
                         'model' => 'SchoolSubject',
                         'table_name' => 'school_subjects',
                         'deleted_row_id' => $item->id,
-                        'thumbnail' => $item->image_s,
-                        'title' => $item->title,
-                        'description' => $item->title.' data deleted from school subjects table',
+                        'thumbnail' => $item->logo_path,
+                        'title' => $item->name,
+                        'description' => $item->name.' data deleted from school subjects table',
                         'status' => 'deleted',
                     ]);
 
@@ -310,6 +312,144 @@ class SchoolSubjectRepository implements SchoolSubjectInterface
         }
     }
 
+    public function import(UploadedFile $file)
+    {
+        $summary = [
+            'processed' => 0,
+            'created'   => 0,
+            'skipped'   => 0,
+            'failed'    => 0,
+            'errors'    => [],
+            'skipped_rows' => [],
+        ];
+
+        $toIntOrNull = fn($v) => ($v === '' || $v === null || $v === '""') ? null : (int)$v;
+        $toStringOrNull = fn($v) => ($v === '' || $v === null || $v === '""') ? null : (string)$v;
+        $toBool = fn($v) => ($v === 'TRUE' || $v === 'true' || $v === '1' || $v === 1 || $v === true);
+
+        try {
+            $filePath = fileStore($file);
+            $rows = readCsvFile(public_path($filePath)); // array of assoc rows
+
+            foreach ($rows as $i => $row) {
+                $summary['processed']++;
+
+                $name = trim(Arr::get($row, 'name', ''));
+                if ($name === '' || $name === '""') {
+                    $summary['failed']++;
+                    $summary['errors'][] = ['row' => $i + 1, 'reason' => 'missing subject name'];
+                    continue;
+                }
+
+                try {
+                    DB::beginTransaction();
+
+                    // Check if already exists - use provided slug or generate from name
+                    $slug = $toStringOrNull(Arr::get($row, 'slug'));
+                    if (!$slug) {
+                        $slug = Str::slug($name);
+                    }
+                    
+                    $existing = SchoolSubject::where('slug', $slug)->first();
+
+                    if ($existing) {
+                        $summary['skipped']++;
+                        $summary['skipped_rows'][] = $i + 1;
+                        DB::rollBack(); // no changes
+                        continue;
+                    }
+
+                    // Get next position
+                    $lastPosition = SchoolSubject::max('position') ?? 1;
+
+                    // Process tags - handle both JSON string and comma-separated formats
+                    $tags = null;
+                    $tagsInput = $toStringOrNull(Arr::get($row, 'tags'));
+                    if ($tagsInput) {
+                        // Check if it's already a JSON string (starts with [ and ends with ])
+                        if (str_starts_with($tagsInput, '[') && str_ends_with($tagsInput, ']')) {
+                            // It's JSON format, decode it
+                            $decodedTags = json_decode($tagsInput, true);
+                            if (json_last_error() === JSON_ERROR_NONE) {
+                                $tags = json_encode($decodedTags);
+                            } else {
+                                // If JSON decode fails, treat as comma-separated
+                                $tagsArray = array_map('trim', explode(',', str_replace(['"', '[', ']'], '', $tagsInput)));
+                                $tags = json_encode($tagsArray);
+                            }
+                        } else {
+                            // Treat as comma-separated values
+                            $tagsArray = array_map('trim', explode(',', $tagsInput));
+                            $tags = json_encode($tagsArray);
+                        }
+                    }
+
+                    // Process numeric fields with proper null handling
+                    $questionPapersCount = $toIntOrNull(Arr::get($row, 'question_papers_count'));
+
+                    // Create subject record
+                    SchoolSubject::create([
+                        // Basic Information
+                        'name' => $name,
+                        'slug' => $slug,
+                        'code' => $toStringOrNull(Arr::get($row, 'code')),
+                        'description' => $toStringOrNull(Arr::get($row, 'description')),
+
+                        // Category and Core Status
+                        'category' => $toStringOrNull(Arr::get($row, 'category', 'general')),
+                        'is_core' => $toBool(Arr::get($row, 'is_core', false)),
+
+                        // SEO Information
+                        'meta_title' => $toStringOrNull(Arr::get($row, 'meta_title')),
+                        'meta_description' => $toStringOrNull(Arr::get($row, 'meta_description')),
+
+                        // Tags
+                        'tags' => $tags,
+
+                        // Statistics
+                        'question_papers_count' => $questionPapersCount ?? 0,
+
+                        // Position and Status
+                        'position' => $toIntOrNull(Arr::get($row, 'position', $lastPosition + 1)),
+                        'status' => $toIntOrNull(Arr::get($row, 'status', 1)),
+
+                        // Timestamps
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+                    DB::commit();
+                    $summary['created']++;
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    $summary['failed']++;
+                    $summary['errors'][] = [
+                        'row'    => $i + 1,
+                        'reason' => $e->getMessage(),
+                    ];
+                    Log::error("SchoolSubject import row ".($i+1)." failed: ".$e->getMessage());
+                    continue;
+                }
+            }
+
+            return [
+                'code'    => 200,
+                'status'  => 'success',
+                'message' => "{$summary['created']} / {$summary['processed']} subjects processed. {$summary['skipped']} skipped, {$summary['failed']} failed.",
+                'data'    => $summary,
+            ];
+        } catch (\Throwable $e) {
+            Log::error('CSV SchoolSubject Import Error: ' . $e->getMessage());
+            return [
+                'code'    => 500,
+                'status'  => 'error',
+                'message' => 'Import failed: ' . $e->getMessage(),
+                'error'   => $e->getMessage(),
+            ];
+        }
+    }
+
+    /*
     public function import(UploadedFile $file)
     {
         try {
@@ -361,6 +501,7 @@ class SchoolSubjectRepository implements SchoolSubjectInterface
             ];
         }
     }
+    */
 
     public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {

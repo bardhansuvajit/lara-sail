@@ -8,6 +8,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\TrashInterface;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Arr;
 
 use App\Exports\SchoolClassesExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -275,9 +277,9 @@ class SchoolClassRepository implements SchoolClassInterface
                         'model' => 'SchoolClass',
                         'table_name' => 'school_classes',
                         'deleted_row_id' => $item->id,
-                        'thumbnail' => $item->image_s,
-                        'title' => $item->title,
-                        'description' => $item->title.' data deleted from school classes table',
+                        'thumbnail' => $item->thumbnail_icon,
+                        'title' => $item->name,
+                        'description' => $item->name.' data deleted from school classes table',
                         'status' => 'deleted',
                     ]);
 
@@ -308,6 +310,141 @@ class SchoolClassRepository implements SchoolClassInterface
         }
     }
 
+    public function import(UploadedFile $file)
+    {
+        $summary = [
+            'processed' => 0,
+            'created'   => 0,
+            'skipped'   => 0,
+            'failed'    => 0,
+            'errors'    => [],
+            'skipped_rows' => [],
+        ];
+
+        $toIntOrNull = fn($v) => ($v === '' || $v === null || $v === '""') ? null : (int)$v;
+        $toStringOrNull = fn($v) => ($v === '' || $v === null || $v === '""') ? null : (string)$v;
+
+        try {
+            $filePath = fileStore($file);
+            $rows = readCsvFile(public_path($filePath)); // array of assoc rows
+
+            foreach ($rows as $i => $row) {
+                $summary['processed']++;
+
+                $name = trim(Arr::get($row, 'name', ''));
+                if ($name === '' || $name === '""') {
+                    $summary['failed']++;
+                    $summary['errors'][] = ['row' => $i + 1, 'reason' => 'missing class name'];
+                    continue;
+                }
+
+                try {
+                    DB::beginTransaction();
+
+                    // Check if already exists - use provided slug or generate from name
+                    $slug = $toStringOrNull(Arr::get($row, 'slug'));
+                    if (!$slug) {
+                        $slug = Str::slug($name);
+                    }
+                    
+                    $existing = SchoolClass::where('slug', $slug)->first();
+
+                    if ($existing) {
+                        $summary['skipped']++;
+                        $summary['skipped_rows'][] = $i + 1;
+                        DB::rollBack(); // no changes
+                        continue;
+                    }
+
+                    // Get next position
+                    $lastPosition = SchoolClass::max('position') ?? 0;
+
+                    // Process tags - handle both JSON string and comma-separated formats
+                    $tags = null;
+                    $tagsInput = $toStringOrNull(Arr::get($row, 'tags'));
+                    if ($tagsInput) {
+                        // Check if it's already a JSON string (starts with [ and ends with ])
+                        if (str_starts_with($tagsInput, '[') && str_ends_with($tagsInput, ']')) {
+                            // It's JSON format, decode it
+                            $decodedTags = json_decode($tagsInput, true);
+                            if (json_last_error() === JSON_ERROR_NONE) {
+                                $tags = json_encode($decodedTags);
+                            } else {
+                                // If JSON decode fails, treat as comma-separated
+                                $tagsArray = array_map('trim', explode(',', str_replace(['"', '[', ']'], '', $tagsInput)));
+                                $tags = json_encode($tagsArray);
+                            }
+                        } else {
+                            // Treat as comma-separated values
+                            $tagsArray = array_map('trim', explode(',', $tagsInput));
+                            $tags = json_encode($tagsArray);
+                        }
+                    }
+
+                    // Process numeric fields with proper null handling
+                    $questionPapersCount = $toIntOrNull(Arr::get($row, 'question_papers_count'));
+                    $subjectsCount = $toIntOrNull(Arr::get($row, 'subjects_count'));
+
+                    // Create class record
+                    SchoolClass::create([
+                        // Basic Information
+                        'name' => $name,
+                        'slug' => $slug,
+                        'thumbnail_icon' => $toStringOrNull(Arr::get($row, 'thumbnail_icon')),
+                        'description' => $toStringOrNull(Arr::get($row, 'description')),
+
+                        // SEO Information
+                        'meta_title' => $toStringOrNull(Arr::get($row, 'meta_title')),
+                        'meta_description' => $toStringOrNull(Arr::get($row, 'meta_description')),
+
+                        // Tags
+                        'tags' => $tags,
+
+                        // Statistics
+                        'question_papers_count' => $questionPapersCount ?? 0,
+                        'subjects_count' => $subjectsCount ?? 0,
+
+                        // Position and Status
+                        'position' => $toIntOrNull(Arr::get($row, 'position', $lastPosition + 1)),
+                        'status' => $toIntOrNull(Arr::get($row, 'status', 1)),
+
+                        // Timestamps
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+                    DB::commit();
+                    $summary['created']++;
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    $summary['failed']++;
+                    $summary['errors'][] = [
+                        'row'    => $i + 1,
+                        'reason' => $e->getMessage(),
+                    ];
+                    Log::error("SchoolClass import row ".($i+1)." failed: ".$e->getMessage());
+                    continue;
+                }
+            }
+
+            return [
+                'code'    => 200,
+                'status'  => 'success',
+                'message' => "{$summary['created']} / {$summary['processed']} classes processed. {$summary['skipped']} skipped, {$summary['failed']} failed.",
+                'data'    => $summary,
+            ];
+        } catch (\Throwable $e) {
+            Log::error('CSV SchoolClass Import Error: ' . $e->getMessage());
+            return [
+                'code'    => 500,
+                'status'  => 'error',
+                'message' => 'Import failed: ' . $e->getMessage(),
+                'error'   => $e->getMessage(),
+            ];
+        }
+    }
+
+    /*
     public function import(UploadedFile $file)
     {
         try {
@@ -359,6 +496,7 @@ class SchoolClassRepository implements SchoolClassInterface
             ];
         }
     }
+    */
 
     public function export(?String $keyword = '', array $filters = [], String $perPage, String $sortBy = 'id', String $sortOrder = 'asc', String $type)
     {
