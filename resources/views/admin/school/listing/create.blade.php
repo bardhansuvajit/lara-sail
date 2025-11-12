@@ -10,7 +10,7 @@
     <div class="w-full mt-2">
         <form action="{{ route('admin.school.listing.store') }}" method="post" enctype="multipart/form-data">
             @csrf
-            
+
             <!-- Logo Section -->
             <div class="grid gap-4 mb-6 sm:grid-cols-3">
                 <div>

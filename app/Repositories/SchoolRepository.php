@@ -167,8 +167,7 @@ class SchoolRepository implements SchoolInterface
             return [
                 'code' => 500,
                 'status' => 'error',
-                'message' => $e->getMessage(),
-                // 'message' => 'An error occurred while creating the school.',
+                'message' => 'An error occurred while creating the school.',
                 'error' => $e->getMessage(),
             ];
         }
@@ -287,21 +286,84 @@ class SchoolRepository implements SchoolInterface
             $data = $this->getById($array['id']);
 
             if ($data['code'] == 200) {
-                $data['data']->title = $array['title'];
-                $data['data']->slug = \Str::slug($array['title']);
+                // $data['data']->title = $array['title'];
+                // $data['data']->slug = \Str::slug($array['title']);
 
-                $data['data']->short_description = $array['short_description'] ?? null;
-                $data['data']->long_description = $array['long_description'] ?? null;
+                // $data['data']->short_description = $array['short_description'] ?? null;
+                // $data['data']->long_description = $array['long_description'] ?? null;
 
-                if (!empty($array['image'])) {
-                    $uploadResp = fileUpload($array['image'], 'sch');
+                // if (!empty($array['image'])) {
+                //     $uploadResp = fileUpload($array['image'], 'sch');
 
-                    $data['data']->image_s = $uploadResp['smallThumbName'];
-                    $data['data']->image_m = $uploadResp['mediumThumbName'];
-                    $data['data']->image_l = $uploadResp['largeThumbName'];
+                //     $data['data']->image_s = $uploadResp['smallThumbName'];
+                //     $data['data']->image_m = $uploadResp['mediumThumbName'];
+                //     $data['data']->image_l = $uploadResp['largeThumbName'];
+                // }
+
+                // $data['data']->save();
+
+                $data = $data['data'];
+
+                // Basic Information
+                $data->name = $array['name'];
+                $data->slug = Str::slug($array['name']);
+                $data->code = !empty($array['code']) ? strtoupper($array['code']) : null;
+                $data->description = $array['description'] ?? null;
+
+                // Location Information
+                $data->country_code = $array['country_code'] ?? 'IN';
+                $data->state = $array['state'];
+                $data->district = $array['district'];
+                $data->city = $array['city'];
+                $data->address = $array['address'];
+                $data->pincode = $array['pincode'] ?? null;
+
+                // School Details
+                $data->type = $array['type'];
+                $data->level = $array['level'];
+                $data->board_affiliation = $array['board_affiliation'];
+
+                // Academic Information
+                $data->established_year = !empty($array['established_year']) ? (int)$array['established_year'] : null;
+                $data->principal_name = $array['principal_name'] ?? null;
+                $data->student_count = !empty($array['student_count']) ? (int)$array['student_count'] : null;
+                $data->teacher_count = !empty($array['teacher_count']) ? (int)$array['teacher_count'] : null;
+
+                // Contact Information
+                $data->official_email = $array['official_email'] ?? null;
+                $data->phone_number = $array['phone_number'] ?? null;
+                $data->alternate_phone = $array['alternate_phone'] ?? null;
+                $data->website = $array['website'] ?? null;
+                $data->fax = $array['fax'] ?? null;
+
+                // Contact Person Details
+                $data->contact_person_name = $array['contact_person_name'] ?? null;
+                $data->contact_person_designation = $array['contact_person_designation'] ?? null;
+                $data->contact_person_mobile = $array['contact_person_mobile'] ?? null;
+                $data->contact_person_email = $array['contact_person_email'] ?? null;
+
+                // SEO Information
+                $data->meta_title = $array['meta_title'] ?? null;
+                $data->meta_description = $array['meta_description'] ?? null;
+
+                // Tags
+                if (!empty($array['tags'])) {
+                    $tagsArray = array_map('trim', explode(',', $array['tags']));
+                    $data->tags = json_encode($tagsArray);
                 }
 
-                $data['data']->save();
+                // Image Upload
+                if (!empty($array['image'])) {
+                    $uploadResp = fileUpload($array['image'], 'sch');
+                    $data->logo_path = $uploadResp['largeThumbName'] ?? null;
+                }
+
+                // Position and Status
+                $lastPosition = School::max('position');
+                $data->position = $lastPosition ? $lastPosition + 1 : 1;
+                $data->status = 0;
+
+                $data->save();
 
                 return [
                     'code' => 200,

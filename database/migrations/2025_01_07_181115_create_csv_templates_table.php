@@ -68,6 +68,26 @@ return new class extends Migration
                 'model' => 'ProductReview',
                 'file_path' => 'product_reviews.csv',
                 'description' => 'Product Reviews',
+            ],
+            [
+                'model' => 'SchoolClass',
+                'file_path' => 'school_classes.csv',
+                'description' => 'School Classes',
+            ],
+            [
+                'model' => 'SchoolSubject',
+                'file_path' => 'school_subjects.csv',
+                'description' => 'School Subjects',
+            ],
+            [
+                'model' => 'SchoolBoard',
+                'file_path' => 'school_boards.csv',
+                'description' => 'School Boards',
+            ],
+            [
+                'model' => 'School',
+                'file_path' => 'schools.csv',
+                'description' => 'Schools',
             ]
         ];
 
