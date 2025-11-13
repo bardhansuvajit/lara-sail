@@ -135,6 +135,11 @@
 
                     </div>
 
+                    {{-- Ed-Tech options --}}
+                    @if ($companyDomain == 'ed-tech')
+                        @include('admin.product.listing.includes.ed-tech')
+                    @endif
+
                     <div class="border-t border-gray-200 dark:border-gray-700"></div>
 
                     <h4 class="mt-4 mb-3 font-bold text-sm text-black dark:text-primary-200">Pricing</h4>

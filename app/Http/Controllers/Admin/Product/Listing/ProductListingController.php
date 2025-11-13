@@ -84,7 +84,7 @@ class ProductListingController
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
 
         // Get uploaded files
         $uploadedFiles = $request->file('images');

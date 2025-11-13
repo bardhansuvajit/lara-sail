@@ -136,45 +136,93 @@ return new class extends Migration
 
     private function getWbbseSvg()
     {
-        return '<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="15" y="15" width="50" height="50" rx="8" fill="#DC2626" opacity="0.1"/>
-            <rect x="20" y="20" width="40" height="40" rx="6" fill="#DC2626" opacity="0.2"/>
-            <rect x="25" y="25" width="30" height="30" rx="4" fill="#DC2626"/>
-            <text x="40" y="42" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">WBBSE</text>
-            <text x="40" y="58" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="8">Madhyamik</text>
-            <path d="M20 20L30 15M60 20L50 15" stroke="#DC2626" stroke-width="2" stroke-linecap="round"/>
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 40" role="img" aria-label="WBBSE">
+            <defs>
+                <linearGradient id="uniqueGradientId" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#1565C0" />
+                <stop offset="100%" stop-color="#64B5F6" />
+                </linearGradient>
+            </defs>
+
+            <text x="50%" y="55%" 
+                    dominant-baseline="middle" 
+                    text-anchor="middle"
+                    font-family="Inter, Roboto, Helvetica Neue, Arial, sans-serif"
+                    font-size="40" 
+                    font-weight="700" 
+                    letter-spacing="1" 
+                    fill="url(#uniqueGradientId)">
+                WBBSE
+            </text>
         </svg>';
     }
 
     private function getWbchseSvg()
     {
-        return '<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="15" y="15" width="50" height="50" rx="8" fill="#7C3AED" opacity="0.1"/>
-            <rect x="20" y="20" width="40" height="40" rx="6" fill="#7C3AED" opacity="0.2"/>
-            <rect x="25" y="25" width="30" height="30" rx="4" fill="#7C3AED"/>
-            <text x="40" y="42" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="10" font-weight="bold">WBCHSE</text>
-            <text x="40" y="58" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="8">HS Education</text>
-            <path d="M25 20L30 25L35 20M55 20L50 25L45 20" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 195 40" role="img" aria-label="WBCHSE">
+            <defs>
+                <linearGradient id="wbchseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#8E24AA" />
+                <stop offset="100%" stop-color="#F48FB1" />
+                </linearGradient>
+            </defs>
+
+            <text x="50%" y="55%" 
+                    dominant-baseline="middle" 
+                    text-anchor="middle"
+                    font-family="Inter, Roboto, Helvetica Neue, Arial, sans-serif"
+                    font-size="40" 
+                    font-weight="700" 
+                    letter-spacing="1" 
+                    fill="url(#wbchseGradient)">
+                WBCHSE
+            </text>
         </svg>';
     }
 
     private function getCbseSvg()
     {
-        return '<?xml version="1.0" encoding="utf-8"?>
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-            <rect x="10" y="10" width="80" height="80" rx="5" ry="5" fill="#004684"/>
-            <text x="50" y="45" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="bold">CBSE</text>
-            <text x="50" y="65" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="8">EDUCATION</text>
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" role="img" aria-label="CBSE">
+            <defs>
+                <linearGradient id="cbseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0288D1" />
+                <stop offset="100%" stop-color="#4DD0E1" />
+                </linearGradient>
+            </defs>
+
+            <text x="50%" y="55%" 
+                    dominant-baseline="middle" 
+                    text-anchor="middle"
+                    font-family="Inter, Roboto, Helvetica Neue, Arial, sans-serif"
+                    font-size="40" 
+                    font-weight="700" 
+                    letter-spacing="1" 
+                    fill="url(#cbseGradient)">
+                CBSE
+            </text>
         </svg>';
     }
 
     private function getIcseSvg()
     {
-        return '<?xml version="1.0" encoding="utf-8"?>
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" fill="#8B0000"/>
-            <text x="50" y="45" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">ICSE</text>
-            <text x="50" y="65" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="8">ISC</text>
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 82 40" role="img" aria-label="ICSE">
+            <defs>
+                <linearGradient id="icseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#F57C00" />
+                <stop offset="100%" stop-color="#FFCA28" />
+                </linearGradient>
+            </defs>
+
+            <text x="50%" y="55%" 
+                    dominant-baseline="middle" 
+                    text-anchor="middle"
+                    font-family="Inter, Roboto, Helvetica Neue, Arial, sans-serif"
+                    font-size="40" 
+                    font-weight="700" 
+                    letter-spacing="1" 
+                    fill="url(#icseGradient)">
+                ICSE
+            </text>
         </svg>';
     }
 };
