@@ -170,6 +170,18 @@ class ProductListingRepository implements ProductListingInterface
                 }
             }
 
+            // COMPANY DOMAIN
+            $companyDomain = applicationSettings('company_domain');
+            if ($companyDomain == 'ed-tech') {
+                $edTechIns = \App\Models\ProductEdTech::create([
+                    'product_id' => $data->id,
+                    'board_id' => $array['board_id'],
+                    'class_id' => $array['class_id'],
+                    'subject_id' => $array['subject_id'],
+                    'school_id' => $array['school_id'],
+                ]);
+            }
+
             DB::commit();
 
             return [

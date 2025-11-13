@@ -137,7 +137,7 @@
 
                     {{-- Ed-Tech options --}}
                     @if ($companyDomain == 'ed-tech')
-                        @include('admin.product.listing.includes.ed-tech')
+                        @include('admin.product.listing.includes.ed-tech', ['type' => 'create'])
                     @endif
 
                     <div class="border-t border-gray-200 dark:border-gray-700"></div>

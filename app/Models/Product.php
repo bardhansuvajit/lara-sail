@@ -147,6 +147,11 @@ class Product extends Model
             ->orderBy('position', 'asc');
     }
 
+    public function edTechSection()
+    {
+        return $this->hasOne('App\Models\ProductEdTech', 'product_id', 'id');
+    }
+
     /*
     public function getFinalPriceAttribute()
     {

@@ -84,7 +84,7 @@ class ProductListingController
 
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
 
         // Get uploaded files
         $uploadedFiles = $request->file('images');
@@ -226,6 +226,16 @@ class ProductListingController
 
             'images' => $request->images ? $request->images : null
         ];
+
+        $companyDomain = applicationSettings('company_domain');
+        if ($companyDomain == 'ed-tech') {
+            $productData += [
+                'board_id' => $request->board_id ? (int) $request->board_id : 0,
+                'class_id' => $request->class_id ? (int) $request->class_id : 0,
+                'subject_id' => $request->subject_id ? (int) $request->subject_id : 0,
+                'school_id' => $request->school_id ? (int) $request->school_id : 0,
+            ];
+        }
 
         // dd($productData);
 
