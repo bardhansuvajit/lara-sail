@@ -65,43 +65,45 @@
             <div class="bg-white dark:bg-slate-800 {{ FD['rounded'] }} p-2 md:p-4 shadow-sm space-y-2 md:space-y-4">
                 <div class="flex items-start justify-between gap-2 md:gap-4">
                     <div class="flex-1 space-y-2">
-                        <!-- Breadcrumb -->
-                        <nav class="{{ FD['text-0'] }} text-gray-500" aria-label="breadcrumb">
-                            <ol class="flex items-center gap-1 md:gap-2 flex-nowrap">
-                                <li><a href="{{ route('front.home.index') }}" class="hover:underline text-gray-500 dark:text-gray-500">Home</a></li>
+                        <!-- Category Breadcrumb -->
+                        @if ($product->category)
+                            <nav class="{{ FD['text-0'] }} text-gray-500" aria-label="breadcrumb">
+                                <ol class="flex items-center gap-1 md:gap-2 flex-nowrap">
+                                    <li><a href="{{ route('front.home.index') }}" class="hover:underline text-gray-500 dark:text-gray-500">Home</a></li>
 
-                                <!-- Category parents -->
-                                @php
-                                    $category = $product->category;
-                                    $ancestors = collect([]);
-                                    $current = $category->parentDetails;
-                                    while ($current) {
-                                        $ancestors->prepend($current);
-                                        $current = $current->parentDetails;
-                                    }
-                                @endphp
+                                    <!-- Category parents -->
+                                    @php
+                                        $category = $product->category;
+                                        $ancestors = collect([]);
+                                        $current = $category?->parentDetails;
+                                        while ($current) {
+                                            $ancestors->prepend($current);
+                                            $current = $current->parentDetails;
+                                        }
+                                    @endphp
 
-                                @foreach ($ancestors as $parent)
+                                    @foreach ($ancestors as $parent)
+                                        <li>/</li>
+                                        <li>
+                                            <a href="{{ route('front.category.detail', $parent->slug) }}" class="hover:underline text-gray-500 dark:text-gray-500" title="{{ $parent->title }}">
+                                                {{ Str::limit($parent->title, 20) }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+
+                                    <!-- Current category -->
                                     <li>/</li>
                                     <li>
-                                        <a href="{{ route('front.category.detail', $parent->slug) }}" class="hover:underline text-gray-500 dark:text-gray-500" title="{{ $parent->title }}">
-                                            {{ Str::limit($parent->title, 20) }}
+                                        <a href="{{ route('front.category.detail', $category->slug) }}" class="hover:underline text-gray-500 dark:text-gray-500" title="{{ $category->title }}">
+                                            {{ Str::limit($category->title, 20) }}
                                         </a>
                                     </li>
-                                @endforeach
 
-                                <!-- Current category -->
-                                <li>/</li>
-                                <li>
-                                    <a href="{{ route('front.category.detail', $category->slug) }}" class="hover:underline text-gray-500 dark:text-gray-500" title="{{ $category->title }}">
-                                        {{ Str::limit($category->title, 20) }}
-                                    </a>
-                                </li>
-
-                                <li>/</li>
-                                <li><span class="text-gray-800 font-medium dark:text-gray-300 line-clamp-1" title="{{ $product->title }}">{{ Str::limit($product->title, 25) }}</span></li>
-                            </ol>
-                        </nav>
+                                    <li>/</li>
+                                    <li><span class="text-gray-800 font-medium dark:text-gray-300 line-clamp-1" title="{{ $product->title }}">{{ Str::limit($product->title, 25) }}</span></li>
+                                </ol>
+                            </nav>
+                        @endif
 
                         <!-- Title -->
                         <h1 class="text-base sm:text-xl font-semibold leading-tight">{{ $product->title }}</h1>
@@ -160,24 +162,26 @@
                             $currencySymbol = $p->country->currency_symbol;
                         @endphp
 
-                        <div class="flex items-center">
-                            <div class="singleProdPricingBox">
-                                <div class="sellingPriceEl text-xl sm:text-2xl font-bold">
-                                    <span class="currency-icon">{{ $currencySymbol }}</span><span class="priceBox">{{ formatIndianMoney($p->selling_price) }}</span>
+                        @if ($p->selling_price > 0)
+                            <div class="flex items-center">
+                                <div class="singleProdPricingBox">
+                                    <div class="sellingPriceEl text-xl sm:text-2xl font-bold">
+                                        <span class="currency-icon">{{ $currencySymbol }}</span><span class="priceBox">{{ formatIndianMoney($p->selling_price) }}</span>
+                                    </div>
+                                    @if ($p->mrp > 0)
+                                        <div class="mrpEl text-xs text-slate-500 dark:text-slate-400">
+                                            <span class="line-through">
+                                                <span class="currency-icon">{{ $currencySymbol }}</span><span class="mrpBox">{{ formatIndianMoney($p->mrp) }}</span>
+                                            </span>
+                                        </div>
+                                        <div class="savingsEl text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
+                                            You save <span class="currency-icon">{{ $currencySymbol }}</span><span class="savingsBox">{{ formatIndianMoney($p->mrp - $p->selling_price) }}</span> 
+                                            (<span class="discountBox">{{ $p->discount }}</span>% off)
+                                        </div>
+                                    @endif
                                 </div>
-                                @if ($p->mrp > 0)
-                                    <div class="mrpEl text-xs text-slate-500 dark:text-slate-400">
-                                        <span class="line-through">
-                                            <span class="currency-icon">{{ $currencySymbol }}</span><span class="mrpBox">{{ formatIndianMoney($p->mrp) }}</span>
-                                        </span>
-                                    </div>
-                                    <div class="savingsEl text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
-                                        You save <span class="currency-icon">{{ $currencySymbol }}</span><span class="savingsBox">{{ formatIndianMoney($p->mrp - $p->selling_price) }}</span> 
-                                        (<span class="discountBox">{{ $p->discount }}</span>% off)
-                                    </div>
-                                @endif
                             </div>
-                        </div>
+                        @endif
                     </div>
                 @else
                     <section class="w-full flex items-center justify-center">
@@ -900,22 +904,24 @@
                                     
                                     <!-- Price block -->
                                     @if ( !empty($product->FDPricing) )
-                                        <div class="singleProdPricingBox">
-                                            <div class="sellingPriceEl text-xl sm:text-2xl font-bold">
-                                                <span class="currency-icon">{{ $currencySymbol }}</span><span class="priceBox">{{ formatIndianMoney($p->selling_price) }}</span>
+                                        @if ($p->selling_price > 0)
+                                            <div class="singleProdPricingBox">
+                                                <div class="sellingPriceEl text-xl sm:text-2xl font-bold">
+                                                    <span class="currency-icon">{{ $currencySymbol }}</span><span class="priceBox">{{ formatIndianMoney($p->selling_price) }}</span>
+                                                </div>
+                                                @if ($p->mrp > 0)
+                                                    <div class="mrpEl text-xs text-slate-500 dark:text-slate-400">
+                                                        <span class="line-through">
+                                                            <span class="currency-icon">{{ $currencySymbol }}</span><span class="mrpBox">{{ formatIndianMoney($p->mrp) }}</span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="savingsEl text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
+                                                        You save <span class="currency-icon">{{ $currencySymbol }}</span><span class="savingsBox">{{ formatIndianMoney($p->mrp - $p->selling_price) }}</span> 
+                                                        (<span class="discountBox">{{ $p->discount }}</span>% off)
+                                                    </div>
+                                                @endif
                                             </div>
-                                            @if ($p->mrp > 0)
-                                                <div class="mrpEl text-xs text-slate-500 dark:text-slate-400">
-                                                    <span class="line-through">
-                                                        <span class="currency-icon">{{ $currencySymbol }}</span><span class="mrpBox">{{ formatIndianMoney($p->mrp) }}</span>
-                                                    </span>
-                                                </div>
-                                                <div class="savingsEl text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
-                                                    You save <span class="currency-icon">{{ $currencySymbol }}</span><span class="savingsBox">{{ formatIndianMoney($p->mrp - $p->selling_price) }}</span> 
-                                                    (<span class="discountBox">{{ $p->discount }}</span>% off)
-                                                </div>
-                                            @endif
-                                        </div>
+                                        @endif
                                     @else
                                         <div class="mt-4">
                                             <div class="flex items-center gap-2">

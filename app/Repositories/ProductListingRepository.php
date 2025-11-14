@@ -351,31 +351,36 @@ class ProductListingRepository implements ProductListingInterface
         try {
             $data = $this->getById($array['id']);
 
+            // dd($data);
+
             if ($data['code'] == 200) {
-                if (!empty($array['type']))                 $data['data']->type = $array['type'];
-                if (!empty($array['title']))                $data['data']->title = $array['title'];
+                $product = $data['data'];
+                // dump('prod', $product, $array);
+                if (!empty($array['type']))                 $product->type = $array['type'];
+                if (!empty($array['title']))                $product->title = $array['title'];
 
                 // slug
-                if (!empty($array['slug']))                 $data['data']->slug = $array['slug'];
-                else                                        $data['data']->slug = Str::slug($array['title']);
+                if (!empty($array['slug']))                 $product->slug = $array['slug'];
+                else                                        $product->slug = Str::slug($array['title']);
 
-                if (!empty($array['short_description']))    $data['data']->short_description = $array['short_description'];
-                if (!empty($array['long_description']))     $data['data']->long_description = $array['long_description'];
-                // if (!empty($array['category_id']))          $data['data']->category_id = $array['category_id'];
-                // if (!empty($array['collection_ids']))       $data['data']->collection_ids = $array['collection_ids'];
-                $data['data']->category_id = $array['category_id'] ?? null;
-                $data['data']->collection_ids = $array['collection_ids'] ?? null;
+                if (!empty($array['short_description']))    $product->short_description = $array['short_description'];
+                if (!empty($array['long_description']))     $product->long_description = $array['long_description'];
+                $product->category_id = $array['category_id'] ?? 0;
+                $product->collection_ids = $array['collection_ids'] ?? json_encode([]);
 
-                if (!empty($array['sku']))                  $data['data']->sku = $array['sku'];
-                if (!empty($array['track_quantity']))       $data['data']->track_quantity = $array['track_quantity'];
-                if (!empty($array['stock_quantity']))       $data['data']->stock_quantity = $array['stock_quantity'];
-                if (!empty($array['allow_backorders']))     $data['data']->allow_backorders = $array['allow_backorders'];
-                if (!empty($array['meta_title']))           $data['data']->meta_title = $array['meta_title'];
-                if (!empty($array['meta_description']))     $data['data']->meta_desc = $array['meta_description'];
-                if (!empty($array['status']))               $data['data']->status = $array['status'];
-                $data['data']->save();
+                if (!empty($array['sku']))                  $product->sku = $array['sku'];
+                if (!empty($array['track_quantity']))       $product->track_quantity = $array['track_quantity'];
+                if (!empty($array['stock_quantity']))       $product->stock_quantity = $array['stock_quantity'];
+                if (!empty($array['allow_backorders']))     $product->allow_backorders = $array['allow_backorders'];
+                if (!empty($array['meta_title']))           $product->meta_title = $array['meta_title'];
+                if (!empty($array['meta_description']))     $product->meta_desc = $array['meta_description'];
+                if (!empty($array['status']))               $product->status = $array['status'];
+                $product->save();
+
+                // dump('here', $product);
 
                 // PRICING
+                // dd($array);
                 // Handle removed prices first
                 if (!empty($array['removed_price_ids'])) {
                     foreach ($array['removed_price_ids'] as $removedId) {
@@ -390,31 +395,34 @@ class ProductListingRepository implements ProductListingInterface
 
                         // dd($pricing);
 
-                        $pricingData = [
-                            'product_id' => $array['id'],
-                            'country_code' => $pricing['country_code'],
-                            'selling_price' => $pricing['selling_price'],
-                            'mrp' => $pricing['mrp'],
-                            'discount' => $pricing['discount_percentage'],
-                            'cost' => $pricing['cost'],
-                            'profit' => $pricing['profit'],
-                            'margin' => $pricing['margin_percentage'],
-                        ];
+                        if ($pricing['selling_price'] > 0) {
+                            $pricingData = [
+                                'product_id' => $array['id'],
+                                'country_code' => $pricing['country_code'],
+                                'selling_price' => $pricing['selling_price'],
+                                'mrp' => $pricing['mrp'],
+                                'discount' => $pricing['discount_percentage'],
+                                'cost' => $pricing['cost'],
+                                'profit' => $pricing['profit'],
+                                'margin' => $pricing['margin_percentage'],
+                            ];
 
-                        // dd($pricingData);
+                            // dd($pricingData);
 
-                        // Update Existing Pricing
-                        if (!empty($pricing['id'])) {
-                            $pricingResp = $this->productPricingRepository->update($pricing['id'], $pricingData);
-                        }
-                        // Add New Pricing
-                        else {
-                            $pricingResp = $this->productPricingRepository->store($pricingData);
+                            // Update Existing Pricing
+                            if (!empty($pricing['id'])) {
+                                $pricingResp = $this->productPricingRepository->update($pricing['id'], $pricingData);
+                            }
+                            // Add New Pricing
+                            else {
+                                $pricingResp = $this->productPricingRepository->store($pricingData);
+                            }
                         }
 
                         // dd($pricingResp);
                     }
                 }
+                // dd($array);
 
                 // IMAGES
                 if (!empty($array['images']) && count($array['images']) > 0) {
@@ -437,71 +445,18 @@ class ProductListingRepository implements ProductListingInterface
 
                     $productId = $array['id'];
                     $productBadgeResp = $this->productBadgeCombinationRepository->syncProductBadges($productId, $array['badges']);
-                    // dd($productBadgeResp);
+                }
 
-                    /*
-                    // 1. check product badges
-                    $productId = $array['id'];
-                    $badgeDataArr = [
-                        'product_id' => $productId
-                    ];
-                    $productBadges = $this->productBadgeCombinationRepository->conditions($badgeDataArr);
-
-                    // 2. if no data found
-                    if ($productBadges['code'] != 200) {
-                        foreach($array['badges'] as $badgeKey => $badgeId) {
-                            // 3. set data store array
-                            $badgeCombinationData = [
-                                'product_id' => $array['id'],
-                                'product_badge_id' => $badgeId,
-                            ];
-
-                            // 4. insert data
-                            $badgeCombinationResp = $this->productBadgeCombinationRepository->store($badgeCombinationData);
-                            // dd($badgeCombinationResp);
-                        }
-                    }
-                    // 5. if data found
-                    else {
-                        // 6. get existing badge ids
-                        $existingProductBadgesIds = $productBadges['data']->pluck('product_badge_id')->toArray();
-                        // dd($existingProductBadgesIds, $array['badges']);
-                        // 7. loop through sent badges
-                        foreach($array['badges'] as $badgeKey => $badgeId) {
-                            // 8. check if existing badge ids matches with sent badges, if not found, add them
-                            if (!in_array($badgeId, $existingProductBadgesIds)) {
-                                // 3. set data store array
-                                $badgeCombinationData = [
-                                    'product_id' => $array['id'],
-                                    'product_badge_id' => $badgeId,
-                                ];
-
-                                // 4. insert data
-                                $badgeCombinationResp = $this->productBadgeCombinationRepository->store($badgeCombinationData);
-                            }
-                        }
-                    }
-                    */
-
-                    // dd($productBadges);
-
-                    /*
-                    foreach($array['badges'] as $badgeKey => $badgeId) {
-                        // condition array
-                        $badgeCombinationData = [
-                            'product_id' => $array['id'],
-                            'product_badge_id' => $badgeId,
-                        ];
-
-                        // 1. check if this condition already exists in DB
-                        $badgeComboResp = $this->productBadgeCombinationRepository->conditions($badgeCombinationData);
-                        // dd($badgeComboResp);
-                        if ($badgeComboResp['code'] != 200) {
-                            $badgeCombinationResp = $this->productBadgeCombinationRepository->store($badgeCombinationData);
-                            // dd($badgeCombinationResp);
-                        }
-                    }
-                    */
+                // COMPANY DOMAIN
+                $companyDomain = applicationSettings('company_domain');
+                if ($companyDomain == 'ed-tech') {
+                    $edTechIns = \App\Models\ProductEdTech::create([
+                        'product_id' => $product->id,
+                        'board_id' => $array['board_id'],
+                        'class_id' => $array['class_id'],
+                        'subject_id' => $array['subject_id'],
+                        'school_id' => $array['school_id'],
+                    ]);
                 }
 
                 DB::commit();
@@ -516,6 +471,13 @@ class ProductListingRepository implements ProductListingInterface
                 return $data;
             }
         } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Product update failed: '.$e->getMessage(), [
+                'payload' => $array,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             return [
                 'code' => 500,
                 'status' => 'error',

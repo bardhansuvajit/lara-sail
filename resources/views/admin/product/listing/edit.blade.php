@@ -94,7 +94,6 @@
                     {{-- Highlights --}}
                     @livewire('product-page-highlight', [
                         'product_id' => $data->id,
-                        // 'highlights' => $data->highlights
                     ])
 
                     <div class="grid gap-2 mb-3 grid-cols-1">

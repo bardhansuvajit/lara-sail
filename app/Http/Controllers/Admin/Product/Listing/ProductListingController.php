@@ -110,7 +110,8 @@ class ProductListingController
             'country_code'       => 'required|array|min:1',
             'country_code.*'     => 'required|string|exists:countries,code',
             'selling_price'      => 'nullable|array|min:1',
-            'selling_price.*'    => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
+            'selling_price.*'    => ['nullable','numeric','min:0','max:1000000','regex:'.PRICE_REGEX],
+            // 'selling_price.*'    => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
             'mrp'                => 'nullable|array',
             'mrp.*'              => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
             'discount'           => 'nullable|array',
@@ -228,6 +229,7 @@ class ProductListingController
         ];
 
         $companyDomain = applicationSettings('company_domain');
+        // data update based on company domain
         if ($companyDomain == 'ed-tech') {
             $productData += [
                 'board_id' => $request->board_id ? (int) $request->board_id : 0,
@@ -287,7 +289,6 @@ class ProductListingController
         // $request->validate([
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|min:1',
-            // 'type' => 'required|string|in:'.collect(PRODUCT_TYPE)->pluck('key')->implode(','),
             'type' => 'required|string',
             'title' => 'required|string|min:2|max:1000',
             'description' => 'nullable|string|min:2',
@@ -302,13 +303,11 @@ class ProductListingController
             'price_ids.*'     => 'required|integer|min:1',
             'country_code'       => 'required|array|min:1',
             'country_code.*'     => 'required|string|exists:countries,code',
-            // selling prices (required array)
             'selling_price'      => 'nullable|array|min:1',
-            'selling_price.*'    => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
-            // mrp can be nullable per item
+            'selling_price.*'    => ['nullable','numeric','min:0','max:1000000','regex:'.PRICE_REGEX],
+            // 'selling_price.*'    => ['nullable','numeric','min:0.01','max:1000000','regex:'.PRICE_REGEX],
             'mrp'                => 'nullable|array',
             'mrp.*'              => ['nullable','numeric','max:1000000','regex:'.PRICE_REGEX],
-            // discount/profit/margin arrays (readonly front-end but validate anyway)
             'discount'           => 'nullable|array',
             'discount.*'         => ['nullable','numeric','min:0','max:100'],
             'cost'               => 'nullable|array',
@@ -453,6 +452,17 @@ class ProductListingController
 
             'badges' => $request->badge_ids
         ];
+
+        $companyDomain = applicationSettings('company_domain');
+        // data update based on company domain
+        if ($companyDomain == 'ed-tech') {
+            $productData += [
+                'board_id' => $request->board_id ? (int) $request->board_id : 0,
+                'class_id' => $request->class_id ? (int) $request->class_id : 0,
+                'subject_id' => $request->subject_id ? (int) $request->subject_id : 0,
+                'school_id' => $request->school_id ? (int) $request->school_id : 0,
+            ];
+        }
 
         // dd($productData);
 

@@ -2,6 +2,11 @@
     if ($type == 'edit') {
         $edTechProdDetail = $data?->edTechSection;
     }
+
+    $boardId = old('board_id') ?? ($type == 'edit' && isset($edTechProdDetail) ? $edTechProdDetail->board_id : null);
+    $classId = old('class_id') ?? ($type == 'edit' && isset($edTechProdDetail) ? $edTechProdDetail->class_id : null);
+    $subjectId = old('subject_id') ?? ($type == 'edit' && isset($edTechProdDetail) ? $edTechProdDetail->subject_id : null);
+    $schoolId = old('school_id') ?? ($type == 'edit' && isset($edTechProdDetail) ? $edTechProdDetail->school_id : null);
 @endphp
 
 <div class="border-t border-gray-200 dark:border-gray-700"></div>
@@ -13,26 +18,25 @@
     {{-- Board --}}
     @livewire('input-school-board-search', [
         'mode' => 'single',
-        // 'selected_ids' => old('board_id', ($type == 'edit' ? $edTechProdDetail->board_id : '')),
-        'selected_ids' => old('board_id', ($type == 'edit' ? $edTechProdDetail->board_id->toArray() ?? [] : '')),
+        'product_id' => $boardId,
     ])
 
     {{-- Class --}}
     @livewire('input-school-class-search', [
         'mode' => 'single',
-        'selected_ids' => old('class_id'),
+        'product_id' => $classId,
     ])
 
     {{-- Subject --}}
     @livewire('input-school-subject-search', [
         'mode' => 'single',
-        'selected_ids' => old('subject_id'),
+        'product_id' => $subjectId,
     ])
 
     {{-- School --}}
     @livewire('input-school-search', [
         'mode' => 'single',
-        'selected_ids' => old('school_id'),
+        'product_id' => $schoolId,
     ])
 
 </div>
