@@ -729,90 +729,97 @@
     }
 
     // Save variants
-    document.getElementById('saveVariantsBtn').addEventListener('click', async () => {
-        // console.log(selectedVariations);
+    const saveVariantsBtn = document.getElementById('saveVariantsBtn');
+    const toggleColorCheckbox = document.getElementById('toggle-colors-checkbox');
 
-        try {
-            const currencyAdjustments = [];
-            const blocks2 = document.querySelectorAll('.variation-currency-block');
-            const count2 = blocks2.length;
-            console.log(count2);
-            
-            document.querySelectorAll('.variation-currency-block').forEach(block => {
-                const countrySelect = block.querySelector('select[name="var_country_code[]"]');
-                const priceInput = block.querySelector('input[name="var_price_adjustment[]"]');
+    if (saveVariantsBtn) {
+        saveVariantsBtn.addEventListener('click', async () => {
+            // console.log(selectedVariations);
 
-                if (countrySelect && priceInput) {
-                    currencyAdjustments.push({
-                        country_code: countrySelect.value,
-                        price_adjustment: parseFloat(priceInput.value) || 0
-                    });
-                }
-            });
+            try {
+                const currencyAdjustments = [];
+                const blocks2 = document.querySelectorAll('.variation-currency-block');
+                const count2 = blocks2.length;
+                console.log(count2);
+                
+                document.querySelectorAll('.variation-currency-block').forEach(block => {
+                    const countrySelect = block.querySelector('select[name="var_country_code[]"]');
+                    const priceInput = block.querySelector('input[name="var_price_adjustment[]"]');
 
-            const sku = document.querySelector('input[name=var_sku_variant]').value;
-            const stockQuantity = document.querySelector('input[name=var_stock_quantity_variant]').value;
-            const allowBackorders = document.querySelector('input[name=var_allowBackordersFailsafe]').value == "true" ? 1 : 0;
+                    if (countrySelect && priceInput) {
+                        currencyAdjustments.push({
+                            country_code: countrySelect.value,
+                            price_adjustment: parseFloat(priceInput.value) || 0
+                        });
+                    }
+                });
 
-            const response = await fetch('/api/variation/store', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    product_id: {{ $product_id }},
-                    sku: sku,
-                    stock_quantity: stockQuantity,
-                    allow_backorders: allowBackorders,
-                    currency_adjustments: currencyAdjustments,
-                    variations: selectedVariations.map(v => ({
-                        attribute_id: v.attributeId,
-                        attribute_value_id: v.valueId,
-                        attribute_value_title: v.valueTitle
-                    }))
-                })
-            });
+                const sku = document.querySelector('input[name=var_sku_variant]').value;
+                const stockQuantity = document.querySelector('input[name=var_stock_quantity_variant]').value;
+                const allowBackorders = document.querySelector('input[name=var_allowBackordersFailsafe]').value == "true" ? 1 : 0;
 
-            const result = await response.json();
+                const response = await fetch('/api/variation/store', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        product_id: {{ $product_id }},
+                        sku: sku,
+                        stock_quantity: stockQuantity,
+                        allow_backorders: allowBackorders,
+                        currency_adjustments: currencyAdjustments,
+                        variations: selectedVariations.map(v => ({
+                            attribute_id: v.attributeId,
+                            attribute_value_id: v.valueId,
+                            attribute_value_title: v.valueTitle
+                        }))
+                    })
+                });
 
-            if (response.ok) {
-                if (result.code == 200) {
-                    window.showNotification('success', 'Success!', result.message);
+                const result = await response.json();
 
-                    // Refresh the Livewire component
-                    Livewire.dispatch('variation-added');
+                if (response.ok) {
+                    if (result.code == 200) {
+                        window.showNotification('success', 'Success!', result.message);
 
-                    // Clear selections
-                    selectedVariations = [];
-                    updateSelectedVariationsUI();
+                        // Refresh the Livewire component
+                        Livewire.dispatch('variation-added');
 
-                    // Remove highlights from all buttons
-                    document.querySelectorAll('[data-attr-id]').forEach(btn => {
-                        btn.classList.remove('bg-primary-400', 'hover:bg-primary-500', 'dark:bg-primary-600', 'dark:hover:bg-primary-700');
-                    });
+                        // Clear selections
+                        selectedVariations = [];
+                        updateSelectedVariationsUI();
+
+                        // Remove highlights from all buttons
+                        document.querySelectorAll('[data-attr-id]').forEach(btn => {
+                            btn.classList.remove('bg-primary-400', 'hover:bg-primary-500', 'dark:bg-primary-600', 'dark:hover:bg-primary-700');
+                        });
+                    } else {
+                        window.showNotification('warning', 'Oops!', result.message);
+                    }
                 } else {
-                    window.showNotification('warning', 'Oops!', result.message);
+                    throw new Error(result.message);
                 }
-            } else {
-                throw new Error(result.message);
+            } catch (error) {
+                console.error('Error saving variations:', error);
             }
-        } catch (error) {
-            console.error('Error saving variations:', error);
-        }
-    });
+        });
+    }
 
-    document.getElementById('toggle-colors-checkbox').addEventListener('click', function() {
-        if (this.checked) {
-            document.querySelectorAll('.show-colors').forEach(element => {
-                element.classList.remove('hidden');
-            });
-        } else {
-            document.querySelectorAll('.show-colors').forEach(element => {
-                element.classList.add('hidden');
-            });
-        }
-    });
+    if (toggleColorCheckbox) {
+        toggleColorCheckbox.addEventListener('click', function() {
+            if (this.checked) {
+                document.querySelectorAll('.show-colors').forEach(element => {
+                    element.classList.remove('hidden');
+                });
+            } else {
+                document.querySelectorAll('.show-colors').forEach(element => {
+                    element.classList.add('hidden');
+                });
+            }
+        });
+    }
 
     @if(!empty($existingVariations['raw']) && count($existingVariations['raw']) > 0)
     // variants drag & drop to set position

@@ -212,6 +212,7 @@
     </x-admin.modal>
 </div>
 
+@if($highlights && $highlights->count())
 <script>
     // variants drag & drop to set position
     window.addEventListener('load', () => {
@@ -231,3 +232,4 @@
         })();
     });
 </script>
+@endif

@@ -102,6 +102,6 @@
     @include('admin.includes.delete-confirm-modal')
 </x-admin-app-layout>
 
-@vite([
+{{-- @vite([
     'resources/js/rte-script.js'
-])
+]) --}}

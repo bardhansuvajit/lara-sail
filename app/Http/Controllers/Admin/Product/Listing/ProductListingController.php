@@ -236,6 +236,7 @@ class ProductListingController
                 'class_id' => $request->class_id ? (int) $request->class_id : 0,
                 'subject_id' => $request->subject_id ? (int) $request->subject_id : 0,
                 'school_id' => $request->school_id ? (int) $request->school_id : 0,
+                'content' => $request->content
             ];
         }
 
@@ -461,6 +462,7 @@ class ProductListingController
                 'class_id' => $request->class_id ? (int) $request->class_id : 0,
                 'subject_id' => $request->subject_id ? (int) $request->subject_id : 0,
                 'school_id' => $request->school_id ? (int) $request->school_id : 0,
+                'content' => $request->content
             ];
         }
 

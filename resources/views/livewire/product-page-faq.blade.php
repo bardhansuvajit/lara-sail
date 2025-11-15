@@ -187,6 +187,7 @@
     </x-admin.modal>
 </div>
 
+@if($faqs && $faqs->count())
 <script>
     // variants drag & drop to set position
     window.addEventListener('load', () => {
@@ -206,3 +207,4 @@
         })();
     });
 </script>
+@endif

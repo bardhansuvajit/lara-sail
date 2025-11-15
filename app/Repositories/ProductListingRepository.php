@@ -173,13 +173,20 @@ class ProductListingRepository implements ProductListingInterface
             // COMPANY DOMAIN
             $companyDomain = applicationSettings('company_domain');
             if ($companyDomain == 'ed-tech') {
-                $edTechIns = \App\Models\ProductEdTech::create([
-                    'product_id' => $data->id,
-                    'board_id' => $array['board_id'],
-                    'class_id' => $array['class_id'],
-                    'subject_id' => $array['subject_id'],
-                    'school_id' => $array['school_id'],
-                ]);
+                $edTechPayload = [
+                    'board_id'   => $array['board_id']   ?? null,
+                    'class_id'   => $array['class_id']   ?? null,
+                    'subject_id' => $array['subject_id'] ?? null,
+                    'school_id'  => $array['school_id']  ?? null,
+                    'content'    => $array['content']  ?? null,
+                ];
+
+                if (!empty(array_filter($edTechPayload))) {
+                    $data->edTechSection()->updateOrCreate(
+                        ['product_id' => $data->id],
+                        $edTechPayload
+                    );
+                }
             }
 
             DB::commit();
@@ -450,13 +457,22 @@ class ProductListingRepository implements ProductListingInterface
                 // COMPANY DOMAIN
                 $companyDomain = applicationSettings('company_domain');
                 if ($companyDomain == 'ed-tech') {
-                    $edTechIns = \App\Models\ProductEdTech::create([
-                        'product_id' => $product->id,
-                        'board_id' => $array['board_id'],
-                        'class_id' => $array['class_id'],
-                        'subject_id' => $array['subject_id'],
-                        'school_id' => $array['school_id'],
-                    ]);
+                    $edTechPayload = [
+                        'board_id'   => $array['board_id']   ?? null,
+                        'class_id'   => $array['class_id']   ?? null,
+                        'subject_id' => $array['subject_id'] ?? null,
+                        'school_id'  => $array['school_id']  ?? null,
+                        'content'    => $array['content']  ?? null,
+                    ];
+
+                    if (empty(array_filter($edTechPayload))) {
+                        $product->edTechSection()->delete();
+                    } else {
+                        $product->edTechSection()->updateOrCreate(
+                            ['product_id' => $product->id],
+                            $edTechPayload
+                        );
+                    }
                 }
 
                 DB::commit();

@@ -22,6 +22,8 @@ return new class extends Migration
             $table->unsignedBigInteger('subject_id')->nullable();
             $table->unsignedBigInteger('school_id')->nullable();
 
+            $table->longText('content')->nullable();
+
             $table->timestamps();
         });
     }
