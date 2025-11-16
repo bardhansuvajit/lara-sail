@@ -402,12 +402,16 @@
             </x-admin.dropdown>
 
             {{-- profile --}}
+            @php
+                $user = auth()->guard('admin')->user();
+            @endphp
+
             <x-admin.dropdown align="right" width="48">
                 <x-slot name="trigger">
                     <button type="button" data-dropdown-toggle="notification-dropdown" class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 relative">
                         <span class="sr-only">Open user menu</span>
                         <div class="w-4 h-4">
-                            <img class="rounded-full w-4 h-4" src="{{ Storage::url(Auth::guard('admin')->user()->profile_picture_s) }}" alt="user" onerror="this.onerror=null;this.src='{{ Storage::url('default/skeleton/default-male.png') }}';" />
+                            <img class="rounded-full w-4 h-4" src="{{ Storage::url($user->profile_picture_s) }}" alt="user" onerror="this.onerror=null;this.src='{{ Storage::url('default/skeleton/default-male.png') }}';" />
                         </div>
                     </button>
                 </x-slot>
@@ -415,8 +419,8 @@
                 <x-slot name="content">
                     <div class="divide-y divide-gray-100 dark:divide-gray-600">
                         <div class="py-3 px-4">
-                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil Sims</span>
-                            <span class="block text-sm text-gray-900 truncate dark:text-white">name@email.com</span>
+                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">{{ $user->first_name.' '.$user->last_name }}</span>
+                            <span class="block text-sm text-gray-900 truncate dark:text-white">{{ $user->email }}</span>
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
