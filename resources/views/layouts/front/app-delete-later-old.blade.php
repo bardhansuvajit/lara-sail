@@ -62,8 +62,8 @@
                     <!-- footer -->
                     @include('layouts.admin.footer')
                 </div>
-            </main>
-        </div> --}}
+            </main> --}}
+        </div>
 
         <!-- footer -->
         @include('layouts.front.footer')

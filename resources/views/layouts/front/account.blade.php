@@ -1,4 +1,4 @@
-<x-app-layout
+<x-guest-layout
     screen="max-w-screen-xl"
     title="{{ $title ?? __('Account') }}">
 
@@ -58,4 +58,4 @@
     </section>
 
     @yield('scripts')
-</x-app-layout>
+</x-guest-layout>

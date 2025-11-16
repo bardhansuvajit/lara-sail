@@ -36,16 +36,16 @@ return new class extends Migration
             [
                 'category' => 'company',
                 'key' => 'company_name',
-                'value' => 'Example company LLP',
-                'pretty_value' => 'Example company LLP',
-                'description' => 'Legal company name',
+                'value' => 'Learnova',
+                'pretty_value' => 'Learnova',
+                'description' => 'Short company name',
             ],
             [
                 'category' => 'company',
-                'key' => 'company_establish_year',
-                'value' => 2000,
-                'pretty_value' => 2000,
-                'description' => 'Company establishment year',
+                'key' => 'company_full_name',
+                'value' => 'Example company LLP',
+                'pretty_value' => 'Example company LLP',
+                'description' => 'Legal full company name',
             ],
             [
                 'category' => 'company',
@@ -53,6 +53,13 @@ return new class extends Migration
                 'value' => 'Your tagline here',
                 'pretty_value' => 'Your tagline here',
                 'description' => 'Company tagline or slogan',
+            ],
+            [
+                'category' => 'company',
+                'key' => 'company_establish_year',
+                'value' => 2000,
+                'pretty_value' => 2000,
+                'description' => 'Company establishment year',
             ],
 
             // Contact Information

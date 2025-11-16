@@ -71,19 +71,37 @@ class IndexController extends Controller
         });
 
         // dd(COUNTRY);
+        $companyDomain = applicationSettings('company_domain');
 
-        return view('front.home.index', [
-            'categoryStyleCount' => $categoryStyleCount, // show max no of category
-            'banners' => $banners['data'],
-            'featuredProducts' => $productFeatures['data']['featured'] ?? [],
-            'flashSaleProducts' => $productFeatures['data']['flash'] ?? [],
-            'trendingProducts' => $productFeatures['data']['trending'] ?? [],
-            'mostSoldFeatures' => $mostSoldFeatures['data'] ?? [],
+        if ($companyDomain == 'ed-tech') {
+            return view('front.home.ed-tech.index', [
+                'categoryStyleCount' => $categoryStyleCount, // show max no of category
+                'banners' => $banners['data'],
+                'featuredProducts' => $productFeatures['data']['featured'] ?? [],
+                'flashSaleProducts' => $productFeatures['data']['flash'] ?? [],
+                'trendingProducts' => $productFeatures['data']['trending'] ?? [],
+                'mostSoldFeatures' => $mostSoldFeatures['data'] ?? [],
 
-            'homepageAd1' => $homepageAds['data'][0]->activeItemOnly ?? [],
-            'homepageAd2' => $homepageAds['data'][1]->activeItemOnly ?? [],
-            'homepageAd3' => $homepageAds['data'][2]->activeItemOnly ?? [],
-            'homepageAd4' => $homepageAds['data'][3]->activeItemOnly ?? [],
-        ]);
+                'homepageAd1' => $homepageAds['data'][0]->activeItemOnly ?? [],
+                'homepageAd2' => $homepageAds['data'][1]->activeItemOnly ?? [],
+                'homepageAd3' => $homepageAds['data'][2]->activeItemOnly ?? [],
+                'homepageAd4' => $homepageAds['data'][3]->activeItemOnly ?? [],
+            ]);
+        } else {
+            return view('front.home.index', [
+                'categoryStyleCount' => $categoryStyleCount, // show max no of category
+                'banners' => $banners['data'],
+                'featuredProducts' => $productFeatures['data']['featured'] ?? [],
+                'flashSaleProducts' => $productFeatures['data']['flash'] ?? [],
+                'trendingProducts' => $productFeatures['data']['trending'] ?? [],
+                'mostSoldFeatures' => $mostSoldFeatures['data'] ?? [],
+
+                'homepageAd1' => $homepageAds['data'][0]->activeItemOnly ?? [],
+                'homepageAd2' => $homepageAds['data'][1]->activeItemOnly ?? [],
+                'homepageAd3' => $homepageAds['data'][2]->activeItemOnly ?? [],
+                'homepageAd4' => $homepageAds['data'][3]->activeItemOnly ?? [],
+            ]);
+        }
+
     }
 }
