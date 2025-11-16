@@ -9,7 +9,7 @@
     <section class="mt-2">
         @include('admin.application.includes.navbar')
 
-        <div class="py-5 px-5 bg-gray-50 dark:bg-gray-700">
+        <div class="py-5 px-5 bg-gray-100 dark:bg-gray-700">
             <div class="mb-3">
                 <x-admin.developer-expertise-alert />
             </div>

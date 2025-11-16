@@ -12,13 +12,15 @@
                 <span class="sr-only">Toggle sidebar</span>
             </button>
 
-            <a href="/" class="flex items-center justify-between mr-4" target="_blank">
+            <a href="/" class="flex items-center justify-between mr-2" target="_blank">
                 {{-- <svg class="mr-1 h-5 sm:h-8 text-primary-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m211-372-22.85 63.27Q183-295 172.5-287.5T147-280q-25 0-37.5-20.5T105-342l116-308q4.75-13 16.76-21.5 12-8.5 26.36-8.5h34.51q14.36 0 26.37 8.5 12 8.5 16.81 21.96l114.45 305.4Q465-321 452-300.5T413-280q-16 0-29-8.71T366-312l-20-60H211Zm28-82h78l-37-109h-4l-37 109Zm407 89h139q17.17 0 29.58 12.38Q827-340.24 827-323.12 827-306 814.5-293t-29.95 13H556.11q-10.63 0-18.37-7.71T530-306v-37q0-10.3 3-19.65 3-9.35 9-17.35l170-215H581.39q-17.39 0-29.89-13T539-638.12q0-17.12 13-29.5Q565-680 582.31-680H800.1q10.54 0 17.72 7.21T825-655v39q0 10.3-3 19.15-3 8.85-9 16.85L646-365ZM378-736q-10 0-14.5-8.5t3.66-16.66L459-853q8-8 21-8t21 8l91.84 91.84Q601-753 596.5-744.5T582-736H378Zm81 629-91.84-91.84Q359-207 363.5-215.5T378-224h204q10 0 14.5 8.5t-3.66 16.66L501-107q-8 8-21 8t-21-8Z"/></svg> --}}
 
                 <!-- <img src="" class="mr-1 h-5 sm:mr-3 sm:h-8" alt="Logo" /> -->
 
                 {{-- <span class="self-center text-primary-600 text-sm sm:text-2xl font-semibold whitespace-nowrap dark:text-white">LOGO</span> --}}
-                <x-admin.application-logo class="block h-5 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                {{-- <x-admin.application-logo class="block h-5 w-auto fill-current text-gray-800 dark:text-gray-200" /> --}}
+
+                <img src="{{ Storage::url('default/logo/logo-square.svg') }}" class="h-6 md:h-8" alt="Logo" />
             </a>
 
             <form action="#" method="GET" class="hidden md:block md:pl-2">
