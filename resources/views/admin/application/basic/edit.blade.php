@@ -21,11 +21,10 @@
                         <div class="grid grid-cols-4 gap-4 items-start opacity-75">
                             <div class="col-span-1">
                                 <p class="text-xs text-gray-500 dark:text-gray-400">{{ ucwords(str_replace('_', ' ', $item->key)) }}</p>
-                                <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $item->pretty_value }}</p>
                             </div>
                             <div class="col-span-3 space-y-2">
                                 <div class="bg-gray-200 dark:bg-gray-600 p-3 rounded">
-                                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    <p class="text-sm text-gray-900/20 bg-gray-900 inline-block">
                                         <strong>Data:</strong> {{ $item->value }}
                                     </p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
