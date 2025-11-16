@@ -515,6 +515,12 @@ return new class extends Migration
                 'permission' => 'manage_master',
                 'children' => [
                     [
+                        'title' => 'Board',
+                        'route' => 'admin.school.board.index',
+                        'icon' => 'board',
+                        'permission' => 'manage_boards'
+                    ],
+                    [
                         'title' => 'Class',
                         'route' => 'admin.school.class.index',
                         'icon' => 'class',

@@ -58,6 +58,7 @@ class RolePermissionSeeder extends Seeder
             // CORE COMMERCE - ends
 
             // ED TECH - starts
+            'manage_boards',
             'manage_classes',
             'manage_subjects',
             'manage_schools',

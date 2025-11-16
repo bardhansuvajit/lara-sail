@@ -182,7 +182,7 @@ return new class extends Migration
 
     private function getCbseSvg()
     {
-        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" role="img" aria-label="CBSE">
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" role="img" aria-label="CBSE">
             <defs>
                 <linearGradient id="cbseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stop-color="#0288D1" />
@@ -205,7 +205,7 @@ return new class extends Migration
 
     private function getIcseSvg()
     {
-        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 82 40" role="img" aria-label="ICSE">
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" role="img" aria-label="ICSE">
             <defs>
                 <linearGradient id="icseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stop-color="#F57C00" />
