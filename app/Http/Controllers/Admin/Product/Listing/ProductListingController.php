@@ -131,7 +131,11 @@ class ProductListingController
             'meta_description' => 'nullable|string|min:2',
 
             'images' => 'nullable|array',
-            'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array)
+            'images.*' => 'image|max:'.developerSettings('image_validation')->max_image_size.'|mimes:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array).'|extensions:'.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
+
+            // ed-tech files
+            'files' => 'nullable|array',
+            'files.*' => 'file|max:'.developerSettings('file_validation')->max_file_size.'|mimes:'.implode(',', developerSettings('file_validation')->file_upload_mimes_array)
         ], [
             'selling_price.regex' => 'The selling price accepts value upto 2 decimals.',
             'mrp.regex' => 'The selling price accepts value upto 2 decimals.',
@@ -140,6 +144,9 @@ class ProductListingController
             'images.*.max' => '":filename" must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
             'images.*.mimes' => '":filename" must be a file of type: '.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
             'images.*.extensions' => '":filename" is not supported. Please upload an image of these formats: '.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
+
+            'files.*.mimes' => 'Only PDFs are allowed.',
+            'files.*.max' => 'Each file must not be greater than '.developerSettings('file_validation')->max_file_size_in_mb.'.',
         ]);
 
         $validator->after(function ($validator) use ($fileNames) {
@@ -236,6 +243,7 @@ class ProductListingController
                 'class_id' => $request->class_id ? (int) $request->class_id : 0,
                 'subject_id' => $request->subject_id ? (int) $request->subject_id : 0,
                 'school_id' => $request->school_id ? (int) $request->school_id : 0,
+                'files' => $request->files ? $request->file('files') : null,
                 'content' => $request->content
             ];
         }
@@ -332,6 +340,10 @@ class ProductListingController
 
             'badge_ids'             => 'nullable|array',
             'badge_ids.*'           => ['nullable','integer','min:1','exists:product_badges,id'],
+
+            // ed-tech files
+            'files' => 'nullable|array',
+            'files.*' => 'file|max:'.developerSettings('file_validation')->max_file_size.'|mimes:'.implode(',', developerSettings('file_validation')->file_upload_mimes_array)
         ], [
             'selling_price.regex' => 'The selling price accepts value upto 2 decimals.',
             'mrp.regex' => 'The selling price accepts value upto 2 decimals.',
@@ -340,6 +352,9 @@ class ProductListingController
             'images.*.max' => '":filename" must not be greater than '.developerSettings('image_validation')->max_image_size_in_mb.'.',
             'images.*.mimes' => '":filename" must be a file of type: '.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
             'images.*.extensions' => '":filename" is not supported. Please upload an image of these formats: '.implode(',', developerSettings('image_validation')->image_upload_mimes_array),
+
+            'files.*.mimes' => 'Only PDFs are allowed.',
+            'files.*.max' => 'Each file must not be greater than '.developerSettings('file_validation')->max_file_size_in_mb.'.',
         ]);
 
         $validator->after(function ($validator) use ($fileNames) {
@@ -462,6 +477,7 @@ class ProductListingController
                 'class_id' => $request->class_id ? (int) $request->class_id : 0,
                 'subject_id' => $request->subject_id ? (int) $request->subject_id : 0,
                 'school_id' => $request->school_id ? (int) $request->school_id : 0,
+                'files' => $request->files ? $request->file('files') : null,
                 'content' => $request->content
             ];
         }

@@ -33,6 +33,7 @@ class RolePermissionSeeder extends Seeder
             'manage_reviews',
             'manage_variations',
             'manage_coupons',
+            'manage_files',
 
             // Master Data
             'manage_master',

@@ -60,6 +60,7 @@ use App\Interfaces\SchoolClassInterface;
 use App\Interfaces\SchoolBoardInterface;
 use App\Interfaces\SchoolSubjectInterface;
 use App\Interfaces\SchoolInterface;
+use App\Interfaces\ProductFileInterface;
 
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductCollectionRepository;
@@ -117,6 +118,7 @@ use App\Repositories\SchoolClassRepository;
 use App\Repositories\SchoolBoardRepository;
 use App\Repositories\SchoolSubjectRepository;
 use App\Repositories\SchoolRepository;
+use App\Repositories\ProductFileRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -182,6 +184,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(SchoolBoardInterface::class, SchoolBoardRepository::class);
         $this->app->bind(SchoolSubjectInterface::class, SchoolSubjectRepository::class);
         $this->app->bind(SchoolInterface::class, SchoolRepository::class);
+        $this->app->bind(ProductFileInterface::class, ProductFileRepository::class);
     }
 
     /**

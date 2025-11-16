@@ -152,6 +152,11 @@ class Product extends Model
         return $this->hasOne('App\Models\ProductEdTech', 'product_id', 'id');
     }
 
+    public function files()
+    {
+        return $this->hasMany('App\Models\ProductFile', 'product_id', 'id');
+    }
+
     /*
     public function getFinalPriceAttribute()
     {

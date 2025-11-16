@@ -109,29 +109,29 @@ class ProductListingRepository implements ProductListingInterface
 
         try {
             // product listing
-            $data = new Product();
-            $data->type = $array['type'];
-            $data->title = $array['title'];
-            $data->slug = Str::slug($array['title']);
-            $data->short_description = $array['short_description'];
-            $data->long_description = $array['long_description'];
-            $data->category_id = $array['category_id'] ?? null;
-            $data->collection_ids = !empty($array['collection_ids']) ? $array['collection_ids'] : null;
+            $product = new Product();
+            $product->type = $array['type'];
+            $product->title = $array['title'];
+            $product->slug = Str::slug($array['title']);
+            $product->short_description = $array['short_description'];
+            $product->long_description = $array['long_description'];
+            $product->category_id = $array['category_id'] ?? null;
+            $product->collection_ids = !empty($array['collection_ids']) ? $array['collection_ids'] : null;
 
-            $data->sku = $array['sku'];
-            $data->track_quantity = $array['track_quantity'];
-            $data->stock_quantity = $array['stock_quantity'];
-            $data->allow_backorders = $array['allow_backorders'];
-            $data->meta_title = $array['meta_title'];
-            $data->meta_desc = $array['meta_description'];
-            $data->status = DEFAULT_PROD_STAT_ID;
-            $data->save();
+            $product->sku = $array['sku'];
+            $product->track_quantity = $array['track_quantity'];
+            $product->stock_quantity = $array['stock_quantity'];
+            $product->allow_backorders = $array['allow_backorders'];
+            $product->meta_title = $array['meta_title'];
+            $product->meta_desc = $array['meta_description'];
+            $product->status = DEFAULT_PROD_STAT_ID;
+            $product->save();
 
             // PRICING
             if (!empty($array['pricing']) && count($array['pricing']) > 0) {
                 foreach ($array['pricing'] as $key => $pricing) {
                     $pricingData = [
-                        'product_id' => $data->id,
+                        'product_id' => $product->id,
                         'country_code' => $pricing['country_code'],
                         'selling_price' => $pricing['selling_price'],
                         'mrp' => $pricing['mrp'],
@@ -150,7 +150,7 @@ class ProductListingRepository implements ProductListingInterface
                     $uploadResp = fileUpload($singleImage, 'p-img');
 
                     $imageData = [
-                        'product_id' => $data->id,
+                        'product_id' => $product->id,
                         'image_s' => $uploadResp['smallThumbName'],
                         'image_m' => $uploadResp['mediumThumbName'],
                         'image_l' => $uploadResp['largeThumbName'],
@@ -163,7 +163,7 @@ class ProductListingRepository implements ProductListingInterface
             if (!empty($array['badges']) && count($array['badges']) > 0) {
                 foreach($array['badges'] as $badgeKey => $badgeId) {
                     $badgeCombinationData = [
-                        'product_id' => $data->id,
+                        'product_id' => $product->id,
                         'product_badge_id' => $badgeId,
                     ];
                     $badgeCombinationResp = $this->productBadgeCombinationRepository->store($badgeCombinationData);
@@ -182,10 +182,99 @@ class ProductListingRepository implements ProductListingInterface
                 ];
 
                 if (!empty(array_filter($edTechPayload))) {
-                    $data->edTechSection()->updateOrCreate(
-                        ['product_id' => $data->id],
+                    $product->edTechSection()->updateOrCreate(
+                        ['product_id' => $product->id],
                         $edTechPayload
                     );
+                }
+
+                // FILES
+                if (!empty($array['files']) && count($array['files']) > 0) {
+                    foreach($array['files'] as $fileKey => $singleFile) {
+                        $uploadResp = fileUpload($singleFile, 'p-edTech-file');
+
+                        // if upload failed, log & continue
+                        if (!is_array($uploadResp) || ($uploadResp['status'] ?? '') !== 'success') {
+                            Log::warning('fileUpload failed for edTech file', [
+                                'resp' => $uploadResp,
+                                'product_id' => $product->id,
+                                'index' => $fileKey,
+                            ]);
+                            continue;
+                        }
+
+                        // Normalize record for DB schema
+                        $record = [
+                            'product_id'     => $product->id,
+                            'file_path'      => null,
+                            'file_size'      => null,
+                            'file_name'      => null,
+                            'file_type'      => null,
+                            'original_name'  => null,
+                            'mime_type'      => null,
+                            'disk'           => 'public',
+                            'extension'      => null,
+                            'sort_order'     => 0,
+                            'is_active'      => true,
+                            'description'    => null,
+                            'download_count' => 0,
+                        ];
+
+                        // Case 1: rich non-image response (fileUpload returned file_path / file_name / file_size etc.)
+                        if (isset($uploadResp['file_path']) || isset($uploadResp['file_name'])) {
+                            $record['file_path']     = $uploadResp['file_path'] ?? $uploadResp['original'] ?? null;
+                            $record['file_size']     = $uploadResp['file_size'] ?? null;
+                            $record['file_name']     = $uploadResp['file_name'] ?? ($record['file_path'] ? basename($record['file_path']) : null);
+                            $record['file_type']     = $uploadResp['file_type'] ?? $uploadResp['mime_type'] ?? null;
+                            $record['original_name'] = $uploadResp['original_name'] ?? ($singleFile->getClientOriginalName() ?? null);
+                            $record['mime_type']     = $uploadResp['mime_type'] ?? $uploadResp['file_type'] ?? null;
+                            $record['disk']          = $uploadResp['disk'] ?? 'public';
+                            $record['extension']     = $uploadResp['extension'] ?? pathinfo($record['file_name'] ?? '', PATHINFO_EXTENSION) ?: null;
+                        } else {
+                            // Case 2: image response shape (you kept that unchanged) -> uploadResp has 'original' and thumbs
+                            $record['file_path']     = $uploadResp['original'] ?? null;
+                            $record['original_name'] = $singleFile->getClientOriginalName() ?? null;
+
+                            // try to get size and mime from storage, otherwise fallback to uploaded file object
+                            try {
+                                if ($record['file_path'] && Storage::disk('public')->exists($record['file_path'])) {
+                                    $record['file_size'] = (string) Storage::disk('public')->size($record['file_path']);
+                                    $record['mime_type'] = Storage::disk('public')->mimeType($record['file_path']) ?? null;
+                                } else {
+                                    $record['file_size'] = (string) ($singleFile->getSize() ?? null);
+                                    $record['mime_type'] = $singleFile->getClientMimeType() ?? null;
+                                }
+                            } catch (\Throwable $e) {
+                                Log::debug('Could not determine file size/mime for edTech file', [
+                                    'error' => $e->getMessage(),
+                                    'path'  => $record['file_path']
+                                ]);
+                                $record['file_size'] = $record['file_size'] ?? (string) ($singleFile->getSize() ?? null);
+                                $record['mime_type'] = $record['mime_type'] ?? ($singleFile->getClientMimeType() ?? null);
+                            }
+
+                            $record['file_name'] = $record['file_path'] ? basename($record['file_path']) : null;
+                            $record['file_type'] = $record['mime_type'] ?? pathinfo($record['file_name'] ?? '', PATHINFO_EXTENSION);
+                            $record['disk']      = 'public';
+                            $record['extension'] = pathinfo($record['file_name'] ?? '', PATHINFO_EXTENSION) ?: null;
+
+                            // NOTE: thumbnails (smallThumbName/mediumThumbName/largeThumbName) are not saved
+                            // because your schema does not contain columns for them. Add columns if you want to store thumbs.
+                        }
+
+                        // Persist the record
+                        try {
+                            $product->files()->create($record);
+                        } catch (\Throwable $e) {
+                            Log::error('Failed to save files record', [
+                                'error' => $e->getMessage(),
+                                'record' => $record,
+                                'product_id' => $product->id,
+                            ]);
+                            // continue processing next files
+                            continue;
+                        }
+                    }
                 }
             }
 
@@ -195,7 +284,7 @@ class ProductListingRepository implements ProductListingInterface
                 'code' => 200,
                 'status' => 'success',
                 'message' => 'Changes have been saved',
-                'data' => $data,
+                'data' => $product,
             ];
         } catch (\Exception $e) {
             DB::rollback();
@@ -472,6 +561,95 @@ class ProductListingRepository implements ProductListingInterface
                             ['product_id' => $product->id],
                             $edTechPayload
                         );
+                    }
+
+                    // FILES
+                    if (!empty($array['files']) && count($array['files']) > 0) {
+                        foreach($array['files'] as $fileKey => $singleFile) {
+                            $uploadResp = fileUpload($singleFile, 'p-edTech-file');
+
+                            // if upload failed, log & continue
+                            if (!is_array($uploadResp) || ($uploadResp['status'] ?? '') !== 'success') {
+                                Log::warning('fileUpload failed for edTech file', [
+                                    'resp' => $uploadResp,
+                                    'product_id' => $product->id,
+                                    'index' => $fileKey,
+                                ]);
+                                continue;
+                            }
+
+                            // Normalize record for DB schema
+                            $record = [
+                                'product_id'     => $product->id,
+                                'file_path'      => null,
+                                'file_size'      => null,
+                                'file_name'      => null,
+                                'file_type'      => null,
+                                'original_name'  => null,
+                                'mime_type'      => null,
+                                'disk'           => 'public',
+                                'extension'      => null,
+                                'sort_order'     => 0,
+                                'is_active'      => true,
+                                'description'    => null,
+                                'download_count' => 0,
+                            ];
+
+                            // Case 1: rich non-image response (fileUpload returned file_path / file_name / file_size etc.)
+                            if (isset($uploadResp['file_path']) || isset($uploadResp['file_name'])) {
+                                $record['file_path']     = $uploadResp['file_path'] ?? $uploadResp['original'] ?? null;
+                                $record['file_size']     = $uploadResp['file_size'] ?? null;
+                                $record['file_name']     = $uploadResp['file_name'] ?? ($record['file_path'] ? basename($record['file_path']) : null);
+                                $record['file_type']     = $uploadResp['file_type'] ?? $uploadResp['mime_type'] ?? null;
+                                $record['original_name'] = $uploadResp['original_name'] ?? ($singleFile->getClientOriginalName() ?? null);
+                                $record['mime_type']     = $uploadResp['mime_type'] ?? $uploadResp['file_type'] ?? null;
+                                $record['disk']          = $uploadResp['disk'] ?? 'public';
+                                $record['extension']     = $uploadResp['extension'] ?? pathinfo($record['file_name'] ?? '', PATHINFO_EXTENSION) ?: null;
+                            } else {
+                                // Case 2: image response shape (you kept that unchanged) -> uploadResp has 'original' and thumbs
+                                $record['file_path']     = $uploadResp['original'] ?? null;
+                                $record['original_name'] = $singleFile->getClientOriginalName() ?? null;
+
+                                // try to get size and mime from storage, otherwise fallback to uploaded file object
+                                try {
+                                    if ($record['file_path'] && Storage::disk('public')->exists($record['file_path'])) {
+                                        $record['file_size'] = (string) Storage::disk('public')->size($record['file_path']);
+                                        $record['mime_type'] = Storage::disk('public')->mimeType($record['file_path']) ?? null;
+                                    } else {
+                                        $record['file_size'] = (string) ($singleFile->getSize() ?? null);
+                                        $record['mime_type'] = $singleFile->getClientMimeType() ?? null;
+                                    }
+                                } catch (\Throwable $e) {
+                                    Log::debug('Could not determine file size/mime for edTech file', [
+                                        'error' => $e->getMessage(),
+                                        'path'  => $record['file_path']
+                                    ]);
+                                    $record['file_size'] = $record['file_size'] ?? (string) ($singleFile->getSize() ?? null);
+                                    $record['mime_type'] = $record['mime_type'] ?? ($singleFile->getClientMimeType() ?? null);
+                                }
+
+                                $record['file_name'] = $record['file_path'] ? basename($record['file_path']) : null;
+                                $record['file_type'] = $record['mime_type'] ?? pathinfo($record['file_name'] ?? '', PATHINFO_EXTENSION);
+                                $record['disk']      = 'public';
+                                $record['extension'] = pathinfo($record['file_name'] ?? '', PATHINFO_EXTENSION) ?: null;
+
+                                // NOTE: thumbnails (smallThumbName/mediumThumbName/largeThumbName) are not saved
+                                // because your schema does not contain columns for them. Add columns if you want to store thumbs.
+                            }
+
+                            // Persist the record
+                            try {
+                                $product->files()->create($record);
+                            } catch (\Throwable $e) {
+                                Log::error('Failed to save files record', [
+                                    'error' => $e->getMessage(),
+                                    'record' => $record,
+                                    'product_id' => $product->id,
+                                ]);
+                                // continue processing next files
+                                continue;
+                            }
+                        }
                     }
                 }
 

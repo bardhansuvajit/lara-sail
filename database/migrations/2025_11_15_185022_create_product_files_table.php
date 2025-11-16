@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_ed_tech_files', function (Blueprint $table) {
+        Schema::create('product_files', function (Blueprint $table) {
             $table->id();
 
             $table->unsignedBigInteger('product_id')->nullable();
@@ -35,6 +35,7 @@ return new class extends Migration
             $table->text('description')->nullable(); // File description
             $table->integer('download_count')->default(0); // Usage tracking
 
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -44,6 +45,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_ed_tech_files');
+        Schema::dropIfExists('product_files');
     }
 };

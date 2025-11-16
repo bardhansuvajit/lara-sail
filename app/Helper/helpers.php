@@ -2,6 +2,7 @@
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
@@ -197,8 +198,243 @@ if (!function_exists('applicationSettings')) {
     }
 }
 
+if (! function_exists('fileUpload')) {
+    /**
+     * Upload a single file (UploadedFile).
+     *
+     * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
+     * @param string $uploadPath
+     * @return array
+     */
+    function fileUpload($file, $uploadPath) {
+        if (! $file || ! method_exists($file, 'getClientOriginalExtension')) {
+            return [
+                'code' => 422,
+                'status' => 'error',
+                'message' => 'Invalid file object provided.'
+            ];
+        }
+
+        if (! $file->isValid()) {
+            return [
+                'code' => 422,
+                'status' => 'error',
+                'message' => 'File upload not valid (upload error).'
+            ];
+        }
+
+        // Get extension and mime
+        $clientExt = Str::lower($file->getClientOriginalExtension() ?: $file->extension());
+        $clientMime = Str::lower($file->getClientMimeType() ?? '');
+
+        // Allowed array from settings - normalize to lower-case strings
+        $allowed = array_merge(
+            (array) (developerSettings('image_validation')->image_upload_mimes_array ?? []),
+            (array) (developerSettings('file_validation')->file_upload_mimes_array ?? [])
+        );
+
+        $allowedNormalized = array_map(function($v) {
+            return Str::lower(trim($v));
+        }, $allowed);
+
+        // Determine if allowed array contains mimes (has a slash) or just extensions
+        $containsMimeStrings = collect($allowedNormalized)->contains(fn($v) => Str::contains($v, '/'));
+
+        $isAllowed = false;
+        if ($containsMimeStrings) {
+            // Compare mime types
+            $isAllowed = in_array($clientMime, $allowedNormalized, true);
+        } else {
+            // Compare extensions
+            $isAllowed = in_array($clientExt, $allowedNormalized, true);
+        }
+
+        Log::debug('fileUpload check', [
+            'originalName' => $file->getClientOriginalName(),
+            'clientExt' => $clientExt,
+            'clientMime' => $clientMime,
+            'allowedNormalized' => $allowedNormalized,
+            'containsMimeStrings' => $containsMimeStrings,
+            'isAllowed' => $isAllowed,
+        ]);
+
+        if (! $isAllowed) {
+            return [
+                'code' => 415,
+                'status' => 'error',
+                'message' => 'Invalid File Extension or MIME: '.$clientExt.' / '.$clientMime
+            ];
+        }
+
+        // generate filenames
+        $fileExtension = $clientExt ?: 'bin';
+        $fileName = Str::random(12) . '-' . time() . '.' . $fileExtension;
+        $originalFilePath = 'uploads/' . trim($uploadPath, '/') . '/' . $fileName;
+        $disk = 'public';
+
+        // store the original file (use stream to handle large files safely)
+        Storage::disk($disk)->put($originalFilePath, fopen($file->getRealPath(), 'r+'));
+
+        // get file size from storage (bytes) - try storage driver then fallback
+        $fileSize = null;
+        try {
+            $fileSize = (string) Storage::disk($disk)->size($originalFilePath);
+        } catch (\Throwable $e) {
+            $fileSize = (string) (filesize($file->getRealPath()) ?? 0);
+        }
+
+        // If image, preserve EXACT image response structure you asked for (do not change)
+        if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'webp'])) {
+            $smallThumbName  = 'uploads/' . trim($uploadPath, '/') . '/' . Str::random(8) . '-' . time() . '-s.' . $fileExtension;
+            $mediumThumbName = 'uploads/' . trim($uploadPath, '/') . '/' . Str::random(8) . '-' . time() . '-m.' . $fileExtension;
+            $largeThumbName  = 'uploads/' . trim($uploadPath, '/') . '/' . Str::random(8) . '-' . time() . '-l.' . $fileExtension;
+
+            // create thumbs (ensure resizeImage writes to disk or adjusts path accordingly)
+            resizeImage($file->getRealPath(), 100, $smallThumbName);
+            resizeImage($file->getRealPath(), 250, $mediumThumbName);
+            resizeImage($file->getRealPath(), 500, $largeThumbName);
+
+            // ---- IMPORTANT: DO NOT CHANGE THIS IMAGE RESPONSE (keeps backward compatibility) ----
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'original' => $originalFilePath,
+                'smallThumbName' => $smallThumbName,
+                'mediumThumbName' => $mediumThumbName,
+                'largeThumbName' => $largeThumbName
+            ];
+        }
+
+        // For non-images, return richer payload suitable for DB (matches your schema)
+        $base = [
+            'code' => 200,
+            'status' => 'success',
+            // schema fields
+            'file_path'     => $originalFilePath,
+            'file_size'     => $fileSize,             // bytes as string (or integer if you prefer)
+            'file_name'     => $fileName,
+            'file_type'     => $clientMime ?: $fileExtension,
+            'original_name' => $file->getClientOriginalName(),
+            'mime_type'     => $clientMime,
+            'disk'          => $disk,
+            'extension'     => $fileExtension,
+        ];
+
+        return $base;
+    }
+    function fileUploadOld($file, $uploadPath) {
+        if (! $file || ! method_exists($file, 'getClientOriginalExtension')) {
+            return [
+                'code' => 422,
+                'status' => 'error',
+                'message' => 'Invalid file object provided.'
+            ];
+        }
+
+        if (! $file->isValid()) {
+            return [
+                'code' => 422,
+                'status' => 'error',
+                'message' => 'File upload not valid (upload error).'
+            ];
+        }
+
+        // Get extension and mime
+        $clientExt = Str::lower($file->getClientOriginalExtension() ?: $file->extension());
+        $clientMime = Str::lower($file->getClientMimeType() ?? '');
+
+        // Allowed array from settings - normalize to lower-case strings
+        $allowed = array_merge(
+            (array) (developerSettings('image_validation')->image_upload_mimes_array ?? []),
+            (array) (developerSettings('file_validation')->file_upload_mimes_array ?? [])
+        );
+
+        $allowedNormalized = array_map(function($v) {
+            return Str::lower(trim($v));
+        }, $allowed);
+        // $allowed = developerSettings('image_validation')->image_upload_mimes_array ?? [];
+        // $allowedNormalized = array_map(function($v){
+        //     return Str::lower(trim($v));
+        // }, (array)$allowed);
+
+        // Determine if allowed array contains mimes (has a slash) or just extensions
+        $containsMimeStrings = collect($allowedNormalized)->contains(fn($v) => Str::contains($v, '/'));
+
+        $isAllowed = false;
+        if ($containsMimeStrings) {
+            // Compare mime types
+            $isAllowed = in_array($clientMime, $allowedNormalized, true);
+        } else {
+            // Compare extensions
+            $isAllowed = in_array($clientExt, $allowedNormalized, true);
+        }
+
+        // Debug log (optional - remove in production)
+        Log::debug('fileUpload check', [
+            'originalName' => $file->getClientOriginalName(),
+            'clientExt' => $clientExt,
+            'clientMime' => $clientMime,
+            'allowedNormalized' => $allowedNormalized,
+            'containsMimeStrings' => $containsMimeStrings,
+            'isAllowed' => $isAllowed,
+        ]);
+
+        if (! $isAllowed) {
+            return [
+                'code' => 415,
+                'status' => 'error',
+                'message' => 'Invalid File Extension or MIME: '.$clientExt.' / '.$clientMime
+            ];
+        }
+
+        // generate filenames
+        $fileExtension = $clientExt ?: 'bin';
+        $fileName = Str::random(12) . '-' . time() . '.' . $fileExtension;
+        $originalFilePath = 'uploads/' . trim($uploadPath, '/') . '/' . $fileName;
+
+        // store the original file
+        Storage::disk('public')->put($originalFilePath, file_get_contents($file->getRealPath()));
+
+        // If image, create thumbs (you use resizeImage)
+        if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'webp'])) {
+            $smallThumbName  = 'uploads/' . trim($uploadPath, '/') . '/' . Str::random(8) . '-' . time() . '-s.' . $fileExtension;
+            $mediumThumbName = 'uploads/' . trim($uploadPath, '/') . '/' . Str::random(8) . '-' . time() . '-m.' . $fileExtension;
+            $largeThumbName  = 'uploads/' . trim($uploadPath, '/') . '/' . Str::random(8) . '-' . time() . '-l.' . $fileExtension;
+
+            // resizeImage should write to storage disk public path or accept binary path
+            // If resizeImage expects a filesystem path, you may need to copy file to a tmp path first
+            resizeImage($file->getRealPath(), 100, $smallThumbName);
+            resizeImage($file->getRealPath(), 250, $mediumThumbName);
+            resizeImage($file->getRealPath(), 500, $largeThumbName);
+
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'original' => $originalFilePath,
+                'smallThumbName' => $smallThumbName,
+                'mediumThumbName' => $mediumThumbName,
+                'largeThumbName' => $largeThumbName
+            ];
+        } elseif (in_array($fileExtension, ['pdf', 'doc', 'docx'])) {
+            return [
+                'code' => 200,
+                'status' => 'success',
+                'original' => $originalFilePath
+            ];
+        }
+
+        return [
+            'code' => 200,
+            'status' => 'success',
+            'original' => $originalFilePath,
+        ];
+    }
+}
+
+/*
 if (!function_exists('fileUpload')) {
     function fileUpload($file, $uploadPath) {
+        // dd($file);
         $tmpPath = $file->getRealPath();
         $fileExtension = $file->getClientOriginalExtension();
         $fileName = uniqid().'-'.time().'.'.$fileExtension;
@@ -236,6 +472,7 @@ if (!function_exists('fileUpload')) {
         }
     }
 }
+*/
 
 if (!function_exists('resizeImage')) {
     function resizeImage($tmpPath, $height, $fileName) {
@@ -643,5 +880,23 @@ if (!function_exists('generateRouteUrl')) {
             return route($item['route'], $item['params']);
         }
         return route($item['route']);
+    }
+}
+
+if (!function_exists('formatFileSize')) {
+    function formatFileSize($bytes, $precision = 2)
+    {
+        if (!is_numeric($bytes)) {
+            return '0 B';
+        }
+
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $bytes = max($bytes, 0);
+        $pow = $bytes > 0 ? floor(log($bytes, 1024)) : 0;
+        $pow = min($pow, count($units) - 1);
+
+        $bytes /= (1 << (10 * $pow));
+
+        return round($bytes, $precision) . ' ' . $units[$pow];
     }
 }

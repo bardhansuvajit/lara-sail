@@ -34,6 +34,7 @@ use App\Http\Controllers\Admin\Product\Variation\ProductVariationAttributeContro
 use App\Http\Controllers\Admin\Product\Variation\ProductVariationAttributeValueController;
 use App\Http\Controllers\Admin\Product\Variation\ProductVariationController;
 use App\Http\Controllers\Admin\Product\Coupon\ProductCouponController;
+use App\Http\Controllers\Admin\Product\File\ProductFileController;
 
 use App\Http\Controllers\Admin\CsvTemplate\CsvTemplateController;
 use App\Http\Controllers\Admin\Trash\TrashController;
@@ -248,6 +249,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/import', 'import')->name('import');
                 Route::get('/export/{type}', 'export')->name('export');
                 Route::post('/position', 'position')->name('position');
+            });
+
+            // file
+            Route::prefix('file')->name('file.')->middleware(['permission:manage_files'])->controller(ProductFileController::class)->group(function() {
+                Route::get('/delete/{id}', 'delete')->name('delete');
             });
         });
 
